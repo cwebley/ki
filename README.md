@@ -4,6 +4,7 @@ ki
 the tournament of champions
 
 TODO: 
+
 -Setup and hook in mysql, redis
 
 -register and login
