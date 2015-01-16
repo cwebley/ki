@@ -1,0 +1,147 @@
+# Not really in use right now...
+
+
+# {scheme}.{host}.{whoami.class}.{whoami.env}.{whoami.domain}
+# if whoami.env == 'prod'
+#   whoami.env = ''
+hosts:
+  video: cdn.video
+  thumb: cdn.thumb
+  userImage: cdn.userimage
+  internalVideo: video
+  internalThumb: thumb
+  internalUserImage: userimage
+
+health:
+  password: ""
+
+search:
+  host: http://localhost:9200
+  indices:
+    users:
+      version: 0
+
+db:
+  rw:
+    host: localhost
+    user: devel
+    password: LuLa9DIx
+
+  ro:
+    host: localhost
+    user: devel
+    password: LuLa9DIx
+
+  roi:
+    host: localhost
+    user: devel
+    password: LuLa9DIx
+
+admin:
+  remoteAddresses:
+    # PDS
+    - 192.168.56.1
+    # Austin Office v2 (static; Road Runner)
+    - 97.79.254.125
+    # Austin Office (static; still in use? [26-Mar-13])
+    - 24.153.179.106
+    # New Austin Office IP
+    - 108.178.111.42
+    # Shawn Home (static; Bellevue)
+    - 50.135.95.146
+    # Ross Home (static; Mercer Island)
+    - 23.25.133.166
+    # Ross Home (static; Mercer Island)
+    - 71.197.244.252
+    # Ross Home (static; Mercer Island)
+    - 69.181.226.40
+    # Austin Office Fiber IP
+    - 74.203.254.2
+    # Doug
+    - 72.183.126.128
+
+redis:
+  ro:
+    host: localhost
+    port: 6381
+  rw:
+    host: localhost
+    port: 6379
+  roi:
+    host: localhost
+    port: 6383
+  cache:
+    host: localhost
+    port: 6385
+  localcache:
+    host: localhost
+    port: 6385
+  pubsub:
+    host: localhost
+    port: 6384
+
+cassandra:
+  v:
+    hosts:
+      - 127.0.0.1
+    user: cassandra
+    password: cassandra
+  stats:
+    hosts:
+      - 127.0.0.1
+    user: cassandra
+    password: cassandra
+
+geoip:
+  db:
+    city:     /etc/v/maxmind/GeoIP-133-GeoIpCity.dat
+    isp:      /etc/v/maxmind/GeoIP-121-GeoIpIsp.dat
+    netspeed: /etc/v/maxmind/GeoIP-177-GeoIpNetspeed.dat
+
+ads:
+  globalOff: off
+  partnerOn: on
+  embedOn: on
+  mapsAPIKey: AIzaSyA3rw_3p344cqhvKZ67r8ec0I1kMhn6Mv4
+  paypal:
+    endpoint: https://api.sandbox.paypal.com
+    clientID: AYgWsRAwJhk_Z8cezm4CPjgbx0VlEF4HlBZ5eg-2Evjk5jkIMUDDyb8MB785
+    secret: EB5CKRA8rCte1slSbhIP2ArmOs6e1Q9C2y95NhpNqEmMJqPjBsg6TXqYXIhs
+
+mail:
+  on: false
+
+mandrill:
+  devKey: VdqPm-OzREa6ydYDO-8QKQ
+
+auth:
+  facebook:
+    id: 712714375442791
+    secret: bdd16f7db5b99adf049072fb30d1824d
+  twitter:
+    id: GTCr76sGY4dzvKfcVlv5ryura
+    secret: 3ugTSviw6tNiKMPjca32Nt5X0o2JWthmD12IXvtOleEcWC6cS0
+  google:
+    id: 928511538043-v03j7jbiqmtjvfejhgqes3glh8fatr5v.apps.googleusercontent.com
+    secret: WBzgikA5pq1JO-sg5W9BtTVS
+  instagram:
+    id: fdcb39fe3fe84a49b95e4ab5a0a65ede
+    secret: a445bd1bb7064bfb9ec8dbe1ec6855f1
+  self:
+    id: 0cbe4482-44fd-11e4-a75b-080027f0a289
+    secret: d57315794efcf4d207042167d7a8c89020d381539c585fd4
+
+skip-cache: false
+
+ejabberd:
+  password: 3k5fh6j4t9
+
+session:
+  #arbitrary id
+  idCookieName: 'sessid'
+  #auth cookie
+  authedCookieName: 'at'
+  #signing cookie, change this in production
+  cookieSecret: 'the-fastest-keyboard-cat!'
+  #1 year
+  expires: 31536000

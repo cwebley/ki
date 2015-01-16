@@ -1,5 +1,5 @@
 var moment = require('moment'),
-	vConfig = require('../../config'),
+	// vConfig = require('../../v-config'),
 	log = require('../../log'),
 	Pool = require('./pool');
 
@@ -11,12 +11,25 @@ var startPool = function(config) {
 var Interface = function(){
 	this.pools = {
 		all: {
-			rw: startPool(vConfig.get('db:rw')),
-			ro: startPool(vConfig.get('db:ro')),
-			roi: startPool(vConfig.get('db:roi')),
+			rw: startPool({
+				host:'localhost',
+				database:'test',
+				user:'root',
+				password:'bigwilliestyle'
+			})
 		}
 	};
 };
+
+// var Interface = function(){
+// 	this.pools = {
+// 		all: {
+// 			rw: startPool(vConfig.get('db:rw')),
+// 			ro: startPool(vConfig.get('db:ro')),
+// 			roi: startPool(vConfig.get('db:roi')),
+// 		}
+// 	};
+// };
 
 Interface.prototype.query = function(db, type, sql, params, failmsg, cb) {
 	if(!cb && typeof failmsg === 'function') {
