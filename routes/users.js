@@ -12,7 +12,7 @@ controller.login = function(req, res){
 		res.render('login');
 
 	})
-}
+};
 
 controller.register = function(req, res){
 	console.log("LOGIN CTRLER")
@@ -21,10 +21,10 @@ controller.register = function(req, res){
 		console.log("REZ : ", results)
 		res.render('register');
 	})
-}
+};
 
 router.get('/', function(req, res) {
-  res.send('respond with a resource');
+  res.send('users hub, respond with a resource');
 });
 
 router.get('/login', 

@@ -1,12 +1,12 @@
 var _ = require('lodash'),
 	async = require('async'),
-	userSvc = require('./user-service'),
-	userMdl = require('./user-model'),
+	usersSvc = require('./users-service'),
+	usersMdl = require('./users-model'),
 	mysql = require('../persistence').mysql;
 
-var UserInterface = {};
+var UsersInterface = {};
 
-UserInterface.register = function(options, cb) {
+UsersInterface.register = function(options, cb) {
 	console.log("register ops: ", options)
 	var success = true
 	var sql = 'SELECT name FROM characters WHERE season = ?',
@@ -25,4 +25,4 @@ UserInterface.register = function(options, cb) {
 };
 
 
-module.exports = UserInterface;
+module.exports = UsersInterface;

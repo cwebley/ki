@@ -20,12 +20,43 @@ INSERT INTO characters (name, season) VALUES
 	('riptor',2),
 	('omen',2);
 
-CREATE TABLE `players` (
+CREATE TABLE `users` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
+	`tournamentWins` int(11) NOT NULL DEFAULT 0,
+	`tournamentLosses` int(11) NOT NULL DEFAULT 0,
+	`gameWins` int(11) NOT NULL DEFAULT 0,
+	`gameLosses` int(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`)
 );
 
-INSERT INTO players (name) VALUES
+INSERT INTO users (name) VALUES
 	('g'),
 	('bj');
+
+
+CREATE TABLE `tournaments` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` varchar(255) NOT NULL,
+	`goal` int(11) NOT NULL,
+	`championId` int(11),
+	`winningScore` int(11),
+	`losingScore` int(11),
+	`time` timestamp DEFAULT current_timestamp,
+	FOREIGN KEY (`championId`) REFERENCES `users`(`id`)
+);
+
+CREATE TABLE `games` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`winningPlayerId` int(11) NOT NULL,
+	`winningCharacterId` int(11) NOT NULL,
+	`losingPlayerId` int(11) NOT NULL,
+	`losingCharacterId` int(11) NOT NULL,
+	`tournamentId` int(11) NOT NULL,
+	`time` timestamp DEFAULT current_timestamp,
+	FOREIGN KEY (`winningPlayerId`) REFERENCES `users`(`id`),
+	FOREIGN KEY (`winningCharacterId`) REFERENCES `characters`(`id`),
+	FOREIGN KEY (`losingPlayerId`) REFERENCES `users`(`id`),
+	FOREIGN KEY (`losingCharacterId`) REFERENCES `characters`(`id`),
+	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`)
+);
