@@ -28,15 +28,16 @@ gameController.put = function(req, res){
 var getTourneyOpts = function(req){
 	var opts = {
 		name: req.body.name,
-		goal: req.body.goal
+		goal: req.body.goal,
+		players: req.body.players
 	}
 	return opts
 }
 
 gameController.newTournament = function(req, res){
-	console.log("PUT TOURNEY: ", req.body)
 	var opts = getTourneyOpts(req)
-	if(!opts.name || !opts.goal) res.status(400).send()
+	if(!opts.name || !opts.goal) res.status(400).send({success:false,reason:'no-name-or-goal'})
+	if(!opts.players || !opts.players.length || opts.players.length != 2) res.status(400).send({success:false,reason:'not-2-player'})
 
 	games.newTournament(opts, function(err,results){
 		if(err) res.status(500).send(err)

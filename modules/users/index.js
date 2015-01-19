@@ -24,5 +24,9 @@ UsersInterface.register = function(options, cb) {
 	// }.bind(this));
 };
 
+UsersInterface.seedCharacters = function(options, cb) {
+	usersSvc.seedCharacters(options, cb)
+};
+
 
 module.exports = UsersInterface;

@@ -1,7 +1,8 @@
 var _ = require('lodash'),
 	async = require('async'),
 	gamesMdl = require('./games-model'),
-	usersMdl = require('../users/users-model')
+	usersMdl = require('../users/users-model'),
+	constants = require('../constants'),
 	mysql = require('../persistence').mysql;
 
 var GamesService = {};
@@ -20,11 +21,48 @@ GamesService.saveGame = function(options, cb) {
 	})
 };
 
-GamesService.newTournament = function(options, cb) {
-	gamesMdl.createTournament(options, function(err, results){
+GamesService.defaultCharValsByName = function(username,cb){
+	usersMdl.getUserId(username, function(err,uid){
+		console.log("DEFAULT FUNC UID: ", err, uid)
 		if(err)return cb(err)
-		return cb(null, results)
-	})
+		usersMdl.getAllCharacterIds(function(err, characterIds){
+			console.log("GETALLX REZ: ", characterIds)
+			if(err)return cb(err)
+
+			usersMdl.insertOrResetCharVals(uid,characterIds,function(err,results){
+				console.log("ISERTORRESET REZ: ", err, results)
+				cb(err,results)
+			});
+		});
+	});
+}
+
+var generateFunc = function(username){
+	console.log("GNEREATE FUNC: ", username)
+	return function(done){GamesService.defaultCharValsByName(username,done)}
+}
+
+GamesService.newTournament = function(options, cb) {
+	if(!options.players || !options.players.length) return cb(new Error('no-players-specified-for-tournament'))
+	var calls = [];
+
+	for(var i=0; i<options.players.length; i++){
+		calls.push(generateFunc(options.players[i]))
+	}
+	async.parallel(calls, function(err,results){
+		console.log("ASYNC REZ:" , results)
+		gamesMdl.createTournament(options, function(err, results){
+			if(err)return cb(err)
+			return cb(results)
+
+
+			// // Worth doing?
+			// usersMdl.insertOrResetCharVals(options.players, function(err, results){
+			// 	if(err)return cb(err)
+			// 	return cb(null, results)
+			// });
+		});
+	});
 };
 
 module.exports = GamesService;

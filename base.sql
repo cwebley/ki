@@ -43,6 +43,7 @@ CREATE TABLE `tournaments` (
 	`winningScore` int(11),
 	`losingScore` int(11),
 	`time` timestamp DEFAULT current_timestamp,
+	UNIQUE KEY `name` (`name`),
 	FOREIGN KEY (`championId`) REFERENCES `users`(`id`)
 );
 
@@ -59,4 +60,14 @@ CREATE TABLE `games` (
 	FOREIGN KEY (`losingPlayerId`) REFERENCES `users`(`id`),
 	FOREIGN KEY (`losingCharacterId`) REFERENCES `characters`(`id`),
 	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`)
+);
+
+CREATE TABLE `charactersData` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`userId` int(11) NOT NULL,
+	`characterId` int(11) NOT NULL,
+	`value` int(11) NOT NULL,
+	UNIQUE `user-character` (`userId`,`characterId`),
+	FOREIGN KEY (`userId`) REFERENCES `users`(`id`),
+	FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`)
 );

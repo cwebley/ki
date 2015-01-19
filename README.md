@@ -30,3 +30,11 @@ TODO:
 -purposedful rivals/ big matchups?
 
 -stats route to return a players best character in certain categories. accept time stamp query or tourney name"
+
+
+stats not accounted for:
+	values
+	streaks
+	teams
+	rivalries
+	
