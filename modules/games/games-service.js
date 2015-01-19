@@ -47,6 +47,7 @@ GamesService.newTournament = function(options, cb) {
 		calls.push(generateFunc(options.players[i]))
 	}
 	async.parallel(calls, function(err,results){
+		if(err) return cb(err)
 
 		gamesMdl.createTournament(options, function(err, results){
 			if(err)return cb(err)

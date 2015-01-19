@@ -4,7 +4,6 @@ var _ = require('lodash'),
 var GamesInterface = {};
 
 GamesInterface.submitGame = function(options, cb) {
-	console.log("games index put game: ", options)
 	gamesSvc.saveGame(options, function(err, results){
 		return cb(err,results)
 	});

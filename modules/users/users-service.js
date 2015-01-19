@@ -6,7 +6,6 @@ var UsersService = {};
 
 UsersService.updateCharByName = function(uid,cName,value,cb){
 	usersMdl.getCharacterId(cName,function(err,cid){
-		console.log("CHARID: ", uid, cName, value,cid)
 		if(err) return cb(err)
 		usersMdl.updateCharacterValue(uid,cid,value,cb)
 	});
@@ -28,7 +27,6 @@ UsersService.seedCharacters = function(options, cb) {
 			}
 		}
 		async.parallel(calls, function(err, results){
-			console.log("REZZZZ: ", results)
 			if(err)return cb(err)
 			return cb(err, results)
 		});
