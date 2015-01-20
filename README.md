@@ -11,8 +11,6 @@ TODO:
 
 -register and login
 
--add characters, matches to db
-
 -output basic stats: current record, points, etc
 
 -undo button
@@ -57,7 +55,7 @@ powerups: private or public // frequency/interactions of these need to be contro
 	rematch on loss (first loss doesnt count value, but still resets streak?)
 	reseed opponents characters
 	subtract 3-5 total points from opponents values
-
+	---
 	ice opponent
 	best of 3 against opponent of your choice (streaks count here? values count here?) // strictly better than rematch? weird interaction with rivals?
 
