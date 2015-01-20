@@ -5,6 +5,16 @@ the tournament of champions
 
 TODO: 
 
+--update charactersData streaks+values after gamesvc/saveGame
+
+--End tourney/save final totals upon reaching goal
+
+--accept supreme bool as games data
+
+--calculate rivals on startup? Redis? in memory? previous 5 or 7 games?
+
+--set up web-server, or heroku or something
+
 -Setup and hook in redis
 
 -dtos in routes? dto.number?

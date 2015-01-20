@@ -64,6 +64,7 @@ CREATE TABLE `games` (
 	`losingCharacterId` int(11) NOT NULL,
 	`value` int(11) DEFAULT 0,
 	`tournamentId` int(11) NOT NULL,
+	`supreme` tinyint(1) DEFAULT 0;
 	`time` timestamp DEFAULT current_timestamp,
 	FOREIGN KEY (`winningPlayerId`) REFERENCES `users`(`id`),
 	FOREIGN KEY (`winningCharacterId`) REFERENCES `characters`(`id`),

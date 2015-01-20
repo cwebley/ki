@@ -9,7 +9,8 @@ GamesModel.insertGameResult = function(options, cb) {
 		params = [options.winPid, options.winXid, options.losePid, options.loseXid, options.tourneyId, options.value];
 
 	mysql.query('rw', sql, params, 'modules/games/games-model/insertGameResult', function(err, results){
-		return cb(err, results);
+		if(err)return cb(err);
+		return cb(null,results.insertId)
 	});
 };
 
