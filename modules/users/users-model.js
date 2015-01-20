@@ -36,6 +36,31 @@ UsersModel.getAllCharacterIds = function(cb) {
 	});
 };
 
+// // uid: integer,
+// // cids: array of all characterIds
+// UsersModel.insertSeeds = function(tid, uid, cids, cb) {
+// 	if(!cids.length) return cb(new Error('users-model/insertSeeds/no-character-ids-array'))
+
+// 	var insert = 'INSERT INTO `seeds` (tournamentId,userId,characterId,value)',
+// 		values = ' VALUES (?,?,?,?)',
+// 		// onDup = ' ON DUPLICATE KEY UPDATE value = VALUES(value)',
+// 		params = [];
+
+// 	for(var i=0;i<cids.length;i++){
+// 		if(i< cids.length-1){
+// 			values += ',(?,?,?,?)'
+// 		}
+// 		params.push(tid)
+// 		params.push(uid)
+// 		params.push(cids[i])
+// 		params.push(0)
+// 	}
+
+// 	mysql.query('rw', insert + values, params, 'modules/games/games-model/insertSeeds', function(err, results){
+// 		return cb(err,results)
+// 	});
+// };
+
 // uid: integer,
 // cids: array of all characterIds
 UsersModel.insertOrResetCharVals = function(uid, cids, cb) {
@@ -60,14 +85,24 @@ UsersModel.insertOrResetCharVals = function(uid, cids, cb) {
 	});
 };
 
-UsersModel.updateCharacterValue = function(uid, cid, value, cb) {
-	var sql = 'UPDATE charactersData SET value = ? WHERE userId = ? AND characterId = ?',
-		params = [value, uid, cid];
+// rows: object {cid:1,tid:1,:uid:1,:value:1}
+UsersModel.insertSeeds = function(rows, cb) {
+	var sql = 'INSERT INTO seeds (tournamentId,userId,characterId,value) VALUES(?,?,?,?)',
+		onDup = 'ON DUPLICATE KEY UPDATE value = VALUES(value)',
+		params =[];
 
-	mysql.query('rw', sql, params, 'modules/games/games-model/updateCharacterValue', function(err, results){
-		if(err) return cb(err)
-		if(!results || !results.length) return cb()
-		return cb(null, results[0].id);
+	for(var i=0;i<rows.length;i++){
+		if(i< rows.length-1){
+			sql += ',(?,?,?,?)'
+		}
+		params.push(rows[i].tid)
+		params.push(rows[i].uid)
+		params.push(rows[i].cid)
+		params.push(rows[i].value)
+	}
+
+	mysql.query('rw', sql+onDup, params, 'modules/games/games-model/insertSeeds', function(err, results){
+		return cb(err, results)
 	});
 };
 

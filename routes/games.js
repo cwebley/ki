@@ -40,9 +40,8 @@ gameController.newTournament = function(req, res){
 	if(!opts.players || !opts.players.length || opts.players.length != 2) res.status(400).send({success:false,reason:'not-2-player'})
 
 	games.newTournament(opts, function(err,results){
-		if(err) res.status(500).send(err)
-		if(!results) res.status(400).send()
-		res.send(results)
+		if(err) return res.status(500).send({success:false,err:err})
+		res.send({success:true})
 	})
 }
 

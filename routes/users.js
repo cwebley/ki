@@ -27,24 +27,27 @@ controller.register = function(req, res){
 var getSeedOpts = function(req){
 	var opts = {
 		username: req.params.username,
+		tourneyName: req.body.name,
 		characters: {}
 	}
 
 	var c = constants.characters
 	for(var i = 0; i < c.length; i++){
-		opts.characters[c[i]] = req.body[c[i]]
+		opts.characters[c[i]] = req.body.seeds[c[i]]
 	}
 	return opts
 }
 
 controller.seed = function(req, res){
-	console.log("SEEDING :", req.params.username)
+	if(!req.body.name) return res.status(400).send({success:false,reason:"no-name-of-tourney"})
+	if(!req.body.seeds) return res.status(400).send({success:false,reason:"no-seeds"})
 
 	var opts = getSeedOpts(req)
 
 	users.seedCharacters(opts, function(err,results){
-		console.log("REZ : ", results)
-		res.send({success: true});
+		if(err) return res.status(500).send({success:false,reason:"internal-error"})
+		if(!results) return res.status(404).send({success:false,reason:"tourney-not-found"})
+		return res.send({success: true});
 	})
 };
 

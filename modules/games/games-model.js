@@ -18,7 +18,8 @@ GamesModel.createTournament = function(options, cb) {
 		params = [options.name, options.goal];
 
 	mysql.query('rw', sql, params, 'modules/games/games-model/createTournament', function(err, results){
-		return cb(err, results);
+		if(err) return cb(err);
+		return cb(null, results.insertId);
 	});
 };
 
