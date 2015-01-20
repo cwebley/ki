@@ -19,9 +19,9 @@ var getGameOpts = function(req){
 
 gameController.put = function(req, res){
 	games.submitGame(getGameOpts(req), function(err,results){
-		if(err) res.status(500).send(err)
-		if(!results) res.status(400).send()
-		res.send(results)
+		if(err) return res.status(500).send({success:false,err:err})
+		if(!results) return res.status(400).send({success:false,reason:'users-characters-or-tourney-name-invalid'})
+		res.send({success:true})
 	})
 }
 
@@ -36,8 +36,8 @@ var getTourneyOpts = function(req){
 
 gameController.newTournament = function(req, res){
 	var opts = getTourneyOpts(req)
-	if(!opts.name || !opts.goal) res.status(400).send({success:false,reason:'no-name-or-goal'})
-	if(!opts.players || !opts.players.length || opts.players.length != 2) res.status(400).send({success:false,reason:'not-2-player'})
+	if(!opts.name || !opts.goal) return res.status(400).send({success:false,reason:'no-name-or-goal'})
+	if(!opts.players || !opts.players.length || opts.players.length != 2) return res.status(400).send({success:false,reason:'not-2-player'})
 
 	games.newTournament(opts, function(err,results){
 		if(err) return res.status(500).send({success:false,err:err})

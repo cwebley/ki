@@ -5,8 +5,9 @@ var _ = require('lodash'),
 var GamesModel = {};
 
 GamesModel.insertGameResult = function(options, cb) {
-	var sql = 'INSERT INTO `games` (winningPlayerId, winningCharacterId, losingPlayerId, losingCharacterId, tournamentId) VALUES(?,?,?,?,?)',
-		params = [options.winPid, options.winXid, options.losePid, options.loseXid, options.tourneyId];
+	console.log("IGR: ", options)
+	var sql = 'INSERT INTO `games` (winningPlayerId, winningCharacterId, losingPlayerId, losingCharacterId, tournamentId, value) VALUES(?,?,?,?,?,?)',
+		params = [options.winPid, options.winXid, options.losePid, options.loseXid, options.tourneyId, options.value];
 
 	mysql.query('rw', sql, params, 'modules/games/games-model/insertGameResult', function(err, results){
 		return cb(err, results);

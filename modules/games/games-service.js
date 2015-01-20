@@ -17,8 +17,17 @@ GamesService.saveGame = function(options, cb) {
 
 	async.parallel(calls, function(err, results){
 		if(err)return cb(err)
-		gamesMdl.insertGameResult(results, cb)
-	})
+		if(!results.winPid || !results.losePid || !results.winXid || !results.loseXid || !results.tourneyId) return cb()
+		if(results.winPid === results.losePid) return cb()
+
+		usersMdl.getCharacterValue(results.winPid,results.winXid,function(err,value){
+			if(err)return cb(err)
+			if(!value)return cb()
+			results.value = value
+
+			gamesMdl.insertGameResult(results, cb)
+		});
+	});
 };
 
 GamesService.zeroCharValsByName = function(tid,username,cb){

@@ -1,4 +1,4 @@
-DROP TABLE games;
-DROP TABLE tournaments;
-DROP TABLE characters;
-DROP TABLE users;
+DELETE FROM games;
+DELETE FROM tournaments;
+DELETE FROM charactersData;
+DELETE FROM seeds;

@@ -46,7 +46,7 @@ controller.seed = function(req, res){
 
 	users.seedCharacters(opts, function(err,results){
 		if(err) return res.status(500).send({success:false,reason:"internal-error"})
-		if(!results) return res.status(404).send({success:false,reason:"tourney-not-found"})
+		if(!results) return res.status(404).send({success:false,reason:"user-or-tourney-not-found"})
 		return res.send({success: true});
 	})
 };

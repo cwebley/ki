@@ -9,7 +9,6 @@ UsersService.updateCharByName = function(tid,uid,cName,value,cb){
 	usersMdl.getCharacterId(cName,function(err,cid){
 		if(err) return cb(err)
 		return cb(null, {tid:tid,uid:uid,cid:cid,value:value})
-		// usersMdl.updateCharacterValue(tid,uid,cid,value,cb)
 	});
 };
 
@@ -18,6 +17,7 @@ UsersService.seedCharacters = function(options, cb) {
 
 	usersMdl.getUserId(options.username, function(err,uid){
 		if(err) return cb(err)
+		if(!uid) return cb()
 
 		gamesMdl.getTourneyId(options.tourneyName, function(err,tid){
 			if(err) return cb(err)
@@ -35,7 +35,9 @@ UsersService.seedCharacters = function(options, cb) {
 
 			async.parallel(calls, function(err, charArray){
 				if(err)return cb(err)
-				usersMdl.insertSeeds(charArray,cb);
+				usersMdl.insertSeeds(charArray,function(err,results){
+					return cb(err,results)
+				});
 			});
 		});
 	});
