@@ -20,7 +20,7 @@ var getGameOpts = function(req){
 gameController.put = function(req, res){
 	games.submitGame(getGameOpts(req), function(err,results){
 		if(err) return res.status(500).send({success:false,err:err})
-		if(!results) return res.status(400).send({success:false,reason:'users-characters-or-tourney-name-invalid'})
+		if(!results) return res.status(400).send({success:false,reason:'invalid-inputs'})
 		res.send({success:true})
 	})
 }

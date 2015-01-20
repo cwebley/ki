@@ -6,6 +6,9 @@ curl -ik -XPUT 'localhost:3000/users/seed/bj' -d '{"name":"test tourney","seeds"
 
 curl -ik -XPUT 'localhost:3000/games/submit' -d '{"tournament":"test tourney","winningPlayer":"g","losingPlayer":"bj","winningCharacter":"spinal","losingCharacter":"jago"}' -H "Content-Type: application/json"
 
+
+GAMES:
+
 curl -ik -XPUT 'localhost:3000/games/submit' -d '{"tournament":"test tourney","winningPlayer":"g","losingPlayer":"bj","winningCharacter":"kanra","losingCharacter":"jago"}' -H "Content-Type: application/json"
 
 curl -ik -XPUT 'localhost:3000/games/submit' -d '{"tournament":"test tourney","winningPlayer":"bj","losingPlayer":"g","winningCharacter":"kanra","losingCharacter":"jago"}' -H "Content-Type: application/json"

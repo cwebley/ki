@@ -18,11 +18,11 @@ tournamentsService.newTournament = function(options, cb) {
 	if(!options.players || !options.players.length) return cb(new Error('no-players-specified-for-tournament'))
 
 	var userIdCalls = [];
-	var generateFunc = function(username){
+	var generateUserId = function(username){
 		return function(done){usersMdl.getUserId(username,done)}
 	}
 	for(var i=0; i<options.players.length; i++){
-		userIdCalls.push(generateFunc(options.players[i]))
+		userIdCalls.push(generateUserId(options.players[i]))
 	}
 	async.parallel(userIdCalls, function(err,userIdRes){
 		if(err) return cb(err)
@@ -31,18 +31,22 @@ tournamentsService.newTournament = function(options, cb) {
 			return cb(err)
 		}
 
-		tourneyMdl.createTournament(options, userIdRes, function(err, tid){
+		tourneyMdl.createTournament(options, function(err, tid){
 			if(err)return cb(err)
 
-			var zeroCharCalls = [];
-			var generateFunc = function(tid,uid){
-				return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
-			}
-			for(var i=0; i<userIdRes.length; i++){
-				zeroCharCalls.push(generateFunc(tid, userIdRes[i]))
-			}
-			async.parallel(zeroCharCalls, function(err,results){
-				return cb(err,results)
+			tourneyMdl.insertPlayers(tid,userIdRes,function(err,insertPlayerRes){
+				if(err) return cb(err)
+					
+				var zeroCharCalls = [];
+				var generateZeroCharVals = function(tid,uid){
+					return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
+				}
+				for(var i=0; i<userIdRes.length; i++){
+					zeroCharCalls.push(generateZeroCharVals(tid, userIdRes[i]))
+				}
+				async.parallel(zeroCharCalls, function(err,results){
+					return cb(err,results)
+				});
 			});
 		});
 

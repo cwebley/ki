@@ -15,11 +15,25 @@ GamesService.saveGame = function(options, cb) {
 	calls.winXid = function(done){usersMdl.getCharacterId(options.winningCharacter, done)}
 	calls.loseXid = function(done){usersMdl.getCharacterId(options.losingCharacter, done)}
 	calls.tourneyId = function(done){tourneyMdl.getTourneyId(options.tournament, done)}
+	calls.tourneyPlayers = function(done){tourneyMdl.getPlayers(options.tournament, done)}
 
 	async.parallel(calls, function(err, results){
 		if(err)return cb(err)
 		if(!results.winPid || !results.losePid || !results.winXid || !results.loseXid || !results.tourneyId) return cb()
 		if(results.winPid === results.losePid) return cb()
+		if(!results.tourneyPlayers.length) return cb()
+
+		var validWinner, validLoser;
+
+		for(var i=0; i<results.tourneyPlayers.length;i++){
+			if(results.winPid === results.tourneyPlayers[i]){
+				validWinner = true
+			}
+			if(results.losePid === results.tourneyPlayers[i]){
+				validLoser = true
+			}
+		}
+		if(!validWinner || !validLoser) return cb()
 
 		usersMdl.getCharacterValue(results.winPid,results.winXid,function(err,value){
 			if(err)return cb(err)
