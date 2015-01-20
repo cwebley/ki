@@ -53,9 +53,5 @@ router.put('/submit',
  	gameController.put
 );
 
-router.put('/tournament', 
- 	gameController.newTournament
-);
-
 
 module.exports = router;

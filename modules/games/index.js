@@ -9,11 +9,4 @@ GamesInterface.submitGame = function(options, cb) {
 	});
 };
 
-GamesInterface.newTournament = function(options, cb) {
-	gamesSvc.newTournament(options, function(err, results){
-		return cb(err,results)
-	});
-};
-
-
 module.exports = GamesInterface;

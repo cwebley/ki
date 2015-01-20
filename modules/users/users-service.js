@@ -1,6 +1,7 @@
 var _ = require('lodash'),
 	async = require('async'),
 	gamesMdl = require('../games/games-model'),
+	tourneyMdl = require('../tournaments/tournaments-model'),
 	usersMdl = require('./users-model');
 
 var UsersService = {};
@@ -19,7 +20,7 @@ UsersService.seedCharacters = function(options, cb) {
 		if(err) return cb(err)
 		if(!uid) return cb()
 
-		gamesMdl.getTourneyId(options.tourneyName, function(err,tid){
+		tourneyMdl.getTourneyId(options.tourneyName, function(err,tid){
 			if(err) return cb(err)
 			if(!tid) return cb()
 	
