@@ -25,6 +25,17 @@ tourneyController.put = function(req, res){
 	})
 }
 
+tourneyController.get = function(req, res){
+	var name = req.query.name || req.body.name
+	if(!name) return res.status(400).send({success:false,reason:'no-name'})
+
+	tournaments.getTourneyStats(name, function(err,results){
+		if(err) return res.status(500).send({success:false,err:err})
+		if(!results) return res.status(404).send({success:false,reason:'not-found'})
+		res.send(results)
+	})
+}
+
 router.get('/', function(req, res) {
   res.send('games hub, respond with resource');
 });
@@ -32,5 +43,10 @@ router.get('/', function(req, res) {
 router.put('/new', 
  	tourneyController.put
 );
+
+router.get('/stats', 
+ 	tourneyController.get
+);
+
 
 module.exports = router;

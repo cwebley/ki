@@ -1,18 +1,18 @@
 var _ = require('lodash'),
 	tourneySvc = require('./tournaments-service');
 
-var GamesInterface = {};
+var TourneyInterface = {};
 
-GamesInterface.submitGame = function(options, cb) {
-	tourneySvc.saveGame(options, function(err, results){
-		return cb(err,results)
-	});
-};
-
-GamesInterface.newTournament = function(options, cb) {
+TourneyInterface.newTournament = function(options, cb) {
 	tourneySvc.newTournament(options, function(err, results){
 		return cb(err,results)
 	});
 };
 
-module.exports = GamesInterface;
+TourneyInterface.getTourneyStats = function(name, cb) {
+	tourneySvc.getTourneyStats(name, function(err, results){
+		return cb(err,results)
+	});
+};
+
+module.exports = TourneyInterface;
