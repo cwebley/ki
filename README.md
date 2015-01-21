@@ -5,6 +5,9 @@ the tournament of champions
 
 TODO: 
 
+-Setup mysql real db/ user. secondary db for testing?
+
+
 --update charactersData streaks+values after gamesvc/saveGame
 
 --End tourney/save final totals upon reaching goal
@@ -13,9 +16,10 @@ TODO:
 
 --calculate rivals on startup? Redis? in memory? previous 5 or 7 games?
 
+--sure things? 6-1 matchups or better?
+
 --set up web-server, or heroku or something
 
--Setup and hook in redis
 
 -dtos in routes? dto.number?
 
@@ -26,6 +30,8 @@ TODO:
 -undo button
 
 -built in randomizer
+
+-imminent victory calculator for next 3 games
 
 -team support
 
@@ -60,14 +66,14 @@ character-overall-stats
 	
 powerups: private or public // frequency/interactions of these need to be controlled
 	peek/ reorder top 3 for each // only 1 player at a time here
-	triple probability of certain fighter for 10-20 matches  // needs to be subtle, possible to hide fire guys this way
+	double/triple probability of certain fighter for 10-20 matches  // needs to be subtle, possible to hide fire guys this way
 	choose opponent this round //with info of who you would have faced
 	rematch on loss (first loss doesnt count value, but still resets streak?)
 	reseed opponents characters
 	subtract 3-5 total points from opponents values
 	---
 	ice opponent
-	best of 3 against opponent of your choice (streaks count here? values count here?) // strictly better than rematch? weird interaction with rivals?
+	best of 3 against opponent of your choice (or top streaker?) (streaks count here? values count here?) // strictly better than rematch? weird interaction with rivals?
 
 how to get powerups?
 	wagers?
@@ -80,12 +86,18 @@ how to get powerups?
 secret wagers. need interactive front end for this
 	supreme
 	3 counterbreaks
+	streak of wins
 
 how to get wagers?
 	start with 1-3
 	win previous tournament?
 	beat rival?
 	checkpoints
+
+achievements? milestones not unique to one tourney:
+	beat every character
+	highest streak with a character
+	highest player streak
 
 
 

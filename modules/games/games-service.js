@@ -34,7 +34,7 @@ GamesService.getAndValidateIds = function(options, cb) {
 			}
 		}
 		if(!validWinner || !validLoser) return cb()
-		return cb(results)
+		return cb(null, results)
 	});
 };
 
@@ -48,6 +48,7 @@ GamesService.saveGame = function(options, cb) {
 			if(err)return cb(err)
 			if(!value)return cb()
 			validated.value = value
+
 			gamesMdl.insertGameResult(validated, function(err,gameId){
 				if(err)return cb(err)
 				if(!gameId) return cb()
@@ -61,33 +62,28 @@ GamesService.saveGame = function(options, cb) {
 };
 
 GamesService.updateCharData = function(options, cb) {
+	var streakCalls = {},
+		updateCalls = [];
+	//increase streak
+	streakCalls.winner = function(done){usersMdl.getCharacterStreak(options.winPid,options.winXid,done)}
+	streakCalls.loser = function(done){usersMdl.getCharacterStreak(options.losePid,options.loseXid,done)}
 
-/*
-	check for fire first and ice down if necessary.
-	gamesMdl.updateCurStreaks(options,function(err,results){
-		//UPDATE table SET field = field + 1 WHERE [...]
-		gamesMdl.updateValues
-
-	streaks+values in 1 statement? above is fine if i keep the 2 columns, curwin/ curloss streak
-		UPDATE table SET Col1 = CASE id 
-		                          WHEN 1 THEN 1 
-		                          WHEN 2 THEN 2 
-		                          WHEN 4 THEN 10 
-		                          ELSE Col1 
-		                        END, 
-		                 Col2 = CASE id 
-		                          WHEN 3 THEN 3 
-		                          WHEN 4 THEN 12 
-		                          ELSE Col2 
-		                        END
-		             WHERE id IN (1, 2, 3, 4);
-
+	async.parallel(streakCalls,function(err,streaks){
+		if(err)return cb(err)
+		if(streaks.loser >= 3){
+			updateCalls.push(function(done){gamesMdl.iceDown(options.losePid,options.loseXid,done)})
+		}
+		if(streaks.winner === 2){
+			updateCalls.push(function(done){gamesMdl.fireUp(options.winPid,options.winXid,done)})
+		}
+		updateCalls.push(function(done){gamesMdl.incWinCharCurStreak(options.winPid,options.winXid,done)})
+		updateCalls.push(function(done){gamesMdl.resetLoseCharCurStreak(options.losePid,options.loseXid,done)})
+		updateCalls.push(function(done){gamesMdl.decWinCharValue(options.winPid,options.winXid,done)})
+		updateCalls.push(function(done){gamesMdl.incLoseCharValue(options.losePid,options.loseXid,done)})
+	
+		async.parallel(updateCalls,function(err,results){
+			return cb(err,results)
+		});
 	});
-
-	EVALUATE FIRE + RIVALS
-
-	return cb(null, results)
-*/
 };
-
 module.exports = GamesService;
