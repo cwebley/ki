@@ -74,14 +74,13 @@ TournamentsModel.getStats = function(tourneyName, cb) {
 	});
 };
 
-//options: obj array: [{name:'g'},{name:'bj'}]
-TournamentsModel.getCharacterStats = function(options, cb) {
+TournamentsModel.getCharacterStats = function(userName, cb) {
 	var sql = 'SELECT c.name,cd.value,cd.curStreak FROM characters c'
 			+ ' JOIN charactersData cd ON cd.characterId = c.id'
 			+ ' JOIN users u ON u.id = cd.userId'
 			+ ' WHERE u.name = ?'
 			+ ' ORDER BY cd.value ASC'
-		params = [options.name];
+		params = [userName];
 
 	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getCharacterStats', function(err, results){
 		if (err) return cb(err)
