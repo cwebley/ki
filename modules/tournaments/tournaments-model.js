@@ -51,7 +51,7 @@ TournamentsModel.insertPlayers = function(tid, userIds, cb) {
 };
 
 TournamentsModel.getPlayers = function(tourneyName, cb) {
-	var sql = 'SELECT userId FROM tournamentUsers tu JOIN tournaments t ON t.id = tu.tournamentId WHERE t.name = ?'
+	var sql = 'SELECT tu.userId FROM tournamentUsers tu JOIN tournaments t ON t.id = tu.tournamentId WHERE t.name = ?'
 		params = [tourneyName];
 
 	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getPlayers', function(err, results){
@@ -60,5 +60,33 @@ TournamentsModel.getPlayers = function(tourneyName, cb) {
 	});
 };
 
+TournamentsModel.getStats = function(tourneyName, cb) {
+	var sql = 'SELECT u.name,u.score,u.name,u.gameWins,u.gameLosses,u.curStreak FROM users u'
+			+ ' JOIN tournamentUsers tu ON tu.userId = u.id'
+			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
+			+ ' WHERE t.name = ?'
+			+ ' ORDER BY u.score DESC'
+		params = [tourneyName];
+
+	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getStats', function(err, results){
+		if (err) return cb(err)
+		return cb(null,results)
+	});
+};
+
+//options: obj array: [{name:'g'},{name:'bj'}]
+TournamentsModel.getCharacterStats = function(options, cb) {
+	var sql = 'SELECT c.name,cd.value,cd.curStreak FROM characters c'
+			+ ' JOIN charactersData cd ON cd.characterId = c.id'
+			+ ' JOIN users u ON u.id = cd.userId'
+			+ ' WHERE u.name = ?'
+			+ ' ORDER BY cd.value ASC'
+		params = [options.name];
+
+	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getCharacterStats', function(err, results){
+		if (err) return cb(err)
+		return cb(null,results)
+	});
+};
 
 module.exports = TournamentsModel;

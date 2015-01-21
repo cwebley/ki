@@ -5,8 +5,11 @@ the tournament of champions
 
 TODO: 
 
+--Save off all curls into a file so i can rerun them with db changes in future
+
 -Setup mysql real db/ user. secondary db for testing?
 
+--update wins/losses on game submission
 
 --update charactersData streaks+values after gamesvc/saveGame
 

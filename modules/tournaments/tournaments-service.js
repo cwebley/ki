@@ -56,12 +56,27 @@ tournamentsService.newTournament = function(options, cb) {
 	});
 };
 
-tournamentsService.getTourneyStats = function(tourneyName,cb){
-	tourneyMdl.getPlayers(tourneyName, function(err,playerResults){
+// data: array of usersData
+tournamentsService.allStatsDto = function(data,cb){
+	var dto = {_embedded: {users: []}};
+	for (var i=0;i<data.length;i++){
+		dto._embedded.users.push(data[i])
+	}
+	return dto
+};
+
+tournamentsService.getAllTourneyStats = function(tourneyName,cb){
+	tourneyMdl.getStats(tourneyName, function(err,tournamentData){
 		if(err)return cb(err)
-		return cb(null,playerResults)
-		// todo query for stats and stuff
+
+		async.map(tournamentData,tourneyMdl.getCharacterStats,function(err,charData){
+			if(err) return cb(err)
+			for(var i=0;i<tournamentData.length;i++){
+				tournamentData[i].characters = charData[i]
+			}
+			return cb(err,tournamentsService.allStatsDto(tournamentData))
+		});
 	});
-}
+};
 
 module.exports = tournamentsService;

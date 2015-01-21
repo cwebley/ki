@@ -9,8 +9,16 @@ TourneyInterface.newTournament = function(options, cb) {
 	});
 };
 
+TourneyInterface.getAllTourneyStats = function(name, cb) {
+	tourneySvc.getAllTourneyStats(name, function(err, results){
+		if(err)return cb(err)
+		return cb(err,results)
+	});
+};
+
 TourneyInterface.getTourneyStats = function(name, cb) {
 	tourneySvc.getTourneyStats(name, function(err, results){
+		if(err)return cb(err)
 		return cb(err,results)
 	});
 };
