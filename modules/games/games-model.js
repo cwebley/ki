@@ -68,13 +68,43 @@ GamesModel.incLoseCharValue = function(uid,cid,cb) {
 	});
 };
 
-GamesModel.calculateCurStreak = function(options, cb) {
-	var sql = 'INSERT INTO `games` (winningPlayerId, winningCharacterId, losingPlayerId, losingCharacterId, tournamentId, value) VALUES(?,?,?,?,?,?)',
-		params = [options.winPid, options.winXid, options.losePid, options.loseXid, options.tourneyId, options.value];
+GamesModel.incWinUsersStreak = function(uid,cb) {
+	var sql = 'UPDATE users SET curStreak = CASE WHEN curStreak < 0  THEN 1 ELSE curStreak+1 END WHERE id = ?',
+		params = [uid];
 
-	mysql.query('rw', sql, params, 'modules/games/games-model/calculateCurStreak', function(err, results){
-		if(err)return cb(err);
-		return cb(null,results.insertId)
+	mysql.query('rw', sql, params, 'modules/games/games-model/incWinUsersStreak', function(err, results){
+		return cb(err,results)
+	});
+};
+
+GamesModel.decLossUsersStreak = function(uid,cb) {
+	var sql = 'UPDATE users SET curStreak = CASE WHEN curStreak > 0 THEN -1 ELSE curStreak-1 END WHERE id = ?',
+		params = [uid];
+
+	mysql.query('rw', sql, params, 'modules/games/games-model/decLossUsersStreak', function(err, results){
+		return cb(err,results)
+	});
+};
+
+GamesModel.updateWinnerScore = function(uid,value,cb) {
+	var sql = 'UPDATE users SET score = score + ? WHERE id = ?',
+		params = [value,uid];
+
+	mysql.query('rw', sql, params, 'modules/games/games-model/updateWinnerScore', function(err, results){
+		return cb(err,results)
+	});
+};
+
+// tid: integer tournamentId
+GamesModel.getTournamentScores = function(tid,cb) {
+	var sql = 'SELECT u.name, u.score, t.goal FROM tournaments t'
+			+ ' JOIN tournamentUsers tu ON tu.tournamentId = t.id'
+			+ ' JOIN users u ON u.id = tu.userId'
+			+ ' WHERE t.id = ? ',
+		params = [tid];
+
+	mysql.query('rw', sql, params, 'modules/games/games-model/updateWinnerScore', function(err, results){
+		return cb(err,results)
 	});
 };
 

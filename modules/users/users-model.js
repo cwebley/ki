@@ -71,6 +71,27 @@ UsersModel.insertOrResetCharVals = function(uid, cids, cb) {
 	});
 };
 
+// uids: array of all userIds
+UsersModel.resetUsersData = function(uids, cb) {
+	if(!uids.length) return cb(new Error('users-model/insertOrResetUsersData/no-uids-array'))
+
+	var sql = 'UPDATE users SET curStreak = 0 AND score = 0 WHERE id IN (?',
+		params = [];
+
+	for(var i=0;i<uids.length;i++){
+		if(i< uids.length-1){
+			sql += ',?'
+		}
+		params.push(uids[i])
+	}
+	sql += ')'
+
+
+	mysql.query('rw', sql, params, 'modules/games/games-model/resetUsersData', function(err, results){
+		return cb(err,results)
+	});
+};
+
 // rows: object {cid:1,tid:1,:uid:1,:value:1}
 UsersModel.insertSeeds = function(rows, cb) {
 	var sql = 'INSERT INTO seeds (tournamentId,userId,characterId,value) VALUES(?,?,?,?)',

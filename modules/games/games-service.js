@@ -42,7 +42,7 @@ GamesService.saveGame = function(options, cb) {
 
 	GamesService.getAndValidateIds(options,function(err,validated){
 		if(err)return cb(err)
-		if(!validated) return cb()
+		if(!validated) return cb() // no character value: seeding not done.
 
 		usersMdl.getCharacterValue(validated.winPid,validated.winXid,function(err,value){
 			if(err)return cb(err)
@@ -53,7 +53,7 @@ GamesService.saveGame = function(options, cb) {
 				if(err)return cb(err)
 				if(!gameId) return cb()
 
-				GamesService.updateCharData(validated,function(err,results){
+				GamesService.updateData(validated,function(err,results){
 					return cb(err,results)
 				});
 			});
@@ -61,7 +61,7 @@ GamesService.saveGame = function(options, cb) {
 	});
 };
 
-GamesService.updateCharData = function(options, cb) {
+GamesService.updateData = function(options, cb) {
 	var streakCalls = {},
 		updateCalls = [];
 	//increase streak
@@ -70,19 +70,31 @@ GamesService.updateCharData = function(options, cb) {
 
 	async.parallel(streakCalls,function(err,streaks){
 		if(err)return cb(err)
+		//fire
 		if(streaks.loser >= 3){
 			updateCalls.push(function(done){gamesMdl.iceDown(options.losePid,options.loseXid,done)})
 		}
 		if(streaks.winner === 2){
 			updateCalls.push(function(done){gamesMdl.fireUp(options.winPid,options.winXid,done)})
 		}
+		//char data
 		updateCalls.push(function(done){gamesMdl.incWinCharCurStreak(options.winPid,options.winXid,done)})
 		updateCalls.push(function(done){gamesMdl.resetLoseCharCurStreak(options.losePid,options.loseXid,done)})
 		updateCalls.push(function(done){gamesMdl.decWinCharValue(options.winPid,options.winXid,done)})
 		updateCalls.push(function(done){gamesMdl.incLoseCharValue(options.losePid,options.loseXid,done)})
 	
+		//user data
+		updateCalls.push(function(done){gamesMdl.incWinUsersStreak(options.winPid,done)})
+		updateCalls.push(function(done){gamesMdl.decLossUsersStreak(options.losePid,done)})
+		updateCalls.push(function(done){gamesMdl.updateWinnerScore(options.winPid,options.value,done)})
+
 		async.parallel(updateCalls,function(err,results){
-			return cb(err,results)
+			if(err)return cb(err)
+
+			gamesMdl.getTournamentScores(options.tourneyId,function(err,scores){
+				console.log("GET TOURNEY SCORES REZ: ", scores)
+				return cb(err,results)
+			})
 		});
 	});
 };

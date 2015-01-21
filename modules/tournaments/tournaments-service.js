@@ -34,22 +34,25 @@ tournamentsService.newTournament = function(options, cb) {
 		tourneyMdl.createTournament(options, function(err, tid){
 			if(err)return cb(err)
 
-			tourneyMdl.insertPlayers(tid,userIdRes,function(err,insertPlayerRes){
+			usersMdl.resetUsersData(userIdRes,function(err,usersDataRes){
 				if(err) return cb(err)
-					
-				var zeroCharCalls = [];
-				var generateZeroCharVals = function(tid,uid){
-					return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
-				}
-				for(var i=0; i<userIdRes.length; i++){
-					zeroCharCalls.push(generateZeroCharVals(tid, userIdRes[i]))
-				}
-				async.parallel(zeroCharCalls, function(err,results){
-					return cb(err,results)
+
+				tourneyMdl.insertPlayers(tid,userIdRes,function(err,insertPlayerRes){
+					if(err) return cb(err)
+						
+					var zeroCharCalls = [];
+					var generateZeroCharVals = function(tid,uid){
+						return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
+					}
+					for(var i=0; i<userIdRes.length; i++){
+						zeroCharCalls.push(generateZeroCharVals(tid, userIdRes[i]))
+					}
+					async.parallel(zeroCharCalls, function(err,results){
+						return cb(err,results)
+					});
 				});
 			});
 		});
-
 	});
 };
 
