@@ -21,11 +21,9 @@ TourneyInterface.newTournament = function(options, cb) {
 
 TourneyInterface.getAllTourneyStats = function(tourneyName, cb) {
 	tourneySvc.getUsersLevelStats(tourneyName, function(err,tournamentData){
-		console.log("AFTER USERS: ", err, tournamentData)
 		if(err)return cb(err)
 
 		async.map(tournamentData,function(tournamentData,done){tourneySvc.getCharacterLevelStats(tournamentData.name,done)},function(err,charData){
-			console.log("ASYC CB: ", err, charData)
 			if(err) return cb(err)
 			for(var i=0;i<tournamentData.length;i++){
 				tournamentData[i].characters = charData[i]

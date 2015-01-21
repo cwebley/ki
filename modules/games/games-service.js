@@ -53,8 +53,8 @@ GamesService.saveGame = function(options, cb) {
 				if(err)return cb(err)
 				if(!gameId) return cb()
 
-				GamesService.updateData(validated,function(err,results){
-					return cb(err,results)
+				GamesService.updateData(validated,function(err,results,endTournament){
+					return cb(err,results,endTournament)
 				});
 			});
 		});
@@ -92,8 +92,13 @@ GamesService.updateData = function(options, cb) {
 			if(err)return cb(err)
 
 			gamesMdl.getTournamentScores(options.tourneyId,function(err,scores){
-				console.log("GET TOURNEY SCORES REZ: ", scores)
-				return cb(err,results)
+				var endTournament = false;
+				if(err)return cb(err)
+				for(var i =0; i<scores.length; i++){
+					if(scores[i].score >= scores[i].goal) endTournament = true
+				}
+			
+				return cb(null,results,endTournament)
 			})
 		});
 	});

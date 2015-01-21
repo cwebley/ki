@@ -3,9 +3,18 @@ var _ = require('lodash'),
 
 var GamesInterface = {};
 
+GamesInterface.endDto = function(endTournament) {
+	var dto =  {
+		finished:!!endTournament
+	}
+	return dto
+}
+
 GamesInterface.submitGame = function(options, cb) {
-	gamesSvc.saveGame(options, function(err, results){
-		return cb(err,results)
+	gamesSvc.saveGame(options, function(err, results, endTournament){
+		if(err)return cb(err)
+		if(!results) return cb()
+		return cb(null,GamesInterface.endDto(endTournament))
 	});
 };
 
