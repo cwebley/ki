@@ -7,21 +7,22 @@ var gameController = {};
 //TODO dto this stuff?
 var getGameOpts = function(req){
 	var opts = {
-		winningPlayer: req.body.winningPlayer,
-		winningCharacter: req.body.winningCharacter,
-		losingPlayer: req.body.losingPlayer,
-		losingCharacter: req.body.losingCharacter,
-		tournament: req.body.tournament, // TODO make this a header or cookie or something?,
-		supreme: !!req.body.supreme
+		winningPlayer: req.body.winningPlayer || req.query.winningPlayer,
+		winningCharacter: req.body.winningCharacter || req.query.winningCharacter,
+		losingPlayer: req.body.losingPlayer || req.query.losingPlayer,
+		losingCharacter: req.body.losingCharacter || req.query.losingCharacter,
+		tournament: req.body.tournament || req.query.tournament, // TODO make this a header or cookie or something?,
+		supreme: !!req.body.supreme || !!req.query.supreme
 	}
 	return opts
 }
 
 gameController.put = function(req, res){
-	games.submitGame(getGameOpts(req), function(err,dto){
+	var opts = getGameOpts(req)
+	games.submitGame(opts, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
 		if(!dto) return res.status(400).send({success:false,reason:'invalid-inputs'})
-		res.send(dto)
+		res.redirect('localhost:3000/tournament/stats?name='+opts.tournament)
 	})
 }
 
@@ -49,7 +50,7 @@ router.get('/', function(req, res) {
   res.send('games hub, respond with resource');
 });
 
-router.put('/submit', 
+router.get('/submit', 
  	gameController.put
 );
 

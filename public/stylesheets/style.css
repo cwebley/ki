@@ -14,6 +14,13 @@ a { color: #C2575B; text-decoration: none; }
 
 a:hover { color: #F76F76; }
 
+.rightArea {
+	width: 25%;
+	background: white;
+	padding: 10px;
+	float:right;
+}
+
 #wrapper {
 	background-color: orange;
 }

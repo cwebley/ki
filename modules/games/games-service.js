@@ -45,6 +45,7 @@ GamesService.saveGame = function(options, cb) {
 		if(!validated) return cb() // no character value: seeding not done.
 
 		usersMdl.getCharacterValue(validated.winPid,validated.winXid,function(err,value){
+
 			if(err)return cb(err)
 			if(!value)return cb()
 			validated.value = value
@@ -71,6 +72,7 @@ GamesService.updateData = function(options, cb) {
 	streakCalls.loseXter = function(done){usersMdl.getCharacterStreak(options.losePid,options.loseXid,done)}
 
 	async.parallel(streakCalls,function(err,streaks){
+
 		if(err)return cb(err)
 		//fire
 		if(streaks.loseXter >= 3){
@@ -104,8 +106,6 @@ GamesService.updateData = function(options, cb) {
 
 GamesService.checkAndUpdateTournament = function(options, cb) {
 	gamesMdl.getTournamentScores(options.tourneyId,function(err,scores){
-		console.log("GET SCORES REZ: ", err, scores)
-		console.log("SCOERS.lENGTH ", scores.length)
 		if(err)return cb(err)
 
 		var calls = [],

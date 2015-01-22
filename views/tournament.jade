@@ -1,49 +1,52 @@
 extends layout
 
 block content
-	h1= title
 
-	div(style="width: 100%; float: left; margin: 1em 0;")
-		if !users.length	
-			h3.card No data
-		else
-			div.card(style="width: 50%; float: left;")
-				h2.highlight Player Data
-				if users.length
-					table
-						thead(style="text-transform: capitalize;")
+	div.card(style="width: 30%; float: right;")
+		h2.highlight Player Data
+		if users.length
+			table
+				thead(style="text-transform: capitalize;")
+					tr
+						th(style="padding: 2px 20px 2px 0") User
+						th(style="padding: 2px 20px 2px 0") Score
+						th(style="padding: 2px 20px 2px 0") Wins
+						th(style="padding: 2px 20px 2px 0") Losses
+						th(style="padding: 2px 20px 2px 0") Strea
+				tbody
+					for u in users
+						tr
+							td(style="padding: 2px 20px 2px 0") #{u.name}
+							td(style="padding: 2px 20px 2px 0") #{u.score}
+							td(style="padding: 2px 20px 2px 0") #{u.gameWins}
+							td(style="padding: 2px 20px 2px 0") #{u.gameLosses}
+							td(style="padding: 2px 20px 2px 0") #{u.curStreak}	
+						
+		h2.highlight Character Data
+		for u in users
+				table
+					thead(style="text-transform: capitalize;")
+						tr
+							th(style="padding: 2px 20px 2px 0") User
+							th(style="padding: 2px 20px 2px 0") Character
+							th(style="padding: 2px 20px 2px 0") streak
+							th(style="padding: 2px 20px 2px 0") Value
+					tbody
+						for c in u.characters
 							tr
-								th(style="padding: 2px 20px 2px 0") User
-								th(style="padding: 2px 20px 2px 0") Score
-								th(style="padding: 2px 20px 2px 0") Wins
-								th(style="padding: 2px 20px 2px 0") Losses
-								th(style="padding: 2px 20px 2px 0") Streak
+								td(style="padding: 2px 20px 2px 0") #{u.name}
+								td(style="padding: 2px 20px 2px 0") #{c.name}
+								td(style="padding: 2px 20px 2px 0") #{c.curStreak}
+								td(style="padding: 2px 20px 2px 0") #{c.value}
 
-						tbody
-							for u in users
-								tr
-									td(style="padding: 2px 20px 2px 0") #{u.name}
-									td(style="padding: 2px 20px 2px 0") #{u.score}
-									td(style="padding: 2px 20px 2px 0") #{u.gameWins}
-									td(style="padding: 2px 20px 2px 0") #{u.gameLosses}
-									td(style="padding: 2px 20px 2px 0") #{u.curStreak}	
-								
-				h2.highlight Character Data
-				for u in users
-						table
-							thead(style="text-transform: capitalize;")
-								tr
-									th(style="padding: 2px 20px 2px 0") User
-									th(style="padding: 2px 20px 2px 0") Xter
-									th(style="padding: 2px 20px 2px 0") streak
-									th(style="padding: 2px 20px 2px 0") Value
-	
-							tbody
-								for c in u.characters
-									tr
-										td(style="padding: 2px 20px 2px 0") #{u.name}
-										td(style="padding: 2px 20px 2px 0") #{c.name}
-										td(style="padding: 2px 20px 2px 0") #{c.curStreak}
-										td(style="padding: 2px 20px 2px 0") #{c.value}
-	
-		
+	form(action='http://localhost:3000/games/submit',method='put')
+		p: input(input type="text", name='winningPlayer', value="g")
+		p: input(input type="text", name='winningCharacter', value="orchid")
+		p: input(input type="text", name='losingPlayer', value="bj")
+		p: input(input type="text", name='losingCharacter', value="kanra")
+		p: input(input type="text", name='tournament', value="test")
+		p: input(input type="text", name='supreme', value="true")
+		p: input(type='submit', value="Submit")
+
+
+							
