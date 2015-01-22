@@ -4,11 +4,11 @@ var _ = require('lodash'),
 
 var TourneyInterface = {};
 
-// data: array of usersData
+// data: array of user-data objects
 TourneyInterface.allStatsDto = function(data,cb){
-	var dto = {_embedded: {users: []}};
+	var dto = {users: []};
 	for (var i=0;i<data.length;i++){
-		dto._embedded.users.push(data[i])
+		dto.users.push(data[i])
 	}
 	return dto
 };
@@ -28,6 +28,7 @@ TourneyInterface.getAllTourneyStats = function(tourneyName, cb) {
 			for(var i=0;i<tournamentData.length;i++){
 				tournamentData[i].characters = charData[i]
 			}
+			// return cb(err,tournamentData)
 			return cb(err,TourneyInterface.allStatsDto(tournamentData))
 		});
 	});

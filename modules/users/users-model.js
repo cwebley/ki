@@ -142,17 +142,26 @@ UsersModel.updateCharacterValue = function(rows, cb) {
 	});
 };
 
-UsersModel.getCharacterStreak = function(pid,cid,cb) {
+UsersModel.getCharacterStreak = function(uid,cid,cb) {
 	var sql = 'SELECT curStreak FROM charactersData WHERE userId = ? AND characterId = ?',
-		params = [pid,cid];
+		params = [uid,cid];
 
 	mysql.query('rw', sql, params, 'modules/users/users-model/getCharacterStreak', function(err, results){
 		if(err) return cb(err)
 		if(!results || !results.length) return cb()
-		return cb(null, results[0].curStreak);
+		return cb(null, results[0]);
 	});
 };
 
+UsersModel.getUserStreak = function(uid,cb) {
+	var sql = 'SELECT curStreak FROM users WHERE id = ?',
+		params = [uid];
 
+	mysql.query('rw', sql, params, 'modules/users/users-model/getCharacterStreak', function(err, results){
+		if(err) return cb(err)
+		if(!results || !results.length) return cb()
+		return cb(null, results[0]);
+	});
+};
 
 module.exports = UsersModel;

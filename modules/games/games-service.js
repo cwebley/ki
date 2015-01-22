@@ -48,6 +48,7 @@ GamesService.saveGame = function(options, cb) {
 			if(err)return cb(err)
 			if(!value)return cb()
 			validated.value = value
+			validated.supreme = options.supreme
 
 			gamesMdl.insertGameResult(validated, function(err,gameId){
 				if(err)return cb(err)
@@ -64,17 +65,18 @@ GamesService.saveGame = function(options, cb) {
 GamesService.updateData = function(options, cb) {
 	var streakCalls = {},
 		updateCalls = [];
-	//increase streak
-	streakCalls.winner = function(done){usersMdl.getCharacterStreak(options.winPid,options.winXid,done)}
-	streakCalls.loser = function(done){usersMdl.getCharacterStreak(options.losePid,options.loseXid,done)}
+		
+	//retrieve streaks to evaluate fire/ice
+	streakCalls.winXter = function(done){usersMdl.getCharacterStreak(options.winPid,options.winXid,done)}
+	streakCalls.loseXter = function(done){usersMdl.getCharacterStreak(options.losePid,options.loseXid,done)}
 
 	async.parallel(streakCalls,function(err,streaks){
 		if(err)return cb(err)
 		//fire
-		if(streaks.loser >= 3){
+		if(streaks.loseXter >= 3){
 			updateCalls.push(function(done){gamesMdl.iceDown(options.losePid,options.loseXid,done)})
 		}
-		if(streaks.winner === 2){
+		if(streaks.winXter === 2){
 			updateCalls.push(function(done){gamesMdl.fireUp(options.winPid,options.winXid,done)})
 		}
 		//char data
@@ -86,21 +88,47 @@ GamesService.updateData = function(options, cb) {
 		//user data
 		updateCalls.push(function(done){gamesMdl.incWinUsersStreak(options.winPid,done)})
 		updateCalls.push(function(done){gamesMdl.decLossUsersStreak(options.losePid,done)})
+		updateCalls.push(function(done){gamesMdl.incWinUsersGames(options.winPid,done)})
+		updateCalls.push(function(done){gamesMdl.decLossUsersGames(options.losePid,done)})
 		updateCalls.push(function(done){gamesMdl.updateWinnerScore(options.winPid,options.value,done)})
 
 		async.parallel(updateCalls,function(err,results){
 			if(err)return cb(err)
 
-			gamesMdl.getTournamentScores(options.tourneyId,function(err,scores){
-				var endTournament = false;
-				if(err)return cb(err)
-				for(var i =0; i<scores.length; i++){
-					if(scores[i].score >= scores[i].goal) endTournament = true
-				}
-			
-				return cb(null,results,endTournament)
+			GamesService.checkAndUpdateTournament(options,function(err,endTournament){
+				return cb(err,results,endTournament)
 			})
 		});
 	});
 };
+
+GamesService.checkAndUpdateTournament = function(options, cb) {
+	gamesMdl.getTournamentScores(options.tourneyId,function(err,scores){
+		console.log("GET SCORES REZ: ", err, scores)
+		console.log("SCOERS.lENGTH ", scores.length)
+		if(err)return cb(err)
+
+		var calls = [],
+		endTournament = false;
+
+		var generateRecordScore = function(tid,uid,score){
+			return function(done){tourneyMdl.recordFinalScore(tid,uid,score,done)}
+		}
+
+		// works because scores sorted score DESC
+		if(scores[0].score >= scores[0].goal) {
+			endTournament = true
+			calls.push(function(done){tourneyMdl.recordChampion(options.tourneyId,scores[0].userId,done)})
+			for(var i=0; i<scores.length; i++){
+				calls.push(generateRecordScore(options.tourneyId,scores[i].userId,scores[i].score))
+			}
+		}
+		if(!calls.length) return cb(null,endTournament)
+		
+		async.parallel(calls,function(err,results){
+			return cb(err,endTournament)
+		});
+	});
+};
+
 module.exports = GamesService;

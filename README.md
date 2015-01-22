@@ -5,13 +5,13 @@ the tournament of champions
 
 TODO: 
 
---Save off all curls into a file so i can rerun them with db changes in future
+--Save off all curls into a file so i can rerun them with db changes in future?
 
--Setup mysql real db/ user. secondary db for testing?
+--Setup mysql real db/ user. secondary db for testing?
 
 --update wins/losses on game submission
 
---update charactersData streaks+values after gamesvc/saveGame
+--update tourney results upon tourney over
 
 --End tourney/save final totals upon reaching goal
 
@@ -22,7 +22,6 @@ TODO:
 --sure things? 6-1 matchups or better?
 
 --set up web-server, or heroku or something
-
 
 -dtos in routes? dto.number?
 
@@ -69,11 +68,32 @@ character-overall-stats
 	
 powerups: private or public // frequency/interactions of these need to be controlled
 	peek/ reorder top 3 for each // only 1 player at a time here
+		{g:[spinal,riptor,orchid,tj],bj:[wulf,wulf,kanra,thunder]}
+		get,check power avail,get 4 and serve above, use pwr. put pwr/peek accept above, must match correctly
+
+
 	double/triple probability of certain fighter for 10-20 matches  // needs to be subtle, possible to hide fire guys this way
+
+
 	choose opponent this round //with info of who you would have faced
+		check pwr avail, decr, serve matchup dto, kind of honor system without a game submit double-checker in place
+
 	rematch on loss (first loss doesnt count value, but still resets streak?)
+		check pwr avail, getUpcoming(current matchup), value = 0 submit game route, decr pwr
+
+
 	reseed opponents characters
-	subtract 3-5 total points from opponents values
+
+
+	subtract 4 total points from opponents values
+		put {bj:{jago:2,glacius:1,wulf:1}},
+		check pwr avail, 
+		validate names,
+		check points add to 4,
+		decr from charData.value
+		decr pwr
+
+
 	---
 	ice opponent
 	best of 3 against opponent of your choice (or top streaker?) (streaks count here? values count here?) // strictly better than rematch? weird interaction with rivals?
@@ -102,7 +122,5 @@ achievements? milestones not unique to one tourney:
 	highest streak with a character
 	highest player streak
 
-
-
-how to earn powerups?
-
+history table for each player? whats the best way to track this?
+	id, uid-cid-tid, value, change, eventType, gameId

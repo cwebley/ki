@@ -43,18 +43,16 @@ CREATE TABLE `tournaments` (
 	`name` varchar(255) NOT NULL,
 	`goal` int(11) NOT NULL,
 	`championId` int(11),
-	`winningScore` int(11),
-	`losingScore` int(11),
 	`time` timestamp DEFAULT current_timestamp,
 	UNIQUE KEY `name` (`name`),
 	FOREIGN KEY (`championId`) REFERENCES `users`(`id`)
-
 );
 
 CREATE TABLE `tournamentUsers` (
 	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`tournamentId` int(11) NOT NULL,
 	`userId` int(11) NOT NULL,
+	`finalScore` int(11),
 	UNIQUE KEY `tournamentPlayer` (`tournamentId`,`userId`),
 	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`),
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`)

@@ -9,9 +9,27 @@ TournamentsModel.createTournament = function(options,cb) {
 	var sql = 'INSERT INTO `tournaments` (name,goal) VALUES(?,?)',
 		params = [options.name, options.goal];
 
-	mysql.query('rw', sql, params, 'modules/games/tournaments-model/createTournament', function(err, results){
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/createTournament', function(err, results){
 		if(err) return cb(err);
 		return cb(null, results.insertId);
+	});
+};
+
+TournamentsModel.recordChampion = function(tid,uid,cb) {
+	var sql = 'UPDATE tournaments SET championId = ? WHERE id = ?',
+		params = [uid,tid];
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/recordChampion', function(err, results){
+		return cb(err,results)
+	});
+};
+
+TournamentsModel.recordFinalScore = function(tid,uid,score,cb) {
+	var sql = 'UPDATE tournamentUsers SET finalScore = ? WHERE tournamentId = ? AND userId = ?',
+		params = [score,tid,uid];
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/recordFinalScores', function(err, results){
+		return cb(err,results)
 	});
 };
 
@@ -19,7 +37,7 @@ TournamentsModel.getTourneyId = function(tourneyName, cb) {
 	var sql = 'SELECT id FROM tournaments WHERE name = ?',
 		params = [tourneyName];
 
-	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getTourneyId', function(err, results){
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getTourneyId', function(err, results){
 		if(err) return cb(err)
 		if(!results || !results.length) return cb()
 		return cb(null, results[0].id);
@@ -45,7 +63,7 @@ TournamentsModel.insertPlayers = function(tid, userIds, cb) {
 		params.push(userIds[i])
 	}
 
-	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getPlayers', function(err, results){
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getPlayers', function(err, results){
 		return cb(err,results)
 	});
 };
@@ -54,7 +72,7 @@ TournamentsModel.getPlayers = function(tourneyName, cb) {
 	var sql = 'SELECT tu.userId FROM tournamentUsers tu JOIN tournaments t ON t.id = tu.tournamentId WHERE t.name = ?'
 		params = [tourneyName];
 
-	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getPlayers', function(err, results){
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getPlayers', function(err, results){
 		if (err) return cb(err)
 		return cb(null,_.pluck(results, 'userId'))
 	});
@@ -68,7 +86,7 @@ TournamentsModel.getStats = function(tourneyName, cb) {
 			+ ' ORDER BY u.score DESC'
 		params = [tourneyName];
 
-	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getStats', function(err, results){
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getStats', function(err, results){
 		if (err) return cb(err)
 		return cb(null,results)
 	});
@@ -82,7 +100,7 @@ TournamentsModel.getCharacterStats = function(userName, cb) {
 			+ ' ORDER BY cd.value ASC'
 		params = [userName];
 
-	mysql.query('rw', sql, params, 'modules/games/tournaments-model/getCharacterStats', function(err, results){
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getCharacterStats', function(err, results){
 		if (err) return cb(err)
 		return cb(null,results)
 	});

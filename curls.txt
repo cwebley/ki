@@ -1,4 +1,4 @@
-curl -ik -XPUT 'localhost:3000/tournaments/new' -d '{"name":"test tourney","goal":100,"players":["g","bj"]}' -H "Content-Type: application/json"
+curl -ik -XPUT 'localhost:3000/tournaments/new' -d '{"name":"test tourney","goal":10,"players":["g","bj"]}' -H "Content-Type: application/json"
 
 curl -ik -XPUT 'localhost:3000/users/seed/g' -d '{"name":"test tourney","seeds":{"jago":1,"orchid":2,"spinal":3,"fulgore":4,"glacius":5,"sadira":6,"thunder":7,"wulf":8,"tj":9,"maya":10,"kanra":11,"riptor":12,"omen":13}}' -H "Content-Type: application/json"
 

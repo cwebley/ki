@@ -29,10 +29,11 @@ tourneyController.get = function(req, res){
 	var name = req.query.name || req.body.name
 	if(!name) return res.status(400).send({success:false,reason:'no-name'})
 
-	tournaments.getAllTourneyStats(name, function(err,results){
+	tournaments.getAllTourneyStats(name, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
-		if(!results) return res.status(404).send({success:false,reason:'not-found'})
-		res.send(results)
+		if(!dto) return res.status(404).send({success:false,reason:'not-found'})
+		dto.title = name
+		res.render('tournament',dto)
 	})
 }
 

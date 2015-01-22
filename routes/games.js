@@ -11,7 +11,8 @@ var getGameOpts = function(req){
 		winningCharacter: req.body.winningCharacter,
 		losingPlayer: req.body.losingPlayer,
 		losingCharacter: req.body.losingCharacter,
-		tournament: req.body.tournament // TODO make this a header or cookie or something?
+		tournament: req.body.tournament, // TODO make this a header or cookie or something?,
+		supreme: !!req.body.supreme
 	}
 	return opts
 }
