@@ -72,13 +72,12 @@ GamesService.updateData = function(options, cb) {
 	streakCalls.loseXter = function(done){usersMdl.getCharacterStreak(options.losePid,options.loseXid,done)}
 
 	async.parallel(streakCalls,function(err,streaks){
-
 		if(err)return cb(err)
 		//fire
-		if(streaks.loseXter >= 3){
+		if(streaks.loseXter.curStreak >= 3){
 			updateCalls.push(function(done){gamesMdl.iceDown(options.losePid,options.loseXid,done)})
 		}
-		if(streaks.winXter === 2){
+		if(streaks.winXter.curStreak === 2){
 			updateCalls.push(function(done){gamesMdl.fireUp(options.winPid,options.winXid,done)})
 		}
 		//char data
