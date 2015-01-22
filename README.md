@@ -9,14 +9,6 @@ TODO:
 
 --Setup mysql real db/ user. secondary db for testing?
 
---update wins/losses on game submission
-
---update tourney results upon tourney over
-
---End tourney/save final totals upon reaching goal
-
---accept supreme bool as games data
-
 --calculate rivals on startup? Redis? in memory? previous 5 or 7 games?
 
 --sure things? 6-1 matchups or better?
@@ -27,11 +19,12 @@ TODO:
 
 -register and login
 
--output basic stats: current record, points, etc
-
 -undo button
 
--built in randomizer
+-UPCOMING package
+	on tourney start create and populate array of 20 games per player in upcoming obj
+	in tourney stats page? or after game return this?
+	
 
 -imminent victory calculator for next 3 games
 
@@ -47,25 +40,26 @@ TODO:
 
 -rivals = defaults then +/- 1 game in last 7 meetings
 
--stats route to return a players best character in certain categories. accept timestamp query or tourney name"
-	how many points fire really netted you
-
+-stats route to return a players best character in certain categories. accept timestamp query or tourney name
+	how many points fire really netted you? 
+	this is not the easiest question to ask with the current data.
 
 stats not accounted for:
-	streaks
 	teams
 	rivalries
+	powerups
 	most dangerous matchup?
 
 fighterHistory // how is he worth 17 points? breakdown of each incr/decr
+	history table?
 
 ^^^ 
-user-stats(character curStreaks, player streaks, biggest wins, worst losses, recentHistory) 
-user-overall-stats
+user-stats/ character-stats(character curStreaks, player streaks, biggest wins, worst losses, recentHistory) 
+	Biggest wins list!
 
-character-stats(history, streaks, biggest wins, worst losses, rivals)
-character-overall-stats
-	
+user-overall-stats
+	spanning multiple tourneys, or over a given data range
+
 powerups: private or public // frequency/interactions of these need to be controlled
 	peek/ reorder top 3 for each // only 1 player at a time here
 		{g:[spinal,riptor,orchid,tj],bj:[wulf,wulf,kanra,thunder]}
@@ -124,3 +118,4 @@ achievements? milestones not unique to one tourney:
 
 history table for each player? whats the best way to track this?
 	id, uid-cid-tid, value, change, eventType, gameId
+or store this stuff in redis?

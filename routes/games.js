@@ -17,7 +17,7 @@ var getGameOpts = function(req){
 	return opts
 }
 
-gameController.put = function(req, res){
+gameController.sumitGame = function(req, res){
 	var opts = getGameOpts(req)
 	games.submitGame(opts, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
@@ -51,7 +51,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/submit', 
- 	gameController.put
+ 	gameController.sumitGame
 );
 
 
