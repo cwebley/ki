@@ -1,12 +1,14 @@
 var _ = require('lodash'),
-	async = require('async')
+	async = require('async'),
+	upcoming = require('../upcoming'),
 	tourneySvc = require('./tournaments-service');
 
 var TourneyInterface = {};
 
 // data: array of user-data objects
-TourneyInterface.allStatsDto = function(data,cb){
-	var dto = {users: []};
+TourneyInterface.allStatsDto = function(data,nextMatch){
+	var dto = {users: [],next: nextMatch};
+
 	for (var i=0;i<data.length;i++){
 		dto.users.push(data[i])
 	}
@@ -19,7 +21,9 @@ TourneyInterface.newTournament = function(options, cb) {
 	});
 };
 
-TourneyInterface.getAllTourneyStats = function(tourneyName, cb) {
+TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
+
+	var next = upcoming.getNext(peek)
 	tourneySvc.getUsersLevelStats(tourneyName, function(err,tournamentData){
 		if(err)return cb(err)
 
@@ -28,8 +32,7 @@ TourneyInterface.getAllTourneyStats = function(tourneyName, cb) {
 			for(var i=0;i<tournamentData.length;i++){
 				tournamentData[i].characters = charData[i]
 			}
-			// return cb(err,tournamentData)
-			return cb(err,TourneyInterface.allStatsDto(tournamentData))
+			return cb(err,TourneyInterface.allStatsDto(tournamentData, next))
 		});
 	});
 };

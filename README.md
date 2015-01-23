@@ -5,6 +5,8 @@ the tournament of champions
 
 TODO: 
 
+--Spaces obviously don't work in tourney names...
+
 --Save off all curls into a file so i can rerun them with db changes in future?
 
 --Setup mysql real db/ user. secondary db for testing?
@@ -100,7 +102,8 @@ how to get powerups?
 	beat rival?
 	checkpoints
 
-secret wagers. need interactive front end for this
+secret wagers. need interactive front end for this.
+maybe these are challenges presented to you?
 	supreme
 	3 counterbreaks
 	streak of wins
@@ -119,3 +122,5 @@ achievements? milestones not unique to one tourney:
 history table for each player? whats the best way to track this?
 	id, uid-cid-tid, value, change, eventType, gameId
 or store this stuff in redis?
+
+

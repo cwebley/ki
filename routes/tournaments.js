@@ -27,15 +27,31 @@ tourneyController.put = function(req, res){
 
 tourneyController.get = function(req, res){
 	var name = req.query.name || req.body.name
+
+	var peek = (req.query.peek || req.body.peek) ? 4: 1
 	if(!name) return res.status(400).send({success:false,reason:'no-name'})
 
-	tournaments.getAllTourneyStats(name, function(err,dto){
+	tournaments.getAllTourneyStats(name,peek, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
 		if(!dto) return res.status(404).send({success:false,reason:'not-found'})
 		dto.title = name
 		res.render('tournament',dto)
 	})
 }
+
+// tourneyController.peekChange = function(req, res){
+// 	var name = req.query.name || req.body.name
+
+// 	var peek = (req.query.peek || req.body.peek) ? 4: 1
+// 	if(!name) return res.status(400).send({success:false,reason:'no-name'})
+
+// 	tournaments.getAllTourneyStats(name,peek, function(err,dto){
+// 		if(err) return res.status(500).send({success:false,err:err})
+// 		if(!dto) return res.status(404).send({success:false,reason:'not-found'})
+// 		dto.title = name
+// 		res.render('tournament',dto)
+// 	})
+// }
 
 router.get('/', function(req, res) {
   res.send('games hub, respond with resource');
@@ -49,4 +65,7 @@ router.get('/stats',
  	tourneyController.get
 );
 
+// router.get('/stats/peek', 
+//  	tourneyController.peekChange
+// );
 module.exports = router;

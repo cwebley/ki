@@ -2,8 +2,9 @@ extends layout
 
 block content
 
-	div.card(style="width: 30%; float: right;")
+	div(style="width: 30%; float: right;")
 		h2.highlight Player Data
+		li= JSON.stringify(next)
 		if users.length
 			table
 				thead(style="text-transform: capitalize;")
@@ -39,6 +40,7 @@ block content
 								td(style="padding: 2px 20px 2px 0") #{c.curStreak}
 								td(style="padding: 2px 20px 2px 0") #{c.value}
 	h1.highlight Submit Game
+		div.card(style="width: 33%; float: left")
 		form(action='http://localhost:3000/games/submit',method='get')
 			p: input(input type="text", name='winningPlayer', placeHolder="winningPlayer", value="")
 			p: input(input type="text", name='winningCharacter', placeHolder="winningCharacter", value="")

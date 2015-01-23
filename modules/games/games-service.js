@@ -4,6 +4,7 @@ var _ = require('lodash'),
 	tourneyMdl = require('../tournaments/tournaments-model'),
 	usersMdl = require('../users/users-model'),
 	constants = require('../constants'),
+	upcoming = require('../upcoming'),sub
 	mysql = require('../persistence').mysql;
 
 var GamesService = {};
@@ -40,9 +41,13 @@ GamesService.getAndValidateIds = function(options, cb) {
 
 GamesService.saveGame = function(options, cb) {
 
+
 	GamesService.getAndValidateIds(options,function(err,validated){
 		if(err)return cb(err)
 		if(!validated) return cb() // no character value: seeding not done.
+
+		upcoming.removeFirst()
+		upcoming.fill()
 
 		usersMdl.getCharacterValue(validated.winPid,validated.winXid,function(err,value){
 
@@ -73,7 +78,7 @@ GamesService.updateData = function(options, cb) {
 
 	async.parallel(streakCalls,function(err,streaks){
 		if(err)return cb(err)
-		//fire
+		//fire+ice
 		if(streaks.loseXter.curStreak >= 3){
 			updateCalls.push(function(done){gamesMdl.iceDown(options.losePid,options.loseXid,done)})
 		}
@@ -108,7 +113,7 @@ GamesService.checkAndUpdateTournament = function(options, cb) {
 		if(err)return cb(err)
 
 		var calls = [],
-		endTournament = false;
+			endTournament = false;
 
 		var generateRecordScore = function(tid,uid,score){
 			return function(done){tourneyMdl.recordFinalScore(tid,uid,score,done)}
