@@ -7,6 +7,10 @@ TODO:
 
 --Jade actions and links using http://localhost:3000
 
+--usernames/passwords no spaces?
+
+--passwords encrypted?
+
 --make sure usernames are valid upon login. middleware func. or smoething.
 
 --Spaces obviously don't work in tourney names...

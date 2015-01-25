@@ -22,6 +22,8 @@ INSERT INTO characters (name, season) VALUES
 CREATE TABLE `users` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
+	`password` varchar(255) NOT NULL,
+	`email` varchar(255),
 	`tournamentWins` int(11) NOT NULL DEFAULT 0,
 	`tournamentLosses` int(11) NOT NULL DEFAULT 0,
 	`gameWins` int(11) NOT NULL DEFAULT 0,
@@ -34,9 +36,9 @@ CREATE TABLE `users` (
 	PRIMARY KEY (`id`)
 );
 
-INSERT INTO users (name) VALUES
-	('g'),
-	('bj');
+-- INSERT INTO users (name,password) VALUES
+-- 	('g','foo'),
+-- 	('bj','foo');
 
 CREATE TABLE `tournaments` (
 	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,

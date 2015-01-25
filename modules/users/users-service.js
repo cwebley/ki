@@ -13,6 +13,17 @@ UsersService.updateCharByName = function(tid,uid,cName,value,cb){
 	});
 };
 
+UsersService.registerUser = function(options,cb){
+	usersMdl.getUserId(options.username,function(err,userId){
+		if(err)return cb(err)
+		if(userId) return cb() //user already exists, redirect to login page
+
+		usersMdl.createUser(options.username,options.password,options.email,function(err,results){
+			return cb(err,results)
+		});
+	});
+};
+
 UsersService.seedCharacters = function(options, cb) {
 	if(!options.characters) return cb()
 

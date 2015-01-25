@@ -2,9 +2,10 @@ extends layout
 
 block content
 	h1 Register New User
-	form(action='/users/register',method='put')
-		p: input(type='text', placeholder="Username")
-		p: input(type='password', placeholder="Password")
-		p: input(type='password', placeholder="Confirmation")
+	form(action='/users/register',method='post')
+		p: input(type='text', name='username', placeholder="Username")
+		p: input(type='password', name='password', placeholder="Password")
+		p: input(type='password', name='confirmation', placeholder="Confirmation")
+		p: input(type='text', name='email', placeholder="Email")
 		p: input(type='submit', value="Signup")
 
