@@ -73,4 +73,11 @@ tournamentsService.getCharacterLevelStats = function(userObjArray,cb){
 	});
 };
 
+tournamentsService.getTourneyList = function(cb){
+	tourneyMdl.getTourneyList(function(err, results){
+		if(err)return cb(err)
+		return cb(null,results);
+	});
+}
+
 module.exports = tournamentsService;

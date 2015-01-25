@@ -1,8 +1,14 @@
 var express = require('express'),
+	cookieParser = require('cookie-parser'),
+	session = require('cookie-session'),
 	tournaments = require('../modules/tournaments');
 
 
-var router = express.Router();
+var app = express();
+app.use(cookieParser())
+app.use(session({keys:['key1']}))
+app.use(express.static(__dirname + '/public'))
+
 var tourneyController = {};
 
 var getTourneyOpts = function(req){
@@ -26,46 +32,42 @@ tourneyController.put = function(req, res){
 }
 
 tourneyController.get = function(req, res){
-	var name = req.query.name || req.body.name
+	if(!req.session.username) return res.redirect('/')
 
+	var tourneyName = req.params.tourneyName
 	var peek = (req.query.peek || req.body.peek) ? 4: 1
-	if(!name) return res.status(400).send({success:false,reason:'no-name'})
 
-	tournaments.getAllTourneyStats(name,peek, function(err,dto){
+	tournaments.getAllTourneyStats(tourneyName,peek, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
-		if(!dto) return res.status(404).send({success:false,reason:'not-found'})
-		dto.title = name
+		if(!dto) {
+			return res.redirect('/tournaments')
+		}
+		dto.title = tourneyName
 		res.render('tournament',dto)
 	})
 }
 
-// tourneyController.peekChange = function(req, res){
-// 	var name = req.query.name || req.body.name
+tourneyController.getTourneyList = function(req, res){
+	if(!req.session.username) return res.redirect('/')
 
-// 	var peek = (req.query.peek || req.body.peek) ? 4: 1
-// 	if(!name) return res.status(400).send({success:false,reason:'no-name'})
+	tournaments.getTourneyList(function(err,dto){
+		if(err) return res.status(500).send({success:false,err:err})
+		dto.username = req.session.username
+		res.render('tournament-home',dto)
+	})
+}
 
-// 	tournaments.getAllTourneyStats(name,peek, function(err,dto){
-// 		if(err) return res.status(500).send({success:false,err:err})
-// 		if(!dto) return res.status(404).send({success:false,reason:'not-found'})
-// 		dto.title = name
-// 		res.render('tournament',dto)
-// 	})
-// }
 
-router.get('/', function(req, res) {
-  res.send('games hub, respond with resource');
-});
+app.get('/',
+  tourneyController.getTourneyList
+);
 
-router.put('/new', 
+app.put('/new', 
  	tourneyController.put
 );
 
-router.get('/stats', 
+app.get('/:tourneyName', 
  	tourneyController.get
 );
 
-// router.get('/stats/peek', 
-//  	tourneyController.peekChange
-// );
-module.exports = router;
+module.exports = app;

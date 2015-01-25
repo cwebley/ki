@@ -39,16 +39,16 @@ block content
 								td(style="padding: 2px 20px 2px 0") #{c.name}
 								td(style="padding: 2px 20px 2px 0") #{c.curStreak}
 								td(style="padding: 2px 20px 2px 0") #{c.value}
-	h1.highlight Submit Game
-		div.card(style="width: 33%; float: left")
-		form(action='http://localhost:3000/games/submit',method='get')
-			p: input(input type="text", name='winningPlayer', placeHolder="winningPlayer", value="")
-			p: input(input type="text", name='winningCharacter', placeHolder="winningCharacter", value="")
-			p: input(input type="text", name='losingPlayer', placeHolder="losingPlayer", value="")
-			p: input(input type="text", name='losingCharacter', placeHolder="losingCharacter", value="")
-			p: input(input type="text", name='tournament', placeHolder="tournament", value="")
-			p: input(input type="text", name='supreme', placeHolder="supreme", value="")
-			p: input(type='submit', value="Submit")
+	h1 Submit Game
+	div(style="width: 33%; float: left")
+	form(action='http://localhost:3000/games/submit',method='get')
+		p: input(input type="text", name='winningPlayer', placeHolder="winningPlayer", value="")
+		p: input(input type="text", name='winningCharacter', placeHolder="winningCharacter", value="")
+		p: input(input type="text", name='losingPlayer', placeHolder="losingPlayer", value="")
+		p: input(input type="text", name='losingCharacter', placeHolder="losingCharacter", value="")
+		p: input(input type="text", name='tournament', placeHolder="tournament", value="")
+		p: input(input type="text", name='supreme', placeHolder="supreme", value="")
+		p: input(type='submit', value="Submit")
 
 
 							

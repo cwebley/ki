@@ -27,6 +27,7 @@ CREATE TABLE `users` (
 	`gameWins` int(11) NOT NULL DEFAULT 0,
 	`gameLosses` int(11) NOT NULL DEFAULT 0,
 	`score` int(11) NOT NULL DEFAULT 0,
+	`powerUps` int(11) NOT NULL DEFAULT 0,
 	`curStreak` int(11) NOT NULL DEFAULT 0,
 	`tourneyBestStreak` int(11) NOT NULL DEFAULT 0,
 	`globalBestStreak` int(11) NOT NULL DEFAULT 0,
@@ -42,6 +43,7 @@ CREATE TABLE `tournaments` (
 	`name` varchar(255) NOT NULL,
 	`goal` int(11) NOT NULL,
 	`championId` int(11),
+	`active` bool DEFAULT true,
 	`time` timestamp DEFAULT current_timestamp,
 	UNIQUE KEY `name` (`name`),
 	FOREIGN KEY (`championId`) REFERENCES `users`(`id`)

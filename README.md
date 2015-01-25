@@ -5,7 +5,13 @@ the tournament of champions
 
 TODO: 
 
+--Jade actions and links using http://localhost:3000
+
+--make sure usernames are valid upon login. middleware func. or smoething.
+
 --Spaces obviously don't work in tourney names...
+
+--Surrender tournament button
 
 --Save off all curls into a file so i can rerun them with db changes in future?
 

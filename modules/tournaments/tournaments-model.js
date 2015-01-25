@@ -106,4 +106,13 @@ TournamentsModel.getCharacterStats = function(userName, cb) {
 	});
 };
 
+TournamentsModel.getTourneyList = function(cb) {
+	var sql = 'SELECT t.name tournamentName, t.goal, t.active, t.time, u.name champion FROM tournaments t LEFT JOIN users u ON t.championId = u.id'
+
+	mysql.query('rw', sql, [], 'modules/tournaments/tournaments-model/getTourneyList', function(err, results){
+		if(err) return cb(err)
+		return cb(null,results);
+	});
+};
+
 module.exports = TournamentsModel;

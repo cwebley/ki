@@ -1,18 +1,31 @@
 var express = require('express'),
+	cookieParser = require('cookie-parser'),
+	session = require('cookie-session'),
 	users = require('../modules/users'),
 	constants = require('../modules/constants');
 
 
-var router = express.Router();
+var app = module.exports = express();
+app.use(cookieParser())
+app.use(session({keys:['key1']}))
+app.use(express.static(__dirname + '/public'))
+
 var controller = {};
 
-controller.login = function(req, res){
-	var opts = {name: "Cameron"}
-	users.register(opts, function(err,results){
-		console.log("REZ : ", results)
-		res.render('login');
+var getUserOpts = function(req){
+	var opts = {
+		username: req.body.username,
+		password: req.body.password
+	}
+	return opts
+}
 
-	})
+controller.login = function(req, res)	{
+	if(req.body.username){
+		req.session.username = req.body.username
+		return res.redirect('/tournaments')
+	}
+	res.redirect('/')
 };
 
 controller.register = function(req, res){
@@ -51,24 +64,26 @@ controller.seed = function(req, res){
 	})
 };
 
-router.get('/', function(req, res) {
+app.get('/', function(req, res) {
   res.send('users hub, respond with a resource');
 });
 
-router.get('/login', 
+app.get('/login', 
  	controller.login
 );
-router.put('/login', 
+app.put('/login', 
  	controller.login
 );
-router.get('/register', 
+app.post('/login', 
+ 	controller.login
+);
+app.get('/register', 
  	controller.register
 );
-router.put('/register', 
+app.put('/register', 
  	controller.register
 );
-router.put('/seed/:username', 
+app.put('/seed/:username', 
  	controller.seed
 );
 
-module.exports = router;
