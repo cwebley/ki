@@ -1,6 +1,10 @@
-form(action='/users/register',method='put')
-	p: input(type='text', placeholder="Username")
-	p: input(type='password', placeholder="Password")
-	p: input(type='password', placeholder="Confirmation")
-	p: input(type='submit', value="Signup")
+extends layout
+
+block content
+	h1 Register New User
+	form(action='/users/register',method='put')
+		p: input(type='text', placeholder="Username")
+		p: input(type='password', placeholder="Password")
+		p: input(type='password', placeholder="Confirmation")
+		p: input(type='submit', value="Signup")
 
