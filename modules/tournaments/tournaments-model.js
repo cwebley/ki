@@ -16,7 +16,7 @@ TournamentsModel.createTournament = function(options,cb) {
 };
 
 TournamentsModel.recordChampion = function(tid,uid,cb) {
-	var sql = 'UPDATE tournaments SET championId = ? WHERE id = ?',
+	var sql = 'UPDATE tournaments SET championId = ?, active = 0 WHERE id = ?',
 		params = [uid,tid];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/recordChampion', function(err, results){
@@ -110,6 +110,26 @@ TournamentsModel.getTourneyList = function(cb) {
 	var sql = 'SELECT t.name tournamentName, t.goal, t.active, t.time, u.name champion FROM tournaments t LEFT JOIN users u ON t.championId = u.id'
 
 	mysql.query('rw', sql, [], 'modules/tournaments/tournaments-model/getTourneyList', function(err, results){
+		if(err) return cb(err)
+		return cb(null,results);
+	});
+};
+
+TournamentsModel.getTourneyInfo = function(name,cb) {
+	var sql = 'SELECT name, goal FROM tournaments WHERE name = ?',
+		params = [name]
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getTourneyInfo', function(err, results){
+		if(err) return cb(err)
+		return cb(null,results);
+	});
+};
+
+TournamentsModel.editTournament = function(name,goal,oldName,cb) {
+	var sql = 'UPDATE tournaments SET name = ?, active = 1, goal = ? WHERE name = ?',
+		params = [name, goal, oldName]
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/editTournament', function(err, results){
 		if(err) return cb(err)
 		return cb(null,results);
 	});

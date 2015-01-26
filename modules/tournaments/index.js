@@ -18,7 +18,6 @@ TourneyInterface.allStatsDto = function(data,nextMatch){
 
 // data: array of user-data objects
 TourneyInterface.listDto = function(data){
-	
 	return {tournaments: data}
 };
 
@@ -28,10 +27,23 @@ TourneyInterface.newTournament = function(options, cb) {
 	});
 };
 
+TourneyInterface.editTournament = function(options, cb) {
+	tourneySvc.editTournament(options, function(err, results){
+		return cb(err,results)
+	});
+};
+
 TourneyInterface.getTourneyList = function(cb) {
 	tourneySvc.getTourneyList(function(err,results){
 		if(err) return cb(err)
 		return cb(null,TourneyInterface.listDto(results))
+	});
+};
+
+TourneyInterface.getTourneyInfo = function(tourneyName,cb) {
+	tourneyMdl.getTourneyInfo(tourneyName,function(err,results){
+		if(err) return cb(err)
+		return cb(null,results)
 	});
 };
 

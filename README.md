@@ -14,7 +14,7 @@ TODO:
 --Surrender tournament button
 
 --Save off all curls into a file so i can rerun them with db changes in future?
-
+ 
 --Setup mysql real db/ user. secondary db for testing?
 
 --calculate rivals on startup? Redis? in memory? previous 5 or 7 games?

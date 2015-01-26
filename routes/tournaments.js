@@ -17,7 +17,8 @@ var getTourneyOpts = function(req){
 	var opts = {
 		name: req.body.name,
 		goal: dto.positive(req.body.goal),
-		players: [req.session.username,req.body.opponent]
+		players: (req.body.opponent)?[req.session.username,req.body.opponent]:[],
+		surrender: req.body.surrender || false
 	}
 	return opts
 }
@@ -64,6 +65,35 @@ tourneyController.get = function(req, res){
 	})
 }
 
+tourneyController.edit = function(req, res){
+	if(!req.session.username) return res.redirect('/')
+
+	var opts = getTourneyOpts(req)
+	opts.oldName = req.params.tourneyName
+
+	tournaments.editTournament(opts, function(err,d){
+		if(err) return res.status(500).send({success:false,err:err})
+		if(!d) {
+			return res.redirect('/tournaments')
+		}
+		d.title = opts.name
+		res.redirect('/tournaments/'+opts.name)
+	})
+}
+
+tourneyController.editTourneyForm = function(req, res){
+	if(!req.session.username) return res.redirect('/')
+	var tourneyName = req.params.tourneyName
+
+	tournaments.getTourneyInfo(tourneyName, function(err,results){
+		if(err) return res.status(500).send({success:false,err:err})
+		if(!results) return res.status(404).send({success:false,reason:"tournament-not-found"})
+		results.title = tourneyName
+		res.render('tournament-edit',results)
+	})
+}
+
+
 tourneyController.getTourneyList = function(req, res){
 	if(!req.session.username) return res.redirect('/')
 
@@ -89,6 +119,14 @@ app.post('/new',
 
 app.get('/:tourneyName', 
  	tourneyController.get
+);
+
+app.post('/:tourneyName/edit', 
+ 	tourneyController.edit
+);
+
+app.get('/:tourneyName/edit', 
+ 	tourneyController.editTourneyForm
 );
 
 module.exports = app;

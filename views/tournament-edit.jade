@@ -1,0 +1,13 @@
+extends layout
+
+block content
+	h1 Edit #{title}
+
+	form(action='/tournaments/#{title}/edit',method='post')
+		p: input(type='text', name='name', placeholder="new-title (no spaces)")
+		p: input(type='text', name='goal', placeholder="new-goal (ex: 150)")
+		p.confirm
+			label
+				input(type="checkbox", name="surrender")
+				| End this tournament. Current leader wins.
+		p: input(type='submit', value="Edit Tournament")

@@ -72,7 +72,7 @@ GamesModel.incLoseCharValue = function(uid,cid,cb) {
 };
 
 GamesModel.incWinUsersStreak = function(uid,cb) {
-	var sql = 'UPDATE users SET curStreak = CASE WHEN curStreak < 0  THEN 1 ELSE curStreak+1 END'
+	var sql = 'UPDATE users SET curStreak = CASE WHEN curStreak < 0 THEN 1 ELSE curStreak+1 END'
 			+ ', tourneyBestStreak = CASE WHEN curStreak > tourneyBestStreak THEN curStreak ELSE tourneyBestStreak END'
 			+ ', globalBestStreak = CASE WHEN curStreak > globalBestStreak THEN curStreak ELSE globalBestStreak END'
 			+' WHERE id = ?',

@@ -1,6 +1,7 @@
 var _ = require('lodash'),
 	async = require('async'),
 	usersMdl = require('../users/users-model'),
+	gamesMdl = require('../games/games-model'),
 	tourneyMdl = require('./tournaments-model'),
 	constants = require('../constants'),
 	upcoming = require('../upcoming'),
@@ -79,5 +80,46 @@ tournamentsService.getTourneyList = function(cb){
 		return cb(null,results);
 	});
 }
+
+tournamentsService.endTournament = function(options,cb){	
+	tourneyMdl.getTourneyId(options.name,function(err,tid){
+		if(err) return cb(err)
+
+		gamesMdl.getTournamentScores(tid,function(err,scores){
+			if(err)return cb(err)
+
+			var generateRecordScore = function(tid,uid,score){
+				return function(done){tourneyMdl.recordFinalScore(tid,uid,score,done)}
+			}
+
+			var calls = [];
+			if (scores && scores.length){
+				calls.push(function(done){tourneyMdl.recordChampion(tid,scores[0].userId,done)})
+			}
+			for(var i=0;i<scores.length;i++){
+				calls.push(generateRecordScore(tid,scores[i].userId,scores[i].score))
+			}
+			async.parallel(calls,function(err,results){
+				if(err) return cb(err)
+				return cb(null, results)
+			});
+		});
+	});
+};
+
+tournamentsService.editTournament = function(options,cb){
+	var calls = [];
+	calls.push(function(done){tourneyMdl.editTournament(options.name,options.goal,options.oldName,done)})
+
+	if(options.surrender) calls.push(function(done){tournamentsService.endTournament(options,done)})
+
+	async.series(calls,function(err,results){
+		if(err) return cb(err)
+		if(!results.affectedRows){
+			return cb()
+		}
+		return cb(null,results)
+	});
+};
 
 module.exports = tournamentsService;
