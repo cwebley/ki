@@ -15,6 +15,16 @@ UsersModel.getUserId = function(userName, cb) {
 	});
 };
 
+UsersModel.getUserList = function(omittedName, cb) {
+	var sql = 'SELECT name FROM users WHERE name != ?',
+		params = [omittedName];
+
+	mysql.query('rw', sql, params, 'modules/users/users-model/getUserList', function(err, results){
+		if(err) return cb(err);
+		return cb(null, results);
+	});
+};
+
 UsersModel.createUser = function(name,pass,email,cb) {
 	var sql = 'INSERT INTO users (name,password,email) VALUES (?,?,?)',
 		params = [name,pass,email];

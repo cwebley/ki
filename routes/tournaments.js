@@ -1,6 +1,8 @@
 var express = require('express'),
 	cookieParser = require('cookie-parser'),
 	session = require('cookie-session'),
+	users = require('../modules/users'),
+	dto = require('../modules/dto'),
 	tournaments = require('../modules/tournaments');
 
 
@@ -14,20 +16,35 @@ var tourneyController = {};
 var getTourneyOpts = function(req){
 	var opts = {
 		name: req.body.name,
-		goal: req.body.goal,
-		players: req.body.players
+		goal: dto.positive(req.body.goal),
+		players: [req.session.username,req.body.opponent]
 	}
 	return opts
 }
 
-tourneyController.put = function(req, res){
+
+tourneyController.newTourneyForm = function(req, res){
+	if(!req.session.username) return res.redirect('/')
+
+	users.getUserList(req.session.username, function(err,dto){
+		if(err) return res.status(500).send({success:false,err:err})
+		dto.username=req.session.username
+		res.render('create-tournament',dto)
+	})
+}
+
+tourneyController.postNewTourney = function(req, res){
+	if(!req.session.username) return res.redirect('/')
+
+	if(!req.body.opponent) res.status(400).send({success:false,reason:'no-opponent-specified'})
+
 	var opts = getTourneyOpts(req)
-	if(!opts.name || !opts.goal) return res.status(400).send({success:false,reason:'no-name-or-goal'})
-	if(!opts.players || !opts.players.length || opts.players.length != 2) return res.status(400).send({success:false,reason:'not-2-player'})
+	if(!opts.name) return res.status(400).send({success:false,reason:'no-tourney-name'})
+	if(!opts.goal) return res.status(400).send({success:false,reason:'no-tourney-goal'})
 
 	tournaments.newTournament(opts, function(err,results){
 		if(err) return res.status(500).send({success:false,err:err})
-		res.send({success:true})
+		res.redirect('/tournaments/' + opts.name)
 	})
 }
 
@@ -62,8 +79,12 @@ app.get('/',
   tourneyController.getTourneyList
 );
 
-app.put('/new', 
- 	tourneyController.put
+app.get('/new', 
+ 	tourneyController.newTourneyForm
+);
+
+app.post('/new', 
+ 	tourneyController.postNewTourney
 );
 
 app.get('/:tourneyName', 

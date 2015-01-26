@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	h1 Create New Tournament, #{username}
+
+	form(action='/tournaments/new',method='post')
+
+		label opponent
+		select(name="opponent", style="width: 200px;")
+			for u in users
+				option(value="#{u.name}") #{u.name}
+
+		p: input(type='text', name='name', placeholder="title (no spaces)")
+		p: input(type='text', name='goal', placeholder="goal (ex: 150)")
+		p: input(type='submit', value="Signup")

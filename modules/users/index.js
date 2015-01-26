@@ -6,6 +6,11 @@ var _ = require('lodash'),
 
 var UsersInterface = {};
 
+UsersInterface.userListDto = function(data){
+	if(!data || !data.length) data = [];
+	return {users:data}
+}
+
 UsersInterface.register = function(options, cb) {
 	usersSvc.registerUser(options,cb)
 };
@@ -16,6 +21,13 @@ UsersInterface.login = function(options, cb) {
 
 UsersInterface.seedCharacters = function(options, cb) {
 	usersSvc.seedCharacters(options, cb)
+};
+
+UsersInterface.getUserList = function(creatorsName, cb) {
+	usersMdl.getUserList(creatorsName, function(err,results){
+		if(err)return cb(err)
+		return cb(null,UsersInterface.userListDto(results))
+	});
 };
 
 
