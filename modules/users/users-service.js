@@ -34,7 +34,7 @@ UsersService.seedCharacters = function(options, cb) {
 		tourneyMdl.getTourneyId(options.tourneyName, function(err,tid){
 			if(err) return cb(err)
 			if(!tid) return cb()
-	
+
 			var calls = [];
 			var generateFunc = function(tid, uid, cName, cValue) {
 				return function(done) { UsersService.updateCharByName(tid,uid,cName,cValue,done) }
@@ -53,6 +53,17 @@ UsersService.seedCharacters = function(options, cb) {
 			});
 		});
 	});
+};
+
+UsersService.login = function(options, cb) {
+	usersMdl.verifyUser(options.username,options.password,function(err,uid){
+		if(err)return cb(err)
+		if(!uid)return cb()
+		usersMdl.getActiveSeedStatus(uid,function(err,seedResults){
+			if(err)return cb(err)
+			return cb(null, seedResults)
+		})
+	})
 };
 
 module.exports = UsersService;

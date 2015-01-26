@@ -55,6 +55,7 @@ CREATE TABLE `tournamentUsers` (
 	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`tournamentId` int(11) NOT NULL,
 	`userId` int(11) NOT NULL,
+	`seeded` bool DEFAULT false,
 	`finalScore` int(11),
 	UNIQUE KEY `tournamentPlayer` (`tournamentId`,`userId`),
 	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`),

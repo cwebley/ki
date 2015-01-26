@@ -49,7 +49,7 @@ TourneyInterface.getTourneyInfo = function(tourneyName,cb) {
 
 TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
 	// verify tourney name valid
-	tourneyMdl.getTourneyId(tourneyName,function(err,tourneyId){
+	tourneyMdl.getTourneyId(tourneyName,function(err,tourneyId,seeded){
 		if(err) return cb(err)
 		if(!tourneyId) return cb()
 

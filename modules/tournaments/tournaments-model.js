@@ -34,13 +34,13 @@ TournamentsModel.recordFinalScore = function(tid,uid,score,cb) {
 };
 
 TournamentsModel.getTourneyId = function(tourneyName, cb) {
-	var sql = 'SELECT id FROM tournaments WHERE name = ?',
+	var sql = 'SELECT id, seeded FROM tournaments WHERE name = ?',
 		params = [tourneyName];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getTourneyId', function(err, results){
 		if(err) return cb(err)
 		if(!results || !results.length) return cb()
-		return cb(null, results[0].id);
+		return cb(null, results[0].id, results[0].seeded);
 	});
 };
 

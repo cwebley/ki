@@ -11,8 +11,6 @@ TODO:
 
 --Spaces obviously don't work in tourney names...
 
---Surrender tournament button
-
 --Save off all curls into a file so i can rerun them with db changes in future?
  
 --Setup mysql real db/ user. secondary db for testing?
@@ -23,24 +21,13 @@ TODO:
 
 --set up web-server, or heroku or something
 
--dtos in routes? dto.number?
-
--register and login
-
 -undo button
-
--UPCOMING package
-	on tourney start create and populate array of 20 games per player in upcoming obj
-	in tourney stats page? or after game return this?
 	
-
 -imminent victory calculator for next 3 games
 
 -team support
 
 -multiplayer support
-
--update tourney goal? add 50? custom update? refresh winning predictions on update?
 
 -checkpoints: winning predictions? stat summary, best streaks, upcoming matches preview? update on wager stats?
 

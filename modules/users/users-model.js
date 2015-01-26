@@ -25,6 +25,19 @@ UsersModel.getUserList = function(omittedName, cb) {
 	});
 };
 
+UsersModel.getOpponentsNames = function(omittedName,tourneyName,cb) {
+	var sql = 'SELECT u.name FROM users u'
+			+ ' JOIN tournamentUsers tu ON tu.userId = u.id'
+			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
+			+ ' WHERE u.name != ? AND t.name = ?',
+		params = [omittedName,tourneyName];
+
+	mysql.query('rw', sql, params, 'modules/users/users-model/getOpponentsName', function(err, results){
+		if(err) return cb(err);
+		return cb(null, results);
+	});
+};
+
 UsersModel.createUser = function(name,pass,email,cb) {
 	var sql = 'INSERT INTO users (name,password,email) VALUES (?,?,?)',
 		params = [name,pass,email];
@@ -97,7 +110,7 @@ UsersModel.insertOrResetCharVals = function(uid, cids, cb) {
 		params.push(0)
 	}
 
-	mysql.query('rw', insert + values + onDup, params, 'modules/games/games-model/insertOrResetCharVals', function(err, results){
+	mysql.query('rw', insert + values + onDup, params, 'modules/users/users-model/insertOrResetCharVals', function(err, results){
 		return cb(err,results)
 	});
 };
@@ -118,7 +131,7 @@ UsersModel.resetUsersData = function(uids, cb) {
 	sql += ')'
 
 
-	mysql.query('rw', sql, params, 'modules/games/games-model/resetUsersData', function(err, results){
+	mysql.query('rw', sql, params, 'modules/users/users-model/resetUsersData', function(err, results){
 		return cb(err,results)
 	});
 };
@@ -139,7 +152,7 @@ UsersModel.insertSeeds = function(rows, cb) {
 		params.push(rows[i].value)
 	}
 
-	mysql.query('rw', sql+onDup, params, 'modules/games/games-model/insertSeeds', function(err, results){
+	mysql.query('rw', sql+onDup, params, 'modules/users/users-model/insertSeeds', function(err, results){
 		if(err)return cb(err)
 		if(!results) return cb()
 
@@ -154,9 +167,20 @@ UsersModel.insertSeeds = function(rows, cb) {
 			params.push(rows[i].cid)
 			params.push(rows[i].value)
 		}
-		mysql.query('rw', sql+onDup, params, 'modules/games/games-model/insertSeeds', function(err, results){
+		mysql.query('rw', sql+onDup, params, 'modules/users/users-model/insertSeeds', function(err, results){
 			return cb(err,results)
 		});
+	});
+};
+
+UsersModel.getActiveSeedStatus = function(uid, cb) {
+	var sql = 'SELECT t.id, t.name, tu.seeded FROM tournamentUsers tu'
+		+ ' JOIN tournaments t ON t.id = tu.tournamentId'
+		+ ' WHERE tu.userId = ? AND t.active = 1'
+
+	mysql.query('rw', sql, params, 'modules/users/users-model/getActiveSeedStatus', function(err, results){
+		if(err)return cb(err)
+		return cb(null, results)
 	});
 };
 

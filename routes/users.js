@@ -28,10 +28,12 @@ controller.login = function(req, res)	{
 	if(!opts.username)return res.redirect('/')
 	if(!opts.password)return res.redirect('/')
 
-	users.login(opts,function(err,results){
+	users.login(opts,function(err,dto){
+		console.log("LOGIN REZ: ", err, dto)
 		if(err) return res.status(500).send({success:false,reason:"internal-error",err:err})
-		if(!results) return res.status(400).send({success:false,reason:"user-not-found"})
+		if(!dto) return res.status(400).send({success:false,reason:"user-not-found"})
 		req.session.username = opts.username
+		req.session.seeded = dto.seeded
 		res.redirect('/tournaments');
 	});
 };
@@ -62,8 +64,8 @@ controller.register = function(req, res){
 
 var getSeedOpts = function(req){
 	var opts = {
-		username: req.params.username,
-		tourneyName: req.body.name,
+		username: req.body.username,
+		tourneyName: req.params.tourneyName,
 		characters: {}
 	}
 
@@ -75,15 +77,35 @@ var getSeedOpts = function(req){
 }
 
 controller.seed = function(req, res){
-	if(!req.body.name) return res.status(400).send({success:false,reason:"no-name-of-tourney"})
+	console.log("SEEED POST: ", req.body, req.body.seeds)
+	if(!req.session.username) return res.redirect('/')
+
+	if(!req.body.username) return res.status(400).send({success:false,reason:"no-opponent-name-for-seeding"})
 	if(!req.body.seeds) return res.status(400).send({success:false,reason:"no-seeds"})
 
 	var opts = getSeedOpts(req)
 
+	var verified = users.verifySeeds(opts.characters)
+	if(!verified) return res.status(400).send({success:false,reason:"character-seed-data-invalid"})
+
 	users.seedCharacters(opts, function(err,results){
 		if(err) return res.status(500).send({success:false,reason:"internal-error"})
 		if(!results) return res.status(404).send({success:false,reason:"user-or-tourney-not-found"})
-		return res.send({success: true});
+		req.session.seeded[opts.tourneyName] = true
+		return res.redirect('/tournaments/'+opts.tourneyName);
+	})
+};
+
+controller.getSeedForm = function(req, res){
+	if(!req.session.username) return res.redirect('/')
+
+	users.getOpponentsNames(req.session.username,req.params.tourneyName, function(err,dto){
+		if(err) return res.status(500).send({success:false,err:err})
+
+		dto.username=req.session.username
+		dto.characters = constants.characters
+		dto.title = req.params.tourneyName
+		res.render('tournament-seed',dto)
 	})
 };
 
@@ -106,7 +128,10 @@ app.get('/register',
 app.post('/register', 
  	controller.register
 );
-app.put('/seed/:username', 
+app.get('/:tourneyName/seed', 
+ 	controller.getSeedForm
+);
+app.post('/:tourneyName/seed', 
  	controller.seed
 );
 
