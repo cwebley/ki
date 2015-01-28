@@ -167,16 +167,49 @@ UsersModel.insertSeeds = function(rows, cb) {
 			params.push(rows[i].cid)
 			params.push(rows[i].value)
 		}
-		mysql.query('rw', sql+onDup, params, 'modules/users/users-model/insertSeeds', function(err, results){
-			return cb(err,results)
+		mysql.query('rw', sql+onDup, params, 'modules/users/users-model/insertSeeds:insert-characterData', function(err, results){
+			if(err) return cb(err)
+
+			// Update tournamentUsers seed status
+			sql = 'UPDATE tournamentUsers SET seeded = 1 WHERE tournamentId = ? AND userId = ?',
+			params = [rows[0].tid, rows[0].uid]
+
+			mysql.query('rw', sql, params, 'modules/users/users-model/insertSeeds:update-seed-status', function(err, results){
+				if(err) return cb(err)
+
+				// Update tournament seed status if appropriate
+				UsersModel.updateTournamentSeedStatus(rows[0].tid,cb)
+			});
+		});
+	});
+};
+
+UsersModel.updateTournamentSeedStatus = function(tid,cb) {
+	var sql = 'SELECT seeded FROM tournamentUsers WHERE tournamentId = ?'
+		params = [tid];
+
+	mysql.query('rw', sql, params, 'modules/users/users-model/updateTournamentSeedStatus:select-from-tu', function(err, results){
+		if(err)return cb(err)
+		if(!results || !results.length) return cb(new Error('no-results-for-seeded-in-tournamentUsers'))
+
+		for(var i=0;i<results.length;i++){
+			if(!results[i].seeded){
+				return cb(null,{seeded:false}) // seeding not complete
+			}
+		}
+
+		sql = 'UPDATE tournaments SET seeded = 1 WHERE id = ?'
+		mysql.query('rw', sql, params, 'modules/users/users-model/updateTournamentSeedStatus:update-touranments-seeded', function(err, results){
+			return cb(err,{seeded:true})
 		});
 	});
 };
 
 UsersModel.getActiveSeedStatus = function(uid, cb) {
 	var sql = 'SELECT t.id, t.name, tu.seeded FROM tournamentUsers tu'
-		+ ' JOIN tournaments t ON t.id = tu.tournamentId'
-		+ ' WHERE tu.userId = ? AND t.active = 1'
+		+ ' LEFT JOIN tournaments t ON t.id = tu.tournamentId'
+		+ ' WHERE tu.userId = ? AND t.active = 1',
+		params = [uid];
 
 	mysql.query('rw', sql, params, 'modules/users/users-model/getActiveSeedStatus', function(err, results){
 		if(err)return cb(err)

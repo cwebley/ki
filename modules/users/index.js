@@ -27,10 +27,10 @@ UsersInterface.register = function(options, cb) {
 };
 
 UsersInterface.login = function(options, cb) {
-	usersSvc.login(options.username,options.password,function(err,results){
+	usersSvc.login(options,function(err,results){
 		if(err)return cb(err)
 		if(!results) return cb()
-		return cb(null, loginDto(results))
+		return cb(null, UsersInterface.loginDto(results))
 	})
 };
 
@@ -53,13 +53,12 @@ UsersInterface.getOpponentsNames = function(seederName,tourneyName,cb) {
 };
 
 UsersInterface.verifySeeds = function(seeds) {
-	console.log("VERIFY SEEDS: ", seeds)
 	var c = constants.characters;
 	var numberHash = {};
 
 	// make sure all characters accounted for
 	for(var i=0;i<c.length;i++){
-		if(!seeds[c]){
+		if(!seeds[c[i]]){
 			return false
 		}
 		numberHash[i+1] = true

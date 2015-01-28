@@ -55,7 +55,7 @@ tourneyController.get = function(req, res){
 	var tourneyName = req.params.tourneyName
 	var peek = (req.query.peek || req.body.peek) ? 4: 1
 
-	tournaments.getAllTourneyStats(tourneyName,peek, function(err,dto){
+	tournaments.getAllTourneyStats(tourneyName,peek,function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
 		if(!dto) {
 			return res.redirect('/tournaments')

@@ -29,7 +29,6 @@ controller.login = function(req, res)	{
 	if(!opts.password)return res.redirect('/')
 
 	users.login(opts,function(err,dto){
-		console.log("LOGIN REZ: ", err, dto)
 		if(err) return res.status(500).send({success:false,reason:"internal-error",err:err})
 		if(!dto) return res.status(400).send({success:false,reason:"user-not-found"})
 		req.session.username = opts.username
@@ -64,24 +63,23 @@ controller.register = function(req, res){
 
 var getSeedOpts = function(req){
 	var opts = {
-		username: req.body.username,
+		username: req.body.opponent,
 		tourneyName: req.params.tourneyName,
 		characters: {}
 	}
+	delete req.body.opponent
 
 	var c = constants.characters
 	for(var i = 0; i < c.length; i++){
-		opts.characters[c[i]] = req.body.seeds[c[i]]
+		opts.characters[c[i]] = req.body[c[i]]
 	}
 	return opts
 }
 
 controller.seed = function(req, res){
-	console.log("SEEED POST: ", req.body, req.body.seeds)
 	if(!req.session.username) return res.redirect('/')
 
-	if(!req.body.username) return res.status(400).send({success:false,reason:"no-opponent-name-for-seeding"})
-	if(!req.body.seeds) return res.status(400).send({success:false,reason:"no-seeds"})
+	if(!req.body.opponent) return res.status(400).send({success:false,reason:"no-opponent-name-for-seeding"})
 
 	var opts = getSeedOpts(req)
 

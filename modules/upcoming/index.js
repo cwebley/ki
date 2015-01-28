@@ -4,17 +4,11 @@ var _ = require('lodash'),
 var UpcomingInterface = {};
 UpcomingInterface.pending = {};
 
-// UpcomingInterface.peek = function(){
-// 	for(var n = pending){
-		
-// 	}
-// }
-
-//uids: array of userIds in a tournament
-UpcomingInterface.create = function(uids){
+//users: array of users in a tournament
+UpcomingInterface.create = function(users){
 	UpcomingInterface.pending = {};
-	for(var i=0; i<uids.length; i++){
-		UpcomingInterface.pending[uids[i]] = [];
+	for(var i=0; i<users.length; i++){
+		UpcomingInterface.pending[users[i]] = [];
 	}
 }
 
@@ -39,10 +33,23 @@ UpcomingInterface.getNext = function(num){
 	return nextUp
 }
 
+// probably only works with 2 players.
 UpcomingInterface.removeFirst = function(){
 	for(var n in UpcomingInterface.pending){
 		UpcomingInterface.pending[n].shift()
 	}
+}
+
+//users: array of users in a tournament
+UpcomingInterface.check = function(users){
+	if(!users || !users.length) return false
+
+	for(var i=0;i<users.length;i++){
+		if(!UpcomingInterface.pending[users[i]] || !UpcomingInterface.pending[users[i]].length){
+			return false
+		}
+	}
+	return true
 }
 
 module.exports = UpcomingInterface;

@@ -50,7 +50,7 @@ router.get('/', function(req, res) {
   res.send('games hub, respond with resource');
 });
 
-router.get('/submit', 
+router.post('/submit', 
  	gameController.submitGame
 );
 

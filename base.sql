@@ -45,6 +45,7 @@ CREATE TABLE `tournaments` (
 	`name` varchar(255) NOT NULL,
 	`goal` int(11) NOT NULL,
 	`championId` int(11),
+	`seeded` bool DEFAULT false,
 	`active` bool DEFAULT true,
 	`time` timestamp DEFAULT current_timestamp,
 	UNIQUE KEY `name` (`name`),

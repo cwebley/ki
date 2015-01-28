@@ -7,8 +7,8 @@ var _ = require('lodash'),
 var TourneyInterface = {};
 
 // data: array of user-data objects
-TourneyInterface.allStatsDto = function(data,nextMatch){
-	var dto = {users: [],next: nextMatch};
+TourneyInterface.allStatsDto = function(data,nextMatch,seeded){
+	var dto = {users: [],next: nextMatch,seeded: seeded};
 
 	for (var i=0;i<data.length;i++){
 		dto.users.push(data[i])
@@ -64,9 +64,16 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
 				for(var i=0;i<tournamentData.length;i++){
 					tournamentData[i].characters = charData[i]
 				}
-				return cb(err,TourneyInterface.allStatsDto(tournamentData, next))
+				return cb(err,TourneyInterface.allStatsDto(tournamentData, next, seeded))
 			});
 		});
+	});
+};
+
+TourneyInterface.updateSeedStatus = function(tourneyName,cb) {
+	tourneyMdl.updateSeedStatus(tourneyName,function(err,results){
+		if(err) return cb(err)
+		return cb(null,results)
 	});
 };
 

@@ -4,7 +4,7 @@ var _ = require('lodash'),
 	tourneyMdl = require('../tournaments/tournaments-model'),
 	usersMdl = require('../users/users-model'),
 	constants = require('../constants'),
-	upcoming = require('../upcoming'),sub
+	upcoming = require('../upcoming'),
 	mysql = require('../persistence').mysql;
 
 var GamesService = {};
@@ -20,7 +20,13 @@ GamesService.getAndValidateIds = function(options, cb) {
 
 	async.parallel(calls, function(err, results){
 		if(err)return cb(err)
-		if(!results.winPid || !results.losePid || !results.winXid || !results.loseXid || !results.tourneyId) return cb()
+		if(!results.winPid || !results.losePid || !results.winXid || !results.loseXid) return cb()
+		if(!results.tourneyId || !results.tourneyId.length) return cb()
+		if(results.tourneyId[1] != 1) return cb(new Error('game-submit-rejected--tournament-not-seeded'))
+
+		// seeded value no longer matters.
+		results.tourneyId = results.tourneyId[0]
+
 		if(results.winPid === results.losePid) return cb()
 		if(!results.tourneyPlayers.length) return cb()
 
@@ -46,17 +52,21 @@ GamesService.saveGame = function(options, cb) {
 		if(err)return cb(err)
 		if(!validated) return cb() // no character value: seeding not done.
 
+		var users=[options.winningPlayer,options.losingPlayer]
+		if(!upcoming.check(users)){
+			upcoming.create(users)
+		}
 		upcoming.removeFirst()
 		upcoming.fill()
 
 		usersMdl.getCharacterValue(validated.winPid,validated.winXid,function(err,value){
-
 			if(err)return cb(err)
 			if(!value)return cb()
 			validated.value = value
 			validated.supreme = options.supreme
 
 			gamesMdl.insertGameResult(validated, function(err,gameId){
+
 				if(err)return cb(err)
 				if(!gameId) return cb()
 

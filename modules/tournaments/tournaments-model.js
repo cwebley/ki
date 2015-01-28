@@ -135,4 +135,17 @@ TournamentsModel.editTournament = function(name,goal,oldName,cb) {
 	});
 };
 
+TournamentsModel.updateSeedStatus = function(tourneyName,cb) {
+	var sql = 'SELECT tu.seeded, u.name FROM tournamentUsers tu'
+			+ ' JOIN users u ON u.id = tu.userId'
+			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
+			+ ' WHERE t.name = ?',
+		params = [tourneyName]
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/updateSeedStatus', function(err, results){
+		if(err) return cb(err)
+		return cb(null,results);
+	});
+};
+
 module.exports = TournamentsModel;
