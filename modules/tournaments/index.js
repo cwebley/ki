@@ -57,6 +57,15 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
 		var next = upcoming.getNext(peek)
 		tourneySvc.getUsersLevelStats(tourneyName, function(err,tournamentData){
 			if(err)return cb(err)
+
+			var users=[];
+			for(var i=0;i<tournamentData.length;i++){
+				users.push(tournamentData[i].name)
+			}
+			if(!upcoming.check(users)){
+				upcoming.create(users)
+				upcoming.fill(users)
+			}
 	
 			// get the stats
 			async.map(tournamentData,function(tournamentData,done){tourneySvc.getCharacterLevelStats(tournamentData.name,done)},function(err,charData){

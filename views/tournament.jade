@@ -4,7 +4,9 @@ block content
 
 	div(style="width: 30%; float: right;")
 		h2.highlight Player Data
-		li= JSON.stringify(next)
+		each val, index in next
+			li= index +':' + val
+
 		if users.length
 			table
 				thead(style="text-transform: capitalize;")
@@ -42,16 +44,34 @@ block content
 	if seeded
 		h1 Submit Game
 		div(style="width: 33%; float: left")
-		form(action='http://localhost:3000/games/submit',method='post')
-			p: input(input type="text", name='winningPlayer', placeHolder="winningPlayer", value="")
-			p: input(input type="text", name='winningCharacter', placeHolder="winningCharacter", value="")
-			p: input(input type="text", name='losingPlayer', placeHolder="losingPlayer", value="")
-			p: input(input type="text", name='losingCharacter', placeHolder="losingCharacter", value="")
-			p: input(input type="text", name='tournament', placeHolder="tournament", value="")
-			p: input(input type="text", name='supreme', placeHolder="supreme", value="")
-			p: input(type='submit', value="Submit")
-	
+		
+		- var playerArr = [];
+		- var charArr = [];
+		- var windex = 0;
+		- var lindex = 1;
 
+		each char, player in next
+			- playerArr.push(player)
+			- charArr.push(char)
+		li= playerArr
+		li= charArr
+
+
+
+		- for(var i=0;i<playerArr.length;i++){
+			form(action='http://localhost:3000/games/submit',method='post')
+				- if(i!==0){
+					- windex = 1
+					- lindex = 0
+				- }
+				p: input(type="hidden", name='winningPlayer', value="#{playerArr[windex]}")
+				p: input(type="hidden", name='winningCharacter', value="#{charArr[windex]}")
+				p: input(type="hidden", name='losingPlayer' value="#{playerArr[lindex]}")
+				p: input(type="hidden", name='losingCharacter' value="#{charArr[lindex]}")
+				p: input(type="hidden", name='tournament' value="#{title}") 
+				p: input(type="checkbox", name='supreme', checked=false)
+				p: input(type='submit', value="#{playerArr[windex]}'s #{charArr[windex]} Wins")
+			-}
 
 	else
 		a(href='/users/#{title}/seed') Seed my opponent
