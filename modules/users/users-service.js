@@ -6,7 +6,7 @@ var _ = require('lodash'),
 
 var UsersService = {};
 
-UsersService.updateCharByName = function(tid,uid,cName,value,cb){
+UsersService.getCharIdWrapper = function(tid,uid,cName,value,cb){
 	usersMdl.getCharacterId(cName,function(err,cid){
 		if(err) return cb(err)
 		return cb(null, {tid:tid,uid:uid,cid:cid,value:value})
@@ -36,12 +36,12 @@ UsersService.seedCharacters = function(options, cb) {
 			if(!tid) return cb()
 
 			var calls = [];
-			var generateFunc = function(tid, uid, cName, cValue) {
-				return function(done) { UsersService.updateCharByName(tid,uid,cName,cValue,done) }
+			var characterIdGetter = function(tid, uid, cName, cValue) {
+				return function(done) { UsersService.getCharIdWrapper(tid,uid,cName,cValue,done) }
 			}
 			for(var c in options.characters){
 				if(options.characters[c]){
-					calls.push(generateFunc(tid,uid,c,options.characters[c]))
+					calls.push(characterIdGetter(tid,uid,c,options.characters[c]))
 				}
 			}
 

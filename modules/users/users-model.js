@@ -136,29 +136,11 @@ UsersModel.insertOrResetCharVals = function(tid, uid, cids, cb) {
 	});
 };
 
-// // uids: array of all userIds
-// UsersModel.resetUsersData = function(uids, cb) {
-// 	if(!uids.length) return cb(new Error('users-model/insertOrResetUsersData/no-uids-array'))
-
-// 	var sql = 'UPDATE users SET curStreak = 0 AND score = 0 WHERE id IN (?',
-// 		params = [];
-
-// 	for(var i=0;i<uids.length;i++){
-// 		if(i< uids.length-1){
-// 			sql += ',?'
-// 		}
-// 		params.push(uids[i])
-// 	}
-// 	sql += ')'
-
-
-// 	mysql.query('rw', sql, params, 'modules/users/users-model/resetUsersData', function(err, results){
-// 		return cb(err,results)
-// 	});
-// };
-
+// theres a lot of stuff going on in here, especially with history table update.
 // rows: object {cid:1,tid:1,:uid:1,:value:1}
 UsersModel.insertSeeds = function(rows, cb) {
+
+	// seeds
 	var sql = 'INSERT INTO seeds (tournamentId,userId,characterId,value) VALUES(?,?,?,?)',
 		onDup = 'ON DUPLICATE KEY UPDATE value = VALUES(value)',
 		params =[];
@@ -173,33 +155,68 @@ UsersModel.insertSeeds = function(rows, cb) {
 		params.push(rows[i].value)
 	}
 
-	mysql.query('rw', sql+onDup, params, 'modules/users/users-model/insertSeeds', function(err, results){
+	mysql.query('rw', sql+onDup, params, 'modules/users/users-model/insertSeeds:seeds', function(err, results){
 		if(err)return cb(err)
 		if(!results) return cb()
 
-		sql = 'INSERT INTO charactersData (userId,characterId,value) VALUES(?,?,?)'
+		// tournamentCharacters
+		sql = 'INSERT INTO tournamentCharacters (tournamentId,userId,characterId,value) VALUES(?,?,?,?)'
 		params = [];
 
 		for(var i=0;i<rows.length;i++){
 			if(i< rows.length-1){
-				sql += ',(?,?,?)'
+				sql += ',(?,?,?,?)'
 			}
+			params.push(rows[i].tid)
 			params.push(rows[i].uid)
 			params.push(rows[i].cid)
 			params.push(rows[i].value)
 		}
-		mysql.query('rw', sql+onDup, params, 'modules/users/users-model/insertSeeds:insert-characterData', function(err, results){
-			if(err) return cb(err)
 
-			// Update tournamentUsers seed status
-			sql = 'UPDATE tournamentUsers SET seeded = 1 WHERE tournamentId = ? AND userId = ?',
-			params = [rows[0].tid, rows[0].uid]
+		mysql.query('rw', sql+onDup, params, 'modules/users/users-model/insertSeeds:tournamentCharacters', function(err, results){
+			if(err)return cb(err)
+			if(!results) return cb()
 
-			mysql.query('rw', sql, params, 'modules/users/users-model/insertSeeds:update-seed-status', function(err, results){
+			// get seed event for history update, just for thoroughness and in case the events table changes.
+			sql = 'SELECT id FROM events WHERE description = ?'
+			params = ['seeding'];
+
+			mysql.query('rw', sql, params, 'modules/users/users-model/insertSeeds:getEvent', function(err, results){
 				if(err) return cb(err)
+				if(!results || !results.length) return cb(new Error('event-id-not-found-for-seeding-event'))
+				var eventId = results[0].id
+	
+				// history: this actually leads to duplicate entries if the seed form is sent more than once. 
+				// might be a future problem in stat calculation
+				sql = 'INSERT INTO history (tournamentId,userId,characterId,eventId,value) VALUES(?,?,?,?,?)'
+				params = [];
+	
+				for(var i=0;i<rows.length;i++){
+					if(i< rows.length-1){
+						sql += ',(?,?,?,?,?)'
+					}
+					params.push(rows[i].tid)
+					params.push(rows[i].uid)
+					params.push(rows[i].cid)
+					params.push(eventId)
+					params.push(rows[i].value)
+				}
 
-				// Update tournament seed status if appropriate
-				UsersModel.updateTournamentSeedStatus(rows[0].tid,cb)
+				mysql.query('rw', sql, params, 'modules/users/users-model/insertSeeds:history', function(err, results){
+					if(err)return cb(err)
+					if(!results) return cb()
+	
+					// Update tournamentUsers seed status
+					sql = 'UPDATE tournamentUsers SET seeded = 1 WHERE tournamentId = ? AND userId = ?',
+					params = [rows[0].tid, rows[0].uid]
+		
+					mysql.query('rw', sql, params, 'modules/users/users-model/insertSeeds:update-seed-status', function(err, results){
+						if(err) return cb(err)
+		
+						// Update tournament seed status if all users have seeded
+						UsersModel.updateTournamentSeedStatus(rows[0].tid,cb)
+					});
+				});
 			});
 		});
 	});

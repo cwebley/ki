@@ -100,7 +100,6 @@ TournamentsModel.getCharacterStats = function(tourneyName, userName, cb) {
 			+ ' WHERE u.name = ? AND t.name = ?'
 			+ ' ORDER BY tc.value ASC'
 		params = [userName, tourneyName];
-		console.log("SQL :", sql, params)
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getCharacterStats', function(err, results){
 		if (err) return cb(err)

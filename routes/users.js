@@ -103,7 +103,7 @@ controller.getSeedForm = function(req, res){
 		dto.username=req.session.username
 		dto.characters = constants.characters
 		dto.title = req.params.tourneyName
-		res.render('tournament-seed',dto)
+		res.render('tournaments/seed',dto)
 	})
 };
 
