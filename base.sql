@@ -30,8 +30,6 @@ CREATE TABLE `users` (
 	`gameLosses` int(11) NOT NULL DEFAULT 0,
 	`score` int(11) NOT NULL DEFAULT 0,
 	`powerUps` int(11) NOT NULL DEFAULT 0,
-	`curStreak` int(11) NOT NULL DEFAULT 0,
-	`tourneyBestStreak` int(11) NOT NULL DEFAULT 0,
 	`globalBestStreak` int(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`)
 );
@@ -57,8 +55,22 @@ CREATE TABLE `tournamentUsers` (
 	`tournamentId` int(11) NOT NULL,
 	`userId` int(11) NOT NULL,
 	`seeded` bool DEFAULT false,
-	`finalScore` int(11),
+	`curStreak` int(11) NOT NULL DEFAULT 0,
+	`tourneyBestStreak` int(11) NOT NULL DEFAULT 0,
+	`score` int(11),
+	`fireWins` int(11),
 	UNIQUE KEY `tournamentPlayer` (`tournamentId`,`userId`),
+	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`),
+	FOREIGN KEY (`userId`) REFERENCES `users`(`id`)
+);
+
+CREATE TABLE `tournamentPowers` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`tournamentId` int(11) NOT NULL,
+	`userId` int(11) NOT NULL,
+	`stock` int(11) NOT NULL DEFAULT 0,
+	`active` int(11) NOT NULL DEFAULT 0,
+	UNIQUE KEY `tournament-user` (`tournamentId`,`userId`),
 	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`),
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`)
 );
@@ -91,15 +103,63 @@ CREATE TABLE `seeds` (
 	FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`)
 );
 
+
 CREATE TABLE `charactersData` (
 	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`userId` int(11) NOT NULL,
 	`characterId` int(11) NOT NULL,
-	`value` int(11) NOT NULL DEFAULT 0,
-	`curStreak` int(11) NOT NULL DEFAULT 0,
-	`tourneyBestStreak` int(11) NOT NULL DEFAULT 0,
+	`gameWins` int(11) NOT NULL DEFAULT 0,
+	`gameLosses` int(11) NOT NULL DEFAULT 0,
 	`globalBestStreak` int(11) NOT NULL DEFAULT 0,
 	UNIQUE `user-character` (`userId`,`characterId`),
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`),
 	FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`)
+);
+
+CREATE TABLE `tournamentCharacters` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`tournamentId` int(11) NOT NULL,
+	`userId` int(11) NOT NULL,
+	`characterId` int(11) NOT NULL,
+	`value` int(11) NOT NULL DEFAULT 0,
+	`gameWins` int(11) NOT NULL DEFAULT 0,
+	`gameLosses` int(11) NOT NULL DEFAULT 0,
+	`curStreak` int(11) NOT NULL DEFAULT 0,
+	`tourneyBestStreak` int(11) NOT NULL DEFAULT 0,
+	`fireWins` int(11),
+	UNIQUE `tournament-user-character` (`tournamentId`,`userId`,`characterId`),
+	FOREIGN KEY (`tournamentId`) REFERENCES `characters`(`id`),
+	FOREIGN KEY (`userId`) REFERENCES `users`(`id`),
+	FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`)
+);
+
+CREATE TABLE `events` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`description` varchar(255) NOT NULL
+);
+
+INSERT INTO events (description) VALUES
+	('seeding'),
+	('game'),
+	('fire'),
+	('friendlyFire'),
+	('ice'),
+	('friendlyIce'),
+	('power-reseed'),
+	('power-deduct-points'),
+	('power-deduct-exipres');
+
+CREATE TABLE `history` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`tournamentId` int(11) NOT NULL,
+	`userId` int(11) NOT NULL,
+	`characterId` int(11) NOT NULL,
+	`eventId` int(11) NOT NULL,
+	`value` int(11) DEFAULT 0,
+	`change` int(11) DEFAULT 0,
+	`time` timestamp DEFAULT current_timestamp,
+	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`),
+	FOREIGN KEY (`userId`) REFERENCES `users`(`id`),
+	FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`),
+	FOREIGN KEY (`eventId`) REFERENCES `events`(`id`)
 );

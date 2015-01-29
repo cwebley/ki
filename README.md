@@ -109,11 +109,54 @@ how to get wagers?
 
 achievements? milestones not unique to one tourney:
 	beat every character
+	win with every character
 	highest streak with a character
 	highest player streak
 
 history table for each player? whats the best way to track this?
-	id, uid-cid-tid, value, change, eventType, gameId
+	id, uid, cid, tid, value, change, eventType, gameId
 or store this stuff in redis?
 
+	id, tid, uid, cid, eventId, newValue 
 
+events
+	id type
+			seeding
+			game
+			onFire
+			friendlyFire
+			iced
+			friendlyIce
+			power-reseed
+			power-reducePoints
+			power-reducePointsExpires
+
+powerUps table
+	id, tid-uid, supply, active
+
+powers
+	reseed
+	reduce 5 pts 10 games
+	peek and arrange 7 games
+	rematch
+	up odds of char for 20ish games	
+	choose opponent
+
+users table powerUps, Active
+	use power (seed/deduct/peek/rematch/upodds/chooseVictim)
+		if powerup active already redirect to powerup form
+		powerUp moves to active
+		redirct to powerup form
+	interact with powerup form (contains alltourney data)
+		reseed/deduct points/peek/remtach/inc odds/ choose opponent
+		submit and refresh
+		power removed from active
+	done
+
+need redis for reduce points
+	HSET 
+	tourneyName.bj.deduct.g.gamesLeft = 10
+	tourneyName.bj.deduct.g.characters = [{x:2,y:3,z:3}]
+
+tournamentCharacters(value,wins,losses,curStreak,tourneyBestStreak,fireSupportWins), charactersData(wins,losses,globalStreak)
+tournamentUsers include wins/losses, curStreak, tourneyBestStreak,fireSupportWins
