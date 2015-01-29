@@ -91,50 +91,71 @@ UsersModel.getCharacterValue = function(uid,cid,cb) {
 	});
 };
 
+// tid: integer,
 // uid: integer,
 // cids: array of all characterIds
-UsersModel.insertOrResetCharVals = function(uid, cids, cb) {
+UsersModel.insertOrResetCharVals = function(tid, uid, cids, cb) {
 	if(!cids.length) return cb(new Error('users-model/insertOrResetCharVals/no-character-ids-array'))
 
-	var insert = 'INSERT INTO `charactersData` (userId,characterId,value)',
-		values = ' VALUES (?,?,?)',
-		onDup = ' ON DUPLICATE KEY UPDATE value = VALUES(value)',
+	// charactersData
+	var insert = 'INSERT INTO `charactersData` (userId,characterId)',
+		values = ' VALUES (?,?)',
+		onDup = ' ON DUPLICATE KEY UPDATE userId = VALUES(userId)',
 		params = [];
 
 	for(var i=0;i<cids.length;i++){
 		if(i< cids.length-1){
-			values += ',(?,?,?)'
+			values += ',(?,?)'
 		}
 		params.push(uid)
 		params.push(cids[i])
-		params.push(0)
 	}
 
-	mysql.query('rw', insert + values + onDup, params, 'modules/users/users-model/insertOrResetCharVals', function(err, results){
-		return cb(err,results)
-	});
-};
+	mysql.query('rw', insert + values + onDup, params, 'modules/users/users-model/insertOrResetCharVals:charactersData', function(err, results){
+		if(err)return cb(err)
+		if(!results)return cb()
 
-// uids: array of all userIds
-UsersModel.resetUsersData = function(uids, cb) {
-	if(!uids.length) return cb(new Error('users-model/insertOrResetUsersData/no-uids-array'))
+		// tournamentCharacters
+		var insert = 'INSERT INTO `tournamentCharacters` (tournamentId,userId,characterId,value)',
+			values = ' VALUES (?,?,?,?)',
+			params = [];
 
-	var sql = 'UPDATE users SET curStreak = 0 AND score = 0 WHERE id IN (?',
-		params = [];
-
-	for(var i=0;i<uids.length;i++){
-		if(i< uids.length-1){
-			sql += ',?'
+		for(var i=0;i<cids.length;i++){
+			if(i< cids.length-1){
+				values += ',(?,?,?,?)'
+			}
+			params.push(tid)
+			params.push(uid)
+			params.push(cids[i])
+			params.push(0)
 		}
-		params.push(uids[i])
-	}
-	sql += ')'
 
-
-	mysql.query('rw', sql, params, 'modules/users/users-model/resetUsersData', function(err, results){
-		return cb(err,results)
+		mysql.query('rw', insert + values, params, 'modules/users/users-model/insertOrResetCharVals:tournamentUsers', function(err, results){
+			return cb(err,results)
+		});
 	});
 };
+
+// // uids: array of all userIds
+// UsersModel.resetUsersData = function(uids, cb) {
+// 	if(!uids.length) return cb(new Error('users-model/insertOrResetUsersData/no-uids-array'))
+
+// 	var sql = 'UPDATE users SET curStreak = 0 AND score = 0 WHERE id IN (?',
+// 		params = [];
+
+// 	for(var i=0;i<uids.length;i++){
+// 		if(i< uids.length-1){
+// 			sql += ',?'
+// 		}
+// 		params.push(uids[i])
+// 	}
+// 	sql += ')'
+
+
+// 	mysql.query('rw', sql, params, 'modules/users/users-model/resetUsersData', function(err, results){
+// 		return cb(err,results)
+// 	});
+// };
 
 // rows: object {cid:1,tid:1,:uid:1,:value:1}
 UsersModel.insertSeeds = function(rows, cb) {

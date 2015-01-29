@@ -30,7 +30,7 @@ tourneyController.newTourneyForm = function(req, res){
 	users.getUserList(req.session.username, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
 		dto.username=req.session.username
-		res.render('create-tournament',dto)
+		res.render('tournaments/create',dto)
 	})
 }
 
@@ -61,7 +61,7 @@ tourneyController.get = function(req, res){
 			return res.redirect('/tournaments')
 		}
 		dto.title = tourneyName
-		res.render('tournament',dto)
+		res.render('tournaments/home',dto)
 	})
 }
 
@@ -89,7 +89,7 @@ tourneyController.editTourneyForm = function(req, res){
 		if(err) return res.status(500).send({success:false,err:err})
 		if(!results) return res.status(404).send({success:false,reason:"tournament-not-found"})
 		results.title = tourneyName
-		res.render('tournament-edit',results)
+		res.render('tournaments/edit',results)
 	})
 }
 
@@ -100,7 +100,7 @@ tourneyController.getTourneyList = function(req, res){
 	tournaments.getTourneyList(function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
 		dto.username = req.session.username
-		res.render('tournament-home',dto)
+		res.render('tournaments/index',dto)
 	})
 }
 

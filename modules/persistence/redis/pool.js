@@ -1,5 +1,4 @@
 var redis = require('redis'),
-	vLog = require('../../v-log'),
 	config = require('../config');
 
 /** Starts a connection, cleans them on an interval, exposes a getter to retrieve them.
@@ -10,14 +9,6 @@ var redis = require('redis'),
 var Pool = function(port, host){
 	this.port = port;
 	this.host = host;
-
-	if(!this.port) {
-		vLog.trace(new Error('v-persistence:redis-pool:unknown-port'));
-	}
-
-	if(!this.host) {
-		vLog.trace(new Error('v-persistence:redis-pool:unknown-host'));
-	}
 
 	this.clients = [];
 	this.start();

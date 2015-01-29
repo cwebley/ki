@@ -12,7 +12,7 @@ var tournamentsService = {};
 tournamentsService.zeroCharValsByUid = function(tid,uid,cb){
 	usersMdl.getAllCharacterIds(function(err, characterIds){
 		if(err)return cb(err)
-		usersMdl.insertOrResetCharVals(uid,characterIds,cb);
+		usersMdl.insertOrResetCharVals(tid,uid,characterIds,cb);
 	});
 }
 
@@ -20,11 +20,11 @@ tournamentsService.newTournament = function(options, cb) {
 	if(!options.players || !options.players.length) return cb(new Error('no-players-specified-for-tournament'))
 
 	var userIdCalls = [];
-	var generateUserId = function(username){
+	var userIdGetter = function(username){
 		return function(done){usersMdl.getUserId(username,done)}
 	}
 	for(var i=0; i<options.players.length; i++){
-		userIdCalls.push(generateUserId(options.players[i]))
+		userIdCalls.push(userIdGetter(options.players[i]))
 	}
 	async.parallel(userIdCalls, function(err,userIds){
 		if(err) return cb(err)
@@ -40,22 +40,18 @@ tournamentsService.newTournament = function(options, cb) {
 		tourneyMdl.createTournament(options, function(err, tid){
 			if(err)return cb(err)
 
-			usersMdl.resetUsersData(userIds,function(err,usersDataRes){
+			tourneyMdl.insertPlayers(tid,userIds,function(err,insertPlayerRes){
 				if(err) return cb(err)
-
-				tourneyMdl.insertPlayers(tid,userIds,function(err,insertPlayerRes){
-					if(err) return cb(err)
-						
-					var zeroCharCalls = [];
-					var generateZeroCharVals = function(tid,uid){
-						return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
-					}
-					for(var i=0; i<userIds.length; i++){
-						zeroCharCalls.push(generateZeroCharVals(tid, userIds[i]))
-					}
-					async.parallel(zeroCharCalls, function(err,results){
-						return cb(err,results)
-					});
+					
+				var zeroCharCalls = [];
+				var generateZeroCharVals = function(tid,uid){
+					return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
+				}
+				for(var i=0; i<userIds.length; i++){
+					zeroCharCalls.push(generateZeroCharVals(tid, userIds[i]))
+				}
+				async.parallel(zeroCharCalls, function(err,results){
+					return cb(err,results)
 				});
 			});
 		});
@@ -68,8 +64,8 @@ tournamentsService.getUsersLevelStats = function(tourneyName,cb){
 	});
 };
 
-tournamentsService.getCharacterLevelStats = function(userObjArray,cb){
-	tourneyMdl.getCharacterStats(userObjArray, function(err,results){
+tournamentsService.getCharacterLevelStats = function(tourneyName,userName,cb){
+	tourneyMdl.getCharacterStats(tourneyName,userName,function(err,results){
 		return cb(err,results)
 	});
 };

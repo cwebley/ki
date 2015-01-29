@@ -79,11 +79,11 @@ TournamentsModel.getPlayers = function(tourneyName, cb) {
 };
 
 TournamentsModel.getStats = function(tourneyName, cb) {
-	var sql = 'SELECT u.name,u.score,u.name,u.gameWins,u.gameLosses,u.curStreak FROM users u'
+	var sql = 'SELECT u.name,tu.score,tu.wins,tu.losses,tu.curStreak FROM users u'
 			+ ' JOIN tournamentUsers tu ON tu.userId = u.id'
 			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
 			+ ' WHERE t.name = ?'
-			+ ' ORDER BY u.score DESC'
+			+ ' ORDER BY tu.score DESC'
 		params = [tourneyName];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getStats', function(err, results){
@@ -92,13 +92,15 @@ TournamentsModel.getStats = function(tourneyName, cb) {
 	});
 };
 
-TournamentsModel.getCharacterStats = function(userName, cb) {
-	var sql = 'SELECT c.name,cd.value,cd.curStreak FROM characters c'
-			+ ' JOIN charactersData cd ON cd.characterId = c.id'
-			+ ' JOIN users u ON u.id = cd.userId'
-			+ ' WHERE u.name = ?'
-			+ ' ORDER BY cd.value ASC'
-		params = [userName];
+TournamentsModel.getCharacterStats = function(tourneyName, userName, cb) {
+	var sql = 'SELECT c.name,tc.value,tc.curStreak,tc.wins,tc.losses FROM characters c'
+			+ ' JOIN tournamentCharacters tc ON tc.characterId = c.id'
+			+ ' JOIN tournaments t ON t.id = tc.tournamentId'
+			+ ' JOIN users u ON u.id = tc.userId'
+			+ ' WHERE u.name = ? AND t.name = ?'
+			+ ' ORDER BY tc.value ASC'
+		params = [userName, tourneyName];
+		console.log("SQL :", sql, params)
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getCharacterStats', function(err, results){
 		if (err) return cb(err)

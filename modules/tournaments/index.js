@@ -53,11 +53,11 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
 		if(err) return cb(err)
 		if(!tourneyId) return cb()
 
-		// get next matchup
-		var next = upcoming.getNext(peek)
+
 		tourneySvc.getUsersLevelStats(tourneyName, function(err,tournamentData){
 			if(err)return cb(err)
 
+			// get next matchup, populate if necessary (ie: server was restarted and memory wiped)
 			var users=[];
 			for(var i=0;i<tournamentData.length;i++){
 				users.push(tournamentData[i].name)
@@ -66,9 +66,20 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
 				upcoming.create(users)
 				upcoming.fill(users)
 			}
-	
+			var next = upcoming.getNext(peek)
+
 			// get the stats
-			async.map(tournamentData,function(tournamentData,done){tourneySvc.getCharacterLevelStats(tournamentData.name,done)},function(err,charData){
+			// async.map(users,
+			// 	function(tourneyName,tournamentData,done){tourneySvc.getCharacterLevelStats(tourneyName,tournamentData.name,done)},
+			// 	function(err,charData){
+			var calls = [];
+			var characterDataGetter = function(tourneyName,userName){
+				return function(done){tourneySvc.getCharacterLevelStats(tourneyName,userName,done)}
+			}
+			for(var i=0;i<tournamentData.length;i++){
+				calls.push(characterDataGetter(tourneyName,tournamentData[i].name))
+			}
+			async.parallel(calls,function(err,charData){
 				if(err) return cb(err)
 				for(var i=0;i<tournamentData.length;i++){
 					tournamentData[i].characters = charData[i]

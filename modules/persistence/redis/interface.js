@@ -1,6 +1,4 @@
-var vConfig = require('../../v-config'),
-	vLog = require('../../v-log'),
-	Pool = require('./pool');
+var Pool = require('./pool');
 
 // Private Helper
 var startPool = function(config) {
@@ -15,7 +13,7 @@ var Interface = function(){
 	this.pools = {
 		persistent: {
 			rw: startPool({
-				host: localhost,
+				host: 'localhost',
     			port: 6379
     		})
 		}
@@ -26,13 +24,11 @@ var Interface = function(){
 Interface.prototype.get = function(redisType, connectionType) {
 	if(!this.pools[redisType]) {
 		var e = new Error('v-persistence:redis-get:invalid-type');
-		vLog.trace(e, {redisType: redisType, connectionType: connectionType});
 		throw e;
 	}
 
 	if(!this.pools[redisType][connectionType]) {
 		var e = new Error('v-persistence:redis-get:invalid-type');
-		vLog.trace(e, {redisType: redisType, connectionType: connectionType});
 		throw e;
 	}
 
