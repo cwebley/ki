@@ -80,9 +80,9 @@ UsersModel.getAllCharacterIds = function(cb) {
 	});
 };
 
-UsersModel.getCharacterValue = function(uid,cid,cb) {
-	var sql = 'SELECT value FROM charactersData WHERE userId = ? AND characterid = ?',
-		params = [uid,cid];
+UsersModel.getCharacterValue = function(tid,uid,cid,cb) {
+	var sql = 'SELECT value FROM tournamentCharacters WHERE tournamentId = ? AND userId = ? AND characterid = ?',
+		params = [tid,uid,cid];
 
 	mysql.query('rw', sql, params, 'modules/users/users-model/getCharacterValue', function(err, results){
 		if(err) return cb(err)
@@ -94,7 +94,7 @@ UsersModel.getCharacterValue = function(uid,cid,cb) {
 // tid: integer,
 // uid: integer,
 // cids: array of all characterIds
-UsersModel.insertOrResetCharVals = function(tid, uid, cids, cb) {
+UsersModel.insertOrResetCharVals = function(tid,uid,cids,cb) {
 	if(!cids.length) return cb(new Error('users-model/insertOrResetCharVals/no-character-ids-array'))
 
 	// charactersData
@@ -268,9 +268,9 @@ UsersModel.updateCharacterValue = function(rows, cb) {
 	});
 };
 
-UsersModel.getCharacterStreak = function(uid,cid,cb) {
-	var sql = 'SELECT curStreak FROM charactersData WHERE userId = ? AND characterId = ?',
-		params = [uid,cid];
+UsersModel.getCharacterStreak = function(tid,uid,cid,cb) {
+	var sql = 'SELECT curStreak FROM tournamentCharacters WHERE tournamentId = ? AND userId = ? AND characterId = ?',
+		params = [tid,uid,cid];
 
 	mysql.query('rw', sql, params, 'modules/users/users-model/getCharacterStreak', function(err, results){
 		if(err) return cb(err)

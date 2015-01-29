@@ -24,12 +24,18 @@ TournamentsModel.recordChampion = function(tid,uid,cb) {
 	});
 };
 
-TournamentsModel.recordFinalScore = function(tid,uid,score,cb) {
-	var sql = 'UPDATE tournamentUsers SET finalScore = ? WHERE tournamentId = ? AND userId = ?',
-		params = [score,tid,uid];
+// users wins/losses, character wins/losses, tournament active = 0, user globalstreak, character globalstreak
+TournamentsModel.updateStreaksAndWins = function(tid,cb) {
+	// get user wins/losses
+	var sql = 'SELECT userId,wins,losses,bestStreak FROM tournamentUsers WHERE tournamentId = ?',
+		params = [tid];
 
-	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/recordFinalScores', function(err, results){
-		return cb(err,results)
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/updateStreaksAndWins', function(err, results){
+		if(err)return cb(err)
+		if(!results || !results.length)return cb()
+
+		//update user wins/losses
+		return cb(null, results)
 	});
 };
 

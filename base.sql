@@ -158,7 +158,7 @@ CREATE TABLE `history` (
 	`characterId` int(11) NOT NULL,
 	`eventId` int(11) NOT NULL,
 	`value` int(11) DEFAULT 0,
-	`change` int(11) DEFAULT 0,
+	`delta` int(11) DEFAULT 0,
 	`time` timestamp DEFAULT current_timestamp,
 	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`),
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`),
