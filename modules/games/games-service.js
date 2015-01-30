@@ -82,11 +82,20 @@ GamesService.getAndValidateIds = function(options, cb) {
 	});
 };
 
+//
+//
+//
+//
+//
+//
+//
+//
+// TODO update firewins
 GamesService.updateData = function(options, cb) {
 	var streakCalls = {},
 		updateCalls = [];
 		
-	//retrieve streaks to evaluate fire/ice
+	//retrieve streaks to evaluate fire/ice status
 	streakCalls.winXter = function(done){usersMdl.getCharacterStreak(options.tourneyId,options.winPid,options.winXid,done)}
 	streakCalls.loseXter = function(done){usersMdl.getCharacterStreak(options.tourneyId,options.losePid,options.loseXid,done)}
 
@@ -111,15 +120,14 @@ GamesService.updateData = function(options, cb) {
 		//user data
 		updateCalls.push(function(done){gamesMdl.incWinUsersStreak(options.tourneyId,options.winPid,done)})
 		updateCalls.push(function(done){gamesMdl.decLossUsersStreak(options.tourneyId,options.losePid,done)})
-		updateCalls.push(function(done){gamesMdl.incWinUsersGames(options.tourneyId,options.winPid,done)})
-		updateCalls.push(function(done){gamesMdl.decLossUsersGames(options.tourneyId,options.losePid,done)})
+		updateCalls.push(function(done){gamesMdl.incWinUsersWins(options.tourneyId,options.winPid,done)})
+		updateCalls.push(function(done){gamesMdl.incLoseUsersLosses(options.tourneyId,options.losePid,done)})
 		updateCalls.push(function(done){gamesMdl.updateWinnerScore(options.tourneyId,options.winPid,options.winValue,done)})
 
 		async.parallel(updateCalls,function(err,results){
 			if(err)return cb(err)
 
 			GamesService.checkAndUpdateTournament(options,function(err,endTournament){
-				console.log("CHECK AND UPDATE REZ: ", err, results, endTournament)
 				return cb(err,results,endTournament)
 			})
 		});
@@ -128,26 +136,20 @@ GamesService.updateData = function(options, cb) {
 
 GamesService.checkAndUpdateTournament = function(options, cb) {
 	gamesMdl.getTournamentScores(options.tourneyId,function(err,scores){
-		console.log("GET TOURNEY SCORES: ", err, scores)
 		if(err)return cb(err)
 
 		var calls = [],
 			endTournament = false;
 
-		var generateUpdateStreaksWins = function(tid){
-			return function(done){tourneyMdl.updateStreaksAndWins(tid,done)}
-		}
 		// works because scores is sorted by score DESC
+		// might cause a problem if someone's given a "chance to tie" after someone already won.
 		if(scores[0].score >= scores[0].goal) {
 			endTournament = true
 			calls.push(function(done){tourneyMdl.recordChampion(options.tourneyId,scores[0].userId,done)})
-			for(var i=0; i<scores.length; i++){
-				calls.push(generateUpdateStreaksWins(options.tourneyId))
-			}
 		}
 
-		if(!calls.length) return cb(null,endTournament) // tourney not over
-		async.parallel(calls,function(err,results){
+		if(!endTournament) return cb(null,endTournament) // tourney not over
+		atourneyMdl.recordChampion(options.tourneyId,scores[0].userId,function(err,results){
 			return cb(err,endTournament)
 		});
 	});

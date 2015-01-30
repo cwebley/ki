@@ -52,9 +52,12 @@ GamesModel.fireUp = function(tid,uid,fireCid,cb) {
 };
 
 GamesModel.incWinCharCurStreak = function(tid,uid,cid,cb) {
-	var sql = 'UPDATE tournamentCharacters SET curStreak = CASE WHEN curStreak < 1 THEN 1 ELSE curStreak +1 END'
-			+', bestStreak = CASE WHEN curStreak > bestStreak THEN curStreak ELSE bestStreak END'
-			+' WHERE tournamentId = ? AND userId = ? AND characterId = ?',
+		var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
+		+ ' SET tc.curStreak = CASE WHEN tc.curStreak < 1 THEN 1 ELSE tc.curStreak +1 END'
+		+ ', tc.bestStreak = CASE WHEN tc.curStreak > tc.bestStreak THEN tc.curStreak ELSE tc.bestStreak END'
+		+ ', cd.globalBestStreak = CASE WHEN tc.curStreak > cd.globalBestStreak THEN tc.curStreak ELSE cd.globalBestStreak END'
+		+ ' WHERE tc.characterId=cd.characterId AND tc.userId = cd.userId' // JOINS
+		+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?'
 		params = [tid,uid,cid];
 
 	mysql.query('rw', sql, params, 'modules/games/games-model/incWinCharCurStreak', function(err, results){
@@ -90,9 +93,12 @@ GamesModel.incLoseCharValue = function(tid,uid,cid,cb) {
 };
 
 GamesModel.incWinUsersStreak = function(tid,uid,cb) {
-	var sql = 'UPDATE tournamentUsers SET curStreak = CASE WHEN curStreak < 0 THEN 1 ELSE curStreak+1 END'
-			+ ', bestStreak = CASE WHEN curStreak > bestStreak THEN curStreak ELSE bestStreak END'
-			+' WHERE tournamentId = ? AND userId = ?',
+	var sql = 'UPDATE tournamentUsers tu, users u'
+		+ ' SET tu.curStreak = CASE WHEN tu.curStreak < 0 THEN 1 ELSE tu.curStreak+1 END'
+		+ ', tu.bestStreak = CASE WHEN tu.curStreak > tu.bestStreak THEN tu.curStreak ELSE tu.bestStreak END'
+		+ ', u.globalBestStreak = CASE WHEN tu.curStreak > u.globalBestStreak THEN tu.curStreak ELSE u.globalBestStreak END'
+		+ ' WHERE tu.userId = u.id' // JOIN
+		+ ' AND tu.tournamentId = ? AND tu.userId = ?',
 		params = [tid,uid];
 
 	mysql.query('rw', sql, params, 'modules/games/games-model/incWinUsersStreak', function(err, results){
@@ -110,26 +116,35 @@ GamesModel.decLossUsersStreak = function(tid,uid,cb) {
 	});
 };
 
-GamesModel.incWinUsersGames = function(tid,uid,cb) {
-	var sql = 'UPDATE tournamentUsers SET wins = wins + 1 WHERE tournamentId = ? AND userId = ?',
+GamesModel.incWinUsersWins = function(tid,uid,cb) {
+	var sql = 'UPDATE tournamentUsers tu, users u'
+		+ ' SET tu.wins = tu.wins + 1, u.wins = u.wins + 1'
+		+ ' WHERE tu.userId = u.id' // JOIN
+		+ ' AND tu.tournamentId = ? AND tu.userId = ?',
 		params = [tid,uid];
 
-	mysql.query('rw', sql, params, 'modules/games/games-model/decLossUsersStreak', function(err, results){
+	mysql.query('rw', sql, params, 'modules/games/games-model/incWinUsersWins', function(err, results){
 		return cb(err,results)
 	});
 };
 
-GamesModel.decLossUsersGames = function(tid,uid,cb) {
-	var sql = 'UPDATE tournamentUsers SET losses = losses + 1 WHERE tournamentId = ? AND userId = ?',
+GamesModel.incLoseUsersLosses = function(tid,uid,cb) {
+	var sql = 'UPDATE tournamentUsers tu, users u'
+		+ ' SET tu.losses = tu.losses + 1, u.losses = u.losses + 1'
+		+ ' WHERE tu.userId = u.id' // JOIN
+		+ ' AND tu.tournamentId = ? AND tu.userId = ?',
 		params = [tid,uid];
 
-	mysql.query('rw', sql, params, 'modules/games/games-model/decLossUsersStreak', function(err, results){
+	mysql.query('rw', sql, params, 'modules/games/games-model/incLoseUsersLosses', function(err, results){
 		return cb(err,results)
 	});
 };
 
 GamesModel.incWinCharWins = function(tid,uid,cid,cb) {
-	var sql = 'UPDATE tournamentCharacters SET wins = wins + 1 WHERE tournamentId = ? AND userId = ? AND characterId = ?',
+	var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
+		+ ' SET tc.wins = tc.wins + 1, cd.wins = cd.wins+1'
+		+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
+		+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
 		params = [tid,uid,cid];
 
 	mysql.query('rw', sql, params, 'modules/games/games-model/incWinCharWins', function(err, results){
@@ -138,7 +153,10 @@ GamesModel.incWinCharWins = function(tid,uid,cid,cb) {
 };
 
 GamesModel.incLoseCharLosses = function(tid,uid,cid,cb) {
-	var sql = 'UPDATE tournamentCharacters SET losses = losses + 1 WHERE tournamentId = ? AND userId = ? AND characterId = ?',
+	var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
+		+ ' SET tc.losses = tc.losses + 1, cd.losses = cd.losses + 1'
+		+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
+		+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
 		params = [tid,uid,cid];
 
 	mysql.query('rw', sql, params, 'modules/games/games-model/incLoseCharLosses', function(err, results){

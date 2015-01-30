@@ -24,21 +24,6 @@ TournamentsModel.recordChampion = function(tid,uid,cb) {
 	});
 };
 
-// users wins/losses, character wins/losses, tournament active = 0, user globalstreak, character globalstreak
-TournamentsModel.updateStreaksAndWins = function(tid,cb) {
-	// get user wins/losses
-	var sql = 'SELECT userId,wins,losses,bestStreak FROM tournamentUsers WHERE tournamentId = ?',
-		params = [tid];
-
-	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/updateStreaksAndWins', function(err, results){
-		if(err)return cb(err)
-		if(!results || !results.length)return cb()
-
-		//update user wins/losses
-		return cb(null, results)
-	});
-};
-
 TournamentsModel.getTourneyId = function(tourneyName, cb) {
 	var sql = 'SELECT id, seeded FROM tournaments WHERE name = ?',
 		params = [tourneyName];
