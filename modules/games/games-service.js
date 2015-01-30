@@ -98,6 +98,7 @@ GamesService.updateData = function(options, cb) {
 	//retrieve streaks to evaluate fire/ice status
 	streakCalls.winXter = function(done){usersMdl.getCharacterStreak(options.tourneyId,options.winPid,options.winXid,done)}
 	streakCalls.loseXter = function(done){usersMdl.getCharacterStreak(options.tourneyId,options.losePid,options.loseXid,done)}
+	streakCalls.fireChars = function(done){gamesMdl.getFireChars(options.tourneyId,options.winPid,options.winXid,done)}
 
 	async.parallel(streakCalls,function(err,streaks){
 		if(err)return cb(err)
@@ -108,6 +109,8 @@ GamesService.updateData = function(options, cb) {
 		if(streaks.winXter.curStreak === 2){
 			updateCalls.push(function(done){gamesMdl.fireUp(options.tourneyId,options.winPid,options.winXid,done)})
 		}
+		if(streaks.fireChars.length) updateCalls.push(function(done){gamesMdl.updateFireWins(streaks.fireChars,options.tourneyId,options.winPid,done)})
+
 
 		//char data
 		updateCalls.push(function(done){gamesMdl.incWinCharCurStreak(options.tourneyId,options.winPid,options.winXid,done)})
@@ -149,7 +152,7 @@ GamesService.checkAndUpdateTournament = function(options, cb) {
 		}
 
 		if(!endTournament) return cb(null,endTournament) // tourney not over
-		atourneyMdl.recordChampion(options.tourneyId,scores[0].userId,function(err,results){
+		tourneyMdl.recordChampion(options.tourneyId,scores[0].userId,function(err,results){
 			return cb(err,endTournament)
 		});
 	});

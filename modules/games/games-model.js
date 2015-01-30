@@ -187,4 +187,44 @@ GamesModel.getTournamentScores = function(tid,cb) {
 	});
 };
 
+GamesModel.getFireChars = function(tid,uid,cid,cb) {
+	var sql = 'SELECT characterId FROM tournamentCharacters'
+		+ ' WHERE tournamentId = ? AND userId = ? AND curStreak >= 3'
+		+ ' AND characterId != ?'
+		params = [tid,uid,cid];
+
+	mysql.query('rw', sql, params, 'modules/games/games-model/countFireChars', function(err, results){
+		if(err) return cb(err)
+		return cb(null,_.pluck(results,'characterId'))
+	});
+};
+
+// fireChars: array of characterIds on fire
+GamesModel.updateFireWins = function(fireChars,tid,uid,cb) {
+	var sqlCharLvl = 'UPDATE tournamentCharacters tc, charactersData cd'
+		+ ' SET tc.fireWins = tc.fireWins + 1, cd.fireWins = cd.fireWins + 1'
+		+ ' WHERE tc.characterId = cd.characterId AND tc.userId = cd.userId' // JOIN
+		+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId in (?',
+		paramsCharLvl = [tid,uid,fireChars[0]];
+
+		for(var i=1;i<fireChars.length;i++){
+			sqlCharLvl += ',?'
+			paramsCharLvl.push(fireChars[i])
+		}
+		sqlCharLvl += ')'
+
+	var sqlUserLvl = 'UPDATE tournamentUsers SET fireWins = fireWins + ?'
+		+ ' WHERE tournamentId = ? AND userId = ?',
+		paramsUserLvl = [fireChars.length,tid,uid]
+
+	async.parallel([
+		function(done){
+			mysql.query('rw', sqlCharLvl, paramsCharLvl, 'modules/games/games-model/updateFireWins:charLvl', done)
+		},
+		function(done){
+			mysql.query('rw', sqlUserLvl, paramsUserLvl, 'modules/games/games-model/updateFireWins:userLvl', done)
+		}
+	],cb);
+};
+
 module.exports = GamesModel;

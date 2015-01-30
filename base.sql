@@ -113,6 +113,7 @@ CREATE TABLE `charactersData` (
 	`wins` int(11) NOT NULL DEFAULT 0,
 	`losses` int(11) NOT NULL DEFAULT 0,
 	`globalBestStreak` int(11) NOT NULL DEFAULT 0,
+	`fireWins` int(11) NOT NULL DEFAULT 0,
 	UNIQUE `user-character` (`userId`,`characterId`),
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`),
 	FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`)
