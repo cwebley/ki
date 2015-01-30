@@ -188,7 +188,7 @@ UsersModel.insertSeeds = function(rows, cb) {
 	
 				// history: this actually leads to duplicate entries if the seed form is sent more than once. 
 				// might be a future problem in stat calculation
-				sql = 'INSERT INTO history (tournamentId,userId,characterId,eventId,value) VALUES(?,?,?,?,?)'
+				sql = 'INSERT INTO history (tournamentId,userId,characterId,eventId,value,delta) VALUES(?,?,?,?,?,?)'
 				params = [];
 	
 				for(var i=0;i<rows.length;i++){
@@ -199,6 +199,7 @@ UsersModel.insertSeeds = function(rows, cb) {
 					params.push(rows[i].uid)
 					params.push(rows[i].cid)
 					params.push(eventId)
+					params.push(rows[i].value)
 					params.push(rows[i].value)
 				}
 

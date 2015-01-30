@@ -38,16 +38,81 @@ GamesModel.iceDown = function(tid,uid,icedCid,cb) {
 		params = [tid, uid, icedCid];
 
 	mysql.query('rw', sql, params, 'modules/games/games-model/iceDown', function(err, results){
-		return cb(err, results);
+		if(err)return cb(err)
+
+		// get all other characters
+		var sqlChar = 'SELECT id FROM characters WHERE id != ?',
+			paramsChar = [icedCid]
+		//get ice eventId
+		var sqlFireEvent = 'SELECT id FROM events WHERE description = ?',
+			paramsFireEvent = ["ice"]
+		//get friendlyIce eventId
+		var sqlFIEvent = 'SELECT id FROM events WHERE description = ?',
+			paramsFIEvent = ["friendlyIce"]
+
+		async.parallel([
+			function(done){mysql.query('rw', sqlChar, paramsChar, 'modules/games/games-model/iceDown:get-characters', done)},
+			function(done){mysql.query('rw', sqlFireEvent, paramsFireEvent, 'modules/games/games-model/iceDown:get-ice-event', done)},
+			function(done){mysql.query('rw', sqlFIEvent, paramsFIEvent, 'modules/games/games-model/iceDown:get-ice-event', done)}
+		],function(err,results){
+			if(err) return cb(err)
+
+			//history
+			//ice character
+			var histIceSql = 'INSERT INTO history (tournamentId,userId,characterId,eventId,delta) VALUES (?,?,?,?,?),',
+				histIceParams = [tid,uid,icedCid,results[1][0].id,0],
+				moreQMs = [];
+
+			//friendly ice changes
+			for(var i=0;i<results[0].length;i++){
+				moreQMs.push('(?,?,?,?,?)')
+				histIceParams.push(tid,uid,results[0][i].id,results[2][0].id,-1)
+			}
+			histIceSql += moreQMs.join(',')
+			mysql.query('rw', histIceSql, histIceParams, 'modules/games/games-model/iceDown:insert-history', cb)
+		});
 	});
 };
 
 GamesModel.fireUp = function(tid,uid,fireCid,cb) {
+	// fire effects
 	var sql = 'UPDATE tournamentCharacters SET value = value + 1 WHERE tournamentId = ? AND userId = ? AND characterId != ?',
 		params = [tid, uid, fireCid];
 
-	mysql.query('rw', sql, params, 'modules/games/games-model/fireUp', function(err, results){
-		return cb(err, results);
+	mysql.query('rw', sql, params, 'modules/games/games-model/fireUp:fire-effects', function(err, results){
+		if(err) return cb(err)
+
+		// get all other characters
+		var sqlChar = 'SELECT id FROM characters WHERE id != ?',
+			paramsChar = [fireCid]
+		//get fire eventId
+		var sqlFireEvent = 'SELECT id FROM events WHERE description = ?',
+			paramsFireEvent = ["fire"]
+		//get friendlyFire eventId
+		var sqlFFEvent = 'SELECT id FROM events WHERE description = ?',
+			paramsFFEvent = ["friendlyFire"]
+
+		async.parallel([
+			function(done){mysql.query('rw', sqlChar, paramsChar, 'modules/games/games-model/fireUp:get-characters', done)},
+			function(done){mysql.query('rw', sqlFireEvent, paramsFireEvent, 'modules/games/games-model/fireUp:get-fire-event', done)},
+			function(done){mysql.query('rw', sqlFFEvent, paramsFFEvent, 'modules/games/games-model/fireUp:get-fire-event', done)}
+		],function(err,results){
+			if(err) return cb(err)
+
+			//history
+			//fire character
+			var histFireSql = 'INSERT INTO history (tournamentId,userId,characterId,eventId,delta) VALUES (?,?,?,?,?),',
+				histFireParams = [tid,uid,fireCid,results[1][0].id,0],
+				moreQMs = [];
+
+			//friendly fire changes
+			for(var i=0;i<results[0].length;i++){
+				moreQMs.push('(?,?,?,?,?)')
+				histFireParams.push(tid,uid,results[0][i].id,results[2][0].id,1)
+			}
+			histFireSql += moreQMs.join(',')
+			mysql.query('rw', histFireSql, histFireParams, 'modules/games/games-model/fireUp:insert-history', cb)
+		});
 	});
 };
 

@@ -82,15 +82,6 @@ GamesService.getAndValidateIds = function(options, cb) {
 	});
 };
 
-//
-//
-//
-//
-//
-//
-//
-//
-// TODO update firewins
 GamesService.updateData = function(options, cb) {
 	var streakCalls = {},
 		updateCalls = [];
