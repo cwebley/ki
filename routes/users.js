@@ -2,6 +2,7 @@ var express = require('express'),
 	cookieParser = require('cookie-parser'),
 	session = require('cookie-session'),
 	users = require('../modules/users'),
+	um = require('../modules/users/middleware'),
 	constants = require('../modules/constants');
 
 
@@ -31,7 +32,7 @@ controller.login = function(req, res)	{
 	users.login(opts,function(err,dto){
 		if(err) return res.status(500).send({success:false,reason:"internal-error",err:err})
 		if(!dto) return res.status(400).send({success:false,reason:"user-not-found"})
-		req.session.username = opts.username
+		req.session.user = dto.user
 		req.session.seeded = dto.seeded
 		res.redirect('/tournaments');
 	});
@@ -53,10 +54,11 @@ controller.register = function(req, res){
 	if(opts.password.length > 50) return res.status(400).send({succses:false,reason: "password-too-long"})
 	if(opts.email.length > 255) return res.status(400).send({succses:false,reason: "email-too-long"})
 
-	users.register(opts, function(err,results){
+	users.register(opts, function(err,dto){
 		if(err) return res.status(500).send({success:false,reason:err})
-		if(!results) return res.redirect('/')
-		req.session.username = opts.username
+		if(!dto) return res.redirect('/') // user already exists
+
+		req.session.user = dto.user
 		res.redirect('/tournaments');
 	})
 };
@@ -77,8 +79,6 @@ var getSeedOpts = function(req){
 }
 
 controller.seed = function(req, res){
-	if(!req.session.username) return res.redirect('/')
-
 	if(!req.body.opponent) return res.status(400).send({success:false,reason:"no-opponent-name-for-seeding"})
 
 	var opts = getSeedOpts(req)
@@ -95,12 +95,10 @@ controller.seed = function(req, res){
 };
 
 controller.getSeedForm = function(req, res){
-	if(!req.session.username) return res.redirect('/')
-
-	users.getOpponentsNames(req.session.username,req.params.tourneyName, function(err,dto){
+	users.getOpponentsNames(req.session.user.username,req.params.tourneyName, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
 
-		dto.username=req.session.username
+		dto.username=req.session.user.username
 		dto.characters = constants.characters
 		dto.title = req.params.tourneyName
 		res.render('tournaments/seed',dto)
@@ -127,9 +125,11 @@ app.post('/register',
  	controller.register
 );
 app.get('/:tourneyName/seed', 
+	um.requiresUser,
  	controller.getSeedForm
 );
 app.post('/:tourneyName/seed', 
+	um.requiresUser,
  	controller.seed
 );
 

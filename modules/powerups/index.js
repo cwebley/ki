@@ -16,10 +16,19 @@ PowerInterface.getInspect = function(opts,cb) {
 		if(err) return cb(err)
 		if(!inspectCount) return cb()
 
-		tourneyMdl.getPlayerNames(opts.tourneyName,function(err,playerNames){	
+		var calls = {}
+		calls.players = function(done){tourneyMdl.getPlayersNamesIds(opts.tourneyName,done)}
+		calls.tourneyId = function(done){tourneyMdl.getTourneyId(opts.tourneyName,done)}
+
+		async.parallel(calls,function(err,results){	
 			if(err) return cb(err)
-			if(!upcoming.check(opts.tourneyName,playerNames)) upcoming.create(opts.tourneyName,playerNames)
-			next = upcoming.getNext(opts.tourneyName,inspectCount)
+			if(!results.tourneyId.length) return cb(new Error('modules/powerups/index.js:tournament-not-found'))
+
+			var pids = _.pluck(results.players,'id')
+			var tid = results.tourneyId[0].id
+		
+			if(!upcoming.check(tid,pids)) upcoming.create(tid,pids)
+			next = upcoming.getNext(tid,results.players,inspectCount)
 			return cb(err,inspectDto(next))
 		});
 	});

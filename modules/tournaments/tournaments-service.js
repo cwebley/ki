@@ -33,10 +33,6 @@ tournamentsService.newTournament = function(options, cb) {
 			var err = new Error('users-not-found-in-user-table')
 			return cb(err)
 		}
-		
-		//initialize upcoming match arrays
-		upcoming.create(options.name,options.players)
-		upcoming.fill(options.name)
 
 		// init users powerup stocks in redis
 		var generateUserPowerStock = function(userName){
@@ -61,6 +57,11 @@ tournamentsService.newTournament = function(options, cb) {
 						zeroCharCalls.push(generateZeroCharVals(tid, userIds[i]))
 					}
 					async.parallel(zeroCharCalls, function(err,results){
+
+						//initialize upcoming match arrays
+						upcoming.create(tid,userIds)
+						upcoming.fill(tid)
+
 						return cb(err,results)
 					});
 				});

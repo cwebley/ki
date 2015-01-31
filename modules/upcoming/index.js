@@ -4,49 +4,65 @@ var _ = require('lodash'),
 var UpcomingInterface = {};
 UpcomingInterface.pending = {};
 
-// calls fill on exit
-//users: array of users in a tournament
-UpcomingInterface.create = function(tourneyName,users){
-	UpcomingInterface.pending[tourneyName] = {};
-	for(var i=0; i<users.length; i++){
-		UpcomingInterface.pending[tourneyName][users[i]] = [];
+/*
+	tourneyId --> userId --> upcomingCharacters
+
+	{
+		1:{
+			1:["fulgore","wulf",...],
+			2:["spinal","orchid",...]
+		},
+		2:{
+			1:["riptor","wulf",...],
+			3:["omen","thunder",...]
+		}
 	}
-	UpcomingInterface.fill(tourneyName)
+*/
+
+// calls fill on exit
+//users: array of userIds in a tournament
+UpcomingInterface.create = function(tourneyId,users){
+	UpcomingInterface.pending[tourneyId] = {};
+	for(var i=0; i<users.length; i++){
+		UpcomingInterface.pending[tourneyId][users[i]] = [];
+	}
+	UpcomingInterface.fill(tourneyId)
 }
 
-UpcomingInterface.fill = function(tourneyName){
-	for(var n in UpcomingInterface.pending[tourneyName]){
-		while(UpcomingInterface.pending[tourneyName][n].length<20){
+UpcomingInterface.fill = function(tourneyId){
+	for(var n in UpcomingInterface.pending[tourneyId]){
+		while(UpcomingInterface.pending[tourneyId][n].length<20){
 			var random = _.random(constants.characters.length-1)
-			UpcomingInterface.pending[tourneyName][n].push(constants.characters[random])
+			UpcomingInterface.pending[tourneyId][n].push(constants.characters[random])
 		}
 	}
 }
 
 //num = int number of matches you want
-UpcomingInterface.getNext = function(tourneyName,num){
+UpcomingInterface.getNext = function(tourneyId,userArr,num){
 	var nextUp = {};
-	for(var n in UpcomingInterface.pending[tourneyName]){
-		nextUp[n] = [];
-		for(var i=0;i<num;i++){
-			nextUp[n].push(UpcomingInterface.pending[tourneyName][n][i])
+	for(var i=0;i<userArr.length;i++){
+		nextUp[userArr[i].name] = [];
+		for(var j=0;j<num;j++){
+			nextUp[userArr[i].name].push(UpcomingInterface.pending[tourneyId][userArr[i].id][j])
 		}
 	}
 	return nextUp
 }
 
 // probably only works with 2 players.
-UpcomingInterface.removeFirst = function(tourneyName){
-	for(var n in UpcomingInterface.pending[tourneyName]){
-		UpcomingInterface.pending[tourneyName][n].shift()
+UpcomingInterface.removeFirst = function(tourneyId){
+	// console.log("UPCOMIGN: ", UpcomingInterface.pending)
+	for(var n in UpcomingInterface.pending[tourneyId]){
+		UpcomingInterface.pending[tourneyId][n].shift()
 	}
 }
 
 //users: array of users in a tournament
-UpcomingInterface.check = function(tourneyName,users){
+UpcomingInterface.check = function(tourneyId,users){
 	if(!users || !users.length) return false
 	for(var i=0;i<users.length;i++){
-		if(!UpcomingInterface.pending[tourneyName] || !UpcomingInterface.pending[tourneyName][users[i]] || !UpcomingInterface.pending[tourneyName][users[i]].length){
+		if(!UpcomingInterface.pending[tourneyId] || !UpcomingInterface.pending[tourneyId][users[i]] || !UpcomingInterface.pending[tourneyId][users[i]].length){
 			return false
 		}
 	}

@@ -19,7 +19,7 @@ UsersService.registerUser = function(options,cb){
 		if(userId) return cb() //user already exists, redirect to login page
 
 		usersMdl.createUser(options.username,options.password,options.email,function(err,results){
-			return cb(err,results)
+			return cb(err,results.insertId)
 		});
 	});
 };
@@ -61,7 +61,7 @@ UsersService.login = function(options, cb) {
 		if(!uid)return cb()
 		usersMdl.getActiveSeedStatus(uid,function(err,seedResults){
 			if(err)return cb(err)
-			return cb(null, seedResults)
+			return cb(null,seedResults,uid)
 		})
 	})
 };

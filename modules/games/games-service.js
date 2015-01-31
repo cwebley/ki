@@ -15,12 +15,12 @@ GamesService.saveGame = function(options, cb) {
 		if(err)return cb(err)
 		if(!validated) return cb() // no character value: seeding not done.
 
-		var users=[options.winningPlayer,options.losingPlayer]
-		if(!upcoming.check(options.tournament,users)){
-			upcoming.create(options.tournament,users)
+		var users=[validated.winPid,validated.losePid]
+		if(!upcoming.check(validated.tourneyId,users)){
+			upcoming.create(validated.tourneyId,users)
 		}
-		upcoming.removeFirst(options.tournament)
-		upcoming.fill(options.tournament)
+		upcoming.removeFirst(validated.tourneyId)
+		upcoming.fill(validated.tourneyId)
 
 		var calls = {};
 		calls.winnerValue = function(done){usersMdl.getCharacterValue(validated.tourneyId,validated.winPid,validated.winXid,done)}

@@ -69,15 +69,15 @@ TournamentsModel.getPlayers = function(tourneyName, cb) {
 	});
 };
 
-TournamentsModel.getPlayerNames = function(tourneyName, cb) {
-	var sql = 'SELECT u.name FROM users u'
+TournamentsModel.getPlayersNamesIds = function(tourneyName, cb) {
+	var sql = 'SELECT u.id,u.name FROM users u'
 		+ ' JOIN tournamentUsers tu ON u.id = tu.userId'
 		+ ' JOIN tournaments t ON t.id = tu.tournamentId WHERE t.name = ?'
 		params = [tourneyName];
 
-	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getPlayers', function(err, results){
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getPlayersNamesIds', function(err, results){
 		if (err) return cb(err)
-		return cb(null,_.pluck(results, 'name'))
+		return cb(null,results)
 	});
 };
 

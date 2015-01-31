@@ -3,6 +3,7 @@ var express = require('express'),
 	session = require('cookie-session'),
 	powerups = require('./powerups'),
 	users = require('../../modules/users'),
+	um = require('../../modules/users/middleware'),
 	dto = require('../../modules/dto'),
 	tournaments = require('../../modules/tournaments');
 
@@ -18,7 +19,7 @@ var getTourneyOpts = function(req){
 	var opts = {
 		name: req.body.name,
 		goal: dto.positive(req.body.goal),
-		players: (req.body.opponent)?[req.session.username,req.body.opponent]:[],
+		players: (req.body.opponent)?[req.session.user.username,req.body.opponent]:[],
 		surrender: req.body.surrender || false
 	}
 	return opts
@@ -26,17 +27,14 @@ var getTourneyOpts = function(req){
 
 
 tourneyController.newTourneyForm = function(req, res){
-	if(!req.session.username) return res.redirect('/')
-
-	users.getUserList(req.session.username, function(err,dto){
+	users.getUserList(req.session.user.username, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
-		dto.username=req.session.username
+		dto.username=req.session.user.username
 		res.render('tournaments/create',dto)
 	})
 }
 
 tourneyController.postNewTourney = function(req, res){
-	if(!req.session.username) return res.redirect('/')
 
 	if(!req.body.opponent) res.status(400).send({success:false,reason:'no-opponent-specified'})
 
@@ -51,7 +49,6 @@ tourneyController.postNewTourney = function(req, res){
 }
 
 tourneyController.get = function(req, res){
-	if(!req.session.username) return res.redirect('/')
 
 	var tourneyName = req.params.tourneyName
 
@@ -61,13 +58,12 @@ tourneyController.get = function(req, res){
 			return res.redirect('/tournaments')
 		}
 		dto.title = tourneyName
-		dto.me = req.session.username
+		dto.me = req.session.user.username
 		res.render('tournaments/home',dto)
 	})
 }
 
 tourneyController.edit = function(req, res){
-	if(!req.session.username) return res.redirect('/')
 
 	var opts = getTourneyOpts(req)
 	opts.oldName = req.params.tourneyName
@@ -83,7 +79,6 @@ tourneyController.edit = function(req, res){
 }
 
 tourneyController.editTourneyForm = function(req, res){
-	if(!req.session.username) return res.redirect('/')
 	var tourneyName = req.params.tourneyName
 
 	tournaments.getTourneyInfo(tourneyName, function(err,results){
@@ -96,45 +91,52 @@ tourneyController.editTourneyForm = function(req, res){
 
 
 tourneyController.getTourneyList = function(req, res){
-	if(!req.session.username) return res.redirect('/') // redirect to login
 
 	tournaments.getTourneyList(function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
-		dto.username = req.session.username
+		dto.username = req.session.user.username
 		res.render('tournaments/index',dto)
 	})
 }
 
 
 app.get('/',
-  tourneyController.getTourneyList
+	um.requiresUser,
+	tourneyController.getTourneyList
 );
 
-app.get('/new', 
+app.get('/new',
+	um.requiresUser,
  	tourneyController.newTourneyForm
 );
 
-app.post('/new', 
+app.post('/new',
+	um.requiresUser,
  	tourneyController.postNewTourney
 );
 
-app.get('/:tourneyName', 
+app.get('/:tourneyName',
+	um.requiresUser,
  	tourneyController.get
 );
 
-app.post('/:tourneyName/edit', 
+app.post('/:tourneyName/edit',
+	um.requiresUser,
  	tourneyController.edit
 );
 
-app.get('/:tourneyName/edit', 
+app.get('/:tourneyName/edit',
+	um.requiresUser,
  	tourneyController.editTourneyForm
 );
 
-app.get('/:tourneyName/pwr/inspect', 
+app.get('/:tourneyName/pwr/inspect',
+	um.requiresUser,
  	powerups.getInspect
 );
 
-app.post('/:tourneyName/pwr/inspect', 
+app.post('/:tourneyName/pwr/inspect',
+	um.requiresUser,
  	powerups.postInspect
 );
 

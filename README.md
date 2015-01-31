@@ -5,6 +5,14 @@ the tournament of champions
 
 TODO: 
 
+-- any user can enter tournament and submit games. not cool.
+
+--401 page on frontend
+
+--allow for duplicate number in seeeding?
+
+---you can get to the seed form without being owner. probably should put :user in param and requiresOwner mw
+
 --clean up game submission form on back end. use req.session. not all opts necessary.
 
 --usernames/passwords no spaces?

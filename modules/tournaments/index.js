@@ -57,30 +57,32 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,cb) {
 		tourneySvc.getUsersLevelStats(tourneyName, function(err,tournamentData){
 			if(err)return cb(err)
 
-			// get next matchup, populate if necessary (ie: server was restarted and memory wiped)
-			var users=[];
-			for(var i=0;i<tournamentData.length;i++){
-				users.push(tournamentData[i].name)
-			}
-			if(!upcoming.check(tourneyName,users)){
-				upcoming.create(tourneyName,users)
-			}
-			var next = upcoming.getNext(tourneyName,1)
-
-			// get stats for each character
-			var calls = [];
-			var characterDataGetter = function(tourneyName,userName){
-				return function(done){tourneySvc.getCharacterLevelStats(tourneyName,userName,done)}
-			}
-			for(var i=0;i<tournamentData.length;i++){
-				calls.push(characterDataGetter(tourneyName,tournamentData[i].name))
-			}
-			async.parallel(calls,function(err,charData){
+			tourneyMdl.getPlayersNamesIds(tourneyName,function(err,players){
 				if(err) return cb(err)
-				for(var i=0;i<tournamentData.length;i++){
-					tournamentData[i].characters = charData[i]
+				var uids = _.pluck(players,'id')
+
+				// get next matchup, populate if necessary (ie: server was restarted and memory wiped)
+				if(!upcoming.check(tourneyId,uids)){
+					upcoming.create(tourneyId,uids)
 				}
-				return cb(err,TourneyInterface.allStatsDto(tournamentData, next, seeded))
+
+				var next = upcoming.getNext(tourneyId,players,1)
+	
+				// get stats for each character
+				var calls = [];
+				var characterDataGetter = function(tourneyName,userName){
+					return function(done){tourneySvc.getCharacterLevelStats(tourneyName,userName,done)}
+				}
+				for(var i=0;i<tournamentData.length;i++){
+					calls.push(characterDataGetter(tourneyName,tournamentData[i].name))
+				}
+				async.parallel(calls,function(err,charData){
+					if(err) return cb(err)
+					for(var i=0;i<tournamentData.length;i++){
+						tournamentData[i].characters = charData[i]
+					}
+					return cb(err,TourneyInterface.allStatsDto(tournamentData, next, seeded))
+				});
 			});
 		});
 	});

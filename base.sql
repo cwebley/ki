@@ -131,7 +131,7 @@ CREATE TABLE `tournamentCharacters` (
 	`bestStreak` int(11) NOT NULL DEFAULT 0,
 	`fireWins` int(11) NOT NULL DEFAULT 0,
 	UNIQUE `tournament-user-character` (`tournamentId`,`userId`,`characterId`),
-	FOREIGN KEY (`tournamentId`) REFERENCES `characters`(`id`),
+	FOREIGN KEY (`tournamentId`) REFERENCES `tournaments`(`id`),
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`),
 	FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`)
 );

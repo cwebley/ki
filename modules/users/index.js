@@ -7,30 +7,42 @@ var _ = require('lodash'),
 
 var UsersInterface = {};
 
-UsersInterface.userListDto = function(data){
+var userListDto = function(data){
 	if(!data || !data.length) data = [];
 	return {users:data}
 }
 
-UsersInterface.loginDto = function(data){
-	var dto = {seeded: {}}
-	for(var i=0;i<data.length;i++){
-		if(data[i].seeded){
-			dto.seeded[data[i].name] = true
+var loginDto = function(username,uid,seedData){
+	var dto = {
+		user: {
+			username:username,
+			userId: uid
 		}
 	}
+	if(seedData && seedData.length){
+		dto.seeded={}
+		for(var i=0;i<seedData.length;i++){
+			if(seedData[i].seeded){
+				dto.seeded[seedData[i].name] = true
+			}
+		}
+	}
+
 	return dto
 }
 
 UsersInterface.register = function(options, cb) {
-	usersSvc.registerUser(options,cb)
+	usersSvc.registerUser(options,function(err,userId){
+		if(err) return cb(err)
+		return cb(null,loginDto(options.username,userId))
+	})
 };
 
 UsersInterface.login = function(options, cb) {
-	usersSvc.login(options,function(err,results){
+	usersSvc.login(options,function(err,seedStatus,uid){
 		if(err)return cb(err)
-		if(!results) return cb()
-		return cb(null, UsersInterface.loginDto(results))
+		if(!seedStatus) return cb()
+		return cb(null, loginDto(options.username,uid,seedStatus))
 	})
 };
 
@@ -41,14 +53,14 @@ UsersInterface.seedCharacters = function(options, cb) {
 UsersInterface.getUserList = function(creatorsName, cb) {
 	usersMdl.getUserList(creatorsName, function(err,results){
 		if(err)return cb(err)
-		return cb(null,UsersInterface.userListDto(results))
+		return cb(null,userListDto(results))
 	});
 };
 
 UsersInterface.getOpponentsNames = function(seederName,tourneyName,cb) {
 	usersMdl.getOpponentsNames(seederName,tourneyName, function(err,results){
 		if(err)return cb(err)
-		return cb(null,UsersInterface.userListDto(results))
+		return cb(null,userListDto(results))
 	});
 };
 
