@@ -28,7 +28,6 @@ CREATE TABLE `users` (
 	`tournamentLosses` int(11) NOT NULL DEFAULT 0,
 	`wins` int(11) NOT NULL DEFAULT 0,
 	`losses` int(11) NOT NULL DEFAULT 0,
-	`powerUps` int(11) NOT NULL DEFAULT 0,
 	`globalBestStreak` int(11) NOT NULL DEFAULT 0,
 	UNIQUE KEY `name` (`name`),
 	PRIMARY KEY (`id`)

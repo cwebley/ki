@@ -26,15 +26,6 @@ gameController.submitGame = function(req, res){
 	})
 }
 
-var getTourneyOpts = function(req){
-	var opts = {
-		name: req.body.name,
-		goal: req.body.goal,
-		players: req.body.players
-	}
-	return opts
-}
-
 router.get('/', function(req, res) {
   res.redirect('/');
 });

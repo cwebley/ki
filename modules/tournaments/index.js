@@ -53,7 +53,7 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
 		if(err) return cb(err)
 		if(!tourneyId) return cb()
 
-
+		// getuser stats
 		tourneySvc.getUsersLevelStats(tourneyName, function(err,tournamentData){
 			if(err)return cb(err)
 
@@ -68,10 +68,7 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
 			}
 			var next = upcoming.getNext(peek)
 
-			// get the stats
-			// async.map(users,
-			// 	function(tourneyName,tournamentData,done){tourneySvc.getCharacterLevelStats(tourneyName,tournamentData.name,done)},
-			// 	function(err,charData){
+			// get stats for each character
 			var calls = [];
 			var characterDataGetter = function(tourneyName,userName){
 				return function(done){tourneySvc.getCharacterLevelStats(tourneyName,userName,done)}

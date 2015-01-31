@@ -21,16 +21,6 @@ var Interface = function(){
 	};
 };
 
-// var Interface = function(){
-// 	this.pools = {
-// 		all: {
-// 			rw: startPool(vConfig.get('db:rw')),
-// 			ro: startPool(vConfig.get('db:ro')),
-// 			roi: startPool(vConfig.get('db:roi')),
-// 		}
-// 	};
-// };
-
 Interface.prototype.query = function(db, type, sql, params, failmsg, cb) {
 	if(!cb && typeof failmsg === 'function') {
 		cb = failmsg;

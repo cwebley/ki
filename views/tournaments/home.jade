@@ -32,15 +32,22 @@ block content
 						tr
 							th(style="padding: 2px 20px 2px 0") User
 							th(style="padding: 2px 20px 2px 0") Character
+							th(style="padding: 2px 20px 2px 0") Wins
+							th(style="padding: 2px 20px 2px 0") Losses
 							th(style="padding: 2px 20px 2px 0") streak
 							th(style="padding: 2px 20px 2px 0") Value
+
 					tbody
 						for c in u.characters
 							tr
 								td(style="padding: 2px 20px 2px 0") #{u.name}
 								td(style="padding: 2px 20px 2px 0") #{c.name}
+								td(style="padding: 2px 20px 2px 0") #{c.wins}
+								td(style="padding: 2px 20px 2px 0") #{c.losses}
 								td(style="padding: 2px 20px 2px 0") #{c.curStreak}
 								td(style="padding: 2px 20px 2px 0") #{c.value}
+								
+
 	if seeded
 		h1 Submit Game
 		div(style="width: 33%; float: left")
@@ -53,10 +60,6 @@ block content
 		each char, player in next
 			- playerArr.push(player)
 			- charArr.push(char)
-		li= playerArr
-		li= charArr
-
-
 
 		- for(var i=0;i<playerArr.length;i++){
 			form(action='http://localhost:3000/games/submit',method='post')
@@ -77,6 +80,7 @@ block content
 		a(href='/users/#{title}/seed') Seed my opponent
 
 
+	
 	p
 	a(href='/tournaments/#{title}/edit') Edit #{title}
 

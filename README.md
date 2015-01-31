@@ -5,6 +5,8 @@ the tournament of champions
 
 TODO: 
 
+--clean up game submission form on back end. use req.session. not all opts necessary.
+
 --usernames/passwords no spaces?
 
 --passwords encrypted?
@@ -95,9 +97,11 @@ how to get powerups?
 
 secret wagers. need interactive front end for this.
 maybe these are challenges presented to you?
+penalty for failing these? or just reward for completing?
 	supreme
 	3 counterbreaks
 	streak of wins
+	heavy underdog win
 
 how to get wagers?
 	start with 1-3
@@ -113,10 +117,10 @@ achievements? milestones not unique to one tourney:
 
 powers
 	reseed
-	reduce 5 pts 10 games
-	peek and arrange 7 games
+	reduce 5 pts 10 games. if rematch=true don't decr this value
+	peek and arrange 10 games
 	rematch
-	up odds of char for 20ish games	
+	up odds of char or two for 20ish games	
 	choose opponent
 
 users table powerUps, Active

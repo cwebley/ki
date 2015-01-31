@@ -61,6 +61,7 @@ tourneyController.get = function(req, res){
 			return res.redirect('/tournaments')
 		}
 		dto.title = tourneyName
+		dto.me = req.session.username
 		res.render('tournaments/home',dto)
 	})
 }
