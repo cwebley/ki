@@ -3,6 +3,7 @@ var _ = require('lodash'),
 	usersMdl = require('../users/users-model'),
 	gamesMdl = require('../games/games-model'),
 	tourneyMdl = require('./tournaments-model'),
+	powerupsMdl = require('../powerups/powerups-model'),
 	constants = require('../constants'),
 	upcoming = require('../upcoming'),
 	mysql = require('../persistence').mysql;
@@ -32,26 +33,36 @@ tournamentsService.newTournament = function(options, cb) {
 			var err = new Error('users-not-found-in-user-table')
 			return cb(err)
 		}
-
+		
 		//initialize upcoming match arrays
-		upcoming.create(options.players)
-		upcoming.fill()
+		upcoming.create(options.name,options.players)
+		upcoming.fill(options.name)
 
-		tourneyMdl.createTournament(options, function(err, tid){
-			if(err)return cb(err)
+		// init users powerup stocks in redis
+		var generateUserPowerStock = function(userName){
+			return function(done){powerupsMdl.setUserStock(options.name,userName,done)}
+		}
+		var pwrStockCalls = _.map(options.players, generateUserPowerStock)
 
-			tourneyMdl.insertPlayers(tid,userIds,function(err,insertPlayerRes){
-				if(err) return cb(err)
-					
-				var zeroCharCalls = [];
-				var generateZeroCharVals = function(tid,uid){
-					return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
-				}
-				for(var i=0; i<userIds.length; i++){
-					zeroCharCalls.push(generateZeroCharVals(tid, userIds[i]))
-				}
-				async.parallel(zeroCharCalls, function(err,results){
-					return cb(err,results)
+		async.parallel(pwrStockCalls, function(err,results){
+			if(err) return cb(err)
+
+			tourneyMdl.createTournament(options, function(err, tid){
+				if(err)return cb(err)
+	
+				tourneyMdl.insertPlayers(tid,userIds,function(err,insertPlayerRes){
+					if(err) return cb(err)
+						
+					var zeroCharCalls = [];
+					var generateZeroCharVals = function(tid,uid){
+						return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
+					}
+					for(var i=0; i<userIds.length; i++){
+						zeroCharCalls.push(generateZeroCharVals(tid, userIds[i]))
+					}
+					async.parallel(zeroCharCalls, function(err,results){
+						return cb(err,results)
+					});
 				});
 			});
 		});

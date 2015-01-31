@@ -4,48 +4,49 @@ var _ = require('lodash'),
 var UpcomingInterface = {};
 UpcomingInterface.pending = {};
 
+// calls fill on exit
 //users: array of users in a tournament
-UpcomingInterface.create = function(users){
-	UpcomingInterface.pending = {};
+UpcomingInterface.create = function(tourneyName,users){
+	UpcomingInterface.pending[tourneyName] = {};
 	for(var i=0; i<users.length; i++){
-		UpcomingInterface.pending[users[i]] = [];
+		UpcomingInterface.pending[tourneyName][users[i]] = [];
 	}
+	UpcomingInterface.fill(tourneyName)
 }
 
-UpcomingInterface.fill = function(){
-	for(var n in UpcomingInterface.pending){
-		while(UpcomingInterface.pending[n].length<20){
+UpcomingInterface.fill = function(tourneyName){
+	for(var n in UpcomingInterface.pending[tourneyName]){
+		while(UpcomingInterface.pending[tourneyName][n].length<20){
 			var random = _.random(constants.characters.length-1)
-			UpcomingInterface.pending[n].push(constants.characters[random])
+			UpcomingInterface.pending[tourneyName][n].push(constants.characters[random])
 		}
 	}
 }
 
 //num = int number of matches you want
-UpcomingInterface.getNext = function(num){
+UpcomingInterface.getNext = function(tourneyName,num){
 	var nextUp = {};
-	for(var n in UpcomingInterface.pending){
+	for(var n in UpcomingInterface.pending[tourneyName]){
 		nextUp[n] = [];
 		for(var i=0;i<num;i++){
-			nextUp[n].push(UpcomingInterface.pending[n][i])
+			nextUp[n].push(UpcomingInterface.pending[tourneyName][n][i])
 		}
 	}
 	return nextUp
 }
 
 // probably only works with 2 players.
-UpcomingInterface.removeFirst = function(){
-	for(var n in UpcomingInterface.pending){
-		UpcomingInterface.pending[n].shift()
+UpcomingInterface.removeFirst = function(tourneyName){
+	for(var n in UpcomingInterface.pending[tourneyName]){
+		UpcomingInterface.pending[tourneyName][n].shift()
 	}
 }
 
 //users: array of users in a tournament
-UpcomingInterface.check = function(users){
+UpcomingInterface.check = function(tourneyName,users){
 	if(!users || !users.length) return false
-
 	for(var i=0;i<users.length;i++){
-		if(!UpcomingInterface.pending[users[i]] || !UpcomingInterface.pending[users[i]].length){
+		if(!UpcomingInterface.pending[tourneyName] || !UpcomingInterface.pending[tourneyName][users[i]] || !UpcomingInterface.pending[tourneyName][users[i]].length){
 			return false
 		}
 	}

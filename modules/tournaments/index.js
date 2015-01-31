@@ -47,7 +47,7 @@ TourneyInterface.getTourneyInfo = function(tourneyName,cb) {
 	});
 };
 
-TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
+TourneyInterface.getAllTourneyStats = function(tourneyName,cb) {
 	// verify tourney name valid
 	tourneyMdl.getTourneyId(tourneyName,function(err,tourneyId,seeded){
 		if(err) return cb(err)
@@ -62,11 +62,10 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,peek,cb) {
 			for(var i=0;i<tournamentData.length;i++){
 				users.push(tournamentData[i].name)
 			}
-			if(!upcoming.check(users)){
-				upcoming.create(users)
-				upcoming.fill(users)
+			if(!upcoming.check(tourneyName,users)){
+				upcoming.create(tourneyName,users)
 			}
-			var next = upcoming.getNext(peek)
+			var next = upcoming.getNext(tourneyName,1)
 
 			// get stats for each character
 			var calls = [];
