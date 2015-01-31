@@ -12,23 +12,21 @@ var inspectDto = function(data){
 }
 
 PowerInterface.getInspect = function(opts,cb) {
-	powerSvc.checkOrClaimInspect(opts,function(err,inspectCount){
+	powerSvc.checkOrClaimInspect(opts,function(err,inspectCount,tid){
 		if(err) return cb(err)
-		if(!inspectCount) return cb()
+		if(!inspectCount || !tid) return cb()
 
-		var calls = {}
-		calls.players = function(done){tourneyMdl.getPlayersNamesIds(opts.tourneyName,done)}
-		calls.tourneyId = function(done){tourneyMdl.getTourneyId(opts.tourneyName,done)}
+		// var calls = {}
+		// calls.players = function(done){tourneyMdl.getPlayersNamesIds(opts.tourneyName,done)}
+		// calls.tourneyId = function(done){tourneyMdl.getTourneyId(opts.tourneyName,done)}
 
-		async.parallel(calls,function(err,results){	
+		tourneyMdl.getPlayersNamesIds(opts.tourneyName,function(err,userArr){	
 			if(err) return cb(err)
-			if(!results.tourneyId.length) return cb(new Error('modules/powerups/index.js:tournament-not-found'))
 
-			var pids = _.pluck(results.players,'id')
-			var tid = results.tourneyId[0].id
+			var uids = _.pluck(userArr,'id')
 		
-			if(!upcoming.check(tid,pids)) upcoming.create(tid,pids)
-			next = upcoming.getNext(tid,results.players,inspectCount)
+			if(!upcoming.check(tid,uids)) upcoming.create(tid,uids)
+			next = upcoming.getNext(tid,userArr,inspectCount)
 			return cb(err,inspectDto(next))
 		});
 	});

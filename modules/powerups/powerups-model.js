@@ -8,67 +8,67 @@ var PowerModel = {};
 /*
 	key generation
 */
-var userStockKey = function(tourneyName,userName) {
-	return tourneyName + ':' + userName + ':stock'
+var userStockKey = function(tourneyId,userId) {
+	return tourneyId + ':' + userId + ':stock'
 };
-var inspectStatusKey = function(tourneyName) {
-	return tourneyName + ':inspect'
+var inspectStatusKey = function(tourneyId) {
+	return tourneyId + ':inspect'
 };
-var userInspectKey = function(tourneyName,userName) {
-	return tourneyName + ':' + userName + ':inspect'
+var userInspectKey = function(tourneyId,userId) {
+	return tourneyId + ':' + userId + ':inspect'
 };
 
 
 /*
 	user stock
 */
-PowerModel.getUserStock = function(tourneyName,userName,cb) {
+PowerModel.getUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = userStockKey(tourneyName,userName);
+		key = userStockKey(tourneyId,userId);
 	conn.setnx(key, cb);
 };
-PowerModel.setUserStock = function(tourneyName,userName,cb) {
+PowerModel.setUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = userStockKey(tourneyName,userName);
+		key = userStockKey(tourneyId,userId);
 	conn.set(key, constants._STARTING_PWR_STOCK, cb);
 };
-PowerModel.incrUserStock = function(tourneyName,userName,cb) {
+PowerModel.incrUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = userStockKey(tourneyName,userName);
+		key = userStockKey(tourneyId,userId);
 	conn.incr(key, cb);
 };
-PowerModel.decrUserStock = function(tourneyName,userName,cb) {
+PowerModel.decrUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = userStockKey(tourneyName,userName);
+		key = userStockKey(tourneyId,userId);
 	conn.decr(key, cb);
 };
 
 /*
 	inspect
 */
-PowerModel.getInspectStatus = function(tourneyName,userName,cb) {
+PowerModel.getInspectStatus = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = inspectStatusKey(tourneyName);
+		key = inspectStatusKey(tourneyId);
 	conn.get(key, cb);
 };
-PowerModel.setnxInspectStatus = function(tourneyName,userName,cb) {
+PowerModel.setnxInspectStatus = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = inspectStatusKey(tourneyName);
-	conn.setnx(key, userName, cb);
+		key = inspectStatusKey(tourneyId);
+	conn.setnx(key, userId, cb);
 };
-PowerModel.getUserInspect = function(tourneyName,userName,cb) {
+PowerModel.getUserInspect = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = userInspectKey(tourneyName,userName);
+		key = userInspectKey(tourneyId,userId);
 	conn.get(key, cb);
 };
-PowerModel.decrUserInspect = function(tourneyName,userName,cb) {
+PowerModel.decrUserInspect = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = userInspectKey(tourneyName,userName);
+		key = userInspectKey(tourneyId,userId);
 	conn.decr(key, cb);
 };
-PowerModel.setUserInspect = function(tourneyName,userName,cb) {
+PowerModel.setUserInspect = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
-		key = userInspectKey(tourneyName,userName);
+		key = userInspectKey(tourneyId,userId);
 	conn.set(key, constants._INSPECT_COUNT, cb);
 };
 

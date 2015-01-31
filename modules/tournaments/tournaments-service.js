@@ -34,18 +34,17 @@ tournamentsService.newTournament = function(options, cb) {
 			return cb(err)
 		}
 
-		// init users powerup stocks in redis
-		var generateUserPowerStock = function(userName){
-			return function(done){powerupsMdl.setUserStock(options.name,userName,done)}
-		}
-		var pwrStockCalls = _.map(options.players, generateUserPowerStock)
+		tourneyMdl.createTournament(options, function(err, tid){
+			if(err)return cb(err)
 
-		async.parallel(pwrStockCalls, function(err,results){
-			if(err) return cb(err)
+			// init users powerup stocks in redis
+			var generateUserPowerStock = function(userName){
+				return function(done){powerupsMdl.setUserStock(tid,userName,done)}
+			}
+			var pwrStockCalls = _.map(userIds, generateUserPowerStock)
+			async.parallel(pwrStockCalls, function(err,results){
+				if(err) return cb(err)
 
-			tourneyMdl.createTournament(options, function(err, tid){
-				if(err)return cb(err)
-	
 				tourneyMdl.insertPlayers(tid,userIds,function(err,insertPlayerRes){
 					if(err) return cb(err)
 						
