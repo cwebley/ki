@@ -1,5 +1,5 @@
 var express = require('express'),
-	powerups = require('../modules/powerups');
+	powerups = require('../../modules/powerups');
 
 var router = express.Router();
 var powerupController = {};
