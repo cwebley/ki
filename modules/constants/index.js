@@ -1,5 +1,5 @@
 var ConstantsInterface = {};
 
-ConstantsInterface.characters = ['jago','orchid','wulf','spinal','fulgore','glacius','thunder','sadira','tj','riptor','kanra','maya']
+ConstantsInterface.characters = ['jago','wulf','thunder','sadira','orchid','glacius','spinal','fulgore','tj','maya','kanra','riptor','omen']
 
 module.exports = ConstantsInterface;

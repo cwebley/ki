@@ -61,14 +61,14 @@ UsersInterface.verifySeeds = function(seeds) {
 		if(!seeds[c[i]]){
 			return false
 		}
-		numberHash[i+1] = true
+		numberHash[i+1] = true // jump in this loop to make a number hash
 	}
-
-	// make sure all whole numbers accounted for
+	// make sure all whole numbers accounted for once and only once
 	for(var s in seeds){
 		if(!numberHash[seeds[s]]){
 			return false
 		}
+		delete numberHash[seeds[s]]
 	}
 	return true
 };

@@ -193,7 +193,7 @@ UsersModel.insertSeeds = function(rows, cb) {
 	
 				for(var i=0;i<rows.length;i++){
 					if(i< rows.length-1){
-						sql += ',(?,?,?,?,?)'
+						sql += ',(?,?,?,?,?,?)'
 					}
 					params.push(rows[i].tid)
 					params.push(rows[i].uid)

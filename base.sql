@@ -17,7 +17,8 @@ INSERT INTO characters (name, season) VALUES
 	('tj',2),
 	('maya',2),
 	('kanra',2),
-	('riptor',2);
+	('riptor',2),
+	('omen',13);
 
 CREATE TABLE `users` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
