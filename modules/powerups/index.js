@@ -16,10 +16,6 @@ PowerInterface.getInspect = function(opts,cb) {
 		if(err) return cb(err)
 		if(!inspectCount || !tid) return cb()
 
-		// var calls = {}
-		// calls.players = function(done){tourneyMdl.getPlayersNamesIds(opts.tourneyName,done)}
-		// calls.tourneyId = function(done){tourneyMdl.getTourneyId(opts.tourneyName,done)}
-
 		tourneyMdl.getPlayersNamesIds(opts.tourneyName,function(err,userArr){	
 			if(err) return cb(err)
 

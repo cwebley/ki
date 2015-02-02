@@ -24,7 +24,7 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 					}
 					// you
 					powerMdl.getUserInspect(tid,opts.userId,function(err,results){
-						return cb(err,results,getTourneyId)
+						return cb(err,results,tid)
 					})
 				});
 			} else {
