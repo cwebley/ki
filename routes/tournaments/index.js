@@ -13,6 +13,13 @@ app.use(cookieParser())
 app.use(session({keys:['key1']}))
 app.use(express.static(__dirname + '/public'))
 
+var allowCrossDomain = function(req, res, next) { 
+	console.log('X DOMAIN')
+	res.header('Access-Control-Allow-Origin', '*'); 
+	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+	next(); 
+}
+
 var tourneyController = {};
 
 var getTourneyOpts = function(req){
@@ -58,10 +65,12 @@ tourneyController.get = function(req, res){
 			return res.redirect('/tournaments')
 		}
 		dto.title = tourneyName
-		dto.me = req.session.user.username
-		res.render('tournaments/home',dto)
+		console.log("DTO: ", dto)
+		// dto.me = req.session.user.username
+		// res.render('tournaments/home',dto)
+		res.status(200).send(dto)
 	})
-}
+}	
 
 tourneyController.edit = function(req, res){
 
@@ -116,7 +125,8 @@ app.post('/new',
 );
 
 app.get('/:tourneyName',
-	um.requiresUser,
+	// um.requiresUser,
+	// allowCrossDomain,
  	tourneyController.get
 );
 

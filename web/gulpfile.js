@@ -6,14 +6,14 @@ gulp.task('browserify', function() {
     gulp.src('src/js/main.js')
       .pipe(browserify({transform: 'reactify'}))
       .pipe(concat('main.js'))
-      .pipe(gulp.dest('dist/js'));
+      .pipe(gulp.dest('../public/dist/js'));
 });
 
 gulp.task('copy', function() {
     gulp.src('src/index.html')
-      .pipe(gulp.dest('dist'));
+      .pipe(gulp.dest('../public/dist'));
     gulp.src('src/assets/**/*.*')
-      .pipe(gulp.dest('dist/assets'));
+      .pipe(gulp.dest('../public/dist/assets'));
 });
 
 gulp.task('default',['browserify', 'copy']);
