@@ -15,6 +15,17 @@ UsersModel.getUserId = function(userName, cb) {
 	});
 };
 
+UsersModel.getUserObj = function(userName, cb) {
+	var sql = 'SELECT id FROM users WHERE name = ?',
+		params = [userName];
+
+	mysql.query('rw', sql, params, 'modules/users/users-model/getUserObj', function(err, results){
+		if(err) return cb(err);
+		if(!results || !results.length) return cb();
+		return cb(null,results[0])
+	});
+};
+
 UsersModel.getUserList = function(omittedName, cb) {
 	var sql = 'SELECT name FROM users WHERE name != ?',
 		params = [omittedName];

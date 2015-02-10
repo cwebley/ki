@@ -3,6 +3,7 @@ var _ = require('lodash'),
 	constants = require('../constants'),
 	usersSvc = require('./users-service'),
 	usersMdl = require('./users-model'),
+	auth = require('../auth'),
 	mysql = require('../persistence').mysql;
 
 var UsersInterface = {};
@@ -42,8 +43,12 @@ UsersInterface.login = function(options, cb) {
 	usersSvc.login(options,function(err,seedStatus,uid){
 		if(err)return cb(err)
 		if(!seedStatus) return cb()
-		return cb(null, loginDto(options.username,uid,seedStatus))
-	})
+		var dto = loginDto(options.username,uid,seedStatus)
+		// auth.createAndSetToken(dto,function(err,results){
+		// 	console.log("USER INT CREATE AND SET RES ", results)
+			return cb(err, dto)
+		});
+	});
 };
 
 UsersInterface.seedCharacters = function(options, cb) {
