@@ -1,6 +1,5 @@
 var express = require('express'),
-	cookieParser = require('cookie-parser'),
-	session = require('cookie-session'),
+	passport = require('passport'),
 	powerups = require('./powerups'),
 	users = require('../../modules/users'),
 	um = require('../../modules/users/middleware'),
@@ -10,10 +9,6 @@ var express = require('express'),
 
 
 var app = express();
-app.use(cookieParser())
-app.use(session({keys:['key1']}))
-app.use(auth.initializePassport)
-app.use(express.static(__dirname + '/public'))
 
 var allowCrossDomain = function(req, res, next) { 
 	console.log('X DOMAIN')
@@ -28,19 +23,10 @@ var getTourneyOpts = function(req){
 	var opts = {
 		name: req.body.name,
 		goal: dto.positive(req.body.goal),
-		players: (req.body.opponent)?[req.session.user.username,req.body.opponent]:[],
+		players: (req.body.opponent)?[req.user.name,req.body.opponent]:[],
 		surrender: req.body.surrender || false
 	}
 	return opts
-}
-
-
-tourneyController.newTourneyForm = function(req, res){
-	users.getUserList(req.session.user.username, function(err,dto){
-		if(err) return res.status(500).send({success:false,err:err})
-		dto.username=req.session.user.username
-		res.render('tournaments/create',dto)
-	})
 }
 
 tourneyController.postNewTourney = function(req, res){
@@ -53,7 +39,7 @@ tourneyController.postNewTourney = function(req, res){
 
 	tournaments.newTournament(opts, function(err,results){
 		if(err) return res.status(500).send({success:false,err:err})
-		res.redirect('/tournaments/' + opts.name)
+		res.status(201).send({success:true})
 	})
 }
 
@@ -67,12 +53,10 @@ tourneyController.get = function(req, res){
 			return res.redirect('/tournaments')
 		}
 		dto.title = tourneyName
-		console.log("DTO: ", dto)
-		// dto.me = req.session.user.username
-		// res.render('tournaments/home',dto)
+		dto.me = req.user.name
 		res.status(200).send(dto)
 	})
-}	
+}
 
 tourneyController.edit = function(req, res){
 
@@ -81,74 +65,44 @@ tourneyController.edit = function(req, res){
 
 	tournaments.editTournament(opts, function(err,d){
 		if(err) return res.status(500).send({success:false,err:err})
-		if(!d) {
-			return res.redirect('/tournaments')
-		}
-		d.title = opts.name
-		res.redirect('/tournaments/'+opts.name)
+		res.status(201).send({success:true})
 	})
 }
-
-tourneyController.editTourneyForm = function(req, res){
-	var tourneyName = req.params.tourneyName
-
-	tournaments.getTourneyInfo(tourneyName, function(err,results){
-		if(err) return res.status(500).send({success:false,err:err})
-		if(!results) return res.status(404).send({success:false,reason:"tournament-not-found"})
-		results.title = tourneyName
-		res.render('tournaments/edit',results)
-	})
-}
-
 
 tourneyController.getTourneyList = function(req, res){
-
 	tournaments.getTourneyList(function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
-		dto.username = req.session.user.username
-		res.render('tournaments/index',dto)
+		res.status(200).send(dto)
 	})
 }
-// app.use(auth.authRequired)
 
 app.get('/',
-	// um.requiresUser,
 	tourneyController.getTourneyList
 );
 
-app.get('/new',
-	// um.requiresUser,
- 	tourneyController.newTourneyForm
-);
+/*
+*	Auth Barrier
+*/
+app.use(passport.initialize())
+app.use(passport.authenticate('basic',{ session: false }))
 
 app.post('/new',
-	// um.requiresUser,
  	tourneyController.postNewTourney
 );
 
 app.get('/:tourneyName',
-	// um.requiresUser,
-	// allowCrossDomain,
  	tourneyController.get
 );
 
 app.post('/:tourneyName/edit',
-	// um.requiresUser,
  	tourneyController.edit
 );
 
-app.get('/:tourneyName/edit',
-	// um.requiresUser,
- 	tourneyController.editTourneyForm
-);
-
 app.get('/:tourneyName/pwr/inspect',
-	// um.requiresUser,
  	powerups.getInspect
 );
 
 app.post('/:tourneyName/pwr/inspect',
-	// um.requiresUser,
  	powerups.postInspect
 );
 
