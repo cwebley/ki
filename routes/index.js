@@ -5,6 +5,28 @@ var express = require('express'),
 var app = express(),
 	controller = {};
 
+var getUserOpts = function(req){
+	//TODO dto this stuff
+	var opts = {
+		username: req.body.username,
+		email: req.body.email || "",
+		password: req.body.password,
+		confirmation: req.body.confirmation
+	}
+	return opts
+}
+
+controller.login = function(req, res){
+	var opts = getUserOpts(req)
+	if(!opts.username)return res.status(400).send({success:false,reason:"no-username"})
+	if(!opts.password)return res.status(400).send({success:false,reason:"no-password"})
+	users.login(opts,function(err,dto){
+		if(err) return res.status(500).send({success:false,reason:"internal-error",err:err})
+		if(!dto) return res.status(400).send({success:false,reason:"user-not-found"})
+		res.status(200).send(dto);
+	});
+};
+
 controller.register = function(req, res){
 	var opts = getUserOpts(req)
 	if(!opts.username || !opts.password){
@@ -27,9 +49,13 @@ controller.register = function(req, res){
 
 app.use(passport.initialize()) //needed for the logout func
 
-app.get('/', function(req, res) {
-	res.render('home')
-});
+// app.get('/', function(req, res) {
+// 	res.render('home')
+// });
+
+app.post('/login',
+	controller.login
+);
 
 app.get('/logout',function(req,res){
 	req.logout();

@@ -24,10 +24,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
-app.use('/tournaments', tournaments);
-app.use('/games', games);
+app.use('/api/', routes);
+app.use('/api/users', users);
+app.use('/api/tournaments', tournaments);
+app.use('/api/games', games);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
