@@ -47,8 +47,8 @@ UsersInterface.login = function(options, cb) {
 		// auth.createAndSetToken(dto,function(err,results){
 		// 	console.log("USER INT CREATE AND SET RES ", results)
 			return cb(err, dto)
-		});
 	});
+	// });
 };
 
 UsersInterface.seedCharacters = function(options, cb) {

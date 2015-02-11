@@ -5,12 +5,14 @@ var express = require('express'),
 	users = require('../../modules/users'),
 	um = require('../../modules/users/middleware'),
 	dto = require('../../modules/dto'),
+	auth = require('../../modules/auth'),
 	tournaments = require('../../modules/tournaments');
 
 
 var app = express();
 app.use(cookieParser())
 app.use(session({keys:['key1']}))
+app.use(auth.initializePassport)
 app.use(express.static(__dirname + '/public'))
 
 var allowCrossDomain = function(req, res, next) { 
@@ -107,20 +109,20 @@ tourneyController.getTourneyList = function(req, res){
 		res.render('tournaments/index',dto)
 	})
 }
-
+// app.use(auth.authRequired)
 
 app.get('/',
-	um.requiresUser,
+	// um.requiresUser,
 	tourneyController.getTourneyList
 );
 
 app.get('/new',
-	um.requiresUser,
+	// um.requiresUser,
  	tourneyController.newTourneyForm
 );
 
 app.post('/new',
-	um.requiresUser,
+	// um.requiresUser,
  	tourneyController.postNewTourney
 );
 
@@ -131,22 +133,22 @@ app.get('/:tourneyName',
 );
 
 app.post('/:tourneyName/edit',
-	um.requiresUser,
+	// um.requiresUser,
  	tourneyController.edit
 );
 
 app.get('/:tourneyName/edit',
-	um.requiresUser,
+	// um.requiresUser,
  	tourneyController.editTourneyForm
 );
 
 app.get('/:tourneyName/pwr/inspect',
-	um.requiresUser,
+	// um.requiresUser,
  	powerups.getInspect
 );
 
 app.post('/:tourneyName/pwr/inspect',
-	um.requiresUser,
+	// um.requiresUser,
  	powerups.postInspect
 );
 

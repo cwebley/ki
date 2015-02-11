@@ -16,7 +16,7 @@ UsersModel.getUserId = function(userName, cb) {
 };
 
 UsersModel.getUserObj = function(userName, cb) {
-	var sql = 'SELECT id FROM users WHERE name = ?',
+	var sql = 'SELECT * FROM users WHERE name = ?',
 		params = [userName];
 
 	mysql.query('rw', sql, params, 'modules/users/users-model/getUserObj', function(err, results){

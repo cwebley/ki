@@ -4,29 +4,57 @@ var crypto = require('crypto'),
 	redis = require('../persistence').redis,
     userMdl = require('../users/users-model');
 
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-});
+var AuthInterface = {};
 
-passport.deserializeUser(function(id, done) {
-    User.findById(id, function (err, user) {
-      done(err, user);
-    });
-});
 
-passport.use(new BasicStrategy({},
-  function(username, password, done) {
+// passport.serializeUser(function(user, done) {
+//     done(null, user.id);
+// });
+
+// passport.deserializeUser(function(id, done) {
+//     User.findById(id, function (err, user) {
+//       done(err, user);
+//     });
+// });
+
+passport.use(new BasicStrategy(function(username, password, done) {
+        console.log('passport basic', username, password)
         userMdl.getUserObj(username, function(err, user) {
-          if (err) return done(err);
-          if (!user) return done(null, false);
-          if (user.password != password) return done(null, false);
-          return done(null, user);
+            console.log("user: ", user)
+            if (err) return done(err);
+            console.log(1, err)
+            if (!user) return done(null, false);
+            console.log(2)
+            if (user.password != password) return done(null, false);
+            console.log(3)
+            return done(null, user);
         });
-    });
-));
+    })
+);
+
+AuthInterface.initializePassport = function(res,req,next){
+    console.log("PPORT INIT")
+    passport.initialize()
+    next()
+    console.log("PINIT DONE")
+}
+
+AuthInterface.authRequired = function(res,req,next){
+    console.log("AUTH REQ")
+    passport.authenticate('basic', { session: false }),
+    next()/*,
+    function(req, res){
+        res.json({ username: req.user.username, email: req.user.email });
+    }
+*/};
+
+AuthInterface.ensureAuthenticated = function(req,res,next){
+    if(!req.isAuthenticated()) return res.redirect('/users/login')
+    next()
+}
+
 
 //////////////////////////////////////////////////////////
-var AuthInterface = {};
 var TOKEN_LENGTH = 32;
 var TIME_TO_LIVE = 24*60*60 //1 day
  

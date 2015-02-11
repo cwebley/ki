@@ -3,12 +3,17 @@ var express = require('express'),
 	session = require('cookie-session'),
 	users = require('../modules/users'),
 	um = require('../modules/users/middleware'),
+	auth = require('../modules/auth'),
+	passport=require('passport'),
 	constants = require('../modules/constants');
 
 
 var app = module.exports = express();
 app.use(cookieParser())
 app.use(session({keys:['key1']}))
+
+// app.use(auth.initializePassport)
+app.use(passport.initialize())
 app.use(express.static(__dirname + '/public'))
 
 var controller = {};
@@ -25,6 +30,8 @@ var getUserOpts = function(req){
 }
 
 controller.login = function(req, res)	{
+	console.log("LOGIN: ")
+
 	var opts = getUserOpts(req)
 	if(!opts.username)return res.redirect('/')
 	if(!opts.password)return res.redirect('/')
@@ -91,7 +98,7 @@ controller.seed = function(req, res){
 		if(!results) return res.status(404).send({success:false,reason:"user-or-tourney-not-found"})
 		req.session.seeded[opts.tourneyName] = true
 		return res.redirect('/tournaments/'+opts.tourneyName);
-	})
+	});
 };
 
 controller.getSeedForm = function(req, res){
@@ -115,9 +122,22 @@ app.get('/login',
 app.post('/login', 
  	controller.login
 );
-app.post('/login', 
- 	controller.login
-);
+app.get('/logout',function(req,res){
+
+	req.logout();
+	res.redirect('/users/login');
+
+});
+
+app.use(passport.authenticate('basic',{ session: false }))
+app.get('/api/data',auth.ensureAuthenticated,function(req,res){
+
+	res.json([
+		{value: 'foo'},
+		{value: 'bar'},
+		{value: 'baz'}
+	])
+})
 app.get('/register', 
  	controller.registerForm
 );
