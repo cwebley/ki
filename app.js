@@ -24,6 +24,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// path to the front end!
+app.get('/',function(req,res){
+    res.render('landing')
+})
+
 app.use('/api/', routes);
 app.use('/api/users', users);
 app.use('/api/tournaments', tournaments);

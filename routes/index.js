@@ -49,10 +49,6 @@ controller.register = function(req, res){
 
 app.use(passport.initialize()) //needed for the logout func
 
-// app.get('/', function(req, res) {
-// 	res.render('home')
-// });
-
 app.post('/login',
 	controller.login
 );
