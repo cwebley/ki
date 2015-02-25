@@ -3,6 +3,7 @@ var keyMirror = require('keymirror');
 module.exports = {
 
   ActionTypes: keyMirror({
+    RECEIVE_TOURNAMENT_INDEX,
     RECEIVE_TOURNAMENT_DATA: null,
     SUBMIT_GAME: null,
     SEED_OPPONENT: null,

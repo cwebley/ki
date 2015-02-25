@@ -4,7 +4,7 @@ var assign = require('object-assign');
 
 var PayloadSources = constants.PayloadSources;
 
-var ChatAppDispatcher = assign(new Dispatcher(), {
+var AppDispatcher = assign(new Dispatcher(), {
 
   /**
    * @param {object} action The details of the action, including the action's
@@ -32,4 +32,4 @@ var ChatAppDispatcher = assign(new Dispatcher(), {
 
 });
 
-module.exports = ChatAppDispatcher;
+module.exports = AppDispatcher;

@@ -36,16 +36,16 @@ var _characters = {};
 //   });
 // }
 
-// function _markAllInThreadRead(threadID) {
-//   for (var id in _characters) {
-//     var _users = {};
-//     if (_characters[id].threadID === threadID) {
-//       var _users = {};
-//       _characters[id].isRead = true;
-//       var _users = {};
-//     }
-//   }
-// }
+function _incomingTournamentIndex(threadID) {
+  for (var id in _characters) {
+    var _users = {};
+    if (_characters[id].threadID === threadID) {
+      var _users = {};
+      _characters[id].isRead = true;
+      var _users = {};
+    }
+  }
+}
 
 var AppStore = assign({}, EventEmitter.prototype, {
 
@@ -118,8 +118,8 @@ AppStore.dispatchToken = dispatcher.register(function(payload) {
 
   switch(action.type) {
 
-    case ActionTypes.RECEIVE_TOURNAMENT_DATA:
-      _markAllInThreadRead(ThreadStore.getCurrentID());
+    case ActionTypes.RECEIVE_TOURNAMENT_INDEX:
+      _incomingTournamentIndex();
       AppStore.emitChange();
       break;
 

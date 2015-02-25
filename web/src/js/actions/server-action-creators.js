@@ -1,4 +1,4 @@
-var dispatcher = require('../dispatcher/dispatcher'),
+var dispatcher = require('../dispatchers/dispatcher'),
     constants = require('../constants/constants');
 
 var ActionTypes = constants.ActionTypes;
@@ -10,5 +10,5 @@ module.exports = {
       type: ActionTypes.RECEIVE_TOURNAMENT_DATA,
       data: data
     });
-  };
+  }
 };

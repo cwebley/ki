@@ -6,10 +6,10 @@ var host = 'http://localhost:3000'
 
 module.exports = {
 
-  getTournament: function(tourneyName) {
+  getTournamentIndex: function() {
     xhr({
         json: true,
-        uri: "/api/tournaments/" + tourneyName,
+        uri: "/api/tournaments",
         headers: {
             "Content-Type": "application/json"
         }
@@ -18,7 +18,8 @@ module.exports = {
             //handle error
             console.log("ERROR")
         }
-        serverActions.receiveTourneyData(body)
+        console.log("BODY: ", body)
+        // serverActions.receiveTourneyData(body)
     })
   }
 }

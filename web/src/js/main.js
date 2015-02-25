@@ -4,8 +4,8 @@ var App = require('./components/app'),
 	api = require('./utils/api');
 
 //TODO: req param when router used.
-var tourneyName = 'ReturningChamp-Obvi' 
-api.getTournament(tourneyName) // load tournament data for first time into store.
+// var tourneyName = 'ReturningChamp-Obvi' 
+api.getTournamentIndex() // load tournament data for first time into store.
 
 
 React.render(
