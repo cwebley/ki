@@ -71,21 +71,24 @@ UsersInterface.getOpponentsNames = function(seederName,tourneyName,cb) {
 
 UsersInterface.verifySeeds = function(seeds) {
 	var c = constants.characters;
-	var numberHash = {};
+	var maxValue = Math.floor(c.length/2);
+	var possibleValues = [];
 
 	// make sure all characters accounted for
 	for(var i=0;i<c.length;i++){
 		if(!seeds[c[i]]){
 			return false
 		}
-		numberHash[i+1] = true // jump in this loop to make a number hash
+		possibleValues.push(Math.round((i+1)/2)) // 2 of each number is accepted (except highest value)
 	}
-	// make sure all whole numbers accounted for once and only once
+
+	// make sure all in possibleValues are accounted for
 	for(var s in seeds){
-		if(!numberHash[seeds[s]]){
+		var valueIndex = possibleValues.indexOf(seeds[s])
+		if(valueIndex===-1){
 			return false
 		}
-		delete numberHash[seeds[s]]
+		possibleValues.splice(valueIndex,1)
 	}
 	return true
 };
