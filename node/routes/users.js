@@ -73,7 +73,7 @@ var getSeedOpts = function(req){
 
 	var c = constants.characters
 	for(var i = 0; i < c.length; i++){
-		opts.characters[c[i]] = req.body[c[i]]
+		opts.characters[c[i]] = parseInt(req.body[c[i]])
 	}
 	return opts
 }
