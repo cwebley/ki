@@ -34,34 +34,39 @@ tournamentsService.newTournament = function(options, cb) {
 			return cb(err)
 		}
 
-		tourneyMdl.createTournament(options, function(err, tid){
+		tourneyMdl.checkTournamentExists(options,function(err,alreadyExists){
 			if(err)return cb(err)
+			if(alreadyExists) return cb()
 
-			// init users powerup stocks in redis
-			var generateUserPowerStock = function(userName){
-				return function(done){powerupsMdl.setUserStock(tid,userName,done)}
-			}
-			var pwrStockCalls = _.map(userIds, generateUserPowerStock)
-			async.parallel(pwrStockCalls, function(err,results){
-				if(err) return cb(err)
-
-				tourneyMdl.insertPlayers(tid,userIds,function(err,insertPlayerRes){
+			tourneyMdl.createTournament(options, function(err, tid){
+				if(err)return cb(err)
+	
+				// init users powerup stocks in redis
+				var generateUserPowerStock = function(userName){
+					return function(done){powerupsMdl.setUserStock(tid,userName,done)}
+				}
+				var pwrStockCalls = _.map(userIds, generateUserPowerStock)
+				async.parallel(pwrStockCalls, function(err,results){
 					if(err) return cb(err)
-						
-					var zeroCharCalls = [];
-					var generateZeroCharVals = function(tid,uid){
-						return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
-					}
-					for(var i=0; i<userIds.length; i++){
-						zeroCharCalls.push(generateZeroCharVals(tid, userIds[i]))
-					}
-					async.parallel(zeroCharCalls, function(err,results){
-
-						//initialize upcoming match arrays
-						upcoming.create(tid,userIds)
-						upcoming.fill(tid)
-
-						return cb(err,results)
+	
+					tourneyMdl.insertPlayers(tid,userIds,function(err,insertPlayerRes){
+						if(err) return cb(err)
+							
+						var zeroCharCalls = [];
+						var generateZeroCharVals = function(tid,uid){
+							return function(done){tournamentsService.zeroCharValsByUid(tid,uid,done)}
+						}
+						for(var i=0; i<userIds.length; i++){
+							zeroCharCalls.push(generateZeroCharVals(tid, userIds[i]))
+						}
+						async.parallel(zeroCharCalls, function(err,results){
+	
+							//initialize upcoming match arrays
+							upcoming.create(tid,userIds)
+							upcoming.fill(tid)
+	
+							return cb(err,results)
+						});
 					});
 				});
 			});
@@ -95,18 +100,7 @@ tournamentsService.endTournament = function(options,cb){
 		gamesMdl.getTournamentScores(tid,function(err,scores){
 			if(err)return cb(err)
 
-			var generateRecordScore = function(tid,uid,score){
-				return function(done){tourneyMdl.recordFinalScore(tid,uid,score,done)}
-			}
-
-			var calls = [];
-			if (scores && scores.length){
-				calls.push(function(done){tourneyMdl.recordChampion(tid,scores[0].userId,done)})
-			}
-			for(var i=0;i<scores.length;i++){
-				calls.push(generateRecordScore(tid,scores[i].userId,scores[i].score))
-			}
-			async.parallel(calls,function(err,results){
+			tourneyMdl.recordChampion(tid,scores[0].userId,function(err,results){
 				if(err) return cb(err)
 				return cb(null, results)
 			});
@@ -115,17 +109,22 @@ tournamentsService.endTournament = function(options,cb){
 };
 
 tournamentsService.editTournament = function(options,cb){
-	var calls = [];
-	calls.push(function(done){tourneyMdl.editTournament(options.name,options.goal,options.oldName,done)})
+	tourneyMdl.checkTournamentExists(options,function(err,alreadyExists){
+		if(err)return cb(err)
+		if(alreadyExists)return cb()
 
-	if(options.surrender) calls.push(function(done){tournamentsService.endTournament(options,done)})
-
-	async.series(calls,function(err,results){
-		if(err) return cb(err)
-		if(!results.affectedRows){
-			return cb()
-		}
-		return cb(null,results)
+		var calls = [];
+		calls.push(function(done){tourneyMdl.editTournament(options.name,options.goal,options.oldName,done)})
+	
+		if(options.surrender) calls.push(function(done){tournamentsService.endTournament(options,done)})
+	
+		async.series(calls,function(err,results){
+			if(err) return cb(err)
+			if(!results.affectedRows){
+				return cb()
+			}
+			return cb(null,results)
+		});
 	});
 };
 
