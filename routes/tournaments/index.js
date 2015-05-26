@@ -39,6 +39,7 @@ tourneyController.postNewTourney = function(req, res){
 
 	tournaments.newTournament(opts, function(err,results){
 		if(err) return res.status(500).send({success:false,err:err})
+		if(!results) return res.status(400).send({success:false,reason:'invalid-or-duplicate-info'})
 		res.status(201).send({success:true})
 	})
 }
@@ -65,6 +66,7 @@ tourneyController.edit = function(req, res){
 
 	var opts = getTourneyOpts(req)
 	opts.oldName = req.params.tourneyName
+	if(!opts.name) return res.status(400).send({success:false,reason:'no-tourney-name'})
 
 	tournaments.editTournament(opts, function(err,d){
 		if(err) return res.status(500).send({success:false,err:err})

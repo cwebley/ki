@@ -15,6 +15,17 @@ TournamentsModel.createTournament = function(options,cb) {
 	});
 };
 
+TournamentsModel.checkTournamentExists = function(options,cb) {
+	var sql = 'SELECT id FROM `tournaments` WHERE name = ?',
+		params = [options.name];
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/checkTournamentExists', function(err, results){
+		if(err) return cb(err);
+		if(!results || !results.length) return cb()
+		return cb(null, results);
+	});
+};
+
 TournamentsModel.recordChampion = function(tid,uid,cb) {
 	var sql = 'UPDATE tournaments SET championId = ?, active = 0 WHERE id = ?',
 		params = [uid,tid];

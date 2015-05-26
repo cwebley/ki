@@ -1,6 +1,6 @@
 var ConstantsInterface = {};
 
-ConstantsInterface.characters = ['jago','wulf','thunder','sadira','orchid','glacius','spinal','fulgore','tj','maya','kanra','riptor','omen','aganos']
+ConstantsInterface.characters = ['jago','wulf','thunder','sadira','orchid','glacius','spinal','fulgore','tj','maya','kanra','riptor','omen','aganos','hisako','cinder']
 
 ConstantsInterface._STARTING_PWR_STOCK = 3;
 ConstantsInterface._INSPECT_COUNT = 10;
