@@ -8,7 +8,8 @@ var App = require('./components/app'),
     AboutPage = require('./pages/about'),
     TourneyPage = require('./pages/tournaments'),
     StatsPage = require('./pages/stats'),
-    FaqPage = require('./pages/faq');
+    FaqPage = require('./pages/faq'),
+    LoginPage = require('./pages/login');
 
 //TODO: req param when router used.
 // var tourneyName = 'ReturningChamp-Obvi' 
@@ -20,6 +21,7 @@ var routes = (
         <Route name="stats" handler={StatsPage}/>
         <Route name="tournaments" handler={TourneyPage}/>
         <Route name="faq" handler={FaqPage}/>
+        <Route name="login" handler={LoginPage}/>
         <DefaultRoute handler={AboutPage}/>
     </Route>
 );

@@ -18,11 +18,8 @@ var App =
                         <li><Link to="tournaments">Tournaments</Link></li>
                         <li><Link to="stats">Stats</Link></li>
                         <li><Link to="faq">FAQ</Link></li>
-                        <li>
-                           WELCOME KID
-                        </li>
                     </ul>
-
+                    <div><Link to="login">Log In</Link></div>
                 </header>
 
               <RouteHandler/>
