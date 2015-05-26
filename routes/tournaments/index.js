@@ -73,9 +73,7 @@ tourneyController.edit = function(req, res){
 }
 
 tourneyController.getTourneyList = function(req, res){
-	console.log("GET TOURNEY LIST")
 	tournaments.getTourneyList(function(err,dto){
-		console.log("GTL REZ: ", err)
 		if(err) return res.status(500).send({success:false,err:err})
 		res.status(200).send(dto)
 	})

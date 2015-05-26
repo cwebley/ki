@@ -44,11 +44,8 @@ UsersInterface.login = function(options, cb) {
 		if(err)return cb(err)
 		if(!seedStatus) return cb()
 		var dto = loginDto(options.username,uid,seedStatus)
-		// auth.createAndSetToken(dto,function(err,results){
-		// 	console.log("USER INT CREATE AND SET RES ", results)
 			return cb(err, dto)
 	});
-	// });
 };
 
 UsersInterface.seedCharacters = function(options, cb) {
