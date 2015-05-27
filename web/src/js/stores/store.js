@@ -38,30 +38,30 @@ var _characters = {};
 
 function _incomingTournamentIndex(threadID) {
   for (var id in _characters) {
-    var _users = {};
-    if (_characters[id].threadID === threadID) {
-      var _users = {};
-      _characters[id].isRead = true;
-      var _users = {};
-    }
+	var _users = {};
+	if (_characters[id].threadID === threadID) {
+	  var _users = {};
+	  _characters[id].isRead = true;
+	  var _users = {};
+	}
   }
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
 
   emitChange: function() {
-    this.emit(CHANGE_EVENT);
+	this.emit(CHANGE_EVENT);
   },
 
   /**
    * @param {function} callback
    */
   addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
+	this.on(CHANGE_EVENT, callback);
   },
   
   removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+	this.removeListener(CHANGE_EVENT, callback);
   },
 
 
@@ -118,27 +118,28 @@ AppStore.dispatchToken = dispatcher.register(function(payload) {
 
   switch(action.type) {
 
-    case ActionTypes.RECEIVE_TOURNAMENT_INDEX:
-      _incomingTournamentIndex();
-      AppStore.emitChange();
-      break;
+	case ActionTypes.RECEIVE_TOURNAMENT_INDEX:
+	  _incomingTournamentIndex();
+	  break;
 
-    // case ActionTypes.CREATE_MESSAGE:
-    //   var message = AppStore.getCreatedMessageData(action.text);
-    //   _messages[message.id] = message;
-    //   AppStore.emitChange();
-    //   break;
+	// case ActionTypes.CREATE_MESSAGE:
+	//   var message = AppStore.getCreatedMessageData(action.text);
+	//   _messages[message.id] = message;
+	//   AppStore.emitChange();
+	//   break;
 
-    // case ActionTypes.RECEIVE_RAW_MESSAGES:
-    //   _addMessages(action.rawMessages);
-    //   dispatcher.waitFor([ThreadStore.dispatchToken]);
-    //   _markAllInThreadRead(ThreadStore.getCurrentID());
-    //   AppStore.emitChange();
-    //   break;
+	// case ActionTypes.RECEIVE_RAW_MESSAGES:
+	//   _addMessages(action.rawMessages);
+	//   dispatcher.waitFor([ThreadStore.dispatchToken]);
+	//   _markAllInThreadRead(ThreadStore.getCurrentID());
+	//   AppStore.emitChange();
+	//   break;
 
-    default:
-      // do nothing
-  }
+	default:
+	  // do nothing
+}
+AppStore.emitChange();
+
 
 });
 

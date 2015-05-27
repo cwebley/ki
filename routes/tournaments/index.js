@@ -57,7 +57,6 @@ tourneyController.get = function(req, res){
 			return res.redirect('/tournaments')
 		}
 		dto.title = tourneyName
-		dto.me = req.user.name
 		res.status(200).send(dto)
 	})
 }
@@ -88,8 +87,8 @@ app.get('/',
 /*
 *	Auth Barrier
 */
-app.use(passport.initialize())
-app.use(passport.authenticate('basic',{ session: false }))
+app.use(auth.verifyToken);
+app.use(auth.ensureAuthenticated);
 
 app.post('/new',
  	tourneyController.postNewTourney

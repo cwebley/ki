@@ -1,5 +1,6 @@
 var React = require('react'),
-	Router = require('react-router');
+	Router = require('react-router'),
+	api = require('../utils/api');
 
 var LoginPage = React.createClass({
 
@@ -35,7 +36,9 @@ var LoginPage = React.createClass({
 		this.refs.username.getDOMNode().value = '';
 		this.refs.password.getDOMNode().value = '';
 
-		this.transitionTo('/');
+		api.login(data);
+
+		// this.transitionTo('/');
 	},
 
 	render: function(){

@@ -6,20 +6,29 @@ var host = 'http://localhost:3000'
 
 module.exports = {
 
-  getTournamentIndex: function() {
-    xhr({
-        json: true,
-        uri: "/api/tournaments",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    }, function (err, resp, body) {
-        if(resp.statusCode !== 200) {
-            //handle error
-            console.log("ERROR")
-        }
-        console.log("BODY: ", body)
-        // serverActions.receiveTourneyData(body)
-    })
-  }
+    login: function(data) {
+        xhr({
+            json: data,
+            uri: "/api/login",
+            method: "post"
+        }, function (err, resp, body) {
+            if(resp.statusCode !== 200) {
+                //handle error. require login or render some error based on code?
+                console.log("NO LOGIN TOKEN RETURNED FROM api/login")
+            }
+        })
+    },
+    getTournamentIndex: function() {
+        xhr({
+            json: true,
+            uri: "/api/tournaments"
+        }, function (err, resp, body) {
+            if(resp.statusCode !== 200) {
+                //handle error
+                console.log("ERROR")
+            }
+            console.log("BODY: ", body)
+            // serverActions.receiveTourneyData(body)
+        })
+    }
 }
