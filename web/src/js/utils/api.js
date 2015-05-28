@@ -16,6 +16,7 @@ module.exports = {
                 //handle error. require login or render some error based on code?
                 console.log("NO LOGIN TOKEN RETURNED FROM api/login")
             }
+            serverActions.receiveLoginToken(body);
         })
     },
     getTournamentIndex: function() {

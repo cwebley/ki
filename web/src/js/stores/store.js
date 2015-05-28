@@ -118,9 +118,13 @@ AppStore.dispatchToken = dispatcher.register(function(payload) {
 
   switch(action.type) {
 
-	case ActionTypes.RECEIVE_TOURNAMENT_INDEX:
-	  _incomingTournamentIndex();
-	  break;
+	// case ActionTypes.RECEIVE_TOURNAMENT_INDEX:
+	//   _incomingTournamentIndex();
+	//   break;
+  case ActionTypes.RECEIVE_LOGIN_TOKEN:
+    // console.log("STORE RECEIVED TOKEN: ", payload)
+    // _incomingTournamentIndex();
+    break;
 
 	// case ActionTypes.CREATE_MESSAGE:
 	//   var message = AppStore.getCreatedMessageData(action.text);

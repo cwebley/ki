@@ -1,9 +1,21 @@
-var React = require('react');
+var React = require('react'),
+	Router = require('react-router'),
+	auth = require('../utils/auth');
 
 var TourneyPage = React.createClass({
+	mixins: [ Router.Navigation ],
+
+	statics: {
+		willTransitionTo: function (transition) {
+			if (!auth.loggedIn()) {
+				transition.redirect('/login');
+			}
+		}
+	},
 	render: function(){
 		return (
 			<div>
+				<h2> Tournaments! (Authed) </h2>
 				<p>
 				Lorem ipsum dolor sit amet, consectetuer adipiscing elit. 
 				Aenean commodo ligula eget dolor. Aenean massa. Cum sociis 
