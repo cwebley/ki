@@ -1,4 +1,4 @@
-var dispatcher = require('../dispatcher/dispatcher');
+var dispatcher = require('../dispatchers/dispatcher');
 var constants = require('../constants/constants');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
@@ -23,6 +23,8 @@ var _users = {};
 */
 var _characters = {};
 
+var _token = null;
+
 // function _addMessages(rawMessages) {
 //   rawMessages.forEach(function(message) {
 //     if (!_characters[message.id]) {
@@ -36,34 +38,44 @@ var _characters = {};
 //   });
 // }
 
-function _incomingTournamentIndex(threadID) {
-  for (var id in _characters) {
-	var _users = {};
-	if (_characters[id].threadID === threadID) {
-	  var _users = {};
-	  _characters[id].isRead = true;
-	  var _users = {};
-	}
-  }
+// function _incomingTournamentIndex(threadID) {
+//   for (var id in _characters) {
+// 	var _users = {};
+// 	if (_characters[id].threadID === threadID) {
+// 	  var _users = {};
+// 	  _characters[id].isRead = true;
+// 	  var _users = {};
+// 	}
+//   }
+// }
+
+function _tokenReceived(token){
+  _token = token;
+}
+function _logout(){
+  _token = null;
 }
 
-var AppStore = assign({}, EventEmitter.prototype, {
+var AuthStore = assign({}, EventEmitter.prototype, {
 
-  emitChange: function() {
-	this.emit(CHANGE_EVENT);
-  },
+	emitChange: function() {
+		this.emit(CHANGE_EVENT);
+	},
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-	this.on(CHANGE_EVENT, callback);
-  },
+	/**
+	* @param {function} callback
+	*/
+	addChangeListener: function(callback) {
+		this.on(CHANGE_EVENT, callback);
+	},
   
-  removeChangeListener: function(callback) {
-	this.removeListener(CHANGE_EVENT, callback);
-  },
+	removeChangeListener: function(callback) {
+		this.removeListener(CHANGE_EVENT, callback);
+	},
 
+	loggedIn: function(){
+		return !!_token
+	},
 
 
   // get: function(id) {
@@ -113,38 +125,27 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
 });
 
-AppStore.dispatchToken = dispatcher.register(function(payload) {
+AuthStore.dispatchToken = dispatcher.register(function(payload) {
   var action = payload.action;
 
-  switch(action.type) {
+	switch(action.type) {
 
-	// case ActionTypes.RECEIVE_TOURNAMENT_INDEX:
-	//   _incomingTournamentIndex();
-	//   break;
-  case ActionTypes.RECEIVE_LOGIN_TOKEN:
-    // console.log("STORE RECEIVED TOKEN: ", payload)
-    // _incomingTournamentIndex();
-    break;
+	case ActionTypes.RECEIVE_LOGIN_TOKEN:
+		_tokenReceived(payload.action.data.token);
+		AuthStore.emitChange();
+		break;
 
-	// case ActionTypes.CREATE_MESSAGE:
-	//   var message = AppStore.getCreatedMessageData(action.text);
-	//   _messages[message.id] = message;
-	//   AppStore.emitChange();
-	//   break;
-
-	// case ActionTypes.RECEIVE_RAW_MESSAGES:
-	//   _addMessages(action.rawMessages);
-	//   dispatcher.waitFor([ThreadStore.dispatchToken]);
-	//   _markAllInThreadRead(ThreadStore.getCurrentID());
-	//   AppStore.emitChange();
-	//   break;
+	case ActionTypes.LOGOUT:
+		_logout();
+		AuthStore.emitChange();
+		break;
 
 	default:
 	  // do nothing
 }
-AppStore.emitChange();
+
 
 
 });
 
-module.exports = AppStore;
+module.exports = AuthStore;

@@ -1,6 +1,6 @@
 var React = require('react'),
 	Router = require('react-router'),
-	auth = require('../utils/auth');
+	api = require('../utils/api');
 
 var LoginPage = React.createClass({
 
@@ -33,8 +33,9 @@ var LoginPage = React.createClass({
 		// clear nodes before transitioning to prevent window confirm box popup
 		this.refs.username.getDOMNode().value = '';
 		this.refs.password.getDOMNode().value = '';
+		api.login(data);
 
-		auth.login(data);
+		// auth.login(data);
 
 		// this.transitionTo('/');
 	},
