@@ -11,9 +11,9 @@ module.exports = {
 			data: data
 		});
  	},
- 	receieveTourneyData: function(data) {
+ 	receiveTournamentIndex: function(data) {
 		dispatcher.handleServerAction({
-		  type: ActionTypes.RECEIVE_TOURNAMENT_DATA,
+		  type: ActionTypes.RECEIVE_TOURNAMENT_INDEX,
 		  data: data
 		});
  	}

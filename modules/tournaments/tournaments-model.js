@@ -122,7 +122,7 @@ TournamentsModel.getCharacterStats = function(tourneyName, userName, cb) {
 };
 
 TournamentsModel.getTourneyList = function(cb) {
-	var sql = 'SELECT t.name tournamentName, t.goal, t.active, t.time, u.name champion FROM tournaments t LEFT JOIN users u ON t.championId = u.id'
+	var sql = 'SELECT t.id, t.name, t.goal, t.active, t.time, u.name champion FROM tournaments t LEFT JOIN users u ON t.championId = u.id'
 
 	mysql.query('rw', sql, [], 'modules/tournaments/tournaments-model/getTourneyList', function(err, results){
 		if(err) return cb(err)

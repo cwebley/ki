@@ -29,7 +29,7 @@ module.exports = {
                 console.log("ERROR")
             }
             console.log("BODY: ", body)
-            // serverActions.receiveTourneyData(body)
+            serverActions.receiveTournamentIndex(body)
         })
     }
 }

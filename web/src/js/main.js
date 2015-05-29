@@ -14,10 +14,6 @@ var App = require('./components/app'),
     Authentication = require('./mixins/Authentication')
     NotFound = require('./pages/404');
 
-//TODO: req param when router used.
-// var tourneyName = 'ReturningChamp-Obvi' 
-api.getTournamentIndex() // load tournament data for first time into store.
-
 var routes = (
     <Route name="app" path="/" handler={App}>
         <Route name="about" handler={AboutPage}/>
