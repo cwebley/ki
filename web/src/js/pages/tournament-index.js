@@ -2,9 +2,10 @@ var React = require('react'),
 	Router = require('react-router'),
 	AuthStore = require('../stores/auth-store'),
 	api = require('../utils/api'),
-	TournamentListStore = require('../stores/tournament-list-store');
+	TournamentListStore = require('../stores/tournament-list-store')
+	Link = Router.Link;
 
-var TourneyPage = React.createClass({
+var TournamentIndex = React.createClass({
 	mixins: [ Router.Navigation ],
 
 	statics: {
@@ -39,7 +40,11 @@ var TourneyPage = React.createClass({
 				<ol>
 				{
 					this.state.tournaments.map(function(t){
-						return <li key={t.id}>{t.name}</li>
+						return (
+							<li key={t.id}>
+								<Link to="tournament" params={{title: t.name}}>{t.name}</Link>
+							</li>
+						)
 					})
 				}
 				</ol>
@@ -48,4 +53,4 @@ var TourneyPage = React.createClass({
 	}
 });
 
-module.exports = TourneyPage;
+module.exports = TournamentIndex;

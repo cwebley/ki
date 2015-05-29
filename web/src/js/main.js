@@ -7,7 +7,8 @@ var App = require('./components/app'),
     DefaultRoute = Router.DefaultRoute,
     NotFoundRoute = Router.NotFoundRoute,
     AboutPage = require('./pages/about'),
-    TourneyPage = require('./pages/tournaments'),
+    TourneyIndex = require('./pages/tournament-index'),
+    TourneyPage = require('./pages/tournament'),
     StatsPage = require('./pages/stats'),
     FaqPage = require('./pages/faq'),
     LoginPage = require('./pages/login'),
@@ -18,7 +19,9 @@ var routes = (
     <Route name="app" path="/" handler={App}>
         <Route name="about" handler={AboutPage}/>
         <Route name="stats" handler={StatsPage}/>
-        <Route name="tournaments" handler={TourneyPage} />
+        <Route name="tournaments" handler={TourneyIndex} >
+            <Route name="tournament" path=":title" handler={TourneyPage} />
+        </Route>
         <Route name="faq" handler={FaqPage}/>
         <Route name="login" handler={LoginPage}/>
         <DefaultRoute handler={AboutPage}/>
