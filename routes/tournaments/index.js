@@ -45,8 +45,6 @@ tourneyController.postNewTourney = function(req, res){
 }
 
 tourneyController.get = function(req, res){
-	console.log("GET TOURNEY: ")
-
 	var tourneyName = req.params.tourneyName
 
 	tournaments.getAllTourneyStats(tourneyName,function(err,dto){
@@ -54,7 +52,7 @@ tourneyController.get = function(req, res){
 
 		if(err) return res.status(500).send({success:false,err:err})
 		if(!dto) {
-			return res.redirect('/tournaments')
+			return res.status(404).send();
 		}
 		dto.title = tourneyName
 		res.status(200).send(dto)

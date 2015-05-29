@@ -23,9 +23,24 @@ var xhr = require('xhr'),
         }, function (err, resp, body) {
             if(resp.statusCode !== 200) {
                 //handle error
-                console.log("ERROR")
+                console.log("ERROR GETTING TOURNEY INDEX")
             }
             serverActions.receiveTournamentIndex(body)
+        })
+    },
+    getTournamentData: function(title) {
+        xhr({
+            json: true,
+            uri: "/api/tournaments/" + title,
+            headers: {
+                "x-access-token": localStorage.token
+            }
+        }, function (err, resp, body) {
+            if(resp.statusCode !== 200) {
+                //handle error
+                console.log("ERROR GETTING DATA FOR " + title)
+            }
+            serverActions.receiveTournamentData(body)
         })
     }
 }

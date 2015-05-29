@@ -16,5 +16,11 @@ module.exports = {
 		  type: ActionTypes.RECEIVE_TOURNAMENT_INDEX,
 		  data: data
 		});
+ 	},
+ 	receiveTournamentData: function(data) {
+		dispatcher.handleServerAction({
+		  type: ActionTypes.RECEIVE_TOURNAMENT_DATA,
+		  data: data
+		});
  	}
 };

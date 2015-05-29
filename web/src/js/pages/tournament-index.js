@@ -8,13 +8,6 @@ var React = require('react'),
 var TournamentIndex = React.createClass({
 	mixins: [ Router.Navigation ],
 
-	statics: {
-		willTransitionTo: function (transition) {
-			if (!AuthStore.loggedIn()) {
-				transition.redirect('/login');
-			}
-		}
-	},
 	getInitialState: function(){
 		return {
 			tournaments: []
