@@ -1,10 +1,7 @@
 var xhr = require('xhr'),
     serverActions = require('../actions/server-action-creators');
 
-//TODO config this or something
-var host = 'http://localhost:3000'
-
-module.exports = {
+    module.exports = {
 
     login: function(data) {
         xhr({

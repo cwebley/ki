@@ -19,9 +19,8 @@ var routes = (
     <Route name="app" path="/" handler={App}>
         <Route name="about" handler={AboutPage}/>
         <Route name="stats" handler={StatsPage}/>
-        <Route name="tournaments" handler={TourneyIndex} >
-            <Route name="tournament" path=":title" handler={TourneyPage} />
-        </Route>
+        <Route name="tournaments" handler={TourneyIndex} />
+        <Route name="tournament" path="/tournaments/:title" handler={TourneyPage} />
         <Route name="faq" handler={FaqPage}/>
         <Route name="login" handler={LoginPage}/>
         <DefaultRoute handler={AboutPage}/>
