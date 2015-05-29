@@ -23,7 +23,7 @@ var _users = {};
 */
 var _characters = {};
 
-var _token = null;
+// var _token = null;
 
 // function _addMessages(rawMessages) {
 //   rawMessages.forEach(function(message) {
@@ -50,10 +50,10 @@ var _token = null;
 // }
 
 function _tokenReceived(token){
-  _token = token;
+  localStorage.token = token;
 }
 function _logout(){
-  _token = null;
+  delete localStorage.token;
 }
 
 var AuthStore = assign({}, EventEmitter.prototype, {
@@ -74,7 +74,7 @@ var AuthStore = assign({}, EventEmitter.prototype, {
 	},
 
 	loggedIn: function(){
-		return !!_token
+		return !!localStorage.token
 	},
 
 

@@ -28,7 +28,6 @@ module.exports = {
                 //handle error
                 console.log("ERROR")
             }
-            console.log("BODY: ", body)
             serverActions.receiveTournamentIndex(body)
         })
     }
