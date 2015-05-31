@@ -166,3 +166,6 @@ CREATE TABLE `history` (
 	FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`),
 	FOREIGN KEY (`eventId`) REFERENCES `events`(`id`)
 );
+
+
+ALTER TABLE `tournaments` ADD slug VARCHAR(255) AFTER name

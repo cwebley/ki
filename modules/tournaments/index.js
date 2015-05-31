@@ -7,8 +7,8 @@ var _ = require('lodash'),
 var TourneyInterface = {};
 
 // data: array of user-data objects
-TourneyInterface.allStatsDto = function(data,nextMatch,seeded){
-	var dto = {users: [],next: nextMatch,seeded: seeded};
+TourneyInterface.allStatsDto = function(data,seeded){
+	var dto = {users:[], seeded:seeded};
 
 	for (var i=0;i<data.length;i++){
 		dto.users.push(data[i])
@@ -40,24 +40,24 @@ TourneyInterface.getTourneyList = function(cb) {
 	});
 };
 
-TourneyInterface.getTourneyInfo = function(tourneyName,cb) {
-	tourneyMdl.getTourneyInfo(tourneyName,function(err,results){
+TourneyInterface.getTourneyInfo = function(tourneySlug,cb) {
+	tourneyMdl.getTourneyInfo(tourneySlug,function(err,results){
 		if(err) return cb(err)
 		return cb(null,results)
 	});
 };
 
-TourneyInterface.getAllTourneyStats = function(tourneyName,cb) {
+TourneyInterface.getAllTourneyStats = function(tourneySlug,cb) {
 	// verify tourney name valid
-	tourneyMdl.getTourneyId(tourneyName,function(err,tourneyId,seeded){
+	tourneyMdl.getTourneyId(tourneySlug,function(err,tourneyId,seeded){
 		if(err) return cb(err)
 		if(!tourneyId) return cb()
 
-		// getuser stats
-		tourneySvc.getUsersLevelStats(tourneyName, function(err,tournamentData){
+		// get user stats
+		tourneySvc.getUsersLevelStats(tourneySlug, function(err,tournamentData){
 			if(err)return cb(err)
 
-			tourneyMdl.getPlayersNamesIds(tourneyName,function(err,players){
+			tourneyMdl.getPlayersNamesIds(tourneySlug,function(err,players){
 				if(err) return cb(err)
 				var uids = _.pluck(players,'id')
 
@@ -66,30 +66,34 @@ TourneyInterface.getAllTourneyStats = function(tourneyName,cb) {
 					upcoming.create(tourneyId,uids)
 				}
 
-				var next = upcoming.getNext(tourneyId,players,1)
-	
+				var next = upcoming.getNextArray(tourneyId,players,1)
+				// add next data for each user
+				for(var i=0;i<tournamentData.length;i++){
+					tournamentData[i].next = next[i];
+				}
+
 				// get stats for each character
 				var calls = [];
-				var characterDataGetter = function(tourneyName,userName){
-					return function(done){tourneySvc.getCharacterLevelStats(tourneyName,userName,done)}
+				var characterDataGetter = function(tourneySlug,userName){
+					return function(done){tourneySvc.getCharacterLevelStats(tourneySlug,userName,done)}
 				}
 				for(var i=0;i<tournamentData.length;i++){
-					calls.push(characterDataGetter(tourneyName,tournamentData[i].name))
+					calls.push(characterDataGetter(tourneySlug,tournamentData[i].name))
 				}
 				async.parallel(calls,function(err,charData){
 					if(err) return cb(err)
 					for(var i=0;i<tournamentData.length;i++){
 						tournamentData[i].characters = charData[i]
 					}
-					return cb(err,TourneyInterface.allStatsDto(tournamentData, next, seeded))
+					return cb(err,TourneyInterface.allStatsDto(tournamentData, seeded))
 				});
 			});
 		});
 	});
 };
 
-TourneyInterface.updateSeedStatus = function(tourneyName,cb) {
-	tourneyMdl.updateSeedStatus(tourneyName,function(err,results){
+TourneyInterface.updateSeedStatus = function(tourneySlug,cb) {
+	tourneyMdl.updateSeedStatus(tourneySlug,function(err,results){
 		if(err) return cb(err)
 		return cb(null,results)
 	});

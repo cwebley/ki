@@ -10,12 +10,11 @@ var express = require('express'),
 
 var app = express();
 
-var allowCrossDomain = function(req, res, next) { 
-	console.log('X DOMAIN')
-	res.header('Access-Control-Allow-Origin', '*'); 
-	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-	next(); 
-}
+// var allowCrossDomain = function(req, res, next) { 
+// 	res.header('Access-Control-Allow-Origin', '*'); 
+// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+// 	next(); 
+// }
 
 var tourneyController = {};
 
@@ -45,16 +44,14 @@ tourneyController.postNewTourney = function(req, res){
 }
 
 tourneyController.get = function(req, res){
-	var tourneyName = req.params.tourneyName
+	var tourneySlug = req.params.tourneySlug
 
-	tournaments.getAllTourneyStats(tourneyName,function(err,dto){
-		console.log("GET TOURNEY  DONE: ", err, dto)
-
+	tournaments.getAllTourneyStats(tourneySlug,function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
 		if(!dto) {
 			return res.status(404).send();
 		}
-		dto.title = tourneyName
+		dto.slug = tourneySlug
 		res.status(200).send(dto)
 	})
 }
@@ -62,7 +59,7 @@ tourneyController.get = function(req, res){
 tourneyController.edit = function(req, res){
 
 	var opts = getTourneyOpts(req)
-	opts.oldName = req.params.tourneyName
+	opts.oldSlug = req.params.tourneySlug
 	if(!opts.name) return res.status(400).send({success:false,reason:'no-tourney-name'})
 
 	tournaments.editTournament(opts, function(err,d){
@@ -92,19 +89,19 @@ app.post('/new',
  	tourneyController.postNewTourney
 );
 
-app.get('/:tourneyName',
+app.get('/:tourneySlug',
  	tourneyController.get
 );
 
-app.post('/:tourneyName/edit',
+app.post('/:tourneySlug/edit',
  	tourneyController.edit
 );
 
-app.get('/:tourneyName/pwr/inspect',
+app.get('/:tourneySlug/pwr/inspect',
  	powerups.getInspect
 );
 
-app.post('/:tourneyName/pwr/inspect',
+app.post('/:tourneySlug/pwr/inspect',
  	powerups.postInspect
 );
 

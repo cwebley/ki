@@ -38,7 +38,11 @@ UpcomingInterface.fill = function(tourneyId){
 	}
 }
 
-//num = int number of matches you want
+/*num = int number of matches you want
+returns object: {
+	"g": [orchid,fulgore],
+	"bj": [aria, cinder]
+}*/
 UpcomingInterface.getNext = function(tourneyId,userArr,num){
 	var nextUp = {};
 	for(var i=0;i<userArr.length;i++){
@@ -50,9 +54,20 @@ UpcomingInterface.getNext = function(tourneyId,userArr,num){
 	return nextUp
 }
 
+/*num = int number of matches you want
+	returns array, relies on caller to know the order
+	[[orchid,fulgore],[aria,cinder]]
+*/
+UpcomingInterface.getNextArray = function(tourneyId,userArr,num){
+	var nextUp = [];
+	for(var i=0;i<userArr.length;i++){
+		nextUp.push(UpcomingInterface.pending[tourneyId][userArr[i].id].slice(0,num))
+	}
+	return nextUp
+}
+
 // probably only works with 2 players.
 UpcomingInterface.removeFirst = function(tourneyId){
-	// console.log("UPCOMIGN: ", UpcomingInterface.pending)
 	for(var n in UpcomingInterface.pending[tourneyId]){
 		UpcomingInterface.pending[tourneyId][n].shift()
 	}

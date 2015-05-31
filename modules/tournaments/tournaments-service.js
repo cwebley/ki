@@ -80,8 +80,8 @@ tournamentsService.getUsersLevelStats = function(tourneyName,cb){
 	});
 };
 
-tournamentsService.getCharacterLevelStats = function(tourneyName,userName,cb){
-	tourneyMdl.getCharacterStats(tourneyName,userName,function(err,results){
+tournamentsService.getCharacterLevelStats = function(tourneySlug,userName,cb){
+	tourneyMdl.getCharacterStats(tourneySlug,userName,function(err,results){
 		return cb(err,results)
 	});
 };

@@ -17,7 +17,7 @@ var TournamentPage = React.createClass({
 	},
 	getInitialState: function(){
 		return {
-			data: {}
+
 		};
 	},
 	componentWillMount:function(){
@@ -27,19 +27,27 @@ var TournamentPage = React.createClass({
 		TournamentStore.removeChangeListener(this._onChange);
 	},
 	componentDidMount: function(){
-		api.getTournamentData(this.getParams().title);
+		api.getTournamentData(this.getParams().titleSlug);
 	},
 	_onChange: function(){
+		var data = TournamentStore.get();
 		this.setState({
-			data: TournamentStore.get()
+			next: data.next,
+			seeded: data.seeded,
+			slug: data.slug,
+			users: data.users
 		});
 	},
 	render: function(){
-		var title = this.getParams().title;
+		var titleSlug = this.getParams().titleSlug;
+		console.log("DATA:" , this.state)
 		return (
 			<div>
-				<h1>{title}</h1>
-				{this.state.data}
+				<h1>{titleSlug}</h1>
+				<div>
+					<h2>Next Matchup</h2>
+					{this.state.next}
+				</div>
 			</div>
 		);
 	}

@@ -35,9 +35,9 @@ TournamentsModel.recordChampion = function(tid,uid,cb) {
 	});
 };
 
-TournamentsModel.getTourneyId = function(tourneyName, cb) {
-	var sql = 'SELECT id, seeded FROM tournaments WHERE name = ?',
-		params = [tourneyName];
+TournamentsModel.getTourneyId = function(tourneySlug, cb) {
+	var sql = 'SELECT id, seeded FROM tournaments WHERE slug = ?',
+		params = [tourneySlug];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getTourneyId', function(err, results){
 		if(err) return cb(err)
@@ -80,11 +80,11 @@ TournamentsModel.getPlayers = function(tourneyName, cb) {
 	});
 };
 
-TournamentsModel.getPlayersNamesIds = function(tourneyName, cb) {
+TournamentsModel.getPlayersNamesIds = function(tourneySlug, cb) {
 	var sql = 'SELECT u.id,u.name FROM users u'
 		+ ' JOIN tournamentUsers tu ON u.id = tu.userId'
-		+ ' JOIN tournaments t ON t.id = tu.tournamentId WHERE t.name = ?'
-		params = [tourneyName];
+		+ ' JOIN tournaments t ON t.id = tu.tournamentId WHERE t.slug = ?'
+		params = [tourneySlug];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getPlayersNamesIds', function(err, results){
 		if (err) return cb(err)
@@ -92,13 +92,13 @@ TournamentsModel.getPlayersNamesIds = function(tourneyName, cb) {
 	});
 };
 
-TournamentsModel.getStats = function(tourneyName, cb) {
+TournamentsModel.getStats = function(tourneySlug, cb) {
 	var sql = 'SELECT u.name,tu.score,tu.wins,tu.losses,tu.curStreak FROM users u'
 			+ ' JOIN tournamentUsers tu ON tu.userId = u.id'
 			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
-			+ ' WHERE t.name = ?'
+			+ ' WHERE t.slug = ?'
 			+ ' ORDER BY tu.score DESC'
-		params = [tourneyName];
+		params = [tourneySlug];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getStats', function(err, results){
 		if (err) return cb(err)
@@ -106,14 +106,14 @@ TournamentsModel.getStats = function(tourneyName, cb) {
 	});
 };
 
-TournamentsModel.getCharacterStats = function(tourneyName, userName, cb) {
+TournamentsModel.getCharacterStats = function(tourneySlug, userName, cb) {
 	var sql = 'SELECT c.name,tc.value,tc.curStreak,tc.wins,tc.losses FROM characters c'
 			+ ' JOIN tournamentCharacters tc ON tc.characterId = c.id'
 			+ ' JOIN tournaments t ON t.id = tc.tournamentId'
 			+ ' JOIN users u ON u.id = tc.userId'
-			+ ' WHERE u.name = ? AND t.name = ?'
+			+ ' WHERE u.name = ? AND t.slug = ?'
 			+ ' ORDER BY tc.curStreak DESC,tc.value DESC'
-		params = [userName, tourneyName];
+		params = [userName, tourneySlug];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getCharacterStats', function(err, results){
 		if (err) return cb(err)
@@ -122,7 +122,7 @@ TournamentsModel.getCharacterStats = function(tourneyName, userName, cb) {
 };
 
 TournamentsModel.getTourneyList = function(cb) {
-	var sql = 'SELECT t.id, t.name, t.goal, t.active, t.time, u.name champion FROM tournaments t LEFT JOIN users u ON t.championId = u.id'
+	var sql = 'SELECT t.id, t.name, t.slug, t.goal, t.active, t.time, u.name champion FROM tournaments t LEFT JOIN users u ON t.championId = u.id'
 
 	mysql.query('rw', sql, [], 'modules/tournaments/tournaments-model/getTourneyList', function(err, results){
 		if(err) return cb(err)
@@ -130,9 +130,9 @@ TournamentsModel.getTourneyList = function(cb) {
 	});
 };
 
-TournamentsModel.getTourneyInfo = function(name,cb) {
-	var sql = 'SELECT name, goal FROM tournaments WHERE name = ?',
-		params = [name]
+TournamentsModel.getTourneyInfo = function(slug,cb) {
+	var sql = 'SELECT name, slug, goal FROM tournaments WHERE slug = ?',
+		params = [slug]
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getTourneyInfo', function(err, results){
 		if(err) return cb(err)
@@ -150,12 +150,12 @@ TournamentsModel.editTournament = function(name,goal,oldName,cb) {
 	});
 };
 
-TournamentsModel.updateSeedStatus = function(tourneyName,cb) {
+TournamentsModel.updateSeedStatus = function(tourneySlug,cb) {
 	var sql = 'SELECT tu.seeded, u.name FROM tournamentUsers tu'
 			+ ' JOIN users u ON u.id = tu.userId'
 			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
-			+ ' WHERE t.name = ?',
-		params = [tourneyName]
+			+ ' WHERE t.slug = ?',
+		params = [tourneySlug]
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/updateSeedStatus', function(err, results){
 		if(err) return cb(err)
