@@ -70,9 +70,9 @@ TournamentsModel.insertPlayers = function(tid, userIds, cb) {
 	});
 };
 
-TournamentsModel.getPlayers = function(tourneyName, cb) {
-	var sql = 'SELECT tu.userId FROM tournamentUsers tu JOIN tournaments t ON t.id = tu.tournamentId WHERE t.name = ?'
-		params = [tourneyName];
+TournamentsModel.getPlayers = function(tourneySlug, cb) {
+	var sql = 'SELECT tu.userId FROM tournamentUsers tu JOIN tournaments t ON t.id = tu.tournamentId WHERE t.slug = ?'
+		params = [tourneySlug];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getPlayers', function(err, results){
 		if (err) return cb(err)

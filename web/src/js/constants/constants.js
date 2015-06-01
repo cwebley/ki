@@ -4,12 +4,12 @@ module.exports = {
 
   ActionTypes: keyMirror({
     LOGOUT: null,
-    RECEIVE_LOGIN_TOKEN: null,
+    LOGIN: null,
+    SUBMIT_GAME: null,
+    GET_TOURNAMENT_INDEX: null,
+    GET_TOURNAMENT_DATA: null,
 
     // not in use
-    RECEIVE_TOURNAMENT_INDEX: null,
-    RECEIVE_TOURNAMENT_DATA: null,
-    SUBMIT_GAME: null,
     SEED_OPPONENT: null,
     CREATE_TOURNAMENT: null,
     EDIT_TOURNAMENT: null,

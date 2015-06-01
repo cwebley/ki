@@ -1,7 +1,7 @@
 var React = require('react'),
 	Router = require('react-router'),
 	AuthStore = require('../stores/auth-store'),
-	api = require('../utils/api'),
+	serverActions = require('../actions/server-action-creators'),
 	TournamentListStore = require('../stores/tournament-list-store')
 	Link = Router.Link;
 
@@ -20,7 +20,7 @@ var TournamentIndex = React.createClass({
 		TournamentListStore.removeChangeListener(this._onChange);
 	},
 	componentDidMount: function(){
-		api.getTournamentIndex();
+		serverActions.getTournamentIndex();
 	},
 	_onChange: function(){
 		this.setState({

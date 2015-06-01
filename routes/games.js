@@ -1,34 +1,37 @@
 var express = require('express'),
-	passport = require('passport'),
+	auth = require('../modules/auth'),
 	games = require('../modules/games');
 
 var app = express();
 var gameController = {};
 
-//TODO dto this stuff?
 var getGameOpts = function(req){
-	var opts = {
+	return {
 		winningPlayer: req.body.winningPlayer || req.query.winningPlayer,
 		winningCharacter: req.body.winningCharacter || req.query.winningCharacter,
 		losingPlayer: req.body.losingPlayer || req.query.losingPlayer,
 		losingCharacter: req.body.losingCharacter || req.query.losingCharacter,
-		tournament: req.body.tournament || req.query.tournament,
+		slug: req.body.slug || req.query.slug,
 		supreme: !!req.body.supreme || !!req.query.supreme
-	}
-	return opts
+	};
 }
 
 gameController.submitGame = function(req, res){
-	var opts = getGameOpts(req)
+	var opts = getGameOpts(req);
+
 	games.submitGame(opts, function(err,dto){
-		if(err) return res.status(500).send({success:false,err:err})
-		if(!dto) return res.status(400).send({success:false,reason:'invalid-inputs'})
-		res.status(201).send({success:true})
+		if(err) return res.status(500).send({success:false,err:err});
+		if(!dto) return res.status(400).send({success:false,reason:'invalid-inputs'});
+		dto.success = true;
+		res.status(201).send(dto);
 	})
 }
 
-app.use(passport.initialize())
-app.use(passport.authenticate('basic',{ session: false }))
+/*
+*	Auth Barrier
+*/
+app.use(auth.verifyToken);
+app.use(auth.ensureAuthenticated);
 
 app.post('/',
  	gameController.submitGame

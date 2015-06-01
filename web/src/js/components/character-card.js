@@ -1,9 +1,4 @@
-var React = require('react'),
-	Router = require('react-router'),
-	AuthStore = require('../stores/auth-store'),
-	api = require('../utils/api'),
-	TournamentStore = require('../stores/tournament-store')
-	Link = Router.Link;
+var React = require('react');
 
 var TournamentPage = React.createClass({
 	propTypes: {

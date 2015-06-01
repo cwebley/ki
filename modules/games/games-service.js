@@ -12,6 +12,7 @@ var GamesService = {};
 GamesService.saveGame = function(options, cb) {
 
 	GamesService.getAndValidateIds(options,function(err,validated){
+		console.log("GET AND VAL CB: ", err, validated)
 		if(err)return cb(err)
 		if(!validated) return cb() // no character value: seeding not done.
 
@@ -51,8 +52,8 @@ GamesService.getAndValidateIds = function(options, cb) {
 	calls.losePid = function(done){usersMdl.getUserId(options.losingPlayer, done)}
 	calls.winXid = function(done){usersMdl.getCharacterId(options.winningCharacter, done)}
 	calls.loseXid = function(done){usersMdl.getCharacterId(options.losingCharacter, done)}
-	calls.tourneyId = function(done){tourneyMdl.getTourneyId(options.tournament, done)}
-	calls.tourneyPlayers = function(done){tourneyMdl.getPlayers(options.tournament, done)}
+	calls.tourneyId = function(done){tourneyMdl.getTourneyId(options.slug, done)}
+	calls.tourneyPlayers = function(done){tourneyMdl.getPlayers(options.slug, done)}
 
 	async.parallel(calls, function(err, results){
 		if(err)return cb(err)

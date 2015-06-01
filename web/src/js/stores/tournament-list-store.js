@@ -8,30 +8,6 @@ var CHANGE_EVENT = 'change';
 
 var _tournaments = {};
 
-// function _addMessages(rawMessages) {
-//   rawMessages.forEach(function(message) {
-//     if (!_characters[message.id]) {
-//       var _users = {};
-//       _characters[message.id] = ChatMessageUtils.convertRawMessage(
-//         var _users = {};
-//         message,
-//         ThreadStore.getCurrentID()
-//       );
-//     }
-//   });
-// }
-
-// function _incomingTournamentIndex(threadID) {
-//   for (var id in _characters) {
-// 	var _users = {};
-// 	if (_characters[id].threadID === threadID) 
-// 	  var _users = {};
-// 	  _characters[id].isRead = true;
-// 	  var _users = {};
-// 	}
-//   }
-// }
-
 function _tourneyIndexReceived(tournaments){
 	_tournaments = tournaments
 }
@@ -57,51 +33,6 @@ var TournamentIndexStore = assign({}, EventEmitter.prototype, {
 		return _tournaments;
 	},
 
-  // get: function(id) {
-  //   return _messages[id];
-  // },
-
-  // getAll: function() {
-  //   return _messages;
-  // },
-
-  // /**
-  //  * @param {string} threadID
-  //  */
-  // getAllForThread: function(threadID) {
-  //   var threadMessages = [];
-  //   for (var id in _messages) {
-  //     if (_messages[id].threadID === threadID) {
-  //       threadMessages.push(_messages[id]);
-  //     }
-  //   }
-  //   threadMessages.sort(function(a, b) {
-  //     if (a.date < b.date) {
-  //       return -1;
-  //     } else if (a.date > b.date) {
-  //       return 1;
-  //     }
-  //     return 0;
-  //   });
-  //   return threadMessages;
-  // },
-
-  // getAllForCurrentThread: function() {
-  //   return this.getAllForThread(ThreadStore.getCurrentID());
-  // },
-
-  // getCreatedMessageData: function(text) {
-  //   var timestamp = Date.now();
-  //   return {
-  //     id: 'm_' + timestamp,
-  //     threadID: ThreadStore.getCurrentID(),
-  //     authorName: 'Bill', // hard coded for the example
-  //     date: new Date(timestamp),
-  //     text: text,
-  //     isRead: true
-  //   };
-  // }
-
 });
 
 TournamentIndexStore.dispatchToken = dispatcher.register(function(payload) {
@@ -109,7 +40,7 @@ TournamentIndexStore.dispatchToken = dispatcher.register(function(payload) {
 
 	switch(action.type) {
 
-	case ActionTypes.RECEIVE_TOURNAMENT_INDEX:
+	case ActionTypes.GET_TOURNAMENT_INDEX:
 		_tourneyIndexReceived(payload.action.data.tournaments);
 		TournamentIndexStore.emitChange();
 		break;

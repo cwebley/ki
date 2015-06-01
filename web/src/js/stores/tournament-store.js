@@ -20,9 +20,6 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 		this.emit(CHANGE_EVENT);
 	},
 
-	/**
-	* @param {function} callback
-	*/
 	addChangeListener: function(callback) {
 		this.on(CHANGE_EVENT, callback);
 	},
@@ -46,52 +43,6 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 	getThem: function() {
 		return _them;
 	},
-
-  // get: function(id) {
-  //   return _messages[id];
-  // },
-
-  // getAll: function() {
-  //   return _messages;
-  // },
-
-  // /**
-  //  * @param {string} threadID
-  //  */
-  // getAllForThread: function(threadID) {
-  //   var threadMessages = [];
-  //   for (var id in _messages) {
-  //     if (_messages[id].threadID === threadID) {
-  //       threadMessages.push(_messages[id]);
-  //     }
-  //   }
-  //   threadMessages.sort(function(a, b) {
-  //     if (a.date < b.date) {
-  //       return -1;
-  //     } else if (a.date > b.date) {
-  //       return 1;
-  //     }
-  //     return 0;
-  //   });
-  //   return threadMessages;
-  // },
-
-  // getAllForCurrentThread: function() {
-  //   return this.getAllForThread(ThreadStore.getCurrentID());
-  // },
-
-  // getCreatedMessageData: function(text) {
-  //   var timestamp = Date.now();
-  //   return {
-  //     id: 'm_' + timestamp,
-  //     threadID: ThreadStore.getCurrentID(),
-  //     authorName: 'Bill', // hard coded for the example
-  //     date: new Date(timestamp),
-  //     text: text,
-  //     isRead: true
-  //   };
-  // }
-
 });
 
 TournamentStore.dispatchToken = dispatcher.register(function(payload) {
@@ -99,9 +50,15 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 
 	switch(action.type) {
 
-	case ActionTypes.RECEIVE_TOURNAMENT_DATA:
+	case ActionTypes.GET_TOURNAMENT_DATA:
 		_tourneyDataReceived(payload.action.data);
 		TournamentStore.emitChange();
+		break;
+	case ActionTypes.SUBMIT_GAME:
+		if(payload.action.code !== 201){
+			// do some sort of roll back when/if view-action based rendering happens
+			console.log("Tournament-store-found-an-error-submitting-game");
+		}
 		break;
 
 	default:

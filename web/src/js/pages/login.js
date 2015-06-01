@@ -1,6 +1,6 @@
 var React = require('react'),
 	Router = require('react-router'),
-	api = require('../utils/api');
+	serverActions = require('../actions/server-action-creators');
 
 var LoginPage = React.createClass({
 
@@ -33,7 +33,7 @@ var LoginPage = React.createClass({
 		// clear nodes before transitioning to prevent window confirm box popup
 		this.refs.username.getDOMNode().value = '';
 		this.refs.password.getDOMNode().value = '';
-		api.login(data);
+		serverActions.login(data);
 
 		// auth.login(data);
 
