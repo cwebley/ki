@@ -6,12 +6,21 @@ var _ = require('lodash'),
 
 var TourneyInterface = {};
 
-// data: array of user-data objects
-TourneyInterface.allStatsDto = function(data,seeded){
+TourneyInterface.allStatsDto = function(data,seeded,requester){
 	var dto = {users:[], seeded:seeded};
 
 	for (var i=0;i<data.length;i++){
 		dto.users.push(data[i])
+	}
+	//	order users so the client doesn't have to
+	if(requester){
+		for(var i=0; i<dto.users.length; i++){
+			if(dto.users[i].name === requester){
+				// pop off and append to front
+				dto.users.unshift(dto.users.pop());
+				break;
+			}
+		}
 	}
 	return dto
 };
@@ -47,7 +56,7 @@ TourneyInterface.getTourneyInfo = function(tourneySlug,cb) {
 	});
 };
 
-TourneyInterface.getAllTourneyStats = function(tourneySlug,cb) {
+TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 	// verify tourney name valid
 	tourneyMdl.getTourneyId(tourneySlug,function(err,tourneyId,seeded){
 		if(err) return cb(err)
@@ -85,7 +94,7 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,cb) {
 					for(var i=0;i<tournamentData.length;i++){
 						tournamentData[i].characters = charData[i]
 					}
-					return cb(err,TourneyInterface.allStatsDto(tournamentData, seeded))
+					return cb(err,TourneyInterface.allStatsDto(tournamentData, seeded, requester))
 				});
 			});
 		});

@@ -6,37 +6,15 @@ var assign = require('object-assign');
 var ActionTypes = constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _tournaments = {};
-
-// function _addMessages(rawMessages) {
-//   rawMessages.forEach(function(message) {
-//     if (!_characters[message.id]) {
-//       var _users = {};
-//       _characters[message.id] = ChatMessageUtils.convertRawMessage(
-//         var _users = {};
-//         message,
-//         ThreadStore.getCurrentID()
-//       );
-//     }
-//   });
-// }
-
-// function _incomingTournamentIndex(threadID) {
-//   for (var id in _characters) {
-// 	var _users = {};
-// 	if (_characters[id].threadID === threadID) 
-// 	  var _users = {};
-// 	  _characters[id].isRead = true;
-// 	  var _users = {};
-// 	}
-//   }
-// }
+var _me = {};
+var _them = {};
 
 function _tourneyDataReceived(data){
-	_data = data
+	_me = data.users[0];
+	_them = data.users[1];
 }
 
-var TournamentIndexStore = assign({}, EventEmitter.prototype, {
+var TournamentStore = assign({}, EventEmitter.prototype, {
 
 	emitChange: function() {
 		this.emit(CHANGE_EVENT);
@@ -53,8 +31,20 @@ var TournamentIndexStore = assign({}, EventEmitter.prototype, {
 		this.removeListener(CHANGE_EVENT, callback);
 	},
 
-	get: function() {
-		return _data;
+	imInThisTournament: function(data){
+		//todo check jwt
+		var name = "g";
+		if(data.users[0].name === name){
+			return true
+		}
+	},
+
+	getMe: function() {
+		return _me;
+	},	
+
+	getThem: function() {
+		return _them;
 	},
 
   // get: function(id) {
@@ -104,14 +94,14 @@ var TournamentIndexStore = assign({}, EventEmitter.prototype, {
 
 });
 
-TournamentIndexStore.dispatchToken = dispatcher.register(function(payload) {
+TournamentStore.dispatchToken = dispatcher.register(function(payload) {
   var action = payload.action;
 
 	switch(action.type) {
 
 	case ActionTypes.RECEIVE_TOURNAMENT_DATA:
 		_tourneyDataReceived(payload.action.data);
-		TournamentIndexStore.emitChange();
+		TournamentStore.emitChange();
 		break;
 
 	default:
@@ -122,4 +112,4 @@ TournamentIndexStore.dispatchToken = dispatcher.register(function(payload) {
 
 });
 
-module.exports = TournamentIndexStore;
+module.exports = TournamentStore;

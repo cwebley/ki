@@ -35,7 +35,7 @@ var TournamentIndex = React.createClass({
 					this.state.tournaments.map(function(t){
 						return (
 							<li key={t.id}>
-								<Link to="tournament" params={{title: t.slug}}>{t.name}</Link>
+								<Link to="tournament" params={{titleSlug: t.slug}}>{t.name}</Link>
 							</li>
 						)
 					})

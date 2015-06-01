@@ -97,7 +97,7 @@ TournamentsModel.getStats = function(tourneySlug, cb) {
 			+ ' JOIN tournamentUsers tu ON tu.userId = u.id'
 			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
 			+ ' WHERE t.slug = ?'
-			+ ' ORDER BY tu.score DESC'
+			+ ' ORDER BY u.name'
 		params = [tourneySlug];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getStats', function(err, results){
@@ -107,7 +107,7 @@ TournamentsModel.getStats = function(tourneySlug, cb) {
 };
 
 TournamentsModel.getCharacterStats = function(tourneySlug, userName, cb) {
-	var sql = 'SELECT c.name,tc.value,tc.curStreak,tc.wins,tc.losses FROM characters c'
+	var sql = 'SELECT c.id,c.name,tc.value,tc.curStreak,tc.wins,tc.losses FROM characters c'
 			+ ' JOIN tournamentCharacters tc ON tc.characterId = c.id'
 			+ ' JOIN tournaments t ON t.id = tc.tournamentId'
 			+ ' JOIN users u ON u.id = tc.userId'

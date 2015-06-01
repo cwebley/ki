@@ -44,9 +44,9 @@ tourneyController.postNewTourney = function(req, res){
 }
 
 tourneyController.get = function(req, res){
-	var tourneySlug = req.params.tourneySlug
-
-	tournaments.getAllTourneyStats(tourneySlug,function(err,dto){
+	var tourneySlug = req.params.tourneySlug;
+	var requester = (req.user) ? req.user.name : '';
+	tournaments.getAllTourneyStats(tourneySlug,requester,function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err})
 		if(!dto) {
 			return res.status(404).send();
