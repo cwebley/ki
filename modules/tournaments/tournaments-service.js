@@ -132,5 +132,4 @@ tournamentsService.updateSeedStatus = function(options,cb){
 	
 };
 
-
 module.exports = tournamentsService;

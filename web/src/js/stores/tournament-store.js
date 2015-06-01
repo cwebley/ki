@@ -1,11 +1,13 @@
 var dispatcher = require('../dispatchers/dispatcher'),
 	constants = require('../constants/constants'),
 	EventEmitter = require('events').EventEmitter,
-	assign = require('object-assign');
+	assign = require('object-assign'),
+	TournamentListStore = require('./tournament-list-store');
 
 var ActionTypes = constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
+var _tournamentHash = {};
 var _me = {};
 var _them = {};
 

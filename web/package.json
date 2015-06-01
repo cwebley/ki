@@ -8,6 +8,7 @@
     "gulp": "^3.8.11",
     "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.5.2",
+    "gulp-sass": "^2.0.1",
     "keymirror": "^0.1.1",
     "object-assign": "^2.0.0",
     "react": "^0.13.3",

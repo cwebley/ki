@@ -6,10 +6,12 @@ var assign = require('object-assign');
 var ActionTypes = constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _tournaments = {};
+var _tournamentList = [];
+var _currentIndex = null;
 
 function _tourneyIndexReceived(tournaments){
-	_tournaments = tournaments
+	console.log("TOURNEY INDEX RECEIVED: ", tournaments)
+	_tournamentList = tournaments
 }
 
 var TournamentIndexStore = assign({}, EventEmitter.prototype, {
@@ -17,21 +19,33 @@ var TournamentIndexStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
 		this.emit(CHANGE_EVENT);
 	},
-
-	/**
-	* @param {function} callback
-	*/
 	addChangeListener: function(callback) {
 		this.on(CHANGE_EVENT, callback);
 	},
-  
 	removeChangeListener: function(callback) {
 		this.removeListener(CHANGE_EVENT, callback);
 	},
-
 	get: function() {
-		return _tournaments;
+		return _tournamentList;
 	},
+	getCurrent: function(){
+		return _tournamentList[_currentIndex].slug
+	},
+	setCurrent: function(slug){
+		
+	},
+	getPrevious: function(){
+		if(_currentIndex === 0){
+			return false;
+		}
+		return _tournamentList[_currentIndex-1]
+	},
+	getNext: function(){
+		if(_currentIndex === _tournamentList.length-1){
+			return false;
+		}
+		return _tournamentList[_currentIndex+1]
+	}
 
 });
 

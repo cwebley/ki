@@ -3,6 +3,7 @@ var React = require('react'),
 	AuthStore = require('../stores/auth-store'),
 	serverActions = require('../actions/server-action-creators'),
 	TournamentStore = require('../stores/tournament-store'),
+	TournamentListStore = require('../stores/tournament-list-store'),
 	Link = Router.Link,
 	CharacterCard = require('../components/character-card'),
 	MatchupItem = require('../components/matchup-item');
@@ -10,21 +11,25 @@ var React = require('react'),
 var TournamentPage = React.createClass({
 	mixins: [ Router.Navigation, Router.State ],
 
-	statics: {
-		willTransitionTo: function (transition) {
-			if (!AuthStore.loggedIn()) {
-				transition.redirect('/login');
-			}
-		}
-	},
+	// statics: {
+	// 	willTransitionTo: function (transition) {
+	// 		if (!AuthStore.loggedIn()) {
+	// 			transition.redirect('/login');
+	// 		}
+	// 	}
+	// },
 	getInitialState: function(){
-		return {};
+		return {
+			me: TournamentStore.getMe(),
+			them: TournamentStore.getThem()
+		};
 	},
 	componentWillMount:function(){
 		TournamentStore.addChangeListener(this._onChange);
 	},
 	componentWillUnmount:function(){
 		TournamentStore.removeChangeListener(this._onChange);
+		TournamentListStore.setCurrent(this.getParams().titleSlug);
 	},
 	componentDidMount: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);
@@ -36,6 +41,9 @@ var TournamentPage = React.createClass({
 		});
 	},
 	renderCharacters: function(user){
+		if(!user.characters){
+			return false;
+		}
 		var characters = user.characters.map(function(character){
 			return <CharacterCard data={character} key={user.name + '-' + character.id} />;
 		});
@@ -69,7 +77,7 @@ var TournamentPage = React.createClass({
 		);
 	},
 	renderMatchup: function(){
-		if(!this.state.me){
+		if(!this.state.me.next){
 			return false;
 		}
 
@@ -102,7 +110,7 @@ var TournamentPage = React.createClass({
 		var me = this.renderUser(this.state.me);
 		var them = this.renderUser(this.state.them);
 		var matchup = this.renderMatchup();
-		
+
 		return (
 			<div className="page-wrap">
 				<h1 className="title">{titleSlug}</h1>

@@ -1,0 +1,20 @@
+.master {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  overflow: auto;
+  padding: 10px 40px;
+}
+
+.detail {
+  position: absolute;
+  left: 300px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  border-left: 1px solid #ccc;
+  overflow: auto;
+  padding: 40px;
+}

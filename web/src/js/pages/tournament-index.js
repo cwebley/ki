@@ -1,5 +1,6 @@
 var React = require('react'),
 	Router = require('react-router'),
+	RouteHandler = Router.RouteHandler,
 	AuthStore = require('../stores/auth-store'),
 	serverActions = require('../actions/server-action-creators'),
 	TournamentListStore = require('../stores/tournament-list-store')
@@ -29,8 +30,8 @@ var TournamentIndex = React.createClass({
 	},
 	render: function(){
 		return (
-			<div>
-				<ol>
+			<div className="tournaments">
+				<ol className="master">
 				{
 					this.state.tournaments.map(function(t){
 						return (
@@ -41,6 +42,9 @@ var TournamentIndex = React.createClass({
 					})
 				}
 				</ol>
+				<div className="detail">
+					<RouteHandler />
+				</div>
 			</div>
 		);
 	}
