@@ -98,12 +98,11 @@ var TournamentPage = React.createClass({
 		);
 	},
 	render: function(){
-		// <Matchup titleSlug={this.getParams().titleSlug} user={user.name} character={user.next[0]} />
-
 		var titleSlug = this.getParams().titleSlug;
 		var me = this.renderUser(this.state.me);
 		var them = this.renderUser(this.state.them);
 		var matchup = this.renderMatchup();
+		
 		return (
 			<div className="page-wrap">
 				<h1 className="title">{titleSlug}</h1>

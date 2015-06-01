@@ -93,7 +93,7 @@ TournamentsModel.getPlayersNamesIds = function(tourneySlug, cb) {
 };
 
 TournamentsModel.getStats = function(tourneySlug, cb) {
-	var sql = 'SELECT u.name,tu.score,tu.wins,tu.losses,tu.curStreak FROM users u'
+	var sql = 'SELECT u.name,tu.score,tu.seeded,tu.wins,tu.losses,tu.curStreak FROM users u'
 			+ ' JOIN tournamentUsers tu ON tu.userId = u.id'
 			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
 			+ ' WHERE t.slug = ?'

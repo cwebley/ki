@@ -7,8 +7,8 @@ var Api = {
 			json: data,
 			uri: "/api/login",
 			method: "post"
-		}, function (err, resp, body) {
-			if(resp.statusCode !== 200) {
+		}, function (err, res, body) {
+			if(res.statusCode !== 200) {
 				//handle error. require login or render some error based on code?
 				console.log("NO LOGIN TOKEN RETURNED FROM api/login")
 			}
@@ -19,12 +19,12 @@ var Api = {
 		xhr({
 			json: true,
 			uri: "/api/tournaments"
-		}, function (err, resp, body) {
-			if(resp.statusCode !== 200) {
+		}, function (err, res, body) {
+			if(res.statusCode !== 200) {
 				//handle error
 				console.log("ERROR GETTING TOURNEY INDEX")
 			}
-			return cb(resp.statusCode,body)
+			return cb(res.statusCode,body)
 		})
 	},
 	getTournamentData: function(slug,cb) {
@@ -34,12 +34,12 @@ var Api = {
 			headers: {
 				"x-access-token": localStorage.token
 			}
-		}, function (err, resp, body) {
-			if(resp.statusCode !== 200) {
+		}, function (err, res, body) {
+			if(res.statusCode !== 200) {
 				//handle error
 				console.log("ERROR GETTING DATA FOR " + slug)
 			}
-			return cb(resp.statusCode,body)
+			return cb(res.statusCode,body)
 		})
 	},
 	submitGame: function(data,cb) {
@@ -50,8 +50,8 @@ var Api = {
 			headers: {
 				"x-access-token": localStorage.token
 			}
-		}, function (err, resp, body) {
-			cb(resp.statusCode)
+		}, function (err, res, body) {
+			cb(res.statusCode)
 		})
 	},
 }

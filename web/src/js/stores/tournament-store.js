@@ -1,7 +1,7 @@
-var dispatcher = require('../dispatchers/dispatcher');
-var constants = require('../constants/constants');
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+var dispatcher = require('../dispatchers/dispatcher'),
+	constants = require('../constants/constants'),
+	EventEmitter = require('events').EventEmitter,
+	assign = require('object-assign');
 
 var ActionTypes = constants.ActionTypes;
 var CHANGE_EVENT = 'change';
@@ -19,30 +19,18 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
 		this.emit(CHANGE_EVENT);
 	},
-
 	addChangeListener: function(callback) {
 		this.on(CHANGE_EVENT, callback);
 	},
-  
 	removeChangeListener: function(callback) {
 		this.removeListener(CHANGE_EVENT, callback);
 	},
-
-	imInThisTournament: function(data){
-		//todo check jwt
-		var name = "g";
-		if(data.users[0].name === name){
-			return true
-		}
-	},
-
 	getMe: function() {
 		return _me;
 	},	
-
 	getThem: function() {
 		return _them;
-	},
+	}
 });
 
 TournamentStore.dispatchToken = dispatcher.register(function(payload) {
@@ -56,7 +44,7 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 		break;
 	case ActionTypes.SUBMIT_GAME:
 		if(payload.action.code !== 201){
-			// do some sort of roll back when/if view-action based rendering happens
+			// do some sort of roll back when/if view-action based rendering happens?
 			console.log("Tournament-store-found-an-error-submitting-game");
 		}
 		break;
