@@ -1,3 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.header {
+  height: 3.5em;
+  float: left;
+  width: 100%;
+  background: #333;
+  overflow: hidden;
+
+  .header-link {
+    text-decoration: none;
+    display: inline-block;
+    padding: 0 1em;
+    line-height: 3.5em;
+    width: 20%;
+    text-align: center;
+
+    &:hover {
+      border-bottom: 1px;
+      border-color: #00ff00;
+    }
+  }
+}
+
 .master {
   float: left;
   background: #eee;
@@ -11,5 +41,43 @@
 .detail {
   border-left: 1px solid #ccc;
   overflow: auto;
-  padding: 40px;
+  padding: 0 1em;
+}
+
+.title {
+  text-align: center;
+  line-height: 1em;
+  color: #000;
+}
+
+.me {
+  float:left;
+}
+.matchup {
+  text-align: center;
+}
+.them {
+  float: right;
+}
+
+.character-list {
+  list-style-type: none;
+}
+
+.character {
+  display: block;
+  background: #eee;
+  padding: 0 1em;
+  margin: 1em;
+  line-height: 1.5em;
+
+  .character-name {
+    font-size: 1.25em;
+    font-weight: bold;
+  }
+
+  .character-stats {
+    list-style-type: none;
+
+  }
 }

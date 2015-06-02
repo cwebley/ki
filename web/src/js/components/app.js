@@ -24,16 +24,15 @@ var App =
 	},
 	render:function(){
 		return (
-			<div>
-				<header>
-					<ul>
-						<li><Link to="about">Home</Link></li>
-						<li><Link to="tournaments">Tournaments</Link></li>
-						<li><Link to="stats">Stats</Link></li>
-						<li><Link to="faq">FAQ</Link></li>
-					</ul>
+			<div className="app">
+				<header className="header">
+					<Link className="header-link" to="about">Home</Link>
+					<Link className="header-link" to="tournaments">Tournaments</Link>
+					<Link className="header-link" to="stats">Stats</Link>
+					<Link className="header-link" to="faq">FAQ</Link>
+					
 					{
-						(this.state.loggedIn) ? <a onClick={this.logout}>Log Out</a> : <Link to="login">Log In</Link>
+						(this.state.loggedIn) ? <a className="header-link" onClick={this.logout}>Log Out</a> : <Link className="header-link" to="login">Log In</Link>
 					}
 				</header>
 

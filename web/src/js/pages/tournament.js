@@ -27,7 +27,7 @@ var TournamentPage = React.createClass({
 	componentDidMount: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);
 	},
-	componentWillUpdate: function(){
+	componentWillReceiveProps: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);
 	},
 	_onChange: function(){
@@ -41,12 +41,16 @@ var TournamentPage = React.createClass({
 			return false;
 		}
 		var characters = user.characters.map(function(character){
-			return <CharacterCard data={character} key={user.name + '-' + character.id} />;
+			return (
+				<li className="character-wrapper" key={user.name + '-' + character.id}>
+					<CharacterCard data={character} />
+				</li>
+			)
 		});
 		return(
-			<div className="character-wrapper">
+			<ol className="character-list">
 				{characters}
-			</div>
+			</ol>
 		);
 	},
 	renderUser: function(user){
@@ -110,10 +114,11 @@ var TournamentPage = React.createClass({
 		return (
 			<div className="page-wrap">
 				<h1 className="title">{titleSlug}</h1>
+				{matchup}
+
 				<div className="me">
 					{me}
 				</div>
-				{matchup}
 				<div className="them">
 					{them}
 				</div>
