@@ -13,6 +13,6 @@ module.exports = React.createClass({
 		serverActions.submitGame(this.props.data);
 	},
 	render: function(){
-		return <button className="btn btn-lg btn-primary" onClick={this.submitGame}>{this.props.display}</button>
+		return <button className="btn btn-block btn-primary" onClick={this.submitGame}>{this.props.display}</button>
 	}
 })
