@@ -37,12 +37,12 @@ var TournamentIndex = React.createClass({
 	},
 	render: function(){
 		return (
-			<div className="tournaments">
-				<ol className="master">
+			<div className="tournament-list-wrapper">
+				<ol className="tournament-list">
 				{
 					this.state.tournaments.map(function(t){
 						return (
-							<li key={t.id}>
+							<li className="tournament-list-item" key={t.id}>
 								<Link to="tournament" params={{titleSlug: t.slug}}>{t.name}</Link>
 							</li>
 						)

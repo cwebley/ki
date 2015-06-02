@@ -99,9 +99,13 @@ var TournamentPage = React.createClass({
 
 		return(
 			<div className="matchup">
-				<MatchupItem data={IWin} display={this.state.me.next[0]} />
+				<div className="matchup-left">
+					<MatchupItem data={IWin} display={this.state.me.next[0]} />
+				</div>
 				<div className="versus">VS</div>
-				<MatchupItem data={TheyWin} display={this.state.them.next[0]} />
+				<div className="matchup-right">
+					<MatchupItem data={TheyWin} display={this.state.them.next[0]} />
+				</div>
 			</div>
 		);
 	},
@@ -114,12 +118,14 @@ var TournamentPage = React.createClass({
 		return (
 			<div className="page-wrap">
 				<h1 className="title">{titleSlug}</h1>
-				{matchup}
 
-				<div className="me">
+				<div className="column-left">
 					{me}
 				</div>
-				<div className="them">
+				<div className="column-center">
+					{matchup}
+				</div>
+				<div className="column-right">
 					{them}
 				</div>
 			</div>

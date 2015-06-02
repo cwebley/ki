@@ -9,18 +9,22 @@ var TournamentPage = React.createClass({
 		var data = this.props.data;
 		return (
 			<div className="character">
-				<h3 className="character-name">{data.name}</h3>
-				<ul className="character-stats">
-					<li className="char-stat-item value">
-						value: {data.value}
-					</li>
-					<li className="char-stat-item record">
-						record: {data.wins} - {data.losses}
-					</li>
-					<li className="char-stat-item streak">
-						streak: {data.curStreak}
-					</li>
-				</ul>
+				<div className="card-left-column">
+					<h3 className="character-name">{data.name}</h3>
+				</div>
+				<div className="card-right-column">
+					<ul className="character-stats">
+						<li className="char-stat-item value">
+							value: {data.value}
+						</li>
+						<li className="char-stat-item record">
+							record: {data.wins} - {data.losses}
+						</li>
+						<li className="char-stat-item streak">
+							streak: {data.curStreak}
+						</li>
+					</ul>
+				</div>
 			</div>
 		);
 	}

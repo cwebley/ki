@@ -1,10 +1,4 @@
-* {
-  box-sizing: border-box;
-}
-
-a:hover {
-  text-decoration: none;
-}
+@import 'src/sass/bootstrap';
 
 .header {
   height: 3.5em;
@@ -28,14 +22,18 @@ a:hover {
   }
 }
 
-.master {
+.tournament-list {
   float: left;
   background: #eee;
-  padding: 1em;
-  margin: 0 1em 1em 1em;
-  width: 10em;
+  list-style-type: none;
+  width: 15%;
   overflow: auto;
-  padding: 10px 40px;
+  padding: 1.5em 0.75em;
+
+  .tournament-list-item{
+    display:block;
+    line-height: 2em;
+  }
 }
 
 .detail {
@@ -50,31 +48,79 @@ a:hover {
   color: #000;
 }
 
-.me {
+.column-left {
   float:left;
+  width: 33%;
 }
-.matchup {
+
+.column-center {
   text-align: center;
+  width: 34%;
+  float:left;
+  margin-top: 3em;
+
+  .matchup {
+    padding: 0.5em;
+    .matchup-left {
+      float: left;
+      width: 40%;
+    }
+    .versus {
+      font-weight: bold;
+      font-size: 1em;
+      margin-top:1em;
+      float:left;
+      width: 20%;
+    }
+    .matchup-right {
+      width:40%;
+      display: inline-block;
+    }
+  }
 }
-.them {
+
+.column-right {
+  width: 33%;
   float: right;
+}
+.player-wrapper {
+  .name {
+    text-align: center;
+  }
+  .user-stats {
+    list-style-type: none;
+    padding: 0.25em 0.5em;
+
+  }  
 }
 
 .character-list {
   list-style-type: none;
+  padding: 0.25em 0.5em;
 }
 
 .character {
   display: block;
   background: #eee;
-  padding: 0 1em;
-  margin: 1em;
+  padding: 0.9em;
+  margin: 0.25em;
   line-height: 1.5em;
 
-  .character-name {
-    font-size: 1.25em;
-    font-weight: bold;
+  .card-left-column {
+    width:40%;
+    float:left;
+    padding: 1.75em 0;
+
+    .character-name {
+      font-size: 1em;
+      font-weight: bold;
+      margin: 0;
+    }
   }
+
+  .card-right-column {
+  }
+
 
   .character-stats {
     list-style-type: none;
