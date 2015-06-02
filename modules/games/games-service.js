@@ -12,7 +12,6 @@ var GamesService = {};
 GamesService.saveGame = function(options, cb) {
 
 	GamesService.getAndValidateIds(options,function(err,validated){
-		console.log("GET AND VAL CB: ", err, validated)
 		if(err)return cb(err)
 		if(!validated) return cb() // no character value: seeding not done.
 

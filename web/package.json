@@ -16,14 +16,5 @@
     "react-router": "^0.13.3",
     "reactify": "^1.1.1",
     "xhr": "^2.0.1"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Stream.me",
-  "license": "Closed",
-  "publishConfig": {
-    "registry": "https://npm-internal.stream.me"
   }
 }

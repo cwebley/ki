@@ -11,13 +11,6 @@ var React = require('react'),
 var TournamentPage = React.createClass({
 	mixins: [ Router.Navigation, Router.State ],
 
-	// statics: {
-	// 	willTransitionTo: function (transition) {
-	// 		if (!AuthStore.loggedIn()) {
-	// 			transition.redirect('/login');
-	// 		}
-	// 	}
-	// },
 	getInitialState: function(){
 		return {
 			me: TournamentStore.getMe(),
@@ -32,6 +25,9 @@ var TournamentPage = React.createClass({
 		TournamentListStore.setCurrent(this.getParams().titleSlug);
 	},
 	componentDidMount: function(){
+		serverActions.getTournamentData(this.getParams().titleSlug);
+	},
+	componentWillUpdate: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);
 	},
 	_onChange: function(){
