@@ -24,11 +24,12 @@
 
 .tournament-list {
   float: left;
-  background: #bbb;
+  background: #ccc;
   list-style-type: none;
+  margin: 0;
   width: 18%;
   overflow: auto;
-  padding: 1.5em 0.25em 77em 0.25em;
+  padding: 1.5em 0.25em 83em 0.25em;
 
   .tournament-list-item{
     display:block;
@@ -89,6 +90,7 @@
   }
   .user-stats {
     list-style-type: none;
+    margin: 0;
     padding: 0.25em 0.5em;
 
   }  
@@ -96,6 +98,7 @@
 
 .character-list {
   list-style-type: none;
+  margin: 0;
   padding: 0.25em 0.5em;
 }
 
@@ -124,6 +127,6 @@
 
   .character-stats {
     list-style-type: none;
-
+    margin: 0;
   }
 }
