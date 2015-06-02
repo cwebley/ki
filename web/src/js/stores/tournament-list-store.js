@@ -1,7 +1,8 @@
 var dispatcher = require('../dispatchers/dispatcher');
-var constants = require('../constants/constants');
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+	constants = require('../constants/constants'),
+	EventEmitter = require('events').EventEmitter,
+	serverActions = require('../actions/server-action-creators'),
+	assign = require('object-assign');
 
 var ActionTypes = constants.ActionTypes;
 var CHANGE_EVENT = 'change';
@@ -12,6 +13,15 @@ var _currentIndex = null;
 function _tourneyIndexReceived(tournaments){
 	console.log("TOURNEY INDEX RECEIVED: ", tournaments)
 	_tournamentList = tournaments
+}
+
+// this is pretty broken atm. won't update when you click new tourney in the sidebar
+function _setCurrent(slug){
+	for(var i=0; i<_tournamentList.length; i++){
+		if(_tournamentList[i].slug === slug){
+			_currentIndex = i
+		}
+	}
 }
 
 var TournamentIndexStore = assign({}, EventEmitter.prototype, {
@@ -29,22 +39,22 @@ var TournamentIndexStore = assign({}, EventEmitter.prototype, {
 		return _tournamentList;
 	},
 	getCurrent: function(){
-		return _tournamentList[_currentIndex].slug
-	},
-	setCurrent: function(slug){
-		
+		if(!_currentIndex){
+			return _tournamentList[_tournamentList.length-1];
+		}
+		return _tournamentList[_currentIndex];
 	},
 	getPrevious: function(){
-		if(_currentIndex === 0){
+		if(!_currentIndex){
 			return false;
 		}
-		return _tournamentList[_currentIndex-1]
+		return _tournamentList[_currentIndex-1];
 	},
 	getNext: function(){
 		if(_currentIndex === _tournamentList.length-1){
 			return false;
 		}
-		return _tournamentList[_currentIndex+1]
+		return _tournamentList[_currentIndex+1];
 	}
 
 });
@@ -57,6 +67,9 @@ TournamentIndexStore.dispatchToken = dispatcher.register(function(payload) {
 	case ActionTypes.GET_TOURNAMENT_INDEX:
 		_tourneyIndexReceived(payload.action.data.tournaments);
 		TournamentIndexStore.emitChange();
+		break;
+	case ActionTypes.FOCUS_TOURNAMENT:
+		_setCurrent(payload.action.slug);
 		break;
 
 	default:

@@ -2,6 +2,7 @@ var React = require('react'),
 	Router = require('react-router'),
 	AuthStore = require('../stores/auth-store'),
 	serverActions = require('../actions/server-action-creators'),
+	viewActions = require('../actions/view-action-creators'),
 	TournamentStore = require('../stores/tournament-store'),
 	TournamentListStore = require('../stores/tournament-list-store'),
 	Link = Router.Link,
@@ -22,9 +23,9 @@ var TournamentPage = React.createClass({
 	},
 	componentWillUnmount:function(){
 		TournamentStore.removeChangeListener(this._onChange);
-		TournamentListStore.setCurrent(this.getParams().titleSlug);
 	},
 	componentDidMount: function(){
+		viewActions.focusTournament(this.getParams().titleSlug);
 		serverActions.getTournamentData(this.getParams().titleSlug);
 	},
 	componentWillReceiveProps: function(){
@@ -45,7 +46,7 @@ var TournamentPage = React.createClass({
 				<li className="character-wrapper" key={user.name + '-' + character.id}>
 					<CharacterCard data={character} />
 				</li>
-			)
+			);
 		});
 		return(
 			<ol className="character-list">
@@ -110,15 +111,13 @@ var TournamentPage = React.createClass({
 		);
 	},
 	render: function(){
-		var titleSlug = this.getParams().titleSlug;
+		// var titleSlug = this.getParams().titleSlug;
 		var me = this.renderUser(this.state.me);
 		var them = this.renderUser(this.state.them);
 		var matchup = this.renderMatchup();
 
 		return (
 			<div className="page-wrap">
-				<h1 className="title">{titleSlug}</h1>
-
 				<div className="column-left">
 					{me}
 				</div>

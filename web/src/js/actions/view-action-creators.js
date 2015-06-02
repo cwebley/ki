@@ -10,5 +10,11 @@ module.exports = {
 		dispatcher.handleViewAction({
 		  type: ActionTypes.LOGOUT
 		});
+ 	},
+ 	focusTournament: function(slug) {
+ 		dispatcher.handleViewAction({
+ 			type: ActionTypes.FOCUS_TOURNAMENT,
+ 			slug: slug
+ 		});
  	}
 };
