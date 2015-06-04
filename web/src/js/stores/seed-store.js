@@ -17,9 +17,24 @@ var CHANGE_EVENT = 'change';
 	}
 */
 var _prevData = {};
+var _seedAttempt = false;
+var _seedSuccess = true
 
 function _previousSeedsReceived(data){
 	_prevData = data
+}
+
+function _seedSuccess(){
+	console.log("SEED SUCCESS")
+
+	_seedAttempt = true
+	_seedSuccess = true
+}
+
+function _seedFailure(){
+	console.log("SEED FAILURE")
+	_seedAttempt = true
+	_seedSuccess = false
 }
 
 var SeedStore = assign({}, EventEmitter.prototype, {
@@ -35,6 +50,12 @@ var SeedStore = assign({}, EventEmitter.prototype, {
 	},
 	getPrevious: function(){
 		return _prevData;
+	},
+	getStatus: function(){
+		return {
+			attempt: _seedAttempt,
+			success: _seedSuccess
+		};
 	}
 });
 
@@ -49,6 +70,11 @@ SeedStore.dispatchToken = dispatcher.register(function(payload) {
 				break;
 			}
 			_previousSeedsReceived(payload.action.data);
+			SeedStore.emitChange();
+			break;
+
+		case ActionTypes.SUBMIT_SEEDS:
+			(payload.action.code === 201) ? _seedSuccess() : _seedFailure();
 			SeedStore.emitChange();
 			break;
 	

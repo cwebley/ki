@@ -66,6 +66,18 @@ var Api = {
 			cb(res.statusCode, body)
 		})
 	},
+	submitSeeds: function(slug,data,cb) {
+		xhr({
+			json: data,
+			uri: "/api/users/" + slug + "/seed",
+			method: "post",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body)
+		})
+	},
 }
 
 module.exports = Api;

@@ -131,9 +131,19 @@
   .card-right-column {
   }
 
-
   .character-stats {
     list-style-type: none;
     margin: 0;
+  }
+}
+
+.seed-field {
+  padding: 2.4em;
+
+  &.green {
+    background-color: lightgreen;
+  }
+  &.red {
+    background-color: #ff4c4c;
   }
 }

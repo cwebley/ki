@@ -21,7 +21,8 @@ var SeedPage = React.createClass({
 	getInitialState: function(){
 		return {
 			theirStats: TournamentStore.getThem(),
-			previous: SeedStore.getPrevious()
+			previous: SeedStore.getPrevious(),
+			status: SeedStore.getPrevious()
 		};
 	},
 	componentWillMount:function(){
@@ -39,7 +40,8 @@ var SeedPage = React.createClass({
 	_onChange: function(){
 		this.setState({
 			theirStats: TournamentStore.getThem(),
-			previous: SeedStore.getPrevious()
+			previous: SeedStore.getPrevious(),
+			status: SeedStore.getStatus()
 		});
 	},
 
@@ -56,8 +58,7 @@ var SeedPage = React.createClass({
 						value={character.value}
 						wins={character.wins}
 						losses={character.losses}
-						streak={character.bestStreak}
-					/>
+						streak={character.bestStreak} />
 				</li>
 			);
 		});
@@ -67,6 +68,36 @@ var SeedPage = React.createClass({
 				<ol className="character-list">
 					{characters}
 				</ol>
+			</div>
+		);
+	},
+	renderCenterColumn: function(){
+		if(!this.state.theirStats.characters || !this.state.theirStats.characters.length){
+			return false;
+		}
+
+		var description;
+		if(this.state.status.attempt && this.state.status.success){
+			description = "green"
+		}
+		if(this.state.status.attempt && !this.state.status.success){
+			description = "red"
+		}
+
+		var fields = this.state.theirStats.characters.map(function(character){
+			return (
+				<input className={"seed-field " + description} 
+					type="text" 
+					key={'input-'+character.name} 
+					placeholder={character.name + '-' + character.value} 
+					ref={character.name} />
+			);
+		});
+		return(
+			<div className="column-center">
+			<h2 className="column-title">{'Seed Up'}</h2>
+				{fields}
+				<button className="btn btn-block btn-primary" onClick={this.submitSeeds}>Submit Seeds</button>
 			</div>
 		);
 	},
@@ -83,23 +114,33 @@ var SeedPage = React.createClass({
 						value={character.value}
 						wins={character.wins}
 						losses={character.losses}
-						streak={character.curStreak}
-					/>
+						streak={character.curStreak} />
 				</li>
 			);
 		});
 		return(
 			<div className="column-right">
-				<h2 className="column-title">{'Seed ' + this.state.theirStats.name + '\'s characters'}</h2>
+				<h2 className="column-title">{'Current Opponent Data'}</h2>
 				<ol className="character-list">
 					{characters}
 				</ol>
 			</div>
 		);
 	},
+	submitSeeds: function(){
+		var data = {
+			opponent: this.state.theirStats.name
+		};
+		this.state.theirStats.characters.forEach(function(c){
+			data[c.name] = this.refs[c.name].getDOMNode().value
+		}.bind(this));
+
+		console.log("DATA: ", data)
+		serverActions.submitSeeds(this.getParams().titleSlug, data);
+	},
 	render: function(){
-		// var characterList = this.renderPrevious(this.state.theirStats);
 		var leftColumn = this.renderLeftColumn();
+		var middleColumn = this.renderCenterColumn();
 		var rightColumn = this.renderRightColumn();
 
 		console.log("THEIR STATS: ", this.state.theirStats);
@@ -112,6 +153,7 @@ var SeedPage = React.createClass({
 					</Link>
 				</h1>
 					{leftColumn}
+					{middleColumn}
 					{rightColumn}
 			</div>
 		);

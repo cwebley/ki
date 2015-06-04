@@ -50,6 +50,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	submitSeeds: function(slug, data){
+ 		api.submitSeeds(slug, data,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.SUBMIT_SEEDS,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 
