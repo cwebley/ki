@@ -63,20 +63,17 @@ TournamentIndexStore.dispatchToken = dispatcher.register(function(payload) {
   var action = payload.action;
 
 	switch(action.type) {
-
-	case ActionTypes.GET_TOURNAMENT_INDEX:
-		_tourneyIndexReceived(payload.action.data.tournaments);
-		TournamentIndexStore.emitChange();
-		break;
-	case ActionTypes.FOCUS_TOURNAMENT:
-		_setCurrent(payload.action.slug);
-		break;
-
-	default:
-	  // do nothing
-}
-
-
+		case ActionTypes.GET_TOURNAMENT_INDEX:
+			_tourneyIndexReceived(payload.action.data.tournaments);
+			TournamentIndexStore.emitChange();
+			break;
+		case ActionTypes.FOCUS_TOURNAMENT:
+			_setCurrent(payload.action.slug);
+			break;
+	
+		default:
+		  // do nothing
+	}
 
 });
 

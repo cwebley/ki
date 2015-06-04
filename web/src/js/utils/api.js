@@ -54,6 +54,18 @@ var Api = {
 			cb(res.statusCode)
 		})
 	},
+	getPreviousSeeds: function(slug,cb) {
+		xhr({
+			json: true,
+			uri: "/api/users/" + slug + "/previous-seeds",
+			method: "get",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body)
+		})
+	},
 }
 
 module.exports = Api;

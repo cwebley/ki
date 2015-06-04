@@ -6,8 +6,20 @@ var dispatcher = require('../dispatchers/dispatcher'),
 var ActionTypes = constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-function _seedDataReceived(data){
-	console.log("SEED DATA RECEIVED: ", data)
+/* 
+	{
+		stats: [{player-1s-results},{player-2s-results}],
+		seeds: [
+			{name: orchid, value: 1, wins: 5, losses: 2, bestStreak: 3},
+			...
+			...
+		]
+	}
+*/
+var _prevData = {};
+
+function _previousSeedsReceived(data){
+	_prevData = data
 }
 
 var SeedStore = assign({}, EventEmitter.prototype, {
@@ -20,6 +32,9 @@ var SeedStore = assign({}, EventEmitter.prototype, {
 	},
 	removeChangeListener: function(callback) {
 		this.removeListener(CHANGE_EVENT, callback);
+	},
+	getPrevious: function(){
+		return _prevData;
 	}
 });
 
@@ -28,8 +43,12 @@ SeedStore.dispatchToken = dispatcher.register(function(payload) {
 
 	switch(action.type) {
 
-		case ActionTypes.GET_SEED_DATA:
-			_seedDataReceived(payload.action.data);
+		case ActionTypes.GET_PREVIOUS_SEEDS:
+			if(payload.action.code !== 200){
+				console.log("failed-to-get-previous-seeds");
+				break;
+			}
+			_previousSeedsReceived(payload.action.data);
 			SeedStore.emitChange();
 			break;
 	

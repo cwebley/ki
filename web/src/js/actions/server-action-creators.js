@@ -41,6 +41,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	getPreviousSeeds: function(slug){
+ 		api.getPreviousSeeds(slug,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.GET_PREVIOUS_SEEDS,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 

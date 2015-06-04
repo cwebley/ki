@@ -2,6 +2,7 @@ var React = require('react'),
 	Router = require('react-router'),
 	AuthStore = require('../stores/auth-store'),
 	serverActions = require('../actions/server-action-creators'),
+	SeedStore = require('../stores/seed-store'),
 	TournamentStore = require('../stores/tournament-store'),
 	Link = Router.Link,
 	CharacterCard = require('../components/character-card'),
@@ -19,39 +20,65 @@ var SeedPage = React.createClass({
 	},
 	getInitialState: function(){
 		return {
-			them: TournamentStore.getThem()
+			theirStats: TournamentStore.getThem(),
+			previous: {}
 		};
 	},
 	componentWillMount:function(){
-		TournamentStore.addChangeListener(this._onChange);
+		SeedStore.addChangeListener(this._onChange);
 	},
 	componentWillUnmount:function(){
-		TournamentStore.removeChangeListener(this._onChange);
+		SeedStore.removeChangeListener(this._onChange);
 	},
 	componentDidMount: function(){
-		serverActions.getTournamentIndex();
+		serverActions.getPreviousSeeds(this.getParams().titleSlug);
 	},
 	_onChange: function(){
 		this.setState({
-			me: TournamentStore.getMe(),
-			them: TournamentStore.getThem()
+			previous: SeedStore.getPrevious()
 		});
 	},
-	render: function(){
-		var titleSlug = this.getParams().titleSlug;
-		var me = this.renderUser(this.state.me);
-		var them = this.renderUser(this.state.them);
-		var matchup = this.renderMatchup();
 
+	// used for previous data
+	renderLeftColumn: function(){
+		if(!this.state.previous.stats || !this.state.previous.seeds){
+			return false;
+		}
+		var characters = this.state.previous.seeds.map(function(character){
+			return (
+				<li className="character-wrapper" key={'previous-' + character.name}>
+					<CharacterCard
+						name={character.name}
+						value={character.value}
+						wins={character.wins}
+						losses={character.losses}
+						streak={character.bestStreak}
+					/>
+				</li>
+			);
+		});
+		return(
+			<div className="column-left">
+				<h2 className="column-title">{this.state.previous.stats.info.name}</h2>
+				<ol className="character-list">
+					{characters}
+				</ol>
+			</div>
+		);
+	},
+	render: function(){
+		// var characterList = this.renderPrevious(this.state.theirStats);
+		var leftColumn = this.renderLeftColumn();
+
+		console.log("THEIR STATS: ", this.state.theirStats);
+		console.log("PREVIOUS: ", this.state.previous);
 		return (
 			<div className="page-wrap">
-				<h1 className="title">{titleSlug}</h1>
-				<div className="me">
-					{me}
-				</div>
-				{matchup}
-				<div className="them">
-					{them}
+				<h1 className="title">{this.getParams().titleSlug}</h1>
+					{leftColumn}
+				<div className="column-right">
+					{//characterList
+					}
 				</div>
 			</div>
 		);

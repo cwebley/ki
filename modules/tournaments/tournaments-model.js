@@ -100,6 +100,9 @@ TournamentsModel.getStats = function(tourneySlug, cb) {
 			+ ' ORDER BY u.name'
 		params = [tourneySlug];
 
+		console.log("SQL: ", sql)
+		console.log("P: ", params)
+
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getStats', function(err, results){
 		if (err) return cb(err)
 		return cb(null,results)
@@ -155,10 +158,37 @@ TournamentsModel.updateSeedStatus = function(tourneySlug,cb) {
 			+ ' JOIN users u ON u.id = tu.userId'
 			+ ' JOIN tournaments t ON t.id = tu.tournamentId'
 			+ ' WHERE t.slug = ?',
-		params = [tourneySlug]
+		params = [tourneySlug];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/updateSeedStatus', function(err, results){
-		if(err) return cb(err)
+		if(err) return cb(err);
+		return cb(null,results);
+	});
+};
+
+TournamentsModel.getPrevious = function(tourneyId,cb) {
+	var sql = 'SELECT id, name, slug FROM tournaments WHERE seeded = 1 AND id < ? ORDER BY id DESC LIMIT 1',
+		params = [tourneyId];
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getPreviousAndSeeds', function(err, results){
+		if(err) return cb(err);
+		if(!results.length) return cb();
+		return cb(null,results[0]);
+	});
+};
+
+TournamentsModel.getSeeds = function(tourneyId,userId,cb) {
+	var sql = 'SELECT c.name, h.characterId, h.value, tc.wins, tc.losses, tc.bestStreak'
+			+ ' FROM history h'
+			+ ' JOIN characters c ON c.id = h.characterId'
+			+ ' JOIN tournamentCharacters tc ON tc.characterId = h.characterId'
+			+ ' WHERE tc.tournamentId = ? AND h.tournamentId = ?'
+			+ ' AND tc.userId = ? AND h.userId = ?'
+			+ ' AND eventId = 1 order by h.value',
+		params = [tourneyId,tourneyId,userId,userId];
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getSeeds', function(err, results){
+		if(err) return cb(err);
 		return cb(null,results);
 	});
 };

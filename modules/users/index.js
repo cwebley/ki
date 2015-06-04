@@ -3,6 +3,7 @@ var _ = require('lodash'),
 	constants = require('../constants'),
 	usersSvc = require('./users-service'),
 	usersMdl = require('./users-model'),
+	tournamentsMdl = require('../tournaments/tournaments-model'),
 	auth = require('../auth'),
 	mysql = require('../persistence').mysql;
 
@@ -30,6 +31,24 @@ var loginDto = function(username,uid,seedData){
 	}
 
 	return dto
+}
+
+
+var previousSeedDto = function(tourneyInfo, seeds, stats, username){
+
+	for(var i=0; i<stats.length; i++){
+		if(username === stats[i].name){
+			//make sure your data comes first
+			stats.unshift(stats.pop());
+		}
+	}
+	return {
+		seeds: seeds,
+		stats: {
+			info: tourneyInfo,
+			users: stats
+		}
+	};
 }
 
 UsersInterface.register = function(options, cb) {
@@ -90,5 +109,34 @@ UsersInterface.verifySeeds = function(seeds) {
 	return true
 };
 
+UsersInterface.getPreviousSeeds = function(tourneySlug, username, cb) {
+	tournamentsMdl.getTourneyId(tourneySlug,function(err,tid){
+		if(err) return cb(err);
+		if(!tid) return cb();
+
+		usersMdl.getOpponentId(username,function(err,oid){
+			if(err) return cb(err);
+			if(!oid) return cb();
+
+			//get previous tournament info
+			tournamentsMdl.getPrevious(tid,function(err, prevRes){
+				if(err) return cb(err);
+				prevTid = prevRes.id
+
+				tournamentsMdl.getSeeds(prevTid,oid,function(err, seedRes){
+					if(err) return cb(err);
+					if(!seedRes) return cb();
+
+					tournamentsMdl.getStats(prevRes.slug, function(err,stats){
+						if(err) return cb(err);
+						if(!stats) return cb();
+
+						return cb(null, previousSeedDto(prevRes,seedRes,stats,username))
+					})
+				});
+			});
+		});
+	});
+};
 
 module.exports = UsersInterface;

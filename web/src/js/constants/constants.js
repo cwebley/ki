@@ -9,6 +9,7 @@ module.exports = {
     GET_TOURNAMENT_INDEX: null,
     GET_TOURNAMENT_DATA: null,
     FOCUS_TOURNAMENT: null,
+    GET_PREVIOUS_SEEDS: null,
 
     // not in use
     SEED_OPPONENT: null,

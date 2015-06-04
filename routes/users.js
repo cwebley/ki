@@ -1,14 +1,11 @@
 var express = require('express'),
 	users = require('../modules/users'),
-	um = require('../modules/users/middleware'),
 	auth = require('../modules/auth'),
-	passport=require('passport'),
 	constants = require('../modules/constants');
 
 
 var app = module.exports = express();
 
-app.use(passport.initialize())
 app.use(express.static(__dirname + '/public'))
 
 var controller = {};
@@ -27,7 +24,7 @@ var getUserOpts = function(req){
 var getSeedOpts = function(req){
 	var opts = {
 		username: req.body.opponent,
-		tourneyName: req.params.tourneyName,
+		tourneySlug: req.params.tourneySlug,
 		characters: {}
 	}
 	delete req.body.opponent
@@ -51,16 +48,32 @@ controller.seed = function(req, res){
 		if(err) return res.status(500).send({success:false,reason:"internal-error"})
 		if(!results) return res.status(404).send({success:false,reason:"user-or-tourney-not-found"})
 
-		// req.session.seeded[opts.tourneyName] = true
-		// return res.redirect('/tournaments/'+opts.tourneyName);
+		// req.session.seeded[opts.tourneySlug] = true
+		// return res.redirect('/tournaments/'+opts.tourneySlug);
 		return res.status(201).send({success:true})
 	});
 };
 
-app.use(passport.authenticate('basic',{ session: false }))
+controller.getPreviousSeeds = function(req, res){
+	users.getPreviousSeeds(req.params.tourneySlug, req.user.name, function(err,dto){
+		if(err) return res.status(500).send({success:false,reason:"internal-error"});
+		if(!dto) return res.status(404).send({success:false,reason:"tourney-data-not-found"});
 
-app.post('/:tourneyName/seed', 
-	// um.requiresUser,
+		return res.status(200).send(dto);
+	});
+};
+
+/*
+*	Auth Barrier
+*/
+app.use(auth.verifyToken);
+app.use(auth.ensureAuthenticated);
+
+app.post('/:tourneySlug/seed', 
  	controller.seed
+);
+
+app.get('/:tourneySlug/previous-seeds', 
+ 	controller.getPreviousSeeds
 );
 

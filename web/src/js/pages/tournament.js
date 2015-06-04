@@ -44,7 +44,13 @@ var TournamentPage = React.createClass({
 		var characters = user.characters.map(function(character){
 			return (
 				<li className="character-wrapper" key={user.name + '-' + character.id}>
-					<CharacterCard data={character} />
+					<CharacterCard
+						name={character.name}
+						value={character.value} 
+						wins={character.wins}
+						losses={character.losses}
+						streak={character.curStreak}
+					/>
 				</li>
 			);
 		});
