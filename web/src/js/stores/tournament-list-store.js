@@ -11,7 +11,6 @@ var _tournamentList = [];
 var _currentIndex = null;
 
 function _tourneyIndexReceived(tournaments){
-	console.log("TOURNEY INDEX RECEIVED: ", tournaments)
 	_tournamentList = tournaments
 }
 

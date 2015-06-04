@@ -21,20 +21,24 @@ var SeedPage = React.createClass({
 	getInitialState: function(){
 		return {
 			theirStats: TournamentStore.getThem(),
-			previous: {}
+			previous: SeedStore.getPrevious()
 		};
 	},
 	componentWillMount:function(){
+		TournamentStore.addChangeListener(this._onChange);
 		SeedStore.addChangeListener(this._onChange);
 	},
 	componentWillUnmount:function(){
-		SeedStore.removeChangeListener(this._onChange);
+		TournamentStore.removeChangeListener();
+		SeedStore.removeChangeListener();
 	},
 	componentDidMount: function(){
+		serverActions.getTournamentData(this.getParams().titleSlug);
 		serverActions.getPreviousSeeds(this.getParams().titleSlug);
 	},
 	_onChange: function(){
 		this.setState({
+			theirStats: TournamentStore.getThem(),
 			previous: SeedStore.getPrevious()
 		});
 	},
@@ -66,9 +70,37 @@ var SeedPage = React.createClass({
 			</div>
 		);
 	},
+
+	renderRightColumn: function(){
+		if(!this.state.theirStats.characters || !this.state.theirStats.characters.length){
+			return false;
+		}
+		var characters = this.state.theirStats.characters.map(function(character){
+			return (
+				<li className="character-wrapper" key={'previous-' + character.name}>
+					<CharacterCard
+						name={character.name}
+						value={character.value}
+						wins={character.wins}
+						losses={character.losses}
+						streak={character.curStreak}
+					/>
+				</li>
+			);
+		});
+		return(
+			<div className="column-right">
+				<h2 className="column-title">{'Seed ' + this.state.theirStats.name + '\'s characters'}</h2>
+				<ol className="character-list">
+					{characters}
+				</ol>
+			</div>
+		);
+	},
 	render: function(){
 		// var characterList = this.renderPrevious(this.state.theirStats);
 		var leftColumn = this.renderLeftColumn();
+		var rightColumn = this.renderRightColumn();
 
 		console.log("THEIR STATS: ", this.state.theirStats);
 		console.log("PREVIOUS: ", this.state.previous);
@@ -76,10 +108,7 @@ var SeedPage = React.createClass({
 			<div className="page-wrap">
 				<h1 className="title">{this.getParams().titleSlug}</h1>
 					{leftColumn}
-				<div className="column-right">
-					{//characterList
-					}
-				</div>
+					{rightColumn}
 			</div>
 		);
 	}

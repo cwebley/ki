@@ -100,9 +100,6 @@ TournamentsModel.getStats = function(tourneySlug, cb) {
 			+ ' ORDER BY u.name'
 		params = [tourneySlug];
 
-		console.log("SQL: ", sql)
-		console.log("P: ", params)
-
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getStats', function(err, results){
 		if (err) return cb(err)
 		return cb(null,results)
