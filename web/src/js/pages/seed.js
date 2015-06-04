@@ -29,8 +29,8 @@ var SeedPage = React.createClass({
 		SeedStore.addChangeListener(this._onChange);
 	},
 	componentWillUnmount:function(){
-		TournamentStore.removeChangeListener();
-		SeedStore.removeChangeListener();
+		TournamentStore.removeChangeListener(this._onChange);
+		SeedStore.removeChangeListener(this._onChange);
 	},
 	componentDidMount: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);

@@ -22,7 +22,7 @@ var TournamentPage = React.createClass({
 		TournamentStore.addChangeListener(this._onChange);
 	},
 	componentWillUnmount:function(){
-		TournamentStore.removeChangeListener();
+		TournamentStore.removeChangeListener(this._onChange);
 	},
 	componentDidMount: function(){
 		viewActions.focusTournament(this.getParams().titleSlug);
