@@ -106,7 +106,11 @@ var SeedPage = React.createClass({
 		console.log("PREVIOUS: ", this.state.previous);
 		return (
 			<div className="page-wrap">
-				<h1 className="title">{this.getParams().titleSlug}</h1>
+				<h1 className="title left-arrow">
+					<Link to="tournament" params={{titleSlug: this.getParams().titleSlug}}>
+						{'Back to ' + this.getParams().titleSlug}
+					</Link>
+				</h1>
 					{leftColumn}
 					{rightColumn}
 			</div>

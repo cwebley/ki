@@ -47,6 +47,13 @@
   text-align: center;
   line-height: 1em;
   color: #000;
+
+  &.left-arrow {
+
+    &:before {
+      content: "←";
+    }
+  }
 }
 
 .column-left {
