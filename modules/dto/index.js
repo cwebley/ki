@@ -7,3 +7,20 @@ dto.positive = function(x, d) {
 
 	return i
 }
+
+dto.sluggish = function(text){
+	console.log("TEXT: ", text)
+	var c;
+	var character;
+	var slug = [];
+	for(var i=0; i<text.length; i++){
+		character = text.charAt(i);
+		c = text.charCodeAt(i);
+		if ((c > 47 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 123)) { 
+			slug.push(character);
+			continue;
+		}
+		slug.push('-')
+	}
+	return slug.join('');
+}

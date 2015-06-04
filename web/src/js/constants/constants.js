@@ -11,10 +11,9 @@ module.exports = {
     FOCUS_TOURNAMENT: null,
     GET_PREVIOUS_SEEDS: null,
     SUBMIT_SEEDS: null,
-
+    CREATE_TOURNAMENT: null,
 
     // not in use
-    CREATE_TOURNAMENT: null,
     EDIT_TOURNAMENT: null,
     EDIT_USER: null
   }),

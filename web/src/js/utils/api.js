@@ -78,6 +78,18 @@ var Api = {
 			cb(res.statusCode, body)
 		})
 	},
+	createTournament: function(data,cb) {
+		xhr({
+			json: data,
+			uri: "/api/tournaments",
+			method: "post",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body)
+		})
+	}
 }
 
 module.exports = Api;

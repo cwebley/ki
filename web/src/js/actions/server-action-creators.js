@@ -59,6 +59,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	createTournament: function(data){
+ 		api.createTournament(data,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.CREATE_TOURNAMENT,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 

@@ -10,19 +10,14 @@ var express = require('express'),
 
 var app = express();
 
-// var allowCrossDomain = function(req, res, next) { 
-// 	res.header('Access-Control-Allow-Origin', '*'); 
-// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-// 	next(); 
-// }
-
 var tourneyController = {};
 
 var getTourneyOpts = function(req){
 	var opts = {
 		name: req.body.name,
+		slug: dto.sluggish(req.body.name),
 		goal: dto.positive(req.body.goal),
-		players: (req.body.opponent)?[req.user.name,req.body.opponent]:[],
+		players: (req.body.opponent && (req.body.opponent !== req.user.name))?[req.user.name,req.body.opponent]:[],
 		surrender: req.body.surrender || false
 	}
 	return opts
@@ -31,15 +26,15 @@ var getTourneyOpts = function(req){
 tourneyController.postNewTourney = function(req, res){
 
 	if(!req.body.opponent) res.status(400).send({success:false,reason:'no-opponent-specified'})
-
 	var opts = getTourneyOpts(req)
+
 	if(!opts.name) return res.status(400).send({success:false,reason:'no-tourney-name'})
 	if(!opts.goal) return res.status(400).send({success:false,reason:'no-tourney-goal'})
 
 	tournaments.newTournament(opts, function(err,results){
 		if(err) return res.status(500).send({success:false,err:err})
 		if(!results) return res.status(400).send({success:false,reason:'invalid-or-duplicate-info'})
-		res.status(201).send({success:true})
+		res.status(201).send(opts)
 	})
 }
 
@@ -85,7 +80,7 @@ app.get('/',
 app.use(auth.verifyToken);
 app.use(auth.ensureAuthenticated);
 
-app.post('/new',
+app.post('/',
  	tourneyController.postNewTourney
 );
 

@@ -22,20 +22,31 @@
   }
 }
 
-.tournament-list {
+.master {
   float: left;
   background: #ccc;
-  list-style-type: none;
   margin: 0;
   width: 18%;
   overflow: auto;
   padding: 1.5em 0.25em 83em 0.25em;
 
-  .tournament-list-item{
-    display:block;
-    line-height: 2em;
+  .new-title {
+    width: 100%
+  }
+  .new-goal, .new-opponent {
+   width: 50%
+  }
+
+  .tournament-list {
+    list-style-type: none;
+
+    .tournament-list-item{
+      display:block;
+      line-height: 2em;
+    }
   }
 }
+
 
 .detail {
   border-left: 1px solid #ccc;

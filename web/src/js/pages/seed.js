@@ -135,7 +135,6 @@ var SeedPage = React.createClass({
 			data[c.name] = this.refs[c.name].getDOMNode().value
 		}.bind(this));
 
-		console.log("DATA: ", data)
 		serverActions.submitSeeds(this.getParams().titleSlug, data);
 	},
 	render: function(){
@@ -143,8 +142,6 @@ var SeedPage = React.createClass({
 		var middleColumn = this.renderCenterColumn();
 		var rightColumn = this.renderRightColumn();
 
-		console.log("THEIR STATS: ", this.state.theirStats);
-		console.log("PREVIOUS: ", this.state.previous);
 		return (
 			<div className="page-wrap">
 				<h1 className="title left-arrow">

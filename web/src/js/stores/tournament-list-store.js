@@ -23,6 +23,10 @@ function _setCurrent(slug){
 	}
 }
 
+function _addTournament(tournament){
+	_tournamentList.push(tournament)
+}
+
 var TournamentIndexStore = assign({}, EventEmitter.prototype, {
 
 	emitChange: function() {
@@ -63,11 +67,19 @@ TournamentIndexStore.dispatchToken = dispatcher.register(function(payload) {
 
 	switch(action.type) {
 		case ActionTypes.GET_TOURNAMENT_INDEX:
-			_tourneyIndexReceived(payload.action.data.tournaments);
+		console.log("TOURNEY INDEX RECEIVED: ", action.data.tournaments)
+			_tourneyIndexReceived(action.data.tournaments);
 			TournamentIndexStore.emitChange();
 			break;
 		case ActionTypes.FOCUS_TOURNAMENT:
-			_setCurrent(payload.action.slug);
+			_setCurrent(action.slug);
+			break;
+		case ActionTypes.CREATE_TOURNAMENT:
+			if(action.code !== 201){
+				console.log("CREATE TOURNAMENT NOT 201: ", action);
+			}
+			_addTournament(action.data)
+			TournamentIndexStore.emitChange();
 			break;
 	
 		default:

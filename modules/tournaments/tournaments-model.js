@@ -6,8 +6,8 @@ var TournamentsModel = {};
 
 //options: object {goal:100,name:"test tourney"}
 TournamentsModel.createTournament = function(options,cb) {
-	var sql = 'INSERT INTO `tournaments` (name,goal) VALUES(?,?)',
-		params = [options.name, options.goal];
+	var sql = 'INSERT INTO `tournaments` (name,slug,goal) VALUES(?,?,?)',
+		params = [options.name, options.slug, options.goal];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/createTournament', function(err, results){
 		if(err) return cb(err);
@@ -65,7 +65,7 @@ TournamentsModel.insertPlayers = function(tid, userIds, cb) {
 		params.push(userIds[i])
 	}
 
-	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getPlayers', function(err, results){
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/insertPlayers', function(err, results){
 		return cb(err,results)
 	});
 };
