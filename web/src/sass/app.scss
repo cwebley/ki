@@ -1,0 +1,166 @@
+@import 'src/sass/bootstrap';
+
+.header {
+  height: 3.5em;
+  float: left;
+  width: 100%;
+  background: #333;
+  overflow: hidden;
+
+  .header-link {
+    text-decoration: none;
+    display: inline-block;
+    padding: 0 1em;
+    line-height: 3.5em;
+    width: 20%;
+    text-align: center;
+
+    &:hover {
+      border-bottom: 1px;
+      border-color: #00ff00;
+    }
+  }
+}
+
+.master {
+  float: left;
+  background: #ccc;
+  margin: 0;
+  width: 18%;
+  overflow: auto;
+  padding: 1.5em 0.25em 83em 0.25em;
+
+  .new-title {
+    width: 100%
+  }
+  .new-goal, .new-opponent {
+   width: 50%
+  }
+
+  .tournament-list {
+    list-style-type: none;
+
+    .tournament-list-item{
+      display:block;
+      line-height: 2em;
+    }
+  }
+}
+
+
+.detail {
+  border-left: 1px solid #ccc;
+  overflow: auto;
+  padding: 0 1em;
+}
+
+.title {
+  text-align: center;
+  line-height: 1em;
+  color: #000;
+
+  &.left-arrow {
+
+    &:before {
+      content: "←";
+    }
+  }
+}
+
+.column-left {
+  float:left;
+  width: 33%;
+}
+
+.column-center {
+  text-align: center;
+  width: 34%;
+  float:left;
+  margin-top: 3em;
+
+  .matchup {
+    padding: 0.5em;
+    .matchup-left {
+      float: left;
+      width: 40%;
+    }
+    .versus {
+      font-weight: bold;
+      font-size: 1em;
+      margin-top:1em;
+      float:left;
+      width: 20%;
+    }
+    .matchup-right {
+      width:40%;
+      display: inline-block;
+    }
+  }
+}
+
+.column-right {
+  width: 33%;
+  float: right;
+}
+.player-wrapper {
+  .name {
+    text-align: center;
+  }
+  .user-stats {
+    list-style-type: none;
+    margin: 0;
+    padding: 0.25em 0.5em;
+
+  }
+}
+.delete-tournament{
+  color: red;
+  float: right;
+  font-size: smaller;
+}
+
+.character-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0.25em 0.5em;
+}
+
+.character {
+  display: block;
+  background: #eee;
+  padding: 0.9em;
+  margin: 0.25em;
+  line-height: 1.5em;
+
+  .card-left-column {
+    width:40%;
+    float:left;
+    padding: 1.75em 0;
+
+    .character-name {
+      font-size: 1em;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+
+  .card-right-column {
+  }
+
+  .character-stats {
+    list-style-type: none;
+    margin: 0;
+  }
+}
+
+.seed-field {
+  padding: 2.4em;
+  width: 80%;
+
+  &.green {
+    background-color: lightgreen;
+  }
+  &.red {
+    background-color: #ff4c4c;
+  }
+}

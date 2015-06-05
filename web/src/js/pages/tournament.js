@@ -1,0 +1,159 @@
+var React = require('react'),
+	Router = require('react-router'),
+	AuthStore = require('../stores/auth-store'),
+	serverActions = require('../actions/server-action-creators'),
+	viewActions = require('../actions/view-action-creators'),
+	TournamentStore = require('../stores/tournament-store'),
+	TournamentListStore = require('../stores/tournament-list-store'),
+	Link = Router.Link,
+	CharacterCard = require('../components/character-card'),
+	MatchupItem = require('../components/matchup-item');
+
+var TournamentPage = React.createClass({
+	mixins: [ Router.Navigation, Router.State ],
+
+	getInitialState: function(){
+		return {
+			me: TournamentStore.getMe(),
+			them: TournamentStore.getThem()
+		};
+	},
+	componentWillMount:function(){
+		TournamentStore.addChangeListener(this._onChange);
+	},
+	componentWillUnmount:function(){
+		TournamentStore.removeChangeListener(this._onChange);
+	},
+	componentDidMount: function(){
+		viewActions.focusTournament(this.getParams().titleSlug);
+		serverActions.getTournamentData(this.getParams().titleSlug);
+	},
+	componentWillReceiveProps: function(){
+		serverActions.getTournamentData(this.getParams().titleSlug);
+	},
+	_onChange: function(){
+		this.setState({
+			me: TournamentStore.getMe(),
+			them: TournamentStore.getThem()
+		});
+	},
+	renderCharacters: function(user){
+		if(!user.characters){
+			return false;
+		}
+		var characters = user.characters.map(function(character){
+			return (
+				<li className="character-wrapper" key={user.name + '-' + character.id}>
+					<CharacterCard
+						name={character.name}
+						value={character.value} 
+						wins={character.wins}
+						losses={character.losses}
+						streak={character.curStreak}
+					/>
+				</li>
+			);
+		});
+		return(
+			<ol className="character-list">
+				{characters}
+			</ol>
+		);
+	},
+	renderUser: function(user){
+		if(!user){
+			return false;
+		}
+		var characterCards = this.renderCharacters(user);
+		return (
+			<div className="player-wrapper">
+				<h2 className="name">{user.name}</h2>
+				<ul className="user-stats">
+					<li className="stat-item score">
+						score: {user.score}
+					</li>
+					<li className="stat-item record">
+						record: {user.wins} - {user.losses}
+					</li>
+					<li className="stat-item streak">
+						streak: {user.curStreak}
+					</li>
+				</ul>
+				{characterCards}
+			</div>
+		);
+	},
+	renderMatchup: function(){
+		if(!this.state.me.next){
+			return false;
+		}
+
+		// TODO supreme
+		var IWin = {
+			slug: this.getParams().titleSlug,
+			winningPlayer: this.state.me.name,
+			winningCharacter: this.state.me.next[0],
+			losingPlayer: this.state.them.name,
+			losingCharacter: this.state.them.next[0]
+		};
+		var TheyWin = {
+			slug: this.getParams().titleSlug,
+			losingPlayer: this.state.me.name,
+			losingCharacter: this.state.me.next[0],
+			winningPlayer: this.state.them.name,
+			winningCharacter: this.state.them.next[0]
+		};
+
+		return(
+			<div className="matchup">
+				<div className="matchup-left">
+					<MatchupItem data={IWin} display={this.state.me.next[0]} />
+				</div>
+				<div className="versus">VS</div>
+				<div className="matchup-right">
+					<MatchupItem data={TheyWin} display={this.state.them.next[0]} />
+				</div>
+			</div>
+		);
+	},
+	renderSeedButton: function(){
+		return (
+			<Link to="seed" params={{titleSlug: this.getParams().titleSlug}}>
+				<button className="btn btn-lg btn-block btn-primary btn-danger">Seed</button>
+			</Link>
+		);
+
+	},
+	deleteTournament: function() {
+		if(!confirm("Are you sure you want to completely erase this tournament?")){
+			return;
+		}
+		// TODO this should probably be a viewaction first which calls a serveraction
+		serverActions.deleteTournament(this.getParams().titleSlug);
+		this.transitionTo('/');
+	},
+	render: function(){
+		var me = this.renderUser(this.state.me);
+		var them = this.renderUser(this.state.them);
+		var middle = (!this.state.them.seeded) ? this.renderSeedButton() : this.renderMatchup();
+
+		return (
+			<div className="page-wrap">
+				<div className="column-left">
+					{me}
+				</div>
+				<div className="column-center">
+					{middle}
+				</div>
+				<div className="column-right">
+					{them}
+					<footer>
+						<a className="delete-tournament" onClick={this.deleteTournament}>{"Delete " + this.getParams().titleSlug}</a>
+					</footer>
+				</div>
+			</div>
+		);
+	}
+});
+
+module.exports = TournamentPage;
