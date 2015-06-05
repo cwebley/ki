@@ -15,6 +15,51 @@ TournamentsModel.createTournament = function(options,cb) {
 	});
 };
 
+TournamentsModel.deleteTournament = function(tid,cb) {
+	var sql = 'DELETE FROM history where tournamentId = ?',
+		params = [tid];
+
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-history', function(err, results){
+		if(err) return cb(err);
+
+		var sql = 'DELETE FROM seeds where tournamentId = ?',
+			params = [tid];
+
+		mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-seeds', function(err, results){
+			if(err) return cb(err);
+
+			var sql = 'DELETE FROM tournamentCharacters where tournamentId = ?',
+				params = [tid];
+
+			mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournamentCharacters', function(err, results){
+				if(err) return cb(err);
+
+				var sql = 'DELETE FROM tournamentPowers where tournamentId = ?',
+					params = [tid];
+	
+				mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournamentPowers', function(err, results){
+					if(err) return cb(err);
+
+					var sql = 'DELETE FROM tournamentUsers where tournamentId = ?',
+						params = [tid];
+
+					mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournamentUsers', function(err, results){
+						if(err) return cb(err);
+
+						var sql = 'DELETE FROM tournaments where id = ?',
+							params = [tid];
+
+						mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournaments', function(err, results){
+							if(err) return cb(err);
+							return cb(null, results)
+						});
+					});
+				});
+			});
+		});
+	});
+};
+
 TournamentsModel.checkTournamentExists = function(options,cb) {
 	var sql = 'SELECT id FROM `tournaments` WHERE name = ?',
 		params = [options.name];

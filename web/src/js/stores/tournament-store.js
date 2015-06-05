@@ -50,6 +50,11 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			console.log("Tournament-store-found-an-error-submitting-game");
 		}
 		break;
+	case ActionTypes.DELETE_TOURNAMENT:
+		if(payload.action.code !== 200){
+			console.log("error-deleting-tournament")
+		}
+		break;
 
 	default:
 	  // do nothing

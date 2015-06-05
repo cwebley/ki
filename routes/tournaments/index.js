@@ -31,9 +31,10 @@ tourneyController.postNewTourney = function(req, res){
 	if(!opts.name) return res.status(400).send({success:false,reason:'no-tourney-name'})
 	if(!opts.goal) return res.status(400).send({success:false,reason:'no-tourney-goal'})
 
-	tournaments.newTournament(opts, function(err,results){
+	tournaments.newTournament(opts, function(err,tid){
 		if(err) return res.status(500).send({success:false,err:err})
-		if(!results) return res.status(400).send({success:false,reason:'invalid-or-duplicate-info'})
+		if(!tid) return res.status(400).send({success:false,reason:'invalid-or-duplicate-info'})
+		opts.id = tid
 		res.status(201).send(opts)
 	})
 }
@@ -48,6 +49,15 @@ tourneyController.get = function(req, res){
 		}
 		dto.slug = tourneySlug
 		res.status(200).send(dto)
+	})
+}
+
+// todo: check that you're actually in the tournament;
+tourneyController.deleteTourney = function(req, res){
+	var tourneySlug = req.params.tourneySlug;
+	tournaments.deleteTournament(tourneySlug,function(err,dto){
+		if(err) return res.status(500).send({success:false,err:err})
+		res.status(200).send({success: true})
 	})
 }
 
@@ -86,6 +96,10 @@ app.post('/',
 
 app.get('/:tourneySlug',
  	tourneyController.get
+);
+
+app.delete('/:tourneySlug',
+ 	tourneyController.deleteTourney
 );
 
 app.post('/:tourneySlug/edit',

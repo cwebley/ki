@@ -89,6 +89,17 @@ var Api = {
 		}, function (err, res, body) {
 			cb(res.statusCode, body)
 		})
+	},
+	deleteTournament: function(slug,cb) {
+		xhr({
+			uri: "/api/tournaments/" + slug,
+			method: "delete",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body)
+		})
 	}
 }
 

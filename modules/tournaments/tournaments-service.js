@@ -60,12 +60,12 @@ tournamentsService.newTournament = function(options, cb) {
 							zeroCharCalls.push(generateZeroCharVals(tid, userIds[i]))
 						}
 						async.parallel(zeroCharCalls, function(err,results){
-	
+
 							//initialize upcoming match arrays
 							upcoming.create(tid,userIds)
 							upcoming.fill(tid)
 	
-							return cb(err,results)
+							return cb(err,tid)
 						});
 					});
 				});

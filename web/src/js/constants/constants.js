@@ -12,6 +12,7 @@ module.exports = {
     GET_PREVIOUS_SEEDS: null,
     SUBMIT_SEEDS: null,
     CREATE_TOURNAMENT: null,
+    DELETE_TOURNAMENT: null,
 
     // not in use
     EDIT_TOURNAMENT: null,

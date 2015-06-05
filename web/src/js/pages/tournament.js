@@ -116,11 +116,26 @@ var TournamentPage = React.createClass({
 			</div>
 		);
 	},
+	renderSeedButton: function(){
+		return (
+			<Link to="seed" params={{titleSlug: this.getParams().titleSlug}}>
+				<button className="btn btn-lg btn-block btn-primary btn-danger">Seed</button>
+			</Link>
+		);
+
+	},
+	deleteTournament: function() {
+		if(!confirm("Are you sure you want to completely erase this tournament?")){
+			return;
+		}
+		// TODO this should probably be a viewaction first which calls a serveraction
+		serverActions.deleteTournament(this.getParams().titleSlug);
+		this.transitionTo('/');
+	},
 	render: function(){
-		// var titleSlug = this.getParams().titleSlug;
 		var me = this.renderUser(this.state.me);
 		var them = this.renderUser(this.state.them);
-		var matchup = this.renderMatchup();
+		var middle = (!this.state.me.seeded) ? this.renderSeedButton() : this.renderMatchup();
 
 		return (
 			<div className="page-wrap">
@@ -128,10 +143,13 @@ var TournamentPage = React.createClass({
 					{me}
 				</div>
 				<div className="column-center">
-					{matchup}
+					{middle}
 				</div>
 				<div className="column-right">
 					{them}
+					<footer>
+						<a className="delete-tournament" onClick={this.deleteTournament}>{"Delete " + this.getParams().titleSlug}</a>
+					</footer>
 				</div>
 			</div>
 		);

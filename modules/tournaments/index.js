@@ -31,8 +31,8 @@ TourneyInterface.listDto = function(data){
 };
 
 TourneyInterface.newTournament = function(options, cb) {
-	tourneySvc.newTournament(options, function(err, results){
-		return cb(err,results)
+	tourneySvc.newTournament(options, function(err, tid){
+		return cb(err, tid)
 	});
 };
 
@@ -53,6 +53,17 @@ TourneyInterface.getTourneyInfo = function(tourneySlug,cb) {
 	tourneyMdl.getTourneyInfo(tourneySlug,function(err,results){
 		if(err) return cb(err)
 		return cb(null,results)
+	});
+};
+
+TourneyInterface.deleteTournament = function(tourneySlug,cb) {
+	tourneyMdl.getTourneyId(tourneySlug,function(err,tid){
+		if(err) return cb(err);
+
+		tourneyMdl.deleteTournament(tid,function(err,results){
+			if(err) return cb(err)
+			return cb(null,results)
+		});
 	});
 };
 

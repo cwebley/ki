@@ -68,6 +68,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	deleteTournament: function(slug){
+ 		api.deleteTournament(slug,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.DELETE_TOURNAMENT,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 
