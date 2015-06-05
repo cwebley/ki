@@ -135,7 +135,7 @@ var TournamentPage = React.createClass({
 	render: function(){
 		var me = this.renderUser(this.state.me);
 		var them = this.renderUser(this.state.them);
-		var middle = (!this.state.me.seeded) ? this.renderSeedButton() : this.renderMatchup();
+		var middle = (!this.state.them.seeded) ? this.renderSeedButton() : this.renderMatchup();
 
 		return (
 			<div className="page-wrap">

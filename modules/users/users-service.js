@@ -31,7 +31,7 @@ UsersService.seedCharacters = function(options, cb) {
 		if(err) return cb(err)
 		if(!uid) return cb()
 
-		tourneyMdl.getTourneyId(options.tourneyName, function(err,tid){
+		tourneyMdl.getTourneyId(options.tourneySlug, function(err,tid){
 			if(err) return cb(err)
 			if(!tid) return cb()
 

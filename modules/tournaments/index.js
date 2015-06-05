@@ -17,7 +17,7 @@ TourneyInterface.allStatsDto = function(data,seeded,requester){
 		for(var i=0; i<dto.users.length; i++){
 			if(dto.users[i].name === requester){
 				// pop off and append to front
-				dto.users.unshift(dto.users.pop());
+				dto.users.unshift(dto.users.splice(i,1)[0])
 				break;
 			}
 		}

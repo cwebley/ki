@@ -12,6 +12,7 @@ var _me = {};
 var _them = {};
 
 function _tourneyDataReceived(data){
+	console.log("TDATA: ", data)
 	_me = data.users[0];
 	_them = data.users[1];
 }

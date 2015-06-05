@@ -17,8 +17,8 @@ var CHANGE_EVENT = 'change';
 	}
 */
 var _prevData = {};
-var _seedAttempt = false;
-var _seedSuccess = true
+var attempted = false;
+var success = true;
 
 function _previousSeedsReceived(data){
 	_prevData = data
@@ -27,14 +27,14 @@ function _previousSeedsReceived(data){
 function _seedSuccess(){
 	console.log("SEED SUCCESS")
 
-	_seedAttempt = true
-	_seedSuccess = true
+	attempted = true
+	success = true
 }
 
 function _seedFailure(){
 	console.log("SEED FAILURE")
-	_seedAttempt = true
-	_seedSuccess = false
+	attempted = true
+	success = false
 }
 
 var SeedStore = assign({}, EventEmitter.prototype, {
@@ -53,8 +53,8 @@ var SeedStore = assign({}, EventEmitter.prototype, {
 	},
 	getStatus: function(){
 		return {
-			attempt: _seedAttempt,
-			success: _seedSuccess
+			attempt: attempted,
+			success: success
 		};
 	}
 });

@@ -87,7 +87,6 @@ UsersInterface.getOpponentsNames = function(seederName,tourneyName,cb) {
 
 UsersInterface.verifySeeds = function(seeds) {
 	var c = constants.characters;
-	var maxValue = Math.floor(c.length/2);
 	var possibleValues = [];
 
 	// make sure all characters accounted for
@@ -100,8 +99,8 @@ UsersInterface.verifySeeds = function(seeds) {
 
 	// make sure all in possibleValues are accounted for
 	for(var s in seeds){
-		var valueIndex = possibleValues.indexOf(seeds[s])
-		if(valueIndex===-1){
+		var valueIndex = possibleValues.indexOf(parseInt(seeds[s]))
+		if(valueIndex === -1){
 			return false
 		}
 		possibleValues.splice(valueIndex,1)
