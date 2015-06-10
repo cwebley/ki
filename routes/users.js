@@ -40,7 +40,6 @@ controller.seed = function(req, res){
 	if(!req.body.opponent) return res.status(400).send({success:false,reason:"no-opponent-name-for-seeding"})
 
 	var opts = getSeedOpts(req)
-console.log("OOOO: ", opts)
 
 	var verified = users.verifySeeds(opts.characters)
 	if(!verified) return res.status(400).send({success:false,reason:"character-seed-data-invalid"})

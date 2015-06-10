@@ -92,7 +92,8 @@ GamesService.updateData = function(options, cb) {
 	streakCalls.fireChars = function(done){gamesMdl.getFireChars(options.tourneyId,options.winPid,options.winXid,done)}
 
 	async.parallel(streakCalls,function(err,streaks){
-		if(err)return cb(err)
+		if(err) return cb(err);
+
 		//fire+ice
 		if(streaks.loseXter.curStreak >= 3){
 			updateCalls.push(function(done){gamesMdl.iceDown(options.tourneyId,options.losePid,options.loseXid,done)})
@@ -100,8 +101,9 @@ GamesService.updateData = function(options, cb) {
 		if(streaks.winXter.curStreak === 2){
 			updateCalls.push(function(done){gamesMdl.fireUp(options.tourneyId,options.winPid,options.winXid,done)})
 		}
-		if(streaks.fireChars.length) updateCalls.push(function(done){gamesMdl.updateFireWins(streaks.fireChars,options.tourneyId,options.winPid,done)})
-
+		if(streaks.fireChars.length) {
+			updateCalls.push(function(done){gamesMdl.updateFireWins(streaks.fireChars,options.tourneyId,options.winPid,done)})
+		}
 
 		//char data
 		updateCalls.push(function(done){gamesMdl.incWinCharCurStreak(options.tourneyId,options.winPid,options.winXid,done)})
@@ -123,7 +125,7 @@ GamesService.updateData = function(options, cb) {
 
 			GamesService.checkAndUpdateTournament(options,function(err,endTournament){
 				return cb(err,results,endTournament)
-			})
+			});
 		});
 	});
 };
