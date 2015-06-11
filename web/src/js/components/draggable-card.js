@@ -39,20 +39,34 @@ var DraggableCard = React.createClass({
 		connectDropTarget: React.PropTypes.func.isRequired,
 		isDragging: React.PropTypes.bool.isRequired,
 		id: React.PropTypes.any.isRequired,
-		text: React.PropTypes.string.isRequired,
+		name: React.PropTypes.string.isRequired,
+		value: React.PropTypes.number,
+		wins: React.PropTypes.number,
+		losses: React.PropTypes.number,
+		streak: React.PropTypes.number,
 		moveCard: React.PropTypes.func.isRequired
 	},
 
 	render: function(){
+
 		return this.props.connectDragSource(this.props.connectDropTarget(
-			<div style={{
-					border: '1px dashed gray',
-					padding: '0.5rem 1rem',
-					marginBottom: '.5rem',
-					backgroundColor: 'white',
-					cursor: 'move'
-				}}>
-			{this.props.text}
+			<div className="character">
+				<div className="card-left-column">
+					<h3 className="character-name">{this.props.name}</h3>
+				</div>
+				<div className="card-right-column">
+					<ul className="character-stats">
+						<li className="char-stat-item value">
+							value: {this.props.value}
+						</li>
+						<li className="char-stat-item record">
+							record: {this.props.wins} - {this.props.losses}
+						</li>
+						<li className="char-stat-item streak">
+							streak: {this.props.streak}
+						</li>
+					</ul>
+				</div>
 			</div>
 		));
 	}

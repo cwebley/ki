@@ -5,39 +5,19 @@ var React = require('React'),
 	HTML5Backend = require('react-dnd/modules/backends/HTML5');
 
 
-	// propTypes: {
-	// 	cards: React.PropTypes.arrayOf(
-	// 		React.PropTypes.object.isRequired
-	// 	).isRequired
-	// },
+
 
 var DragCardContainer = React.createClass({
 	displayName:'DragCardContainer',
+	propTypes: {
+		cards: React.PropTypes.arrayOf(
+			React.PropTypes.object.isRequired
+		).isRequired
+	},
 
 	getInitialState: function(){
 		return {
-			cards: [{
-        id: 1,
-        text: 'Orchid'
-      }, {
-        id: 2,
-        text: 'Glacius'
-      }, {
-        id: 3,
-        text: 'Kanra'
-      }, {
-        id: 4,
-        text: 'Jago'
-      }, {
-        id: 5,
-        text: 'Fulgore'
-      }, {
-        id: 6,
-        text: 'Aganos'
-      }, {
-        id: 7,
-        text: 'Wulf'
-      }]
+			cards: this.props.cards
 		};
 	},
 
@@ -68,14 +48,18 @@ var DragCardContainer = React.createClass({
 	render: function(){
 
 		return (
-			<div style={{width:400}}>
+			<div>
 			{
 				this.state.cards.map(function(card){
 					return (
-						<DragCard 
+						<DragCard
 							key={card.id}
 							id={card.id}
-							text={card.text}
+							name={card.name}
+							value={card.value}
+							wins={card.wins}
+							losses={card.losses}
+							streak={card.streak}
 							moveCard={this.moveCard} />
 					);
 				}.bind(this))

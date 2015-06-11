@@ -107,28 +107,23 @@ var SeedPage = React.createClass({
 		if(!this.state.theirStats.characters || !this.state.theirStats.characters.length){
 			return false;
 		}
-		// var characters = this.state.theirStats.characters.map(function(character){
-		// 	return (
-		// 		<li className="character-wrapper" key={'previous-' + character.name}>
-		// 			<CharacterCard
-		// 				name={character.name}
-		// 				value={character.value}
-		// 				wins={character.wins}
-		// 				losses={character.losses}
-		// 				streak={character.curStreak} />
-		// 		</li>
-		// 	);
-		// });
+		var characters = this.state.theirStats.characters.map(function(character,i){
+			return {
+				id: i,
+				name: character.name,
+				value: character.value,
+				wins: character.wins,
+				losses: character.losses,
+				streak: character.curStreak
+			};
+		});
 		return (
-			<DragContainer />
+			<div className="column-right">
+				<DragContainer cards={characters}/>
+			</div>
 
 		);
-		// <div className="column-right">
-		// 	<h2 className="column-title">{'Current Opponent Data'}</h2>
-		// 	<ol className="character-list">
-		// 		{characters}
-		// 	</ol>
-		// </div>
+		<div className="column-right">
 	},
 	submitSeeds: function(){
 		var data = {
@@ -153,7 +148,9 @@ var SeedPage = React.createClass({
 					</Link>
 				</h1>
 					{leftColumn}
-					{middleColumn}
+					{
+					//middleColumn
+					}
 					{rightColumn}
 			</div>
 		);
