@@ -105,10 +105,12 @@ var SeedPage = React.createClass({
 
 		if(this.state.previous.seeds && this.state.previous.seeds.length){
 			var sortedChars = [];
+
 			// sort by previous tournament.
 			// for each previous character, loop through current characters
 			// and move the relevant current character the top of the list.
 			// the inner loop gets smaller during each cycle.
+			// TODO implement a more standard sorting mech using indexOf in comparison func.
 			this.state.previous.seeds.forEach(function(prevChar, prevIndex){
 				for(var i=0; i<characters.length; i++){
 					if (characters[i].name === prevChar.name){
