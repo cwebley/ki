@@ -11,8 +11,15 @@ var CharacterCard = React.createClass({
 	},
 
 	render: function(){
+		var topClass = ['character']
+		if(this.props.streak === 2){
+			topClass.push('heating');
+		}
+		if(this.props.streak >=3){
+			topClass.push('fire');
+		}
 		return (
-			<div className="character">
+			<div className={topClass.join(' ')}>
 				<div className="card-left-column">
 					<h3 className="character-name">{this.props.name}</h3>
 				</div>

@@ -141,6 +141,14 @@
     opacity: 0.5;
   }
 
+  &.heating {
+    background: #f0e251;
+  }
+
+  &.fire {
+    background: #db521f;
+  }
+
   .card-left-column {
     width:40%;
     float:left;
