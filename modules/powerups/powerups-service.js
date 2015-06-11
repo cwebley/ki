@@ -39,4 +39,9 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 	});
 };
 
+PowerupSvc.postInspect = function(opts,cb) {
+	tourneyMdl.getTourneyId(opts.tourneyName,function(err,tid){	
+		if(err) return cb(err)
+};
+
 module.exports = PowerupSvc;

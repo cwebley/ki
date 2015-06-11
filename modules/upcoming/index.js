@@ -55,7 +55,7 @@ UpcomingInterface.getNext = function(tourneyId,userArr,num){
 }
 
 /*num = int number of matches you want
-	returns array, relies on caller to know the order
+	returns nested arrays, relies on caller to know the order
 	[[orchid,fulgore],[aria,cinder]]
 */
 UpcomingInterface.getNextArray = function(tourneyId,userArr,num){
@@ -81,6 +81,15 @@ UpcomingInterface.check = function(tourneyId,users){
 			return false
 		}
 	}
+	return true
+}
+
+//matchups expected to be ordered the same as uids
+UpcomingInterface.submitCustom = function(tourneyId,uids,matchups){
+	if(!uids.length || !matchups.length) return false;
+	uids.forEach(function(u,i){
+		UpcomingInterface.pending[tourneyId][u] = matchups[i]
+	});
 	return true
 }
 
