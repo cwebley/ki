@@ -116,12 +116,13 @@ var SeedPage = React.createClass({
 		};
 
 		// reach into state of child array
-		data.seeds = this.refs.container.refs.child.state.cards.filter(function(card){
+		data.seeds = this.refs.container.refs.child.state.cards.map(function(card){
 			return card.name
 		});
-		console.log(data.seeds)
 
-		// serverActions.submitSeeds(this.getParams().titleSlug, data);
+		console.log("data.seeds; ", data.seeds)
+
+		serverActions.submitSeeds(this.getParams().titleSlug, data);
 	},
 	render: function(){
 		var leftColumn = this.renderLeftColumn();

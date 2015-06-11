@@ -25,14 +25,11 @@ function _previousSeedsReceived(data){
 }
 
 function _seedSuccess(){
-	console.log("SEED SUCCESS")
-
 	attempted = true
 	success = true
 }
 
 function _seedFailure(){
-	console.log("SEED FAILURE")
 	attempted = true
 	success = false
 }

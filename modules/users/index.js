@@ -87,25 +87,20 @@ UsersInterface.getOpponentsNames = function(seederName,tourneyName,cb) {
 
 UsersInterface.verifySeeds = function(seeds) {
 	var c = constants.characters;
-	var possibleValues = [];
+	var preparedSeeds = {};
 
 	// make sure all characters accounted for
+	if(c.length !== seeds.length){
+		return;
+	}
 	for(var i=0;i<c.length;i++){
-		if(!seeds[c[i]]){
-			return false
+		if(seeds.indexOf(c[i]) === -1){
+			return;
 		}
-		possibleValues.push(Math.round((i+1)/2)) // 2 of each number is accepted (except highest value)
+		preparedSeeds[c[i]] = Math.round((i+1)/2); // 2 of each number is accepted (except highest value if odd)
 	}
 
-	// make sure all in possibleValues are accounted for
-	for(var s in seeds){
-		var valueIndex = possibleValues.indexOf(parseInt(seeds[s]))
-		if(valueIndex === -1){
-			return false
-		}
-		possibleValues.splice(valueIndex,1)
-	}
-	return true
+	return preparedSeeds;
 };
 
 UsersInterface.getPreviousSeeds = function(tourneySlug, username, cb) {

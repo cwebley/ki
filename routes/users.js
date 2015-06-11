@@ -21,35 +21,27 @@ var getUserOpts = function(req){
 	return opts
 }
 
-var getSeedOpts = function(req){
+var getSeedOpts = function(req, preparedSeeds){
 	var opts = {
 		username: req.body.opponent,
 		tourneySlug: req.params.tourneySlug,
-		characters: {}
+		characters: preparedSeeds
 	}
-	delete req.body.opponent
-
-	var c = constants.characters
-	for(var i = 0; i < c.length; i++){
-		opts.characters[c[i]] = req.body[c[i]]
-	}
-	return opts
+	return opts;
 }
 
 controller.seed = function(req, res){
-	if(!req.body.opponent) return res.status(400).send({success:false,reason:"no-opponent-name-for-seeding"})
+	if(!req.body.opponent) return res.status(400).send({success:false,reason:"no-opponent-name-for-seeding"});
 
-	var opts = getSeedOpts(req)
+	var preparedSeeds = users.verifySeeds(req.body.seeds)
+	if(!preparedSeeds) return res.status(400).send({success:false,reason:"character-seed-data-invalid"})
 
-	var verified = users.verifySeeds(opts.characters)
-	if(!verified) return res.status(400).send({success:false,reason:"character-seed-data-invalid"})
+	var opts = getSeedOpts(req, preparedSeeds);
 
 	users.seedCharacters(opts, function(err,results){
 		if(err) return res.status(500).send({success:false,reason:"internal-error"})
 		if(!results) return res.status(404).send({success:false,reason:"user-or-tourney-not-found"})
 
-		// req.session.seeded[opts.tourneySlug] = true
-		// return res.redirect('/tournaments/'+opts.tourneySlug);
 		return res.status(201).send({success:true})
 	});
 };
