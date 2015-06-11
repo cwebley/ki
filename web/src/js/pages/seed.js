@@ -6,7 +6,8 @@ var React = require('react'),
 	TournamentStore = require('../stores/tournament-store'),
 	Link = Router.Link,
 	CharacterCard = require('../components/character-card'),
-	MatchupItem = require('../components/matchup-item');
+	MatchupItem = require('../components/matchup-item'),
+	DragContainer = require('../components/drag-card-container');
 
 var SeedPage = React.createClass({
 	mixins: [ Router.Navigation, Router.State ],
@@ -106,26 +107,28 @@ var SeedPage = React.createClass({
 		if(!this.state.theirStats.characters || !this.state.theirStats.characters.length){
 			return false;
 		}
-		var characters = this.state.theirStats.characters.map(function(character){
-			return (
-				<li className="character-wrapper" key={'previous-' + character.name}>
-					<CharacterCard
-						name={character.name}
-						value={character.value}
-						wins={character.wins}
-						losses={character.losses}
-						streak={character.curStreak} />
-				</li>
-			);
-		});
-		return(
-			<div className="column-right">
-				<h2 className="column-title">{'Current Opponent Data'}</h2>
-				<ol className="character-list">
-					{characters}
-				</ol>
-			</div>
+		// var characters = this.state.theirStats.characters.map(function(character){
+		// 	return (
+		// 		<li className="character-wrapper" key={'previous-' + character.name}>
+		// 			<CharacterCard
+		// 				name={character.name}
+		// 				value={character.value}
+		// 				wins={character.wins}
+		// 				losses={character.losses}
+		// 				streak={character.curStreak} />
+		// 		</li>
+		// 	);
+		// });
+		return (
+			<DragContainer />
+
 		);
+		// <div className="column-right">
+		// 	<h2 className="column-title">{'Current Opponent Data'}</h2>
+		// 	<ol className="character-list">
+		// 		{characters}
+		// 	</ol>
+		// </div>
 	},
 	submitSeeds: function(){
 		var data = {

@@ -1,6 +1,7 @@
 var React = require('react');
 
-var TournamentPage = React.createClass({
+var CharacterCard = React.createClass({
+	displayName: 'CharacterCard',
 	propTypes: {
 		name: React.PropTypes.string,
 		value: React.PropTypes.number,
@@ -33,4 +34,4 @@ var TournamentPage = React.createClass({
 	}
 });
 
-module.exports = TournamentPage;
+module.exports = CharacterCard;

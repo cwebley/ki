@@ -10,10 +10,12 @@
     "gulp-concat": "^2.5.2",
     "gulp-sass": "^2.0.1",
     "keymirror": "^0.1.1",
+    "lodash.flow": "^3.2.1",
     "lodash.noop": "^2.4.1",
     "object-assign": "^2.0.0",
     "react": "^0.13.3",
     "react-a11y": "^0.1.1",
+    "react-dnd": "^1.1.2",
     "react-router": "^0.13.3",
     "reactify": "^1.1.1",
     "xhr": "^2.0.1"
