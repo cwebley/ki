@@ -21,6 +21,12 @@ var DragCardContainer = React.createClass({
 		};
 	},
 
+	componentWillReceiveProps: function(newProps){
+		this.setState({
+			cards: newProps.cards
+		});
+	},
+
 	moveCard: function(id, afterId){
 		var cards = this.state.cards;
 

@@ -102,10 +102,29 @@ var SeedPage = React.createClass({
 				streak: character.curStreak
 			};
 		});
+
+		if(this.state.previous.seeds && this.state.previous.seeds.length){
+			var sortedChars = [];
+			// sort by previous tournament.
+			// for each previous character, loop through current characters
+			// and move the relevant current character the top of the list.
+			// the inner loop gets smaller during each cycle.
+			this.state.previous.seeds.forEach(function(prevChar, prevIndex){
+				for(var i=0; i<characters.length; i++){
+					if (characters[i].name === prevChar.name){
+
+						// push to back of sorted list
+						sortedChars.push(characters.splice(i,1)[0]);
+						break;
+					}
+				}
+			});
+			characters = sortedChars.concat(characters);
+		}
 		return (
 			<div className="column-right">
-			<h2 className="column-title">Click To Drag</h2>
-				<DragContainer ref="container" cards={characters}/>
+				<h2 className="column-title">Click To Drag</h2>
+					<DragContainer ref="container" cards={characters}/>
 			</div>
 
 		);
@@ -119,8 +138,6 @@ var SeedPage = React.createClass({
 		data.seeds = this.refs.container.refs.child.state.cards.map(function(card){
 			return card.name
 		});
-
-		console.log("data.seeds; ", data.seeds)
 
 		serverActions.submitSeeds(this.getParams().titleSlug, data);
 	},
