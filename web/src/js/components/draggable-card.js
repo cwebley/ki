@@ -48,9 +48,13 @@ var DraggableCard = React.createClass({
 	},
 
 	render: function(){
+		var topClass = ['character', 'drag-card'];
+		if(this.props.isDragging){
+			topClass.push('dragging');
+		}
 
 		return this.props.connectDragSource(this.props.connectDropTarget(
-			<div className="character">
+			<div className={topClass.join(' ')}>
 				<div className="card-left-column">
 					<h3 className="character-name">{this.props.name}</h3>
 				</div>

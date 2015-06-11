@@ -46,7 +46,6 @@ var DragCardContainer = React.createClass({
 	},
 
 	render: function(){
-
 		return (
 			<div>
 			{

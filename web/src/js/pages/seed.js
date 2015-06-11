@@ -73,32 +73,17 @@ var SeedPage = React.createClass({
 		);
 	},
 	renderCenterColumn: function(){
-		if(!this.state.theirStats.characters || !this.state.theirStats.characters.length){
-			return false;
-		}
-
-		var description;
+		var btnClasses = ['btn','btn-lg','btn-primary']
 		if(this.state.status.attempt && this.state.status.success){
-			description = "green"
+			btnClasses.push("btn-success")
 		}
 		if(this.state.status.attempt && !this.state.status.success){
-			description = "red"
+			btnClasses.push("btn-danger")
 		}
 
-		var fields = this.state.theirStats.characters.map(function(character){
-			return (
-				<input className={"seed-field " + description} 
-					type="text" 
-					key={'input-'+character.name} 
-					placeholder={character.name + '-' + character.value} 
-					ref={character.name} />
-			);
-		});
 		return(
 			<div className="column-center">
-			<h2 className="column-title">{'Seed Up'}</h2>
-				{fields}
-				<button className="btn btn-block btn-primary" onClick={this.submitSeeds}>Submit Seeds</button>
+				<button className={btnClasses.join(' ')} onClick={this.submitSeeds}>Submit Seeds</button>
 			</div>
 		);
 	},
@@ -119,21 +104,24 @@ var SeedPage = React.createClass({
 		});
 		return (
 			<div className="column-right">
-				<DragContainer cards={characters}/>
+			<h2 className="column-title">Click To Drag</h2>
+				<DragContainer ref="container" cards={characters}/>
 			</div>
 
 		);
-		<div className="column-right">
 	},
 	submitSeeds: function(){
 		var data = {
 			opponent: this.state.theirStats.name
 		};
-		this.state.theirStats.characters.forEach(function(c){
-			data[c.name] = this.refs[c.name].getDOMNode().value
-		}.bind(this));
 
-		serverActions.submitSeeds(this.getParams().titleSlug, data);
+		// reach into state of child array
+		data.seeds = this.refs.container.refs.child.state.cards.filter(function(card){
+			return card.name
+		});
+		console.log(data.seeds)
+
+		// serverActions.submitSeeds(this.getParams().titleSlug, data);
 	},
 	render: function(){
 		var leftColumn = this.renderLeftColumn();
@@ -148,9 +136,7 @@ var SeedPage = React.createClass({
 					</Link>
 				</h1>
 					{leftColumn}
-					{
-					//middleColumn
-					}
+					{middleColumn}
 					{rightColumn}
 			</div>
 		);

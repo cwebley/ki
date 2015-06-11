@@ -125,12 +125,21 @@
   padding: 0.25em 0.5em;
 }
 
+.drag-card {
+  border: 1px dashed gray;
+  cursor: move;
+}
+
 .character {
   display: block;
   background: #eee;
   padding: 0.9em;
   margin: 0.25em;
   line-height: 1.5em;
+
+  &.dragging {
+    opacity: 0.5;
+  }
 
   .card-left-column {
     width:40%;
