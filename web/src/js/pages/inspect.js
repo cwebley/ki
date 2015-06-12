@@ -28,6 +28,7 @@ var InspectPage = React.createClass({
 		TournamentStore.removeChangeListener(this._onChange);
 	},
 	componentDidMount: function(){
+		serverActions.getTournamentData(this.getParams().titleSlug);
 		serverActions.getInspect(this.getParams().titleSlug);
 	},
 	_onChange: function(){
@@ -113,14 +114,6 @@ var InspectPage = React.createClass({
 		);
 	},
 	postInspection: function(){
-
-		// reach into state of child array
-		// data.me = this.refs.containerMe.refs.child.state.cards.map(function(card){
-		// 	return card.name
-		// });
-		// data.them = this.refs.containerThem.refs.child.state.cards.map(function(card){
-		// 	return card.name
-		// });
 		if(!this.state.myStats.name || !this.state.theirStats.name){
 			console.log("failed-render-some-error-now")
 			return

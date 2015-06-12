@@ -30,12 +30,14 @@ var gePostInspectOpts = function(req){
 			bj: [spinal:cinder,aria]
 		}	
 	*/
-	opts.matchups = req.params.matchups
+	opts.matchups = req.body.matchups
 	return opts;
 }
 
 powerupController.postInspect = function(req, res){
+	console.log("POST INSPECT")
 	var opts = gePostInspectOpts(req);
+	console.log("OPTS: ", opts)
 	if(!opts.matchups){
 		res.status(400).send({success: false, reason:'matchup-data-not-provided'});
 	}

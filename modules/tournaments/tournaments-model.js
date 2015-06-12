@@ -46,12 +46,19 @@ TournamentsModel.deleteTournament = function(tid,cb) {
 					mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournamentUsers', function(err, results){
 						if(err) return cb(err);
 
-						var sql = 'DELETE FROM tournaments where id = ?',
+						var sql = 'DELETE FROM games where tournamentId = ?',
 							params = [tid];
 
-						mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournaments', function(err, results){
+						mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournamentUsers', function(err, results){
 							if(err) return cb(err);
-							return cb(null, results)
+
+							var sql = 'DELETE FROM tournaments where id = ?',
+								params = [tid];
+	
+							mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournaments', function(err, results){
+								if(err) return cb(err);
+								return cb(null, results)
+							});
 						});
 					});
 				});

@@ -87,7 +87,7 @@ serverActions = {
  			});
  		});
  	},
- 	postInspect: function(slug){
+ 	postInspection: function(slug){
  		api.postInspection(slug,function(code,body){
  			dispatcher.handleServerAction({
  				type: ActionTypes.POST_INSPECT,
