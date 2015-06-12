@@ -11,7 +11,7 @@ var UsersInterface = {};
 
 var userListDto = function(data){
 	if(!data || !data.length) data = [];
-	return {users:data}
+	return {users:data};
 }
 
 var loginDto = function(username,uid,seedData){
@@ -25,7 +25,7 @@ var loginDto = function(username,uid,seedData){
 		dto.seeded={}
 		for(var i=0;i<seedData.length;i++){
 			if(seedData[i].seeded){
-				dto.seeded[seedData[i].name] = true
+				dto.seeded[seedData[i].name] = true;
 			}
 		}
 	}
@@ -53,35 +53,35 @@ var previousSeedDto = function(tourneyInfo, seeds, stats, username){
 
 UsersInterface.register = function(options, cb) {
 	usersSvc.registerUser(options,function(err,userId){
-		if(err) return cb(err)
+		if(err) return cb(err);
 		return cb(null,loginDto(options.username,userId))
 	})
 };
 
 UsersInterface.login = function(options, cb) {
 	usersSvc.login(options,function(err,seedStatus,uid){
-		if(err)return cb(err)
-		if(!seedStatus) return cb()
+		if(err)return cb(err);
+		if(!seedStatus) return cb();
 		var dto = loginDto(options.username,uid,seedStatus)
-			return cb(err, dto)
+			return cb(err, dto);
 	});
 };
 
 UsersInterface.seedCharacters = function(options, cb) {
-	usersSvc.seedCharacters(options, cb)
+	usersSvc.seedCharacters(options, cb);
 };
 
 UsersInterface.getUserList = function(creatorsName, cb) {
 	usersMdl.getUserList(creatorsName, function(err,results){
-		if(err)return cb(err)
-		return cb(null,userListDto(results))
+		if(err)return cb(err);
+		return cb(null,userListDto(results));
 	});
 };
 
 UsersInterface.getOpponentsNames = function(seederName,tourneyName,cb) {
 	usersMdl.getOpponentsNames(seederName,tourneyName, function(err,results){
-		if(err)return cb(err)
-		return cb(null,userListDto(results))
+		if(err)return cb(err);
+		return cb(null,userListDto(results));
 	});
 };
 
@@ -126,7 +126,7 @@ UsersInterface.getPreviousSeeds = function(tourneySlug, username, cb) {
 						if(!stats) return cb();
 
 						return cb(null, previousSeedDto(prevRes,seedRes,stats,username))
-					})
+					});
 				});
 			});
 		});
