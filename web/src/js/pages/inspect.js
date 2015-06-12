@@ -15,6 +15,8 @@ var InspectPage = React.createClass({
 		return {
 			me: TournamentStore.inspectMe(),
 			them: TournamentStore.inspectThem(),
+			myStats: TournamentStore.getMe(),
+			theirStats: TournamentStore.getThem(),
 			status: TournamentStore.inspectStatus(),
 			duration: TournamentStore.inspectDuration()
 		};
@@ -32,6 +34,8 @@ var InspectPage = React.createClass({
 		this.setState({
 			me: TournamentStore.inspectMe(),
 			them: TournamentStore.inspectThem(),
+			myStats: TournamentStore.getMe(),
+			theirStats: TournamentStore.getThem(),
 			duration: TournamentStore.inspectDuration(),
 			status: TournamentStore.inspectStatus(),
 		});
@@ -109,18 +113,30 @@ var InspectPage = React.createClass({
 		);
 	},
 	postInspection: function(){
-		var data = {
-			opponent: this.state.theirStats.name
-		};
 
 		// reach into state of child array
-		data.me = this.refs.containerMe.refs.child.state.cards.map(function(card){
+		// data.me = this.refs.containerMe.refs.child.state.cards.map(function(card){
+		// 	return card.name
+		// });
+		// data.them = this.refs.containerThem.refs.child.state.cards.map(function(card){
+		// 	return card.name
+		// });
+		if(!this.state.myStats.name || !this.state.theirStats.name){
+			console.log("failed-render-some-error-now")
+			return
+		}
+
+		var data = {
+			matchups: {}
+		}
+		data.matchups[this.state.myStats.name] = this.refs.containerMe.refs.child.state.cards.map(function(card){
 			return card.name
 		});
-		data.them = this.refs.containerThem.refs.child.state.cards.map(function(card){
+		data.matchups[this.state.theirStats.name] = this.refs.containerThem.refs.child.state.cards.map(function(card){
 			return card.name
 		});
 
+		console.log("YOURE SENDING THIS DATA: ", data)
 		serverActions.postInspection(this.getParams().titleSlug, data);
 	},
 });
