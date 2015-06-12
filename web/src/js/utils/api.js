@@ -88,7 +88,7 @@ var Api = {
 			}
 		}, function (err, res, body) {
 			cb(res.statusCode, body)
-		})
+		});
 	},
 	deleteTournament: function(slug,cb) {
 		xhr({
@@ -99,7 +99,7 @@ var Api = {
 			}
 		}, function (err, res, body) {
 			cb(res.statusCode, body)
-		})
+		});
 	},
 	getInspect: function(slug,cb) {
 		xhr({
@@ -111,7 +111,19 @@ var Api = {
 			}
 		}, function (err, res, body) {
 			cb(res.statusCode, body)
-		})
+		});
+	},
+	postInspection: function(slug,cb) {
+		xhr({
+			json:true,
+			uri: "/api/tournaments/" + slug + "/pwr/inspect",
+			method: "post",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body)
+		});
 	}
 }
 

@@ -12,18 +12,27 @@ var _me = {};
 var _them = {};
 var _inspectMe = [];
 var _inspectThem = [];
+var _attemptedPostInspect;
+var _succeededPostInspect;
 
 function _tourneyDataReceived(data){
 	console.log("TDATA: ", data);
-	
+
 	_me = data.users[0];
 	_them = data.users[1];
 }
 function _inspectDataReceived(data){
-	console.log("INSPECT DATA: ", data);
-
 	_inspectMe = data.me;
 	_inspectThem = data.them;
+	_attemptedPostInspect = false;
+}
+function _submitMatchupsSuccess(data){
+	_attemptedPostInspect = true;
+	_submitMatchupsSuccess = true;
+}
+function _submitMatchupFailure(data){
+	_attemptedPostInspect = true;
+	_submitMatchupsSuccess = false;
 }
 
 var TournamentStore = assign({}, EventEmitter.prototype, {
@@ -54,6 +63,12 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 			return false;
 		}
 		return Math.min(_inspectMe.length,_inspectThem.length);
+	},
+	inspectStatus: function(){
+		return {
+			attempt: _attemptedPostInspect,
+			success: _succeededPostInspect
+		};
 	}
 });
 
@@ -84,6 +99,9 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 		}
 		_inspectDataReceived(payload.action.data);
 		TournamentStore.emitChange();
+		break;
+	case ActionTypes.POST_INSPECT:
+		(payload.action.code === 201) ? _submitMatchupsSuccess() : _submitMatchupFailure();
 		break;
 	default:
 	  // do nothing

@@ -14,7 +14,9 @@ var InspectPage = React.createClass({
 	getInitialState: function(){
 		return {
 			me: TournamentStore.inspectMe(),
-			them: TournamentStore.inspectThem()
+			them: TournamentStore.inspectThem(),
+			status: TournamentStore.inspectStatus(),
+			duration: TournamentStore.inspectDuration()
 		};
 	},
 	componentWillMount:function(){
@@ -30,7 +32,8 @@ var InspectPage = React.createClass({
 		this.setState({
 			me: TournamentStore.inspectMe(),
 			them: TournamentStore.inspectThem(),
-			duration: TournamentStore.inspectDuration()
+			duration: TournamentStore.inspectDuration(),
+			status: TournamentStore.inspectStatus(),
 		});
 	},
 	render: function(){
@@ -65,13 +68,20 @@ var InspectPage = React.createClass({
 		return (
 			<div className="column-left">
 				<h2 className="column-title">Me</h2>
-					<DragContainer ref="container" cards={characters}/>
+					<DragContainer ref="containerMe" cards={characters}/>
 			</div>
 
 		);
 	},
 	renderCenterColumn: function() {
 		var btnClasses = ['btn','btn-lg','btn-primary']
+
+		if(this.state.status.attempt && this.state.status.success){
+			btnClasses.push("btn-success")
+		}
+		if(this.state.status.attempt && !this.state.status.success){
+			btnClasses.push("btn-danger")
+		}
 
 		return(
 			<div className="column-center">
@@ -93,7 +103,7 @@ var InspectPage = React.createClass({
 		return (
 			<div className="column-right">
 				<h2 className="column-title">The Other Guy</h2>
-					<DragContainer ref="container" cards={characters}/>
+					<DragContainer ref="containerThem" cards={characters}/>
 			</div>
 
 		);
@@ -104,7 +114,10 @@ var InspectPage = React.createClass({
 		};
 
 		// reach into state of child array
-		data.seeds = this.refs.container.refs.child.state.cards.map(function(card){
+		data.me = this.refs.containerMe.refs.child.state.cards.map(function(card){
+			return card.name
+		});
+		data.them = this.refs.containerThem.refs.child.state.cards.map(function(card){
 			return card.name
 		});
 
