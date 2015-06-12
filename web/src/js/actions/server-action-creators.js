@@ -77,6 +77,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	getInspect: function(slug){
+ 		api.getInspect(slug,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.GET_INSPECT,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 

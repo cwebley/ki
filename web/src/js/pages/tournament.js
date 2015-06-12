@@ -1,6 +1,5 @@
 var React = require('react'),
 	Router = require('react-router'),
-	AuthStore = require('../stores/auth-store'),
 	serverActions = require('../actions/server-action-creators'),
 	viewActions = require('../actions/view-action-creators'),
 	TournamentStore = require('../stores/tournament-store'),

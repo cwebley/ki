@@ -10,10 +10,11 @@ var App = require('./components/app'),
 	TourneyIndex = require('./pages/tournament-index'),
 	TourneyPage = require('./pages/tournament'),
 	SeedPage = require('./pages/seed'),
+	InspectPage = require('./pages/inspect'),
 	StatsPage = require('./pages/stats'),
 	FaqPage = require('./pages/faq'),
 	LoginPage = require('./pages/login'),
-	Authentication = require('./mixins/Authentication')
+	Authentication = require('./mixins/Authentication'),
 	NotFound = require('./pages/404');
 
 var routes = (
@@ -24,6 +25,7 @@ var routes = (
 			<Route name="tournament" path="/tournaments/:titleSlug" handler={TourneyPage} />
 		</Route>
 		<Route name="seed" path="/tournaments/:titleSlug/seed" handler={SeedPage} />
+		<Route name="inspect" path="/tournaments/:titleSlug/inspect" handler={InspectPage} />
 		<Route name="faq" handler={FaqPage}/>
 		<Route name="login" handler={LoginPage}/>
 		<DefaultRoute handler={AboutPage}/>

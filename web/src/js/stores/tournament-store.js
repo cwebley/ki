@@ -10,11 +10,20 @@ var CHANGE_EVENT = 'change';
 var _tournamentHash = {};
 var _me = {};
 var _them = {};
+var _inspectMe = [];
+var _inspectThem = [];
 
 function _tourneyDataReceived(data){
-	console.log("TDATA: ", data)
+	console.log("TDATA: ", data);
+	
 	_me = data.users[0];
 	_them = data.users[1];
+}
+function _inspectDataReceived(data){
+	console.log("INSPECT DATA: ", data);
+
+	_inspectMe = data.me;
+	_inspectThem = data.them;
 }
 
 var TournamentStore = assign({}, EventEmitter.prototype, {
@@ -33,6 +42,18 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 	},	
 	getThem: function() {
 		return _them;
+	},
+	inspectMe: function() {
+		return _inspectMe;
+	},
+	inspectThem: function() {
+		return _inspectThem;
+	},
+	inspectDuration: function() {
+		if(!_inspectThem || !_inspectMe){
+			return false;
+		}
+		return Math.min(_inspectMe.length,_inspectThem.length);
 	}
 });
 
@@ -56,7 +77,14 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			console.log("error-deleting-tournament")
 		}
 		break;
-
+	case ActionTypes.GET_INSPECT:
+		if(payload.action.code != 200){
+			console.log("error-inspecting-tournament")
+			break;
+		}
+		_inspectDataReceived(payload.action.data);
+		TournamentStore.emitChange();
+		break;
 	default:
 	  // do nothing
 }

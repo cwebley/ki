@@ -14,7 +14,6 @@ powerupController.getInspect = function(req, res){
 	powerups.getInspect(opts, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err});
 		if(!dto) return res.status(400).send({success:false,reason:'inspect-already-in-use'});
-		dto.me = req.user.username;
 		res.status(200).send(dto);
 	})
 }

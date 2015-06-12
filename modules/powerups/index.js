@@ -7,8 +7,19 @@ var _ = require('lodash'),
 
 var PowerInterface = {};
 
-var inspectDto = function(data){
-	return {inspect: data}
+var inspectDto = function(next,players,requester){
+
+	//make sure me/them are in the correct places
+	if(players[0].name !== requester){
+		//reverse these guys
+		players.unshift(players.splice(0,1)[0]);
+		next.unshift(next.splice(0,1)[0]);
+	}
+
+	return {
+		me: next[0],
+		them: next[1]
+	};
 }
 
 PowerInterface.getInspect = function(opts,cb) {
@@ -24,8 +35,8 @@ PowerInterface.getInspect = function(opts,cb) {
 			if(!upcoming.check(tid,uids)) {
 				upcoming.create(tid,uids);
 			}
-			next = upcoming.getNext(tid,players,inspectCount);
-			return cb(err,inspectDto(next));
+			next = upcoming.getNextArray(tid,players,inspectCount);
+			return cb(err,inspectDto(next,players,opts.username));
 		});
 	});
 };
@@ -43,10 +54,10 @@ PowerInterface.postInspect = function(opts,cb) {
 			players.forEach(function(p){
 				if(!opts.matchups[p.name] || !opts.matchups[p.name].length){
 					//matchup data not present or invalid
-					return cb():
+					return cb();
 				}
 				p.matchups = opts.matchups[p.name];
-			});
+			}.bind(this));
 			if(players[0].matchups.length !== players[1].matchups.length){
 				//matchups submitted must be equal in number for each player
 				return cb();
@@ -74,8 +85,8 @@ PowerInterface.postInspect = function(opts,cb) {
 					}
 					// remove found character from the next data
 					next[pIndex].splice(validatedIndex,1);
-				});
-			});
+				}.bind(this));
+			}.bind(this));
 
 			if(!upcoming.submitCustom(tid,uids,[players[0].matchups,players[1].matchups])){
 				return cb(new Error('failed-to-submit-new-custom-matchups'));
@@ -87,14 +98,3 @@ PowerInterface.postInspect = function(opts,cb) {
 };
 
 module.exports = PowerInterface;
-
-
-// 	if(requester){
-// 		for(var i=0; i<dto.users.length; i++){
-// 			if(dto.users[i].name === requester){
-// 				// pop off and append to front
-// 				dto.users.unshift(dto.users.splice(i,1)[0])
-// 				break;
-// 			}
-// 		}
-// 	}

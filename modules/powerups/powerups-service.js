@@ -9,8 +9,9 @@ var PowerupSvc = {};
 
 PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 
-	tourneyMdl.getTourneyId(opts.tourneyName,function(err,tid){	
-		if(err) return cb(err)
+	tourneyMdl.getTourneyId(opts.tourneySlug,function(err,tid){	
+		if(err) return cb(err);
+		if(!tid) return cb();
 
 		powerMdl.setnxInspectStatus(tid,opts.userId,function(err,success){
 			if(err) return cb(err)
@@ -18,6 +19,7 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 	
 				//check if owner is you
 				powerMdl.getInspectStatus(tid,opts.userId,function(err,owner){
+
 					if(err) return cb(err)
 					if(owner !== opts.userId.toString()) {
 						return cb() // not you
@@ -40,8 +42,9 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 };
 
 PowerupSvc.postInspect = function(opts,cb) {
-	tourneyMdl.getTourneyId(opts.tourneyName,function(err,tid){	
+	tourneyMdl.getTourneyId(opts.tourneySlug,function(err,tid){	
 		if(err) return cb(err)
+	});
 };
 
 module.exports = PowerupSvc;

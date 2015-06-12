@@ -100,6 +100,18 @@ var Api = {
 		}, function (err, res, body) {
 			cb(res.statusCode, body)
 		})
+	},
+	getInspect: function(slug,cb) {
+		xhr({
+			json:true,
+			uri: "/api/tournaments/" + slug + "/pwr/inspect",
+			method: "get",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body)
+		})
 	}
 }
 
