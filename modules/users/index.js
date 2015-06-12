@@ -97,7 +97,7 @@ UsersInterface.verifySeeds = function(seeds) {
 		if(seeds.indexOf(c[i]) === -1){
 			return;
 		}
-		preparedSeeds[c[i]] = Math.round((i+1)/2); // 2 of each number is accepted (except highest value if odd)
+		preparedSeeds[seeds[i]] = Math.round((i+1)/2); // 2 of each number is accepted (except highest value if odd)
 	}
 
 	return preparedSeeds;
