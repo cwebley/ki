@@ -55,8 +55,10 @@ UpcomingInterface.getNext = function(tourneyId,userArr,num){
 }
 
 /*num = int number of matches you want
+	userArr: [ { id: 2, name: 'bj' }, { id: 1, name: 'g' } ]
 	returns nested arrays, relies on caller to know the order
 	[[orchid,fulgore],[aria,cinder]]
+
 */
 UpcomingInterface.getNextArray = function(tourneyId,userArr,num){
 	var nextUp = [];

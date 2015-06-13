@@ -113,9 +113,9 @@ var Api = {
 			cb(res.statusCode, body)
 		});
 	},
-	postInspection: function(slug,cb) {
+	postInspection: function(slug,data,cb) {
 		xhr({
-			json:true,
+			json:data,
 			uri: "/api/tournaments/" + slug + "/pwr/inspect",
 			method: "post",
 			headers: {

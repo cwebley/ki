@@ -87,8 +87,8 @@ serverActions = {
  			});
  		});
  	},
- 	postInspection: function(slug){
- 		api.postInspection(slug,function(code,body){
+ 	postInspection: function(slug,data){
+ 		api.postInspection(slug,data,function(code,body){
  			dispatcher.handleServerAction({
  				type: ActionTypes.POST_INSPECT,
  				code: code,

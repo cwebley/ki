@@ -12,8 +12,8 @@ var inspectDto = function(next,players,requester){
 	//make sure me/them are in the correct places
 	if(players[0].name !== requester){
 		//reverse these guys
-		players.unshift(players.splice(0,1)[0]);
-		next.unshift(next.splice(0,1)[0]);
+		players.unshift(players.splice(1,2)[0]);
+		next.unshift(next.splice(1,2)[0]);
 	}
 
 	return {
@@ -42,14 +42,13 @@ PowerInterface.getInspect = function(opts,cb) {
 };
 
 PowerInterface.postInspect = function(opts,cb) {
-
 	tourneyMdl.getTourneyId(opts.tourneySlug,function(err, tid){
 		if(err) return cb(err);
 		if(!tid) return cb();
 
 		tourneyMdl.getPlayersNamesIds(opts.tourneySlug,function(err,players){	
 			if(err) return cb(err);
-	
+
 			//shallow verify matchups and players
 			players.forEach(function(p){
 				if(!opts.matchups[p.name] || !opts.matchups[p.name].length){
@@ -69,29 +68,44 @@ PowerInterface.postInspect = function(opts,cb) {
 				upcoming.create(tid,uids);
 			}
 			var inspectCount = players[0].matchups.length;
+			Math.min(inspectCount, 20);
 	
 			//getNextArray preserves the player ordering
-			next = upcoming.getNextArray(tid,players,inspectCount);
-	
+			var next = upcoming.getNextArray(tid,players,inspectCount);
+
 			//deep verify matchups
 			players.forEach(function(p,pIndex){
+				if(!next){
+					return;
+				}
 				p.matchups.forEach(function(m){
 					var validatedIndex;
 					// for each submitted match, verify it exists in the next data, then remove that value
 					validatedIndex = next[pIndex].indexOf(m);
 					if(validatedIndex === -1){
 						// submitted character not found in next data
-						return cb();
+						return;
 					}
 					// remove found character from the next data
 					next[pIndex].splice(validatedIndex,1);
 				}.bind(this));
+
+				if(next[pIndex].length){
+					// not empty, submitted characters were invalid
+					// reset next to indicate failure to the parent func
+					next = null;
+					return;
+				}
 			}.bind(this));
+
+			// empty next means deep verify failed, exit 400
+			if(!next){
+				return cb();
+			}
 
 			if(!upcoming.submitCustom(tid,uids,[players[0].matchups,players[1].matchups])){
 				return cb(new Error('failed-to-submit-new-custom-matchups'));
 			}
-			console.log("DONE IT?!");
 			return cb();
 		});
 	});

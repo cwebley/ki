@@ -21,7 +21,7 @@ powerupController.getInspect = function(req, res){
 var gePostInspectOpts = function(req){
 	opts = {
 		username: req.user.name,
-		userId: req.session.user.userId,
+		userId: req.user.userId,
 		tourneySlug: req.params.tourneySlug
 	};
 	/* 
@@ -35,11 +35,9 @@ var gePostInspectOpts = function(req){
 }
 
 powerupController.postInspect = function(req, res){
-	console.log("POST INSPECT")
 	var opts = gePostInspectOpts(req);
-	console.log("OPTS: ", opts)
 	if(!opts.matchups){
-		res.status(400).send({success: false, reason:'matchup-data-not-provided'});
+		return res.status(400).send({success: false, reason:'matchup-data-not-provided'});
 	}
 
 	powerups.postInspect(opts, function(err,dto){
