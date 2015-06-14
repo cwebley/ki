@@ -45,14 +45,14 @@ GamesModel.iceDown = function(tid,uid,icedCid,cb) {
 			paramsChar = [icedCid]
 		//get ice eventId
 		var sqlFireEvent = 'SELECT id FROM events WHERE description = ?',
-			paramsFireEvent = ["ice"]
+			paramsIceEvent = ["ice"]
 		//get friendlyIce eventId
 		var sqlFIEvent = 'SELECT id FROM events WHERE description = ?',
 			paramsFIEvent = ["friendlyIce"]
 
 		async.parallel([
 			function(done){mysql.query('rw', sqlChar, paramsChar, 'modules/games/games-model/iceDown:get-characters', done)},
-			function(done){mysql.query('rw', sqlFireEvent, paramsFireEvent, 'modules/games/games-model/iceDown:get-ice-event', done)},
+			function(done){mysql.query('rw', sqlFireEvent, paramsIceEvent, 'modules/games/games-model/iceDown:get-ice-event', done)},
 			function(done){mysql.query('rw', sqlFIEvent, paramsFIEvent, 'modules/games/games-model/iceDown:get-ice-event', done)}
 		],function(err,results){
 			if(err) return cb(err)
