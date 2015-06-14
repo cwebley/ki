@@ -13,13 +13,13 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 		if(err) return cb(err);
 		if(!tid) return cb();
 
+		// check if inspect is currently in use
 		powerMdl.setnxInspectStatus(tid,opts.userId,function(err,success){
 			if(err) return cb(err)
 			if(!success) {
 	
 				//check if owner is you
-				powerMdl.getInspectStatus(tid,opts.userId,function(err,owner){
-
+				powerMdl.getInspectStatus(tid,function(err,owner){
 					if(err) return cb(err)
 					if(owner !== opts.userId.toString()) {
 						return cb() // not you
@@ -41,9 +41,12 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 	});
 };
 
-PowerupSvc.postInspect = function(opts,cb) {
-	tourneyMdl.getTourneyId(opts.tourneySlug,function(err,tid){	
-		if(err) return cb(err)
+PowerupSvc.decrInspection = function(tid,cb) {
+	powerMdl.getInspectStatus(tid,function(err,owner){
+		if(err) return cb(err);
+		powerMdl.decrUserInspect(tid,owner,function(err,success){
+			return cb(err)
+		});
 	});
 };
 

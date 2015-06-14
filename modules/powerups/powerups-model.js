@@ -46,7 +46,7 @@ PowerModel.decrUserStock = function(tourneyId,userId,cb) {
 /*
 	inspect
 */
-PowerModel.getInspectStatus = function(tourneyId,userId,cb) {
+PowerModel.getInspectStatus = function(tourneyId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = inspectStatusKey(tourneyId);
 	conn.get(key, cb);
@@ -56,6 +56,8 @@ PowerModel.setnxInspectStatus = function(tourneyId,userId,cb) {
 		key = inspectStatusKey(tourneyId);
 	conn.setnx(key, userId, cb);
 };
+
+// returns the inspect count
 PowerModel.getUserInspect = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = userInspectKey(tourneyId,userId);

@@ -5,7 +5,8 @@ var _ = require('lodash'),
 	usersMdl = require('../users/users-model'),
 	constants = require('../constants'),
 	upcoming = require('../upcoming'),
-	mysql = require('../persistence').mysql;
+	mysql = require('../persistence').mysql,
+	powerIndex = require('../powerups');
 
 var GamesService = {};
 
@@ -121,10 +122,14 @@ GamesService.updateData = function(options, cb) {
 		updateCalls.push(function(done){gamesMdl.updateWinnerScore(options.tourneyId,options.winPid,options.winValue,done)})
 
 		async.parallel(updateCalls,function(err,results){
-			if(err)return cb(err)
+			if(err)return cb(err);
 
-			GamesService.checkAndUpdateTournament(options,function(err,endTournament){
-				return cb(err,results,endTournament)
+			powerIndex.decrInspection({tourneyId: options.tourneyId}, function(err,response){
+				if(err) return cb(err);
+
+				GamesService.checkAndUpdateTournament(options,function(err,endTournament){
+					return cb(err,results,endTournament);
+				});
 			});
 		});
 	});

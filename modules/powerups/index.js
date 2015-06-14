@@ -8,12 +8,11 @@ var _ = require('lodash'),
 var PowerInterface = {};
 
 var inspectDto = function(next,players,requester){
-
 	//make sure me/them are in the correct places
 	if(players[1].name === requester){
 		//reverse these guys
-		players.unshift(players.splice(0,1)[0]);
-		next.unshift(next.splice(0,1)[0]);
+		players.push(players.splice(0,1)[0]);
+		next.push(next.splice(0,1)[0]);
 	}
 
 	return {
@@ -82,6 +81,7 @@ PowerInterface.postInspect = function(opts,cb) {
 					var validatedIndex;
 					// for each submitted match, verify it exists in the next data, then remove that value
 					validatedIndex = next[pIndex].indexOf(m);
+
 					if(validatedIndex === -1){
 						// submitted character not found in next data
 						return;
@@ -108,6 +108,10 @@ PowerInterface.postInspect = function(opts,cb) {
 			return cb(null, true);
 		});
 	});
+};
+
+PowerInterface.decrInspection = function(options, cb){
+	return powerSvc.decrInspection(options.tourneyId, cb);
 };
 
 module.exports = PowerInterface;
