@@ -26,11 +26,11 @@ function _inspectDataReceived(data){
 	_inspectThem = data.them;
 	_attemptedPostInspect = false;
 }
-function _submitMatchupsSuccess(data){
+function _submitMatchupsSuccess(){
 	_attemptedPostInspect = true;
 	_submitMatchupsSuccess = true;
 }
-function _submitMatchupFailure(data){
+function _submitMatchupFailure(){
 	_attemptedPostInspect = true;
 	_submitMatchupsSuccess = false;
 }
@@ -89,12 +89,12 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 		break;
 	case ActionTypes.DELETE_TOURNAMENT:
 		if(payload.action.code !== 200){
-			console.log("error-deleting-tournament")
+			console.log("error-deleting-tournament");
 		}
 		break;
 	case ActionTypes.GET_INSPECT:
 		if(payload.action.code != 200){
-			console.log("error-inspecting-tournament")
+			console.log("error-inspecting-tournament");
 			break;
 		}
 		_inspectDataReceived(payload.action.data);

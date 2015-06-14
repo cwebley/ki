@@ -22,7 +22,7 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 				powerMdl.getInspectStatus(tid,function(err,owner){
 					if(err) return cb(err)
 					if(owner !== opts.userId.toString()) {
-						return cb() // not you
+						return cb(); // not you
 					}
 					// you
 					powerMdl.getUserInspect(tid,opts.userId,function(err,results){
@@ -44,8 +44,16 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 PowerupSvc.decrInspection = function(tid,cb) {
 	powerMdl.getInspectStatus(tid,function(err,owner){
 		if(err) return cb(err);
-		powerMdl.decrUserInspect(tid,owner,function(err,success){
-			return cb(err)
+		powerMdl.decrUserInspect(tid,owner,function(err,remaining){
+			if(remaining > 0){
+				return cb(null,remaining);
+			}
+
+			// reset and unlock relevant keys
+			powerMdl.clearInspectStatus(tid,function(err,success){
+				if(err) return cb(err);
+				return cb(null,success);
+			});
 		});
 	});
 };
