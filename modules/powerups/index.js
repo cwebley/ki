@@ -106,7 +106,7 @@ PowerInterface.postInspect = function(opts,cb) {
 			if(!upcoming.submitCustom(tid,uids,[players[0].matchups,players[1].matchups])){
 				return cb(new Error('failed-to-submit-new-custom-matchups'));
 			}
-			return cb();
+			return cb(null, true);
 		});
 	});
 };

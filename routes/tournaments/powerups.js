@@ -40,9 +40,9 @@ powerupController.postInspect = function(req, res){
 		return res.status(400).send({success: false, reason:'matchup-data-not-provided'});
 	}
 
-	powerups.postInspect(opts, function(err,dto){
+	powerups.postInspect(opts, function(err,success){
 		if(err) return res.status(500).send({success:false,err:err});
-		if(!dto) return res.status(400).send({success:false,reason:'invalid-inputs'});
+		if(!success) return res.status(400).send({success:false,reason:'invalid-inputs'});
 		res.status(201).send({success: true});
 	});
 }
