@@ -34,6 +34,10 @@ function _submitMatchupFailure(){
 	_attemptedPostInspect = true;
 	_submitMatchupsSuccess = false;
 }
+function _clearInspectData(){
+	_inspectMe = [];
+	_inspectThem = [];
+}
 
 var TournamentStore = assign({}, EventEmitter.prototype, {
 
@@ -93,8 +97,11 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 		}
 		break;
 	case ActionTypes.GET_INSPECT:
-		if(payload.action.code != 200){
-			console.log("error-inspecting-tournament");
+		if(payload.action.code !== 200){
+			// probably need a better way to handle this
+			// but this happens when inspect is being used already
+			_clearInspectData();
+			TournamentStore.emitChange();
 			break;
 		}
 		_inspectDataReceived(payload.action.data);

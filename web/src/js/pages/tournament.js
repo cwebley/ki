@@ -112,6 +112,9 @@ var TournamentPage = React.createClass({
 				<div className="matchup-right">
 					<MatchupItem data={TheyWin} display={this.state.them.next[0]} />
 				</div>
+				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
+					<button className="btn btn-primary btn-sm btn-block">Inspect</button>
+				</Link>
 			</div>
 		);
 	},
