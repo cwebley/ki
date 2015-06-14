@@ -81,41 +81,38 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 
 	switch(action.type) {
 
-	case ActionTypes.GET_TOURNAMENT_DATA:
-		_tourneyDataReceived(payload.action.data);
-		TournamentStore.emitChange();
-		break;
-	case ActionTypes.SUBMIT_GAME:
-		if(payload.action.code !== 201){
-			// do some sort of roll back when/if view-action based rendering happens?
-			console.log("Tournament-store-found-an-error-submitting-game");
-		}
-		break;
-	case ActionTypes.DELETE_TOURNAMENT:
-		if(payload.action.code !== 200){
-			console.log("error-deleting-tournament");
-		}
-		break;
-	case ActionTypes.GET_INSPECT:
-		if(payload.action.code !== 200){
-			// probably need a better way to handle this
-			// but this happens when inspect is being used already
-			_clearInspectData();
+		case ActionTypes.GET_TOURNAMENT_DATA:
+			_tourneyDataReceived(payload.action.data);
 			TournamentStore.emitChange();
 			break;
-		}
-		_inspectDataReceived(payload.action.data);
-		TournamentStore.emitChange();
-		break;
-	case ActionTypes.POST_INSPECT:
-		(payload.action.code === 201) ? _submitMatchupsSuccess() : _submitMatchupFailure();
-		break;
-	default:
-	  // do nothing
-}
-
-
-
+		case ActionTypes.SUBMIT_GAME:
+			if(payload.action.code !== 201){
+				// do some sort of roll back when/if view-action based rendering happens?
+				console.log("Tournament-store-found-an-error-submitting-game");
+			}
+			break;
+		case ActionTypes.DELETE_TOURNAMENT:
+			if(payload.action.code !== 200){
+				console.log("error-deleting-tournament");
+			}
+			break;
+		case ActionTypes.GET_INSPECT:
+			if(payload.action.code !== 200){
+				// probably need a better way to handle this
+				// but this happens when inspect is being used already
+				_clearInspectData();
+				TournamentStore.emitChange();
+				break;
+			}
+			_inspectDataReceived(payload.action.data);
+			TournamentStore.emitChange();
+			break;
+		case ActionTypes.POST_INSPECT:
+			(payload.action.code === 201) ? _submitMatchupsSuccess() : _submitMatchupFailure();
+			break;
+		default:
+		  // do nothing
+	}
 });
 
 module.exports = TournamentStore;
