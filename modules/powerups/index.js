@@ -10,10 +10,10 @@ var PowerInterface = {};
 var inspectDto = function(next,players,requester){
 
 	//make sure me/them are in the correct places
-	if(players[0].name !== requester){
+	if(players[1].name === requester){
 		//reverse these guys
-		players.unshift(players.splice(1,2)[0]);
-		next.unshift(next.splice(1,2)[0]);
+		players.unshift(players.splice(0,1)[0]);
+		next.unshift(next.splice(0,1)[0]);
 	}
 
 	return {
@@ -102,7 +102,6 @@ PowerInterface.postInspect = function(opts,cb) {
 			if(!next){
 				return cb();
 			}
-
 			if(!upcoming.submitCustom(tid,uids,[players[0].matchups,players[1].matchups])){
 				return cb(new Error('failed-to-submit-new-custom-matchups'));
 			}
