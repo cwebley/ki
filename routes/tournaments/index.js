@@ -5,7 +5,8 @@ var express = require('express'),
 	um = require('../../modules/users/middleware'),
 	dto = require('../../modules/dto'),
 	auth = require('../../modules/auth'),
-	tournaments = require('../../modules/tournaments');
+	tournaments = require('../../modules/tournaments'),
+	history = require('../../modules/history');
 
 
 var app = express();
@@ -52,6 +53,15 @@ tourneyController.get = function(req, res){
 	})
 }
 
+tourneyController.undoLastGame = function(req, res){
+	var tourneySlug = req.params.tourneySlug;
+
+	history.undoLastGame(tourneySlug,function(err,dto){
+		console.log("CONTROLLER LEVEL: ", err, dto);
+		res.status(200).send(dto);
+	});
+}
+
 // todo: check that you're actually in the tournament;
 tourneyController.deleteTourney = function(req, res){
 	var tourneySlug = req.params.tourneySlug;
@@ -84,6 +94,11 @@ app.get('/',
 	tourneyController.getTourneyList
 );
 
+// TODO: put behind auth barrier
+// TODO: make this more restful
+app.get('/:tourneySlug/undo',
+ 	tourneyController.undoLastGame
+);
 /*
 *	Auth Barrier
 */

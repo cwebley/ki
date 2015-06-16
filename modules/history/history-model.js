@@ -1,4 +1,6 @@
-mysql = require('../persistence').mysql;
+var mysql = require('../persistence').mysql,
+	_ = require('lodash');
+	
 
 var HistoryModel = {};
 
@@ -45,6 +47,30 @@ HistoryModel.recalculateSeedsFromHistory = function(tid,cb) {
 			});
 		});
 	});
+};
+
+HistoryModel.getLastGameId = function(tid,cb) {
+	var sql = 'SELECT id FROM events WHERE description = ?',
+		params = ['game'];
+
+	mysql.query('rw', sql, params, 'modules/history/history-model/getLastGameId-events', function(err, eventResult){
+		if(err) return cb(err);
+		
+		var sql = 'SELECT id FROM history WHERE tournamentId = ? AND eventId = ? ORDER BY id DESC limit 2', // games have 2 entries in history
+			params = [tid,eventResult[0].id];
+
+		mysql.query('rw',sql,params,'modules/history/history-model/getLastGameId-history',function(err,historyRes){
+			if(err) return cb(err);
+			return cb(null, _.pluck(historyRes,'id'));
+		});
+	});
+};
+
+HistoryModel.getAllHistorySinceId = function(tid,since,cb) {
+	var sql = 'SELECT * FROM history WHERE tournamentId = ? AND id >= ? ORDER BY id DESC',
+		params = [tid,since];
+
+	mysql.query('rw', sql, params, 'modules/history/history-model/getAllHistorySinceId', cb);
 };
 
 module.exports = HistoryModel;
