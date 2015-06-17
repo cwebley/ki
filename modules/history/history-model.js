@@ -53,13 +53,11 @@ HistoryModel.getLastGameId = function(tid,cb) {
 	var sql = 'SELECT id FROM events WHERE description = ?',
 		params = ['game'];
 
-	mysql.query('rw', sql, params, 'modules/history/history-model/getLastGameId-events', function(err, eventResult){
-		if(err) return cb(err);
-		
-		var sql = 'SELECT id FROM history WHERE tournamentId = ? AND eventId = ? ORDER BY id DESC limit 2', // games have 2 entries in history
-			params = [tid,eventResult[0].id];
+	mysql.query('rw', sql, params, 'modules/history/history-model/getLastGmaeId-events', function(err, eventsRes){
 
-		mysql.query('rw',sql,params,'modules/history/history-model/getLastGameId-history',function(err,historyRes){
+		var sql = 'SELECT id FROM history WHERE tournamentId = ? AND eventId = ? ORDER BY id DESC limit 2', // games have 2 entries in history
+			params = [tid,eventsRes[0].id];
+		mysql.query('rw',sql,params,'modules/history/history-model/getLastGameId',function(err,historyRes){
 			if(err) return cb(err);
 			return cb(null, _.pluck(historyRes,'id'));
 		});
@@ -67,10 +65,24 @@ HistoryModel.getLastGameId = function(tid,cb) {
 };
 
 HistoryModel.getAllHistorySinceId = function(tid,since,cb) {
-	var sql = 'SELECT * FROM history WHERE tournamentId = ? AND id >= ? ORDER BY id DESC',
+	var sql = 'SELECT h.id, h.userId, h.characterId, h.eventId, e.description, h.value, h.delta'
+			+ ' FROM history h JOIN events e ON e.id = h.eventId'
+			+ ' WHERE h.tournamentId = ? AND h.id >= ? ORDER BY h.id DESC',
 		params = [tid,since];
 
 	mysql.query('rw', sql, params, 'modules/history/history-model/getAllHistorySinceId', cb);
+};
+
+
+HistoryModel.revertLastGame = function(tid,cb) {
+	console.log("REVERT GAME!")
+	var sql = 'SELECT * from games WHERE tournamentId = ? ORDER BY time DESC LIMIT 1',
+		params = [tid];
+
+	mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-select-games', function(err, gameRes){
+		if(err) return cb(err);
+		return cb(null, gameRes)
+	});
 };
 
 module.exports = HistoryModel;
