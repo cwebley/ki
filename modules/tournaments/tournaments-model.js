@@ -15,6 +15,7 @@ TournamentsModel.createTournament = function(options,cb) {
 	});
 };
 
+// TODO delete wins from users, characters, etc
 TournamentsModel.deleteTournament = function(tid,cb) {
 	var sql = 'DELETE FROM history where tournamentId = ?',
 		params = [tid];

@@ -73,6 +73,17 @@ HistoryModel.getAllHistorySinceId = function(tid,since,cb) {
 	mysql.query('rw', sql, params, 'modules/history/history-model/getAllHistorySinceId', cb);
 };
 
+//ids = array of history.ids
+HistoryModel.removeHistoryEvents = function(ids,cb) {
+	var sql = 'DELETE FROM history WHERE id in (?';
+
+	for(var i=0; i<ids.length-1; i++){ // length - 1 since 1 `?` already exists
+		sql += ',?'
+	}
+	sql += ')'
+
+	mysql.query('rw', sql, ids, 'modules/history/history-model/removeHistoryEvents', cb);
+};
 
 HistoryModel.revertLastGame = function(tid,cb) {
 	console.log("REVERT GAME!")
@@ -81,7 +92,41 @@ HistoryModel.revertLastGame = function(tid,cb) {
 
 	mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-select-games', function(err, gameRes){
 		if(err) return cb(err);
-		return cb(null, gameRes)
+		// return cb(null, gameRes);
+
+		// decr wins from tournamentUsers
+		var sql = 'UPDATE tournamentUsers SET wins = wins -1'
+				+ ', bestStreak = CASE WHEN bestStreak = curStreak THEN curStreak-1 END'
+				+ ', curStreak = curStreak -1'
+				+ ', score = score - ?'
+				+ ' WHERE tournamentId = ? AND userId = ?',
+			params = [tid, gameRes[0].winningPlayerId, gameRes[0].value];
+
+		mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-winnerdecr', function(err, decrRes){
+			console.log("TU DECR: ", err, decrRes)
+			if(err) return cb(err);
+
+		// // decr total wins from users table
+		// var sql = 'UPDATE users SET wins = wins -1 WHERE id = ?',
+		// 	paras = [gameRes[0].winningPlayerId];
+
+		// mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-users-winnerdecr', function(err, decrRes){
+		// 	if(err) return cb(err);
+
+		// 	// decr total losses from users table
+		// 	var sql = 'UPDATE users SET losses = losses -1 WHERE id = ?',
+		// 		paras = [gameRes[0].losingPlayerId];
+
+		// 	mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-users-loserdecr', function(err, decrRes){
+		// 		if(err) return cb(err);
+
+				// // decr total wins from users table
+				// var sql = 'UPDATE users SET wins = wins -1 WHERE id = ?',
+				// 	paras = [gameRes[0].winningPlayerId];
+
+				// mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-users-winnerdecr', function(err, decrRes){
+				// 	if(err) return cb(err);
+		});
 	});
 };
 
