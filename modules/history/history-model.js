@@ -85,47 +85,90 @@ HistoryModel.removeHistoryEvents = function(ids,cb) {
 	mysql.query('rw', sql, ids, 'modules/history/history-model/removeHistoryEvents', cb);
 };
 
+// TODO fish through history or games table to handle streaks (users and characters) are busted here. losers streaks especially :(
 HistoryModel.revertLastGame = function(tid,cb) {
-	console.log("REVERT GAME!")
 	var sql = 'SELECT * from games WHERE tournamentId = ? ORDER BY time DESC LIMIT 1',
 		params = [tid];
 
 	mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-select-games', function(err, gameRes){
+		console.log("GAME RES: ", gameRes)
 		if(err) return cb(err);
-		// return cb(null, gameRes);
+		if(!gameRes.length) return cb();
 
-		// decr wins from tournamentUsers
-		var sql = 'UPDATE tournamentUsers SET wins = wins -1'
-				+ ', bestStreak = CASE WHEN bestStreak = curStreak THEN curStreak-1 END'
-				+ ', curStreak = curStreak -1'
-				+ ', score = score - ?'
-				+ ' WHERE tournamentId = ? AND userId = ?',
-			params = [tid, gameRes[0].winningPlayerId, gameRes[0].value];
+		// decr wins from users, tournamentUsers, and handle streaks
+		var sql = 'UPDATE tournamentUsers tu, users u'
+				+ ' SET tu.wins = tu.wins -1'
+				+ ', u.tournamentWins = u.tournamentWins -1'
+				+ ', u.globalBestStreak = CASE WHEN u.globalBestStreak = tu.curStreak THEN tu.curStreak-1 END'
+				+ ', tu.bestStreak = CASE WHEN tu.bestStreak = tu.curStreak THEN tu.curStreak-1 END'
+				+ ', tu.bestStreak = CASE WHEN tu.bestStreak = tu.curStreak THEN tu.curStreak-1 END'
+				+ ', tu.curStreak = tu.curStreak -1'
+				+ ', tu.score = tu.score - ?'
+				+ ' WHERE tu.userId = u.id' // JOIN
+				+ ' AND tu.tournamentId = ? AND tu.userId = ?',
+			params = [gameRes[0].value, tid, gameRes[0].winningPlayerId];
+			
+			console.log("SOME SQ: ", sql, params);
 
-		mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-winnerdecr', function(err, decrRes){
-			console.log("TU DECR: ", err, decrRes)
+		mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-winnerdecr', function(err, winnerDecrRes){
+			console.log("TU WINNER DECR: ", err, winnerDecrRes)
 			if(err) return cb(err);
 
-		// // decr total wins from users table
-		// var sql = 'UPDATE users SET wins = wins -1 WHERE id = ?',
-		// 	paras = [gameRes[0].winningPlayerId];
+			// decr losses from users, tournamentUsers, and handle streaks
+			var sql = 'UPDATE tournamentUsers tu, users u'
+					+ ' SET tu.losses = tu.losses -1'
+					+ ', u.tournamentLosses = u.tournamentLosses -1'
+					+ ', tu.curStreak = 1' // we know it's at least 1. but need more operations to figure out exactly
+					+ ' WHERE tu.userId = u.id' // JOIN
+					+ ' AND tu.tournamentId = ? AND tu.userId = ?',
+				params = [tid, gameRes[0].losingPlayerId];
 
-		// mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-users-winnerdecr', function(err, decrRes){
-		// 	if(err) return cb(err);
+			mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-loserdecr', function(err, loserDecrRes){
+				console.log("TU LOSER DECR: ", err, loserDecrRes)
+				if(err) return cb(err);
 
-		// 	// decr total losses from users table
-		// 	var sql = 'UPDATE users SET losses = losses -1 WHERE id = ?',
-		// 		paras = [gameRes[0].losingPlayerId];
+				// winning character wins streak decr and value incr
+				var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
+						+ ' SET tc.wins = tc.wins -1'
+						+ ', cd.wins = cd.wins -1'
+						+ ', cd.globalBestStreak = CASE WHEN cd.globalBestStreak = tc.curStreak THEN tc.curStreak-1 END'
+						+ ', tc.bestStreak = CASE WHEN tc.bestStreak = tc.curStreak THEN tc.curStreak-1 END'
+						+ ', tc.curStreak = tc.curStreak -1'
+						+ ', tc.value = tc.value + 1' // winning char went down 1 for false submission
+						+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
+						+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
+					params = [tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
 
-		// 	mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-users-loserdecr', function(err, decrRes){
-		// 		if(err) return cb(err);
+				mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-winnerDecr', function(err, winningCharDecrRes){
+					console.log("TC WINNER DECR: ", err, winningCharDecrRes)
+					if(err) return cb(err);
 
-				// // decr total wins from users table
-				// var sql = 'UPDATE users SET wins = wins -1 WHERE id = ?',
-				// 	paras = [gameRes[0].winningPlayerId];
+					// losing character losses decr streak incr and value incr
+					var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
+							+ ' SET tc.losses = tc.losses -1'
+							+ ', cd.losses = cd.losses -1'
+							+ ', tc.curStreak = 1' // we know it's at least 1
+							+ ', tc.value = tc.value - 1' // losing char went up 1 for false submission
+							+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
+							+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
+						params = [tid, gameRes[0].losingPlayerId, gameRes[0].losingCharacterId];
 
-				// mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-users-winnerdecr', function(err, decrRes){
-				// 	if(err) return cb(err);
+					mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-loserDecr', function(err, winningCharDecrRes){
+						console.log("TC LOSER DECR: ", err, winningCharDecrRes)
+						if(err) return cb(err);
+
+						// delete from games table
+						var sql = 'DELETE FROM games WHERE id = ?',
+							params = [gameRes[0].id];
+
+						mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-games-deleteGame', function(err, deleteGameRes){
+							console.log("DELETE GAME: ", err, deleteGameRes)
+							if(err) return cb(err);
+							return cb(null,deleteGameRes);
+						});
+					});
+				});
+			});
 		});
 	});
 };
