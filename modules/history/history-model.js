@@ -85,9 +85,104 @@ HistoryModel.removeHistoryEvents = function(ids,cb) {
 	mysql.query('rw', sql, ids, 'modules/history/history-model/removeHistoryEvents', cb);
 };
 
+// find previous streaks for both users, the winning-character and the losing-character
+HistoryModel.getPreviousStreaks = function(tid,cb) {
+	var sql = 'SELECT * from games WHERE tournamentId = ? ORDER BY id DESC',
+		params = [tid];
+
+	mysql.query('rw', sql, params, 'modules/history/history-model/getPreviousStreaks-games', function(err,allGames){
+		console.log("ALL GAMES RES: ", err, allGames)
+		if(err) return cb(err);
+		if(!allGames.length) return cb(new Error('getPreviousStreaks-no-games-found-for-tid-'+tid));
+
+		var streaks = {
+			winner: 0,
+			charWinner: 0,
+			loser: 0,
+			charLoser: 0
+		}
+
+		if(allGames.length < 2){
+			// we're undoing the results from the first game. no previous streaks.
+			return cb(null,streaks);
+		}
+
+		var winningPlayerId = allGames[0].winningPlayerId,
+			losingPlayerId = allGames[0].losingPlayerId,
+			winningCharId = allGames[0].winningCharacterId,
+			losingCharId = allGames[0].losingCharacterId,
+			prevWinnerId = allGames[1].winningPlayerId,
+			prevLoserId = allGames[1].losingPlayerId;
+
+		// update user streaks wrt last game
+		if(winningPlayerId === prevWinnerId){
+			streaks.winner++;
+			streaks.loser--;
+		}
+		if(winningPlayerId === prevLoserId){
+			streaks.winner--;
+			streaks.loser++;
+		}
+
+		// calculate the depth of the previous streaks for the winning character
+		for(var i=1; i<allGames.length; i++){
+			if(allGames[i].winningCharacterId === winningCharId && allGames[i].winningPlayerId === winningPlayerId){
+				if(streaks.charWinner < 0){
+					// he is on a losing streak. this is the start of it.
+					break;
+				}
+				streaks.charWinner++;
+			}
+			if(allGames[i].losingCharacterId === winningCharId && allGames[i].losingPlayerId === losingPlayerId){
+				if(streaks.charWinner > 0){
+					// he is on a winning streak. this was the start of it.
+					break;
+				}
+				streaks.charWinner--;
+			}
+		}
+
+		// calculate the depth of the previous streaks for the losing character
+		for(var i=1; i<allGames.length; i++){
+			if(allGames[i].winningCharacterId === losingCharId && allGames[i].winningPlayerId === losingPlayerId){
+				if(streaks.charLoser < 0){
+					// he is on a losing streak. this is the start of it.
+					break;
+				}
+				streaks.charLoser++;
+			}
+			if(allGames[i].losingCharacterId === losingCharId && allGames[i].losingPlayerId === losingPlayerId){
+				if(streaks.charLoser > 0){
+					// he is on a winning streak. this was the start of it.
+					break;
+				}
+				streaks.charLoser--;
+			}
+		}
+
+
+		if(allGames.length === 2){
+			//no need to dig deeper
+			return cb(null,streaks)
+		}
+
+		// starting at 2 games back, calculate the depth of the previous streaks for users
+		for(var i=2; i<allGames.length; i++){
+			if(allGames[i].winningPlayerId !== prevWinnerId){
+				break;
+			}
+			streaks.winner++;
+			streaks.loser--;
+		}
+
+		return cb(null,streaks);
+	});
+};
+
 // TODO fish through history or games table to handle streaks (users and characters) are busted here. losers streaks especially :(
 HistoryModel.revertLastGame = function(tid,cb) {
-	var sql = 'SELECT * from games WHERE tournamentId = ? ORDER BY time DESC LIMIT 1',
+
+	var sql = 'SELECT * from games WHERE tournamentId = ? ORDER BY id DESC LIMIT 1',
 		params = [tid];
 
 	mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-select-games', function(err, gameRes){
@@ -95,76 +190,79 @@ HistoryModel.revertLastGame = function(tid,cb) {
 		if(err) return cb(err);
 		if(!gameRes.length) return cb();
 
-		// decr wins from users, tournamentUsers, and handle streaks
-		var sql = 'UPDATE tournamentUsers tu, users u'
-				+ ' SET tu.wins = tu.wins -1'
-				+ ', u.tournamentWins = u.tournamentWins -1'
-				+ ', u.globalBestStreak = CASE WHEN u.globalBestStreak = tu.curStreak THEN tu.curStreak-1 END'
-				+ ', tu.bestStreak = CASE WHEN tu.bestStreak = tu.curStreak THEN tu.curStreak-1 END'
-				+ ', tu.bestStreak = CASE WHEN tu.bestStreak = tu.curStreak THEN tu.curStreak-1 END'
-				+ ', tu.curStreak = tu.curStreak -1'
-				+ ', tu.score = tu.score - ?'
-				+ ' WHERE tu.userId = u.id' // JOIN
-				+ ' AND tu.tournamentId = ? AND tu.userId = ?',
-			params = [gameRes[0].value, tid, gameRes[0].winningPlayerId];
-			
-			console.log("SOME SQ: ", sql, params);
+		HistoryModel.getPreviousStreaks(tid,function(err,streakResults){
+			if(err)return cb(err);
+			console.log("STREAK RESULTS: ", streakResults)
 
-		mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-winnerdecr', function(err, winnerDecrRes){
-			console.log("TU WINNER DECR: ", err, winnerDecrRes)
-			if(err) return cb(err);
 
-			// decr losses from users, tournamentUsers, and handle streaks
+			// decr wins from users, tournamentUsers, and handle streaks
 			var sql = 'UPDATE tournamentUsers tu, users u'
-					+ ' SET tu.losses = tu.losses -1'
-					+ ', u.tournamentLosses = u.tournamentLosses -1'
-					+ ', tu.curStreak = 1' // we know it's at least 1. but need more operations to figure out exactly
+					+ ' SET tu.wins = tu.wins -1'
+					+ ', u.tournamentWins = u.tournamentWins -1'
+					+ ', u.globalBestStreak = CASE WHEN u.globalBestStreak = tu.curStreak THEN tu.curStreak-1 END'
+					+ ', tu.bestStreak = CASE WHEN tu.bestStreak = tu.curStreak THEN tu.curStreak-1 END'
+					+ ', tu.curStreak = ?'
+					+ ', tu.score = tu.score - ?'
 					+ ' WHERE tu.userId = u.id' // JOIN
 					+ ' AND tu.tournamentId = ? AND tu.userId = ?',
-				params = [tid, gameRes[0].losingPlayerId];
+				params = [streakResults.winner, gameRes[0].value, tid, gameRes[0].winningPlayerId];
 
-			mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-loserdecr', function(err, loserDecrRes){
-				console.log("TU LOSER DECR: ", err, loserDecrRes)
+			mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-winnerdecr', function(err, winnerDecrRes){
+				console.log("TU WINNER DECR: ", err, winnerDecrRes)
 				if(err) return cb(err);
 
-				// winning character wins streak decr and value incr
-				var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
-						+ ' SET tc.wins = tc.wins -1'
-						+ ', cd.wins = cd.wins -1'
-						+ ', cd.globalBestStreak = CASE WHEN cd.globalBestStreak = tc.curStreak THEN tc.curStreak-1 END'
-						+ ', tc.bestStreak = CASE WHEN tc.bestStreak = tc.curStreak THEN tc.curStreak-1 END'
-						+ ', tc.curStreak = tc.curStreak -1'
-						+ ', tc.value = tc.value + 1' // winning char went down 1 for false submission
-						+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
-						+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
-					params = [tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
+				// decr losses from users, tournamentUsers, and handle streaks
+				var sql = 'UPDATE tournamentUsers tu, users u'
+						+ ' SET tu.losses = tu.losses -1'
+						+ ', u.tournamentLosses = u.tournamentLosses -1'
+						+ ', tu.curStreak = ?'
+						+ ' WHERE tu.userId = u.id' // JOIN
+						+ ' AND tu.tournamentId = ? AND tu.userId = ?',
+					params = [streakResults.loser, tid, gameRes[0].losingPlayerId];
 
-				mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-winnerDecr', function(err, winningCharDecrRes){
-					console.log("TC WINNER DECR: ", err, winningCharDecrRes)
+				mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-loserdecr', function(err, loserDecrRes){
+					console.log("TU LOSER DECR: ", err, loserDecrRes)
 					if(err) return cb(err);
 
-					// losing character losses decr streak incr and value incr
+					// winning character wins streak decr and value incr
 					var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
-							+ ' SET tc.losses = tc.losses -1'
-							+ ', cd.losses = cd.losses -1'
-							+ ', tc.curStreak = 1' // we know it's at least 1
-							+ ', tc.value = tc.value - 1' // losing char went up 1 for false submission
+							+ ' SET tc.wins = tc.wins -1'
+							+ ', cd.wins = cd.wins -1'
+							+ ', cd.globalBestStreak = CASE WHEN cd.globalBestStreak = tc.curStreak THEN tc.curStreak-1 END'
+							+ ', tc.bestStreak = CASE WHEN tc.bestStreak = tc.curStreak THEN tc.curStreak-1 END'
+							+ ', tc.curStreak = ?'
+							+ ', tc.value = tc.value + 1' // winning char went down 1 for false submission
 							+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
 							+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
-						params = [tid, gameRes[0].losingPlayerId, gameRes[0].losingCharacterId];
+						params = [streakResults.charWinner, tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
 
-					mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-loserDecr', function(err, winningCharDecrRes){
-						console.log("TC LOSER DECR: ", err, winningCharDecrRes)
+					mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-winnerDecr', function(err, winningCharDecrRes){
+						console.log("TC WINNER DECR: ", err, winningCharDecrRes)
 						if(err) return cb(err);
 
-						// delete from games table
-						var sql = 'DELETE FROM games WHERE id = ?',
-							params = [gameRes[0].id];
+						// losing character losses decr streak incr and value incr
+						var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
+								+ ' SET tc.losses = tc.losses -1'
+								+ ', cd.losses = cd.losses -1'
+								+ ', tc.curStreak = ?'
+								+ ', tc.value = tc.value - 1' // losing char went up 1 for false submission
+								+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
+								+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
+							params = [streakResults.charLoser, tid, gameRes[0].losingPlayerId, gameRes[0].losingCharacterId];
 
-						mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-games-deleteGame', function(err, deleteGameRes){
-							console.log("DELETE GAME: ", err, deleteGameRes)
+						mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-loserDecr', function(err, winningCharDecrRes){
+							console.log("TC LOSER DECR: ", err, winningCharDecrRes)
 							if(err) return cb(err);
-							return cb(null,deleteGameRes);
+
+							// delete from games table
+							var sql = 'DELETE FROM games WHERE id = ?',
+								params = [gameRes[0].id];
+
+							mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-games-deleteGame', function(err, deleteGameRes){
+								console.log("DELETE GAME: ", err, deleteGameRes)
+								if(err) return cb(err);
+								return cb(null,deleteGameRes);
+							});
 						});
 					});
 				});
