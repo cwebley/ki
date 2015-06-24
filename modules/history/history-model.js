@@ -53,7 +53,7 @@ HistoryModel.getLastGameId = function(tid,cb) {
 	var sql = 'SELECT id FROM events WHERE description = ?',
 		params = ['game'];
 
-	mysql.query('rw', sql, params, 'modules/history/history-model/getLastGmaeId-events', function(err, eventsRes){
+	mysql.query('rw', sql, params, 'modules/history/history-model/getLastGameId-events', function(err, eventsRes){
 
 		var sql = 'SELECT id FROM history WHERE tournamentId = ? AND eventId = ? ORDER BY id DESC limit 2', // games have 2 entries in history
 			params = [tid,eventsRes[0].id];
@@ -159,7 +159,6 @@ HistoryModel.getPreviousStreaks = function(tid,cb) {
 			}
 		}
 
-
 		if(allGames.length === 2){
 			//no need to dig deeper
 			return cb(null,streaks)
@@ -173,10 +172,40 @@ HistoryModel.getPreviousStreaks = function(tid,cb) {
 			streaks.winner++;
 			streaks.loser--;
 		}
-
 		return cb(null,streaks);
 	});
 };
+
+// // given a tournamentId and a historyId, find and revert all relevant non-game related events that happened afterwards
+// HistoryModel.undoFriendlyFire = function(tid,hid,uid,cb){
+// 	var sql = 'UPDATE tournamentCharacters SET value = value -1'
+// 			+ ' WHERE tournamentId = ? AND userId = ?',
+// 		params = [tid,uid];
+// 	mysql.query('rw', sql, params, 'modules/history/history-model/undoFriendlyFire-tournamentCharacters', function(err, gameRes){
+
+// }
+
+HistoryModel.undoFire = function(tid,uid,cid,cb){
+	var sql = 'UPDATE tournamentCharacters SET value = value -1'
+			+ ' WHERE tournamentId = ? AND userId = ? AND characterId != ?',
+		params = [tid,uid,cid];
+	mysql.query('rw', sql, params, 'modules/history/history-model/undoFire-tournamentCharacters', function(err, friendlyRes){
+		if(err) return cb(err);
+		
+		return cb(null, friendlyRes);
+	});
+}
+
+HistoryModel.undoIce = function(tid,uid,cid,cb){
+	var sql = 'UPDATE tournamentCharacters SET value = value +1'
+			+ ' WHERE tournamentId = ? AND userId = ? AND characterId != ?',
+		params = [tid,uid,cid];
+	mysql.query('rw', sql, params, 'modules/history/history-model/undoIce-tournamentCharacters', function(err, friendlyRes){
+		if(err) return cb(err);
+		
+		return cb(null, friendlyRes);
+	});
+}
 
 // TODO fish through history or games table to handle streaks (users and characters) are busted here. losers streaks especially :(
 HistoryModel.revertLastGame = function(tid,cb) {
@@ -253,14 +282,24 @@ HistoryModel.revertLastGame = function(tid,cb) {
 							console.log("TC LOSER DECR: ", err, winningCharDecrRes)
 							if(err) return cb(err);
 
-							// delete from games table
-							var sql = 'DELETE FROM games WHERE id = ?',
-								params = [gameRes[0].id];
+							// decr firewins for each of the winning player's characters that were on fire
+							var sql = 'UPDATE tournamentCharacters SET fireWins = fireWins -1'
+									+ ' WHERE tournamentId = ? AND userId = ? AND curStreak >= 3'
+								params = [tid, gameRes[0].winningPlayerId];
 
-							mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-games-deleteGame', function(err, deleteGameRes){
-								console.log("DELETE GAME: ", err, deleteGameRes)
+							mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-decrFireWins', function(err, decrFireWins){
+								console.log("DECR FIREWINS: ", err, decrFireWins)
 								if(err) return cb(err);
-								return cb(null,deleteGameRes);
+
+								// delete from games table
+								var sql = 'DELETE FROM games WHERE id = ?',
+									params = [gameRes[0].id];
+
+								mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-games-deleteGame', function(err, deleteGameRes){
+									console.log("DELETE GAME: ", err, deleteGameRes)
+									if(err) return cb(err);
+									return cb(null,deleteGameRes);
+								});
 							});
 						});
 					});
@@ -269,5 +308,16 @@ HistoryModel.revertLastGame = function(tid,cb) {
 		});
 	});
 };
+
+HistoryModel.deleteHistoryFrom = function(tid,hid,cb){
+	var sql = 'DELETE FROM history WHERE tournamentId = ? AND id >= ?',
+		params = [tid,hid];
+	mysql.query('rw', sql, params, 'modules/history/history-model/deleteHistoryFrom', function(err, deleteFromHistoryRes){
+		console.log("DELETE FROM HISTORY FROM ", tid, hid)
+		if(err) return cb(err);
+		
+		return cb(null, deleteFromHistoryRes);
+	});
+}
 
 module.exports = HistoryModel;

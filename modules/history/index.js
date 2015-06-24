@@ -39,19 +39,39 @@ HistoryInterface.undoLastGame = function(slug, cb) {
 				historyData.forEach(function(item){
 					switch (item.description) {
 						case 'game':
+							console.log("THE GAME EVENT")
 							reverseHistoryOps.push(
 								// gets its info from the games table since it needs to remove that entry anyway
 								function(done){ historyMdl.revertLastGame(tid,done) }
 							);
 							break;
+						case 'fire':
+							console.log("FIRE HISTORY EVENT")
+							reverseHistoryOps.push(
+								function(done){ historyMdl.undoFire(tid,item.userId,item.characterId,done) }
+							);
+							break;
+						case 'ice':
+							console.log("ICE HISTORY EVENT")
+							reverseHistoryOps.push(
+								function(done){ historyMdl.undoIce(tid,item.userId,item.characterId,done) }
+							);
+							break;
+
 					}
 				}.bind(this));
 
 				async.series(reverseHistoryOps,function(err,results){
 					console.log("ASYNC RES: ", err, results)
-					if(err) return cb(err);
-					return cb(null, results);
-				});
+
+					// TODO delete the history before exiting
+
+					historyMdl.deleteHistoryFrom(tid, lastGameIds[1], function(err,deleteHistoryFromRes){
+						console.log("DELETE FROM HISTORY RES: ", err, deleteHistoryFromRes)
+						if(err) return cb(err);
+						return cb(null, results);
+					});
+				}.bind(this));
 			});
 		});
 	});
