@@ -284,8 +284,8 @@ HistoryModel.revertLastGame = function(tid,cb) {
 
 							// decr firewins for each of the winning player's characters that were on fire
 							var sql = 'UPDATE tournamentCharacters SET fireWins = fireWins -1'
-									+ ' WHERE tournamentId = ? AND userId = ? AND curStreak >= 3'
-								params = [tid, gameRes[0].winningPlayerId];
+									+ ' WHERE tournamentId = ? AND userId = ? AND curStreak >= 3 AND characterId != ?'
+								params = [tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
 
 							mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-decrFireWins', function(err, decrFireWins){
 								console.log("DECR FIREWINS: ", err, decrFireWins)
