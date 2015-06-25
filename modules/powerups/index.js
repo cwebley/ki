@@ -4,6 +4,7 @@ var _ = require('lodash'),
 	upcoming = require('../upcoming'),
 	powerSvc = require('./powerups-service'),
 	powerMdl = require('./powerups-model'),
+	userMdl = require('../users/users-model'),
 	tourneyMdl = require('../tournaments/tournaments-model');
 
 var PowerInterface = {};
@@ -119,46 +120,21 @@ PowerInterface.oddsMaker = function(opts,cb) {
 	tourneyMdl.getTourneyId(opts.tourneySlug,function(err, tid){
 		if(err) return cb(err);
 		if(!tid) return cb();
+
 		// verify character
+		userMdl.getCharacterId(opts.character,function(err,cid){
+			if(err) return cb(err);
+			if(!cid) return cb();
 
-	var next = upcoming.getNextArray(tid,[{id:opts.userId}],constants._ODDS_MAKER_LENGTH)[0];
-	var resolved = [];
-
-	var totalOld = 0;
-	var totalNew = 0;
-
-	for(var i=0; i<100000; i++){
-		
-		resolved = next.map(function(c){
-			var equalsZeroMaybe = Math.floor(Math.random()*(constants._ODDS_MAKER_LENGTH/constants._ODDS_MAKER_VALUE))
-
-			var fillerChar = (equalsZeroMaybe === 0) ? opts.character : c
-			return fillerChar
-		}.bind(this));
-
-		var countOld = 0;
-		var countNew = 0;
-
-		next.forEach(function(c){
-			if(c===opts.character){
-				countOld++
-			}
-		}.bind(this))
-
-		resolved.forEach(function(c){
-			if(c===opts.character){
-				countNew++
-			}
-		}.bind(this))
-
-		console.log("OLD: ", countOld, " NEW: ", countNew)
-		totalOld += countOld;
-		totalNew += countNew;
-	}
-
-	console.log("DONE!: ", totalOld, totalNew, totalNew/100000)
-
-		return cb(null,resolved);
+			var next = upcoming.getNextArray(tid,[{id:opts.userId}],constants._ODDS_MAKER_LENGTH)[0];
+			var resolved = next.map(function(c){
+				var equalsZeroMaybe = Math.floor(Math.random()*(constants._ODDS_MAKER_LENGTH/constants._ODDS_MAKER_VALUE))
+				return (equalsZeroMaybe === 0) ? opts.character : c
+			}.bind(this));
+			
+			upcoming.submitCustom(tid,[opts.userId],[resolved]);
+			return cb(null,resolved);
+		});
 	});
 };
 

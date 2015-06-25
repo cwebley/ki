@@ -40,29 +40,12 @@ UpcomingInterface.fill = function(tourneyId){
 }
 
 /*num = int number of matches you want
-returns object: {
-	"g": [orchid,fulgore],
-	"bj": [aria, cinder]
-}*/
-// UpcomingInterface.getNext = function(tourneyId,userArr,num){
-// 	var nextUp = {};
-// 	for(var i=0;i<userArr.length;i++){
-// 		nextUp[userArr[i].name] = [];
-// 		for(var j=0;j<num;j++){
-// 			nextUp[userArr[i].name].push(UpcomingInterface.pending[tourneyId][userArr[i].id][j])
-// 		}
-// 	}
-// 	return nextUp
-// }
-
-/*num = int number of matches you want
 	userArr: [ { id: 2, name: 'bj' }, { id: 1, name: 'g' } ]
 	returns nested arrays, relies on caller to know the order
 	[[orchid,fulgore],[aria,cinder]]
 
 */
 UpcomingInterface.getNextArray = function(tourneyId,userArr,num){
-	console.log("TID: ", tourneyId, " UARR: ", userArr, " NUM: ", num)
 	var nextUp = [];
 	for(var i=0;i<userArr.length;i++){
 		nextUp.push(UpcomingInterface.pending[tourneyId][userArr[i].id].slice(0,num))
