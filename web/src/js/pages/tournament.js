@@ -15,7 +15,8 @@ var TournamentPage = React.createClass({
 		return {
 			me: TournamentStore.getMe(),
 			them: TournamentStore.getThem(),
-			undoStatus: TournamentStore.undoStatus()
+			undoStatus: TournamentStore.undoStatus(),
+			supreme: false
 		};
 	},
 	componentWillMount:function(){
@@ -35,7 +36,8 @@ var TournamentPage = React.createClass({
 		this.setState({
 			me: TournamentStore.getMe(),
 			them: TournamentStore.getThem(),
-			undoStatus: TournamentStore.undoStatus()
+			undoStatus: TournamentStore.undoStatus(),
+			supreme: false
 		});
 	},
 	renderCharacters: function(user){
@@ -95,14 +97,16 @@ var TournamentPage = React.createClass({
 			winningPlayer: this.state.me.name,
 			winningCharacter: this.state.me.next[0],
 			losingPlayer: this.state.them.name,
-			losingCharacter: this.state.them.next[0]
+			losingCharacter: this.state.them.next[0],
+			supreme: this.state.supreme
 		};
 		var TheyWin = {
 			slug: this.getParams().titleSlug,
 			losingPlayer: this.state.me.name,
 			losingCharacter: this.state.me.next[0],
 			winningPlayer: this.state.them.name,
-			winningCharacter: this.state.them.next[0]
+			winningCharacter: this.state.them.next[0],
+			supreme: this.state.supreme
 		};
 
 		return(
@@ -114,6 +118,7 @@ var TournamentPage = React.createClass({
 				<div className="matchup-right">
 					<MatchupItem data={TheyWin} display={this.state.them.next[0]} />
 				</div>
+				<input type="checkbox" value="" ref="supreme" onClick={this.toggleSupreme}>Supreme Victory</input>
 				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
 					<button className="btn btn-primary btn-sm btn-block">Inspect</button>
 				</Link>
@@ -141,6 +146,12 @@ var TournamentPage = React.createClass({
 			return;
 		}
 		serverActions.undoLastGame(this.getParams().titleSlug);
+	},
+	toggleSupreme: function(){
+		var supreme = !this.state.supreme;
+		this.setState({
+			supreme: supreme
+		});
 	},
 	render: function(){
 		var me = this.renderUser(this.state.me);
