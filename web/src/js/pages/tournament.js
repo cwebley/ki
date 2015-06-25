@@ -14,7 +14,8 @@ var TournamentPage = React.createClass({
 	getInitialState: function(){
 		return {
 			me: TournamentStore.getMe(),
-			them: TournamentStore.getThem()
+			them: TournamentStore.getThem(),
+			undoStatus: TournamentStore.undoStatus()
 		};
 	},
 	componentWillMount:function(){
@@ -33,7 +34,8 @@ var TournamentPage = React.createClass({
 	_onChange: function(){
 		this.setState({
 			me: TournamentStore.getMe(),
-			them: TournamentStore.getThem()
+			them: TournamentStore.getThem(),
+			undoStatus: TournamentStore.undoStatus()
 		});
 	},
 	renderCharacters: function(user){
@@ -145,12 +147,22 @@ var TournamentPage = React.createClass({
 		var them = this.renderUser(this.state.them);
 		var middle = (!this.state.them.seeded) ? this.renderSeedButton() : this.renderMatchup();
 
+		var undoClasses = ['btn','btn-xs','undo-last'];
+		var undoColor = 'btn-default';
+		if(this.state.undoStatus.attempt){
+			undoColor = ('btn-danger');
+		}
+		if(this.state.undoStatus.attempt && this.state.undoStatus.success){
+			undoColor = ('btn-success');
+		}
+		undoClasses.push(undoColor);
+		
 		return (
 			<div className="page-wrap">
 				<div className="column-left">
 					{me}
 					<footer>
-						<a className="undo-last" onClick={this.undoLastGame}>Undo Last Game</a>
+						<button className={undoClasses.join(' ')} onClick={this.undoLastGame}>Undo Last Game</button>
 					</footer>
 				</div>
 				<div className="column-center">

@@ -14,12 +14,15 @@ var _inspectMe = [];
 var _inspectThem = [];
 var _attemptedPostInspect;
 var _succeededPostInspect;
+var _attemptedUndo;
+var _succeededUndo;
 
 function _tourneyDataReceived(data){
 	console.log("TDATA: ", data);
 
 	_me = data.users[0];
 	_them = data.users[1];
+	_undoAttempt = false;
 }
 function _inspectDataReceived(data){
 	_inspectMe = data.me;
@@ -29,6 +32,7 @@ function _inspectDataReceived(data){
 function _submitMatchupsSuccess(){
 	_attemptedPostInspect = true;
 	_submitMatchupsSuccess = true;
+	_undoAttempt = false;
 }
 function _submitMatchupFailure(){
 	_attemptedPostInspect = true;
@@ -37,6 +41,14 @@ function _submitMatchupFailure(){
 function _clearInspectData(){
 	_inspectMe = [];
 	_inspectThem = [];
+}
+function _undoSuccess(){
+	_attemptedUndo = true;
+	_succeededUndo = true;
+}
+function _undoFailure(){
+	_succeededUndo = false;
+	_attemptedUndo = true;
 }
 
 var TournamentStore = assign({}, EventEmitter.prototype, {
@@ -72,6 +84,12 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 		return {
 			attempt: _attemptedPostInspect,
 			success: _succeededPostInspect
+		};
+	},
+	undoStatus: function(){
+		return {
+			attempt: _attemptedUndo,
+			success: _succeededUndo
 		};
 	}
 });
@@ -109,6 +127,10 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			break;
 		case ActionTypes.POST_INSPECT:
 			(payload.action.code === 201) ? _submitMatchupsSuccess() : _submitMatchupFailure();
+			break;
+		case ActionTypes.UNDO_LAST:
+			(payload.action.code === 201) ? _undoSuccess() : _undoFailure();
+			TournamentStore.emitChange();
 			break;
 		default:
 		  // do nothing
