@@ -176,23 +176,14 @@ HistoryModel.getPreviousStreaks = function(tid,cb) {
 	});
 };
 
-// // given a tournamentId and a historyId, find and revert all relevant non-game related events that happened afterwards
-// HistoryModel.undoFriendlyFire = function(tid,hid,uid,cb){
-// 	var sql = 'UPDATE tournamentCharacters SET value = value -1'
-// 			+ ' WHERE tournamentId = ? AND userId = ?',
-// 		params = [tid,uid];
-// 	mysql.query('rw', sql, params, 'modules/history/history-model/undoFriendlyFire-tournamentCharacters', function(err, gameRes){
-
-// }
-
 HistoryModel.undoFire = function(tid,uid,cid,cb){
 	var sql = 'UPDATE tournamentCharacters SET value = value -1'
-			+ ' WHERE tournamentId = ? AND userId = ? AND characterId != ?',
+			+ ' WHERE tournamentId = ? AND userId = ? AND characterId != ? AND value > 1',
 		params = [tid,uid,cid];
-	mysql.query('rw', sql, params, 'modules/history/history-model/undoFire-tournamentCharacters', function(err, friendlyRes){
+	mysql.query('rw', sql, params, 'modules/history/history-model/undoFire-tournamentCharacters', function(err, undoFire){
 		if(err) return cb(err);
 		
-		return cb(null, friendlyRes);
+		return cb(null, undoFire);
 	});
 }
 
@@ -200,10 +191,10 @@ HistoryModel.undoIce = function(tid,uid,cid,cb){
 	var sql = 'UPDATE tournamentCharacters SET value = value +1'
 			+ ' WHERE tournamentId = ? AND userId = ? AND characterId != ?',
 		params = [tid,uid,cid];
-	mysql.query('rw', sql, params, 'modules/history/history-model/undoIce-tournamentCharacters', function(err, friendlyRes){
+	mysql.query('rw', sql, params, 'modules/history/history-model/undoIce-tournamentCharacters', function(err, undoIce){
 		if(err) return cb(err);
 		
-		return cb(null, friendlyRes);
+		return cb(null, undoIce);
 	});
 }
 
@@ -259,10 +250,10 @@ HistoryModel.revertLastGame = function(tid,cb) {
 							+ ', cd.globalBestStreak = CASE WHEN cd.globalBestStreak = tc.curStreak THEN tc.curStreak-1 END'
 							+ ', tc.bestStreak = CASE WHEN tc.bestStreak = tc.curStreak THEN tc.curStreak-1 END'
 							+ ', tc.curStreak = ?'
-							+ ', tc.value = tc.value + 1' // winning char went down 1 for false submission
+							+ ', tc.value = ?' // we happen to have this value handy
 							+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
 							+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
-						params = [streakResults.charWinner, tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
+						params = [streakResults.charWinner, gameRes[0].value, tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
 
 					mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-winnerDecr', function(err, winningCharDecrRes){
 						console.log("TC WINNER DECR: ", err, winningCharDecrRes)
@@ -278,8 +269,8 @@ HistoryModel.revertLastGame = function(tid,cb) {
 								+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
 							params = [streakResults.charLoser, tid, gameRes[0].losingPlayerId, gameRes[0].losingCharacterId];
 
-						mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-loserDecr', function(err, winningCharDecrRes){
-							console.log("TC LOSER DECR: ", err, winningCharDecrRes)
+						mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-loserDecr', function(err, losingCharDecrRes){
+							console.log("TC LOSER DECR: ", err, losingCharDecrRes)
 							if(err) return cb(err);
 
 							// decr firewins for each of the winning player's characters that were on fire

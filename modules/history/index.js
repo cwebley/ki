@@ -1,5 +1,6 @@
 var	historyMdl = require('./history-model'),
 	tourneyMdl = require('../tournaments/tournaments-model'),
+	upcoming = require('../upcoming'),
 	async = require('async'),
 	_ = require("lodash");
 
@@ -64,12 +65,14 @@ HistoryInterface.undoLastGame = function(slug, cb) {
 				async.series(reverseHistoryOps,function(err,results){
 					console.log("ASYNC RES: ", err, results)
 
-					// TODO delete the history before exiting
+					// TODO delete the history exiting
 
 					historyMdl.deleteHistoryFrom(tid, lastGameIds[1], function(err,deleteHistoryFromRes){
 						console.log("DELETE FROM HISTORY RES: ", err, deleteHistoryFromRes)
 						if(err) return cb(err);
-						return cb(null, results);
+
+						upcoming.rematch(tid);
+						return cb(null, deleteHistoryFromRes);
 					});
 				}.bind(this));
 			});

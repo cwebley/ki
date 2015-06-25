@@ -3,6 +3,7 @@ var _ = require('lodash'),
 
 var UpcomingInterface = {};
 UpcomingInterface.pending = {};
+UpcomingInterface.previous = {}; // previous match saved for each tournament for each player.
 
 /*
 	tourneyId --> userId --> upcomingCharacters
@@ -68,10 +69,29 @@ UpcomingInterface.getNextArray = function(tourneyId,userArr,num){
 	return nextUp
 }
 
-// probably only works with 2 players.
 UpcomingInterface.removeFirst = function(tourneyId){
 	for(var n in UpcomingInterface.pending[tourneyId]){
-		UpcomingInterface.pending[tourneyId][n].shift()
+		if(!UpcomingInterface.previous[tourneyId]){
+			UpcomingInterface.previous[tourneyId] = {};
+		}
+		if(!UpcomingInterface.previous[tourneyId][n]){
+			UpcomingInterface.previous[tourneyId][n] = [];
+		}
+		// remove first item, push onto previous
+		UpcomingInterface.previous[tourneyId][n].push(UpcomingInterface.pending[tourneyId][n].shift());
+	}
+}
+
+UpcomingInterface.rematch = function(tourneyId){
+	if(!UpcomingInterface.previous || !UpcomingInterface.previous[tourneyId]){
+		return;
+	}
+	for(var n in UpcomingInterface.previous[tourneyId]){
+		if(!UpcomingInterface.previous[tourneyId][n].length){
+			return;
+		}
+		// pop off most recent game, unshift onto front of pending matches
+		UpcomingInterface.pending[tourneyId][n].unshift(UpcomingInterface.previous[tourneyId][n].pop());
 	}
 }
 
