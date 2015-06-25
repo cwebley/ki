@@ -33,6 +33,9 @@ var TournamentPage = React.createClass({
 		serverActions.getTournamentData(this.getParams().titleSlug);
 	},
 	_onChange: function(){
+		if(React.findDOMNode(this.refs.supreme)){
+			React.findDOMNode(this.refs.supreme).checked = false;
+		}
 		this.setState({
 			me: TournamentStore.getMe(),
 			them: TournamentStore.getThem(),
@@ -120,7 +123,7 @@ var TournamentPage = React.createClass({
 				</div>
 				<div className="checkbox">
 					<label>
-						<input type="checkbox" value=""  onClick={this.toggleSupreme}/>
+						<input type="checkbox" value="" ref="supreme" onClick={this.toggleSupreme}/>
 						Supreme Victory
 					</label>
 				</div>
@@ -154,7 +157,6 @@ var TournamentPage = React.createClass({
 	},
 	toggleSupreme: function(){
 		var supreme = !this.state.supreme;
-		console.log("TOG SUP: ", supreme)
 		this.setState({
 			supreme: supreme
 		});
