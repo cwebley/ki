@@ -24,7 +24,7 @@ var Api = {
 				//handle error
 				console.log("ERROR GETTING TOURNEY INDEX")
 			}
-			return cb(res.statusCode,body)
+			return cb(res.statusCode,body);
 		})
 	},
 	getTournamentData: function(slug,cb) {
@@ -51,7 +51,7 @@ var Api = {
 				"x-access-token": localStorage.token
 			}
 		}, function (err, res, body) {
-			cb(res.statusCode)
+			cb(res.statusCode);
 		})
 	},
 	getPreviousSeeds: function(slug,cb) {
@@ -63,7 +63,7 @@ var Api = {
 				"x-access-token": localStorage.token
 			}
 		}, function (err, res, body) {
-			cb(res.statusCode, body)
+			cb(res.statusCode, body);
 		})
 	},
 	submitSeeds: function(slug,data,cb) {
@@ -75,7 +75,7 @@ var Api = {
 				"x-access-token": localStorage.token
 			}
 		}, function (err, res, body) {
-			cb(res.statusCode, body)
+			cb(res.statusCode, body);
 		})
 	},
 	createTournament: function(data,cb) {
@@ -87,7 +87,7 @@ var Api = {
 				"x-access-token": localStorage.token
 			}
 		}, function (err, res, body) {
-			cb(res.statusCode, body)
+			cb(res.statusCode, body);
 		});
 	},
 	deleteTournament: function(slug,cb) {
@@ -98,7 +98,7 @@ var Api = {
 				"x-access-token": localStorage.token
 			}
 		}, function (err, res, body) {
-			cb(res.statusCode, body)
+			cb(res.statusCode, body);
 		});
 	},
 	getInspect: function(slug,cb) {
@@ -110,7 +110,7 @@ var Api = {
 				"x-access-token": localStorage.token
 			}
 		}, function (err, res, body) {
-			cb(res.statusCode, body)
+			cb(res.statusCode, body);
 		});
 	},
 	postInspection: function(slug,data,cb) {
@@ -122,7 +122,7 @@ var Api = {
 				"x-access-token": localStorage.token
 			}
 		}, function (err, res, body) {
-			cb(res.statusCode, body)
+			cb(res.statusCode, body);
 		});
 	},
 	undoLastGame: function(slug,cb) {
@@ -133,7 +133,7 @@ var Api = {
 				"x-access-token": localStorage.token
 			}
 		}, function (err, res, body) {
-			cb(res.statusCode, body)
+			cb(res.statusCode, body);
 		});
 	}
 }
