@@ -118,7 +118,12 @@ var TournamentPage = React.createClass({
 				<div className="matchup-right">
 					<MatchupItem data={TheyWin} display={this.state.them.next[0]} />
 				</div>
-				<input type="checkbox" value="" ref="supreme" onClick={this.toggleSupreme}>Supreme Victory</input>
+				<div className="checkbox">
+					<label>
+						<input type="checkbox" value=""  onClick={this.toggleSupreme}/>
+						Supreme Victory
+					</label>
+				</div>
 				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
 					<button className="btn btn-primary btn-sm btn-block">Inspect</button>
 				</Link>
@@ -149,6 +154,7 @@ var TournamentPage = React.createClass({
 	},
 	toggleSupreme: function(){
 		var supreme = !this.state.supreme;
+		console.log("TOG SUP: ", supreme)
 		this.setState({
 			supreme: supreme
 		});
