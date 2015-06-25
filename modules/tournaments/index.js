@@ -114,8 +114,8 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 
 TourneyInterface.updateSeedStatus = function(tourneySlug,cb) {
 	tourneyMdl.updateSeedStatus(tourneySlug,function(err,results){
-		if(err) return cb(err)
-		return cb(null,results)
+		if(err) return cb(err);
+		return cb(null,results);
 	});
 };
 

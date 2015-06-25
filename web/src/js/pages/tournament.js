@@ -55,8 +55,7 @@ var TournamentPage = React.createClass({
 						value={character.value} 
 						wins={character.wins}
 						losses={character.losses}
-						streak={character.curStreak}
-					/>
+						streak={character.curStreak} />
 				</li>
 			);
 		});

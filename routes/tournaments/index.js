@@ -114,4 +114,8 @@ app.post('/:tourneySlug/pwr/inspect',
  	powerups.postInspect
 );
 
+app.post('/:tourneySlug/pwr/oddsmaker',
+ 	powerups.oddsMaker
+);
+
 module.exports = app;

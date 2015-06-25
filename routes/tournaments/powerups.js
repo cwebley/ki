@@ -18,10 +18,10 @@ powerupController.getInspect = function(req, res){
 	})
 }
 
-var gePostInspectOpts = function(req){
+var getPostInspectOpts = function(req){
 	opts = {
 		username: req.user.name,
-		userId: req.user.userId,
+		userId: req.user.id,
 		tourneySlug: req.params.tourneySlug
 	};
 	/* 
@@ -35,12 +35,31 @@ var gePostInspectOpts = function(req){
 }
 
 powerupController.postInspect = function(req, res){
-	var opts = gePostInspectOpts(req);
+	var opts = getPostInspectOpts(req);
 	if(!opts.matchups){
 		return res.status(400).send({success: false, reason:'matchup-data-not-provided'});
 	}
 
 	powerups.postInspect(opts, function(err,success){
+		if(err) return res.status(500).send({success:false,err:err});
+		if(!success) return res.status(400).send({success:false,reason:'invalid-inputs'});
+		res.status(201).send({success: true});
+	});
+}
+
+powerupController.oddsMaker = function(req, res){
+	var opts = {
+		username: req.user.name,
+		userId: req.user.id,
+		tourneySlug: req.params.tourneySlug,
+		character: req.body.character
+	};
+
+	if(!opts.character){
+		return res.status(400).send({success: false, reason:'odds-maker-character-not-provided'});
+	}
+
+	powerups.oddsMaker(opts, function(err,success){
 		if(err) return res.status(500).send({success:false,err:err});
 		if(!success) return res.status(400).send({success:false,reason:'invalid-inputs'});
 		res.status(201).send({success: true});
