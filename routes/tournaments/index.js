@@ -57,7 +57,7 @@ tourneyController.undoLastGame = function(req, res){
 	var tourneySlug = req.params.tourneySlug;
 
 	history.undoLastGame(tourneySlug,function(err,dto){
-		console.log("CONTROLLER LEVEL: ", err, dto);
+		if(err) return res.status(500).send({err: err});
 		res.status(200).send(dto);
 	});
 }

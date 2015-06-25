@@ -205,14 +205,11 @@ HistoryModel.revertLastGame = function(tid,cb) {
 		params = [tid];
 
 	mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-select-games', function(err, gameRes){
-		console.log("GAME RES: ", gameRes)
 		if(err) return cb(err);
 		if(!gameRes.length) return cb();
 
 		HistoryModel.getPreviousStreaks(tid,function(err,streakResults){
 			if(err)return cb(err);
-			console.log("STREAK RESULTS: ", streakResults)
-
 
 			// decr wins from users, tournamentUsers, and handle streaks
 			var sql = 'UPDATE tournamentUsers tu, users u'
@@ -227,7 +224,6 @@ HistoryModel.revertLastGame = function(tid,cb) {
 				params = [streakResults.winner, gameRes[0].value, tid, gameRes[0].winningPlayerId];
 
 			mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-winnerdecr', function(err, winnerDecrRes){
-				console.log("TU WINNER DECR: ", err, winnerDecrRes)
 				if(err) return cb(err);
 
 				// decr losses from users, tournamentUsers, and handle streaks
@@ -240,7 +236,6 @@ HistoryModel.revertLastGame = function(tid,cb) {
 					params = [streakResults.loser, tid, gameRes[0].losingPlayerId];
 
 				mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-loserdecr', function(err, loserDecrRes){
-					console.log("TU LOSER DECR: ", err, loserDecrRes)
 					if(err) return cb(err);
 
 					// winning character wins streak decr and value incr
@@ -256,7 +251,6 @@ HistoryModel.revertLastGame = function(tid,cb) {
 						params = [streakResults.charWinner, gameRes[0].value, tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
 
 					mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-winnerDecr', function(err, winningCharDecrRes){
-						console.log("TC WINNER DECR: ", err, winningCharDecrRes)
 						if(err) return cb(err);
 
 						// losing character losses decr streak incr and value incr
@@ -270,7 +264,6 @@ HistoryModel.revertLastGame = function(tid,cb) {
 							params = [streakResults.charLoser, tid, gameRes[0].losingPlayerId, gameRes[0].losingCharacterId];
 
 						mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-loserDecr', function(err, losingCharDecrRes){
-							console.log("TC LOSER DECR: ", err, losingCharDecrRes)
 							if(err) return cb(err);
 
 							// decr firewins for each of the winning player's characters that were on fire
@@ -279,7 +272,6 @@ HistoryModel.revertLastGame = function(tid,cb) {
 								params = [tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
 
 							mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-decrFireWins', function(err, decrFireWins){
-								console.log("DECR FIREWINS: ", err, decrFireWins)
 								if(err) return cb(err);
 
 								// delete from games table
@@ -287,7 +279,6 @@ HistoryModel.revertLastGame = function(tid,cb) {
 									params = [gameRes[0].id];
 
 								mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-games-deleteGame', function(err, deleteGameRes){
-									console.log("DELETE GAME: ", err, deleteGameRes)
 									if(err) return cb(err);
 									return cb(null,deleteGameRes);
 								});
@@ -304,7 +295,6 @@ HistoryModel.deleteHistoryFrom = function(tid,hid,cb){
 	var sql = 'DELETE FROM history WHERE tournamentId = ? AND id >= ?',
 		params = [tid,hid];
 	mysql.query('rw', sql, params, 'modules/history/history-model/deleteHistoryFrom', function(err, deleteFromHistoryRes){
-		console.log("DELETE FROM HISTORY FROM ", tid, hid)
 		if(err) return cb(err);
 		
 		return cb(null, deleteFromHistoryRes);
