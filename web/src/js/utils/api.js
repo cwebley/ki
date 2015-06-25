@@ -124,6 +124,17 @@ var Api = {
 		}, function (err, res, body) {
 			cb(res.statusCode, body)
 		});
+	},
+	undoLastGame: function(slug,cb) {
+		xhr({
+			uri: "/api/games/" + slug,
+			method: "put",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body)
+		});
 	}
 }
 

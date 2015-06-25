@@ -8,7 +8,6 @@ var express = require('express'),
 	tournaments = require('../../modules/tournaments'),
 	history = require('../../modules/history');
 
-
 var app = express();
 
 var tourneyController = {};
@@ -53,15 +52,6 @@ tourneyController.get = function(req, res){
 	})
 }
 
-tourneyController.undoLastGame = function(req, res){
-	var tourneySlug = req.params.tourneySlug;
-
-	history.undoLastGame(tourneySlug,function(err,dto){
-		if(err) return res.status(500).send({err: err});
-		res.status(200).send(dto);
-	});
-}
-
 // todo: check that you're actually in the tournament;
 tourneyController.deleteTourney = function(req, res){
 	var tourneySlug = req.params.tourneySlug;
@@ -94,11 +84,6 @@ app.get('/',
 	tourneyController.getTourneyList
 );
 
-// TODO: put behind auth barrier
-// TODO: make this more restful
-app.get('/:tourneySlug/undo',
- 	tourneyController.undoLastGame
-);
 /*
 *	Auth Barrier
 */

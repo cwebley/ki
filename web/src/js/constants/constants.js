@@ -15,6 +15,7 @@ module.exports = {
     DELETE_TOURNAMENT: null,
     GET_INSPECT: null,
     POST_INSPECT: null,
+    UNDO_LAST: null,
 
     // not in use
     EDIT_TOURNAMENT: null,

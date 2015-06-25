@@ -1,6 +1,7 @@
 var express = require('express'),
 	auth = require('../modules/auth'),
-	games = require('../modules/games');
+	games = require('../modules/games'),
+	history = require('../modules/history');
 
 var app = express();
 var gameController = {};
@@ -27,6 +28,14 @@ gameController.submitGame = function(req, res){
 	})
 }
 
+
+gameController.undoLastGame = function(req, res){
+	history.undoLastGame(req.params.tourneySlug,function(err,dto){
+		if(err) return res.status(500).send({err: err});
+		res.status(200).send({success: true});
+	});
+}
+
 /*
 *	Auth Barrier
 */
@@ -37,4 +46,7 @@ app.post('/',
  	gameController.submitGame
 );
 
+app.put('/:tourneySlug',
+ 	gameController.undoLastGame
+);
 module.exports = app;

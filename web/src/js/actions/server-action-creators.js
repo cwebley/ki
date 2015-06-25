@@ -95,6 +95,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	undoLastGame: function(slug){
+ 		api.undoLastGame(slug,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.UNDO_LAST,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 

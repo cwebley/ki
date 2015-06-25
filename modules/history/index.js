@@ -58,8 +58,6 @@ HistoryInterface.undoLastGame = function(slug, cb) {
 				}.bind(this));
 
 				async.series(reverseHistoryOps,function(err,results){
-					// TODO delete the history exiting
-
 					historyMdl.deleteHistoryFrom(tid, lastGameIds[1], function(err,deleteHistoryFromRes){
 						if(err) return cb(err);
 

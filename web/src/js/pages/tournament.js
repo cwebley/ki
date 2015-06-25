@@ -134,6 +134,12 @@ var TournamentPage = React.createClass({
 		serverActions.deleteTournament(this.getParams().titleSlug);
 		this.transitionTo('/');
 	},
+	undoLastGame: function() {
+		if(!confirm("Are you sure you want to undo the last game?")){
+			return;
+		}
+		serverActions.undoLastGame(this.getParams().titleSlug);
+	},
 	render: function(){
 		var me = this.renderUser(this.state.me);
 		var them = this.renderUser(this.state.them);
@@ -143,6 +149,9 @@ var TournamentPage = React.createClass({
 			<div className="page-wrap">
 				<div className="column-left">
 					{me}
+					<footer>
+						<a className="undo-last" onClick={this.undoLastGame}>Undo Last Game</a>
+					</footer>
 				</div>
 				<div className="column-center">
 					{middle}
