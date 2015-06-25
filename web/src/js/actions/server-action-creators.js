@@ -104,6 +104,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	useOddsMaker: function(slug,data){
+ 		api.useOddsMaker(slug,data,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.USE_ODDS_MAKER,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 

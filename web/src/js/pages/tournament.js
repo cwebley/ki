@@ -16,7 +16,9 @@ var TournamentPage = React.createClass({
 			me: TournamentStore.getMe(),
 			them: TournamentStore.getThem(),
 			undoStatus: TournamentStore.undoStatus(),
-			supreme: false
+			supreme: false,
+			oddsMakerActive: false,
+			oddsMakerStatus: TournamentStore.oddsMakerStatus()
 		};
 	},
 	componentWillMount:function(){
@@ -40,12 +42,17 @@ var TournamentPage = React.createClass({
 			me: TournamentStore.getMe(),
 			them: TournamentStore.getThem(),
 			undoStatus: TournamentStore.undoStatus(),
-			supreme: false
+			supreme: false,
+			oddsMakerActive: false,
+			oddsMakerStatus: TournamentStore.oddsMakerStatus()
 		});
 	},
-	renderCharacters: function(user){
+	renderCharacters: function(user,who){
 		if(!user.characters){
 			return false;
+		}
+		if((who === 'me') && this.state.oddsMakerActive){
+			var clickButton = this.useOddsMaker;
 		}
 		var characters = user.characters.map(function(character){
 			return (
@@ -55,21 +62,22 @@ var TournamentPage = React.createClass({
 						value={character.value} 
 						wins={character.wins}
 						losses={character.losses}
-						streak={character.curStreak} />
+						streak={character.curStreak}
+						clickButton={clickButton} />
 				</li>
 			);
-		});
+		}.bind(this));
 		return(
 			<ol className="character-list">
 				{characters}
 			</ol>
 		);
 	},
-	renderUser: function(user){
+	renderUser: function(user,who){
 		if(!user){
 			return false;
 		}
-		var characterCards = this.renderCharacters(user);
+		var characterCards = this.renderCharacters(user,who);
 		return (
 			<div className="player-wrapper">
 				<h2 className="name">{user.name}</h2>
@@ -111,6 +119,10 @@ var TournamentPage = React.createClass({
 			supreme: this.state.supreme
 		};
 
+		var omButtonColor = 'btn-primary';
+		if(this.state.oddsMakerStatus.attempt){
+			omButtonColor = (this.state.oddsMakerStatus.success) ? 'btn-success' : 'btn-danger'
+		}
 		return(
 			<div className="matchup">
 				<div className="matchup-left">
@@ -129,13 +141,14 @@ var TournamentPage = React.createClass({
 				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
 					<button className="btn btn-primary btn-sm btn-block">Inspect</button>
 				</Link>
+				<button className={"btn btn-sm btn-block " + omButtonColor} onClick={this.toggleButtons}>Toggle OddsMaker</button>
 			</div>
 		);
 	},
 	renderSeedButton: function(){
 		return (
 			<Link to="seed" params={{titleSlug: this.getParams().titleSlug}}>
-				<button className="btn btn-lg btn-block btn-primary btn-danger">Seed</button>
+				<button className="btn btn-lg btn-block btn-primary btn-default">Seed</button>
 			</Link>
 		);
 
@@ -154,6 +167,21 @@ var TournamentPage = React.createClass({
 		}
 		serverActions.undoLastGame(this.getParams().titleSlug);
 	},
+	toggleButtons: function() {
+		var status = this.state.oddsMakerActive;
+		this.setState({
+			oddsMakerActive: !status,
+			oddsMakerStatus: {
+				attempt: false
+			}
+		});
+	},
+	useOddsMaker: function(character) {
+		var d = {
+			character: character
+		}
+		serverActions.useOddsMaker(this.getParams().titleSlug,d)
+	},
 	toggleSupreme: function(){
 		var supreme = !this.state.supreme;
 		this.setState({
@@ -161,8 +189,8 @@ var TournamentPage = React.createClass({
 		});
 	},
 	render: function(){
-		var me = this.renderUser(this.state.me);
-		var them = this.renderUser(this.state.them);
+		var me = this.renderUser(this.state.me,'me');
+		var them = this.renderUser(this.state.them,'them');
 		var middle = (!this.state.them.seeded) ? this.renderSeedButton() : this.renderMatchup();
 
 		var undoClasses = ['btn','btn-xs','undo-last'];

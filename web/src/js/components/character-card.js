@@ -7,7 +7,8 @@ var CharacterCard = React.createClass({
 		value: React.PropTypes.number,
 		wins: React.PropTypes.number,
 		losses: React.PropTypes.number,
-		streak: React.PropTypes.number
+		streak: React.PropTypes.number,
+		clickButton: React.PropTypes.func
 	},
 
 	render: function(){
@@ -18,6 +19,8 @@ var CharacterCard = React.createClass({
 		if(this.props.streak >=3){
 			topClass.push('fire');
 		}
+		var btnClasses = (this.props.clickButton) ? ['character-button', 'btn', 'btn-sm', 'btn-info'] : ['hide']
+
 		return (
 			<div className={topClass.join(' ')}>
 				<div className="card-left-column">
@@ -36,8 +39,13 @@ var CharacterCard = React.createClass({
 						</li>
 					</ul>
 				</div>
+				<button className={btnClasses.join(' ')} onClick={this._onClick}>Choose</button>
 			</div>
 		);
+	},
+
+	_onClick: function(){
+		this.props.clickButton(this.props.name);
 	}
 });
 

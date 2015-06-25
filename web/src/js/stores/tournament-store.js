@@ -16,13 +16,16 @@ var _attemptedPostInspect;
 var _succeededPostInspect;
 var _attemptedUndo;
 var _succeededUndo;
+var _attemptedOddsMaker;
+var _succeededOddsMaker;
 
 function _tourneyDataReceived(data){
 	console.log("TDATA: ", data);
 
 	_me = data.users[0];
 	_them = data.users[1];
-	_undoAttempt = false;
+	_attemptedUndo = false;
+	_attemptedOddsMaker = false;
 }
 function _inspectDataReceived(data){
 	_inspectMe = data.me;
@@ -32,7 +35,8 @@ function _inspectDataReceived(data){
 function _submitMatchupsSuccess(){
 	_attemptedPostInspect = true;
 	_submitMatchupsSuccess = true;
-	_undoAttempt = false;
+	_attemptedUndo = false;
+	_attemptedOddsMaker = false;
 }
 function _submitMatchupFailure(){
 	_attemptedPostInspect = true;
@@ -49,6 +53,14 @@ function _undoSuccess(){
 function _undoFailure(){
 	_succeededUndo = false;
 	_attemptedUndo = true;
+}
+function _oddsMakerSuccess(){
+	_succeededOddsMaker = true;
+	_attemptedOddsMaker = true;
+}
+function _oddsMakerFailure(){
+	_succeededOddsMaker = false;
+	_attemptedOddsMaker = true;
 }
 
 var TournamentStore = assign({}, EventEmitter.prototype, {
@@ -91,6 +103,12 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 			attempt: _attemptedUndo,
 			success: _succeededUndo
 		};
+	},
+	oddsMakerStatus: function(){
+		return {
+			attempt: _attemptedOddsMaker,
+			success: _succeededOddsMaker
+		};
 	}
 });
 
@@ -103,17 +121,20 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			_tourneyDataReceived(payload.action.data);
 			TournamentStore.emitChange();
 			break;
+
 		case ActionTypes.SUBMIT_GAME:
 			if(payload.action.code !== 201){
 				// do some sort of roll back when/if view-action based rendering happens?
 				console.log("Tournament-store-found-an-error-submitting-game");
 			}
 			break;
+
 		case ActionTypes.DELETE_TOURNAMENT:
 			if(payload.action.code !== 200){
 				console.log("error-deleting-tournament");
 			}
 			break;
+
 		case ActionTypes.GET_INSPECT:
 			if(payload.action.code !== 200){
 				// probably need a better way to handle this
@@ -125,13 +146,21 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			_inspectDataReceived(payload.action.data);
 			TournamentStore.emitChange();
 			break;
+
 		case ActionTypes.POST_INSPECT:
 			(payload.action.code === 201) ? _submitMatchupsSuccess() : _submitMatchupFailure();
 			break;
+
 		case ActionTypes.UNDO_LAST:
 			(payload.action.code === 201) ? _undoSuccess() : _undoFailure();
 			TournamentStore.emitChange();
 			break;
+
+		case ActionTypes.USE_ODDS_MAKER:
+			(payload.action.code === 200) ? _oddsMakerSuccess() : _oddsMakerFailure();
+			TournamentStore.emitChange();
+			break;
+
 		default:
 		  // do nothing
 	}

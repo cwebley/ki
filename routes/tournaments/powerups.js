@@ -62,7 +62,7 @@ powerupController.oddsMaker = function(req, res){
 	powerups.oddsMaker(opts, function(err,success){
 		if(err) return res.status(500).send({success:false,err:err});
 		if(!success) return res.status(400).send({success:false,reason:'invalid-inputs'});
-		res.status(201).send({success: true});
+		res.status(200).send({success: true});
 	});
 }
 

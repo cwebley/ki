@@ -16,6 +16,7 @@ module.exports = {
     GET_INSPECT: null,
     POST_INSPECT: null,
     UNDO_LAST: null,
+    USE_ODDSMAKER: null,
 
     // not in use
     EDIT_TOURNAMENT: null,
