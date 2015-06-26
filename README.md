@@ -3,6 +3,11 @@ ki
 
 the tournament of champions
 
+bugs: 6/26
+	- lost a match, ran oddsmaker, undo button, previous fighter = odds character
+	- seed page not accurate with last tournament's seeds
+	
+
 TODO: 
 
 -- any user can enter tournament and submit games. not cool.
