@@ -3,6 +3,7 @@ var _ = require('lodash'),
 	constants = require('../constants'),
 	upcoming = require('../upcoming'),
 	powerMdl = require('./powerups-model'),
+	historyMdl = require('../history/history-model'),
 	tourneyMdl = require('../tournaments/tournaments-model');
 
 var PowerupSvc = {};
@@ -34,7 +35,11 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 				powerMdl.setUserInspect(tid,opts.userId,function(err,success){
 					if(err) return cb(err)
 					if(!success) return cb()
-					return cb(null,constants._INSPECT_COUNT,tid)
+
+					//inspect just went through. record the history.	
+					historyMdl.useInspect(tid,opts.userId,function(err,historyRes){
+						return cb(null,constants._INSPECT_COUNT,tid)
+					});
 				});
 			}
 		});
