@@ -5,6 +5,7 @@ var _ = require('lodash'),
 	powerSvc = require('./powerups-service'),
 	powerMdl = require('./powerups-model'),
 	userMdl = require('../users/users-model'),
+	historyMdl = require('../history/history-model'),
 	tourneyMdl = require('../tournaments/tournaments-model');
 
 var PowerInterface = {};
@@ -132,8 +133,13 @@ PowerInterface.oddsMaker = function(opts,cb) {
 				return (equalsZeroMaybe === 0) ? opts.character : c
 			}.bind(this));
 			
-			upcoming.submitCustom(tid,[opts.userId],[resolved]);
-			return cb(null,resolved);
+			historyMdl.useOddsMaker(tid, opts.userId, opts.character, function(err,historyRes){
+				if(err) return cb(err);
+				if(!historyRes) return cb();
+
+				upcoming.submitCustom(tid,[opts.userId],[resolved]);
+				return cb(null,resolved);
+			});
 		});
 	});
 };
