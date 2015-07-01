@@ -32,7 +32,6 @@ HistoryInterface.undoLastGame = function(slug, cb) {
 
 			historyMdl.getAllHistorySinceId(tid, lastGameIds[0],function(err,historyData){
 				if(err) return cb(err);
-				// return cb(null, historyData);
 
 				var reverseHistoryOps = [];
 				historyData.forEach(function(item){

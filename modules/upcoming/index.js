@@ -94,7 +94,10 @@ UpcomingInterface.check = function(tourneyId,users){
 UpcomingInterface.submitCustom = function(tourneyId,uids,matchups){
 	if(!uids.length || !matchups.length) return false;
 	uids.forEach(function(u,i){
-		UpcomingInterface.pending[tourneyId][u] = matchups[i]
+		// splice out the number we are submitting
+		UpcomingInterface.pending[tourneyId][u].splice(0,matchups[i].length)
+		// concat what's leftover onto the custom matchups
+		UpcomingInterface.pending[tourneyId][u] = matchups[i].concat(UpcomingInterface.pending[tourneyId][u])
 	});
 	return true
 }
