@@ -228,13 +228,13 @@ TournamentsModel.getPrevious = function(tourneyId,cb) {
 };
 
 TournamentsModel.getSeeds = function(tourneyId,userId,cb) {
-	var sql = 'SELECT c.name, h.characterId, h.value, tc.wins, tc.losses, tc.bestStreak'
-			+ ' FROM history h'
-			+ ' JOIN characters c ON c.id = h.characterId'
-			+ ' JOIN tournamentCharacters tc ON tc.characterId = h.characterId'
-			+ ' WHERE tc.tournamentId = ? AND h.tournamentId = ?'
-			+ ' AND tc.userId = ? AND h.userId = ?'
-			+ ' AND eventId = 1 order by h.value',
+	var sql = 'SELECT c.name, s.characterId, s.value, tc.wins, tc.losses, tc.bestStreak'
+			+ ' FROM seeds s'
+			+ ' JOIN characters c ON c.id = s.characterId'
+			+ ' JOIN tournamentCharacters tc ON tc.characterId = s.characterId'
+			+ ' WHERE tc.tournamentId = ? AND s.tournamentId = ?'
+			+ ' AND tc.userId = ? AND s.userId = ?'
+			+ ' ORDER BY s.value',
 		params = [tourneyId,tourneyId,userId,userId];
 
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/getSeeds', function(err, results){
