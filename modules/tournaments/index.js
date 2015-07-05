@@ -2,12 +2,17 @@ var _ = require('lodash'),
 	async = require('async'),
 	upcoming = require('../upcoming'),
 	tourneySvc = require('./tournaments-service'),
-	tourneyMdl = require('./tournaments-model');
+	tourneyMdl = require('./tournaments-model'),
+	powerMdl = require('../powerups/powerups-model');
 
 var TourneyInterface = {};
 
-TourneyInterface.allStatsDto = function(data,seeded,requester){
-	var dto = {users:[], seeded:seeded};
+TourneyInterface.allStatsDto = function(data,seeded,inspectStatus,requester){
+	var dto = {
+		users: [], 
+		seeded: seeded, 
+		inspectStatus: inspectStatus
+	};
 
 	for (var i=0;i<data.length;i++){
 		dto.users.push(data[i])
@@ -105,7 +110,11 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 					for(var i=0;i<tournamentData.length;i++){
 						tournamentData[i].characters = charData[i]
 					}
-					return cb(err,TourneyInterface.allStatsDto(tournamentData, seeded, requester))
+
+					powerMdl.getInspectStatus(tourneyId,function(err,inspectStatus){
+						if(err) return cb(err);
+						return cb(err,TourneyInterface.allStatsDto(tournamentData, seeded, inspectStatus, requester));
+					});
 				});
 			});
 		});

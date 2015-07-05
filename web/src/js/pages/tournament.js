@@ -101,7 +101,6 @@ var TournamentPage = React.createClass({
 			return false;
 		}
 
-		// TODO supreme
 		var IWin = {
 			slug: this.getParams().titleSlug,
 			winningPlayer: this.state.me.name,
