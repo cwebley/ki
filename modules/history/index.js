@@ -1,5 +1,6 @@
 var	historyMdl = require('./history-model'),
 	tourneyMdl = require('../tournaments/tournaments-model'),
+	powerups = require('../powerups'),
 	upcoming = require('../upcoming'),
 	async = require('async'),
 	_ = require("lodash");
@@ -60,8 +61,11 @@ HistoryInterface.undoLastGame = function(slug, cb) {
 					historyMdl.deleteHistoryFrom(tid, lastGameIds[1], function(err,deleteHistoryFromRes){
 						if(err) return cb(err);
 
-						upcoming.rematch(tid);
-						return cb(null, deleteHistoryFromRes);
+						powerups.incrInspect(tid,function(err,incrInspectRes){
+							if(err) return cb(err);
+							upcoming.rematch(tid);
+							return cb(null, incrInspectRes);
+						});
 					});
 				}.bind(this));
 			});

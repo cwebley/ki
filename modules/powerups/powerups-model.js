@@ -73,6 +73,12 @@ PowerModel.decrUserInspect = function(tourneyId,userId,cb) {
 		key = userInspectKey(tourneyId,userId);
 	conn.decr(key, cb);
 };
+// for undo games
+PowerModel.incrUserInspect = function(tourneyId,userId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = userInspectKey(tourneyId,userId);
+	conn.incr(key, cb);
+};
 PowerModel.setUserInspect = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = userInspectKey(tourneyId,userId);

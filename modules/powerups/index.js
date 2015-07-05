@@ -58,6 +58,18 @@ PowerInterface.getInspectStatus = function(tid,cb) {
 	});
 };
 
+PowerInterface.incrInspect = function(tid,cb) {
+	powerMdl.getInspectStatus(tid,function(err,inspectOwner){
+		if(err) return cb(err);
+		if(!inspectOwner) return cb();
+
+		powerMdl.incrUserInspect(tid,inspectOwner,function(err,stock){
+			if(err) return cb(err);
+			return cb(null, stock);
+		});
+	});
+};
+
 PowerInterface.postInspect = function(opts,cb) {
 	tourneyMdl.getTourneyId(opts.tourneySlug,function(err, tid){
 		if(err) return cb(err);
