@@ -18,7 +18,8 @@ var TournamentPage = React.createClass({
 			undoStatus: TournamentStore.undoStatus(),
 			supreme: false,
 			oddsMakerActive: false,
-			oddsMakerStatus: TournamentStore.oddsMakerStatus()
+			oddsMakerStatus: TournamentStore.oddsMakerStatus(),
+			inspect: TournamentStore.inspectOwner()
 		};
 	},
 	componentWillMount:function(){
@@ -34,6 +35,41 @@ var TournamentPage = React.createClass({
 	componentWillReceiveProps: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);
 	},
+	render: function(){
+		var me = this.renderUser(this.state.me,'me');
+		var them = this.renderUser(this.state.them,'them');
+		var middle = (!this.state.them.seeded) ? this.renderSeedButton() : this.renderMatchup();
+
+		var undoClasses = ['btn','btn-xs','undo-last'];
+		var undoColor = 'btn-default';
+		if(this.state.undoStatus.attempt){
+			undoColor = ('btn-danger');
+		}
+		if(this.state.undoStatus.attempt && this.state.undoStatus.success){
+			undoColor = ('btn-success');
+		}
+		undoClasses.push(undoColor);
+		
+		return (
+			<div className="page-wrap">
+				<div className="column-left">
+					{me}
+					<footer>
+						<button className={undoClasses.join(' ')} onClick={this.undoLastGame}>Undo Last Game</button>
+					</footer>
+				</div>
+				<div className="column-center">
+					{middle}
+				</div>
+				<div className="column-right">
+					{them}
+					<footer>
+						<a className="delete-tournament" onClick={this.deleteTournament}>{"Delete " + this.getParams().titleSlug}</a>
+					</footer>
+				</div>
+			</div>
+		);
+	},
 	_onChange: function(){
 		if(React.findDOMNode(this.refs.supreme)){
 			React.findDOMNode(this.refs.supreme).checked = false;
@@ -44,7 +80,8 @@ var TournamentPage = React.createClass({
 			undoStatus: TournamentStore.undoStatus(),
 			supreme: false,
 			oddsMakerActive: false,
-			oddsMakerStatus: TournamentStore.oddsMakerStatus()
+			oddsMakerStatus: TournamentStore.oddsMakerStatus(),
+			inspect: TournamentStore.inspectOwner()
 		});
 	},
 	renderCharacters: function(user,who){
@@ -122,6 +159,8 @@ var TournamentPage = React.createClass({
 		if(this.state.oddsMakerStatus.attempt){
 			omButtonColor = (this.state.oddsMakerStatus.success) ? 'btn-success' : 'btn-danger'
 		}
+
+		var inspectButton = this.renderInspectButton();
 		return(
 			<div className="matchup">
 				<div className="matchup-left">
@@ -137,9 +176,7 @@ var TournamentPage = React.createClass({
 						Supreme Victory
 					</label>
 				</div>
-				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
-					<button className="btn btn-primary btn-sm btn-block">Inspect</button>
-				</Link>
+				{inspectButton}
 				<button className={"btn btn-sm btn-block " + omButtonColor} onClick={this.toggleButtons}>Toggle OddsMaker</button>
 			</div>
 		);
@@ -150,13 +187,35 @@ var TournamentPage = React.createClass({
 				<button className="btn btn-lg btn-block btn-primary btn-default">Seed</button>
 			</Link>
 		);
+	},
+	renderInspectButton: function(){
+		if(!this.state.inspect.owner){
+			// inspect is available to claim
+			return(
+				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
+					<button className="btn btn-primary btn-sm btn-block">Inspect</button>
+				</Link>
+			);
+		}
+		var remaining = this.state.inspect.stock
+		if(this.state.inspect.owner === this.state.me.name){
+			// you own it, add remaining count
+			return(
+				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
+					<button className="btn btn-primary btn-sm btn-block">Inspect ({remaining} left)</button>
+				</Link>
+			);
+		}
 
+		// they own it, disable the button
+		return(
+			<button disabled={true} className="btn btn-primary btn-sm btn-block">Inspect ({remaining} left)</button>
+		);
 	},
 	deleteTournament: function() {
 		if(!confirm("Are you sure you want to completely erase this tournament?")){
 			return;
 		}
-		// TODO this should probably be a viewaction first which calls a serveraction
 		serverActions.deleteTournament(this.getParams().titleSlug);
 		this.transitionTo('/');
 	},
@@ -186,41 +245,6 @@ var TournamentPage = React.createClass({
 		this.setState({
 			supreme: supreme
 		});
-	},
-	render: function(){
-		var me = this.renderUser(this.state.me,'me');
-		var them = this.renderUser(this.state.them,'them');
-		var middle = (!this.state.them.seeded) ? this.renderSeedButton() : this.renderMatchup();
-
-		var undoClasses = ['btn','btn-xs','undo-last'];
-		var undoColor = 'btn-default';
-		if(this.state.undoStatus.attempt){
-			undoColor = ('btn-danger');
-		}
-		if(this.state.undoStatus.attempt && this.state.undoStatus.success){
-			undoColor = ('btn-success');
-		}
-		undoClasses.push(undoColor);
-		
-		return (
-			<div className="page-wrap">
-				<div className="column-left">
-					{me}
-					<footer>
-						<button className={undoClasses.join(' ')} onClick={this.undoLastGame}>Undo Last Game</button>
-					</footer>
-				</div>
-				<div className="column-center">
-					{middle}
-				</div>
-				<div className="column-right">
-					{them}
-					<footer>
-						<a className="delete-tournament" onClick={this.deleteTournament}>{"Delete " + this.getParams().titleSlug}</a>
-					</footer>
-				</div>
-			</div>
-		);
 	}
 });
 

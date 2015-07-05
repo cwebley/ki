@@ -18,6 +18,7 @@ var _attemptedUndo;
 var _succeededUndo;
 var _attemptedOddsMaker;
 var _succeededOddsMaker;
+var _inspectOwner;
 
 function _tourneyDataReceived(data){
 	console.log("TDATA: ", data);
@@ -26,6 +27,7 @@ function _tourneyDataReceived(data){
 	_them = data.users[1];
 	_attemptedUndo = false;
 	_attemptedOddsMaker = false;
+	_inspectOwner = data.inspect;
 }
 function _inspectDataReceived(data){
 	_inspectMe = data.me;
@@ -109,6 +111,9 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 			attempt: _attemptedOddsMaker,
 			success: _succeededOddsMaker
 		};
+	},
+	inspectOwner: function(){
+		return _inspectOwner;
 	}
 });
 

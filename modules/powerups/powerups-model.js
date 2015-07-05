@@ -25,7 +25,7 @@ var userInspectKey = function(tourneyId,userId) {
 PowerModel.getUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = userStockKey(tourneyId,userId);
-	conn.setnx(key, cb);
+	conn.get(key, cb);
 };
 PowerModel.setUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),

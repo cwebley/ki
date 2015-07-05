@@ -3,15 +3,18 @@ var _ = require('lodash'),
 	upcoming = require('../upcoming'),
 	tourneySvc = require('./tournaments-service'),
 	tourneyMdl = require('./tournaments-model'),
-	powerMdl = require('../powerups/powerups-model');
+	powerups = require('../powerups');
 
 var TourneyInterface = {};
 
-TourneyInterface.allStatsDto = function(data,seeded,inspectStatus,requester){
+TourneyInterface.allStatsDto = function(data,seeded,inspectOwner,inspectStock,requester){
 	var dto = {
 		users: [], 
 		seeded: seeded, 
-		inspectStatus: inspectStatus
+		inspect: {
+			owner: inspectOwner,
+			stock: inspectStock
+		}
 	};
 
 	for (var i=0;i<data.length;i++){
@@ -110,10 +113,9 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 					for(var i=0;i<tournamentData.length;i++){
 						tournamentData[i].characters = charData[i]
 					}
-
-					powerMdl.getInspectStatus(tourneyId,function(err,inspectStatus){
+					powerups.getInspectStatus(tourneyId,function(err,inspectOwner,inspectStock){
 						if(err) return cb(err);
-						return cb(err,TourneyInterface.allStatsDto(tournamentData, seeded, inspectStatus, requester));
+						return cb(err,TourneyInterface.allStatsDto(tournamentData, seeded, inspectOwner, inspectStock, requester));
 					});
 				});
 			});

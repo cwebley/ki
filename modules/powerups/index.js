@@ -43,6 +43,21 @@ PowerInterface.getInspect = function(opts,cb) {
 	});
 };
 
+PowerInterface.getInspectStatus = function(tid,cb) {
+	powerMdl.getInspectStatus(tid,function(err,inspectOwner){
+		if(err) return cb(err);
+		if(!inspectOwner) return cb();
+
+		powerMdl.getUserInspect(tid,inspectOwner,function(err,stock){
+			if(err) return cb(err);
+			userMdl.getUserById(inspectOwner,function(err,userObj){
+				if(err) return cb(err);
+				return cb(null, userObj.name, stock);
+			});
+		});
+	});
+};
+
 PowerInterface.postInspect = function(opts,cb) {
 	tourneyMdl.getTourneyId(opts.tourneySlug,function(err, tid){
 		if(err) return cb(err);
