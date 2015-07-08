@@ -37,7 +37,7 @@ PowerInterface.getInspect = function(opts,cb) {
 			if(!upcoming.check(tid,uids)) {
 				upcoming.create(tid,uids);
 			}
-			next = upcoming.getNextArray(tid,players,inspectCount);
+			next = upcoming.getNextArray(tid,players,inspectCount,true);
 			return cb(err,inspectDto(next,players,opts.username));
 		});
 	});
@@ -97,10 +97,10 @@ PowerInterface.postInspect = function(opts,cb) {
 				upcoming.create(tid,uids);
 			}
 			var inspectCount = players[0].matchups.length;
-			Math.min(inspectCount, 20);
+			Math.min(inspectCount, 19); // 19 because upcoming only keep 20 games in memory and skipCurrent is a thing
 	
 			//getNextArray preserves the player ordering
-			var next = upcoming.getNextArray(tid,players,inspectCount);
+			var next = upcoming.getNextArray(tid,players,inspectCount,true);
 
 			//deep verify matchups
 			players.forEach(function(p,pIndex){
@@ -132,7 +132,7 @@ PowerInterface.postInspect = function(opts,cb) {
 			if(!next){
 				return cb();
 			}
-			if(!upcoming.submitCustom(tid,uids,[players[0].matchups,players[1].matchups])){
+			if(!upcoming.submitCustom(tid,uids,[players[0].matchups,players[1].matchups],true)){
 				return cb(new Error('failed-to-submit-new-custom-matchups'));
 			}
 			return cb(null, true);

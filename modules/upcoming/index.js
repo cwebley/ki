@@ -45,12 +45,16 @@ UpcomingInterface.fill = function(tourneyId){
 	[[orchid,fulgore],[aria,cinder]]
 
 */
-UpcomingInterface.getNextArray = function(tourneyId,userArr,num){
+UpcomingInterface.getNextArray = function(tourneyId,userArr,num,skipCurrent){
+	num = parseInt(num,10);
+	var start = (skipCurrent) ? 1 : 0;
+	var end = (skipCurrent) ? num+1 : num;
+
 	var nextUp = [];
 	for(var i=0;i<userArr.length;i++){
-		nextUp.push(UpcomingInterface.pending[tourneyId][userArr[i].id].slice(0,num))
+		nextUp.push(UpcomingInterface.pending[tourneyId][userArr[i].id].slice(start,end));
 	}
-	return nextUp
+	return nextUp;
 }
 
 UpcomingInterface.removeFirst = function(tourneyId){
@@ -91,13 +95,21 @@ UpcomingInterface.check = function(tourneyId,users){
 }
 
 //matchups expected to be ordered the same as uids
-UpcomingInterface.submitCustom = function(tourneyId,uids,matchups){
+UpcomingInterface.submitCustom = function(tourneyId,uids,matchups,skipCurrent){
+	var start = (skipCurrent) ? 1 : 0;
+
 	if(!uids.length || !matchups.length) return false;
+	var arr;
 	uids.forEach(function(u,i){
-		// splice out the number we are submitting
-		UpcomingInterface.pending[tourneyId][u].splice(0,matchups[i].length)
+		arr = UpcomingInterface.pending[tourneyId][u];
+
+		// TODO spread operator here will be much simpler if code is ever es6-ified
+		// splice out the number we are submitting, insert the custom matchups
+		arr.splice.apply(arr,[start,matchups[i].length + start].concat(matchups[i]));
+		UpcomingInterface.pending[tourneyId][u] = arr;
+
 		// concat what's leftover onto the custom matchups
-		UpcomingInterface.pending[tourneyId][u] = matchups[i].concat(UpcomingInterface.pending[tourneyId][u])
+		// UpcomingInterface.pending[tourneyId][u] = matchups[i].concat(UpcomingInterface.pending[tourneyId][u])
 	});
 	return true
 }

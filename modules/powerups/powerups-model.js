@@ -51,7 +51,14 @@ PowerModel.getInspectStatus = function(tourneyId,cb) {
 		key = inspectStatusKey(tourneyId);
 	conn.get(key, cb);
 };
+// general locking functionality around inspect.
 PowerModel.setnxInspectStatus = function(tourneyId,userId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = inspectStatusKey(tourneyId);
+	conn.setnx(key, userId, cb);
+};
+// only for overriding someone else's power at remaining = 0
+PowerModel.setInspectStatus = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = inspectStatusKey(tourneyId);
 	conn.setnx(key, userId, cb);
