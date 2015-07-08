@@ -189,7 +189,9 @@ var TournamentPage = React.createClass({
 		);
 	},
 	renderInspectButton: function(){
-		if(!this.state.inspect.owner){
+		var remaining = this.state.inspect.stock
+
+		if(!this.state.inspect.owner || (this.state.inspect.owner === this.state.them.name && remaining === 0)){
 			// inspect is available to claim
 			return(
 				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
@@ -197,9 +199,8 @@ var TournamentPage = React.createClass({
 				</Link>
 			);
 		}
-		var remaining = this.state.inspect.stock
-		if(this.state.inspect.owner === this.state.me.name){
-			// you own it, add remaining count
+		if(this.state.inspect.owner === this.state.me.name && remaining > 0){
+			// if you own it or count === 0 you are permitted
 			return(
 				<Link to="inspect" params={{titleSlug: this.getParams().titleSlug}}>
 					<button className="btn btn-primary btn-sm btn-block">Inspect ({remaining} left)</button>
@@ -207,7 +208,7 @@ var TournamentPage = React.createClass({
 			);
 		}
 
-		// they own it, disable the button
+		// they own it, or you have 0 left. disable the button
 		return(
 			<button disabled={true} className="btn btn-primary btn-sm btn-block">Inspect ({remaining} left)</button>
 		);

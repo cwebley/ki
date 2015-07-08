@@ -52,7 +52,7 @@ PowerInterface.getInspectStatus = function(tid,cb) {
 			if(err) return cb(err);
 			userMdl.getUserById(inspectOwner,function(err,userObj){
 				if(err) return cb(err);
-				return cb(null, userObj.name, stock);
+				return cb(null, userObj.name, parseInt(stock,10));
 			});
 		});
 	});

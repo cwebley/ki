@@ -61,7 +61,7 @@ PowerModel.setnxInspectStatus = function(tourneyId,userId,cb) {
 PowerModel.setInspectStatus = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = inspectStatusKey(tourneyId);
-	conn.setnx(key, userId, cb);
+	conn.set(key, userId, cb);
 };
 PowerModel.clearInspectStatus = function(tourneyId,cb){
 	var conn = redis.get('persistent','rw'),

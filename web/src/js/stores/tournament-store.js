@@ -36,13 +36,13 @@ function _inspectDataReceived(data){
 }
 function _submitMatchupsSuccess(){
 	_attemptedPostInspect = true;
-	_submitMatchupsSuccess = true;
+	_succeededPostInspect = true;
 	_attemptedUndo = false;
 	_attemptedOddsMaker = false;
 }
 function _submitMatchupFailure(){
 	_attemptedPostInspect = true;
-	_submitMatchupsSuccess = false;
+	_succeededPostInspect = false;
 }
 function _clearInspectData(){
 	_inspectMe = [];

@@ -17,7 +17,7 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 		powerMdl.setnxInspectStatus(tid,opts.userId,function(err,success){
 			if(err) return cb(err);
 			if(success){
-				return PowerupSvc.initiateInspect(tid,opts.userId);
+				return PowerupSvc.initiateInspect(tid,opts.userId,cb);
 			}
 			//inspect already in progress
 			//check if owner is you
@@ -39,7 +39,7 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 					}
 					powerMdl.setInspectStatus(tid,opts.userId,function(err,results){
 						if(err) return cb(err);
-						return PowerupSvc.initiateInspect(tid,opts.userId);
+						return PowerupSvc.initiateInspect(tid,opts.userId,cb);
 					});
 				});
 			});
@@ -48,7 +48,7 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 };
 
 // inspect was successfully claimed. start the count, record the history.
-PowerupSvc.initiateInspect = function(tid,userId){
+PowerupSvc.initiateInspect = function(tid,userId,cb){
 	powerMdl.setUserInspect(tid,opts.userId,function(err,success){
 		if(err) return cb(err);
 		if(!success) return cb();
