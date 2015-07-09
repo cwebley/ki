@@ -154,7 +154,7 @@ PowerInterface.oddsMaker = function(opts,cb) {
 			if(err) return cb(err);
 			if(!cid) return cb();
 
-			var next = upcoming.getNextArray(tid,[{id:opts.userId}],constants._ODDS_MAKER_LENGTH)[0];
+			var next = upcoming.getNextArray(tid,[{id:opts.userId}],constants._ODDS_MAKER_LENGTH, true)[0]; // just yours, ignore opponent
 			var resolved = next.map(function(c){
 				var equalsZeroMaybe = Math.floor(Math.random()*(constants._ODDS_MAKER_LENGTH/constants._ODDS_MAKER_VALUE))
 				return (equalsZeroMaybe === 0) ? opts.character : c
@@ -164,7 +164,7 @@ PowerInterface.oddsMaker = function(opts,cb) {
 				if(err) return cb(err);
 				if(!historyRes) return cb();
 
-				upcoming.submitCustom(tid,[opts.userId],[resolved]);
+				upcoming.submitCustom(tid,[opts.userId],[resolved], true);
 				return cb(null,resolved);
 			});
 		});
