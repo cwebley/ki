@@ -128,6 +128,9 @@ var TournamentPage = React.createClass({
 					<li className="stat-item streak">
 						streak: {user.curStreak}
 					</li>
+					<li className="stat-item power-stock">
+						powers: {user.powerStock}
+					</li>
 				</ul>
 				{characterCards}
 			</div>
