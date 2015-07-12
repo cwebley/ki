@@ -1,7 +1,8 @@
 var _ = require('lodash'),
 	async = require('async'),
 	constants = require('../constants'),
-	redis = require('../persistence').redis;
+	redis = require('../persistence').redis,
+	historyMdl = require('../history/history-model');
 
 var PowerModel = {};
 
@@ -34,7 +35,18 @@ PowerModel.setUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = userStockKey(tourneyId,userId);
 
-	conn.set(key, constants._STARTING_PWR_STOCK, cb);
+	conn.set(key, constants._STARTING_PWR_STOCK, function(err,results){
+		if(err) return cb(err);
+
+		//Add to history
+		historyMdl.recordEvent({
+			tid: tourneyId,
+			uid: userId,
+			eventString: 'power-init',
+			value: constants._STARTING_PWR_STOCK,
+			delta: constants._STARTING_PWR_STOCK
+		},cb);
+	});
 };
 PowerModel.incrUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),

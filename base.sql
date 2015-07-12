@@ -150,7 +150,10 @@ INSERT INTO events (description) VALUES
 	('friendlyIce'),
 	('power-reseed'),
 	('power-deduct-points'),
-	('power-deduct-exipres');
+	('power-deduct-exipres'),
+	('power-oddsMaker'),
+	('power-inspect'),
+	('power-init');
 
 CREATE TABLE `history` (
 	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,

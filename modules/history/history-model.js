@@ -4,6 +4,31 @@ var mysql = require('../persistence').mysql,
 
 var HistoryModel = {};
 
+HistoryModel.recordEvent = function(opts,cb) {
+	if(!opts.tid) return cb(new Error('history-model/recordEvent-no-tid-provided'));
+	if(!opts.uid) return cb(new Error('history-model/recordEvent-no-uid-provided'));
+	if(!opts.eventString) return cb(new Error('history-model/recordEvent-no-eventString-provided'));
+
+	var tid = opts.tid,
+		uid = opts.uid,
+		cid = opts.cid || 1, // default to jago if it's not important
+		eventString = opts.eventString,
+		value = opts.value || 1,
+		delta = opts.delta || value;
+
+	var sql = 'SELECT id FROM events WHERE description = ?',
+		params = [eventString];
+	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/recordEvent-events', function(err, eventResult){
+		if(err) return cb(err);
+
+		var sql = 'INSERT INTO `history` (tournamentId, userId, characterId, eventId, value, delta)'
+				+ ' VALUES (?,?,?,?,?,?)'
+			params = [tid,uid,cid,eventResult[0].id,value,delta];
+
+		mysql.query('rw', sql, params, 'modules/history/history-model/recordEvent', cb);
+	});
+};
+
 HistoryModel.recalculateSeedsFromHistory = function(tid,cb) {
 	var sql = 'SELECT id FROM events WHERE description = ?',
 		params = ['seeding'];
