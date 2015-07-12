@@ -59,10 +59,10 @@ powerupController.oddsMaker = function(req, res){
 		return res.status(400).send({success: false, reason:'odds-maker-character-not-provided'});
 	}
 
-	powerups.oddsMaker(opts, function(err,success){
+	powerups.oddsMaker(opts, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err});
-		if(!success) return res.status(400).send({success:false,reason:'invalid-inputs'});
-		res.status(200).send({success: true});
+		if(!dto) return res.status(400).send({success:false,reason:'invalid-inputs'});
+		res.status(200).send(dto);
 	});
 }
 

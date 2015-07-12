@@ -160,7 +160,8 @@ INSERT INTO events (description) VALUES
 	('power-deduct-exipres'),
 	('power-oddsMaker'),
 	('power-inspect'),
-	('power-init');
+	('power-stock-init'),
+	('power-stock-incr');
 
 CREATE TABLE `history` (
 	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,

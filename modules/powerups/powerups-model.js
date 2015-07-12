@@ -42,7 +42,7 @@ PowerModel.setUserStock = function(tourneyId,userId,cb) {
 		historyMdl.recordEvent({
 			tid: tourneyId,
 			uid: userId,
-			eventString: 'power-init',
+			eventString: 'power-stock-init',
 			value: constants._STARTING_PWR_STOCK,
 			delta: constants._STARTING_PWR_STOCK
 		},cb);

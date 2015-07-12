@@ -192,10 +192,24 @@ PowerInterface.oddsMaker = function(opts,cb) {
 					if(!historyRes) return cb();
 
 					upcoming.submitCustom(tid,[opts.userId],[resolved], true);
-					return cb(null,resolved);
+					return cb(null,{powerStock: stock});
 				});
 			});
 		});
+	});
+};
+
+PowerInterface.incrUserStock = function(tid,uid,cb){
+	powerMdl.incrUserStock(tid,uid,function(err,stock){
+		if(err) return cb(err);
+		// record history
+		historyMdl.recordEvent({
+			tid: tid,
+			uid: uid,
+			eventString: 'power-stock-incr',
+			value: stock,
+			delta: 1
+		},cb);
 	});
 };
 

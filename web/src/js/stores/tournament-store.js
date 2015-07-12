@@ -64,6 +64,9 @@ function _oddsMakerFailure(){
 	_succeededOddsMaker = false;
 	_attemptedOddsMaker = true;
 }
+function _updatePowerStock(data){
+	_me.powerStock = data.powerStock;
+}
 
 var TournamentStore = assign({}, EventEmitter.prototype, {
 
@@ -163,6 +166,7 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 
 		case ActionTypes.USE_ODDS_MAKER:
 			(payload.action.code === 200) ? _oddsMakerSuccess() : _oddsMakerFailure();
+			_updatePowerStock(action.data);
 			TournamentStore.emitChange();
 			break;
 

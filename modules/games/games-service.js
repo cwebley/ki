@@ -121,6 +121,11 @@ GamesService.updateData = function(options, cb) {
 		updateCalls.push(function(done){gamesMdl.incLoseUsersLosses(options.tourneyId,options.losePid,done)})
 		updateCalls.push(function(done){gamesMdl.updateWinnerScore(options.tourneyId,options.winPid,options.winValue,done)})
 
+		if(options.supreme){
+			//incr power stock
+			updateCalls.push(function(done){powerIndex.incrUserStock(options.tourneyId,options.winPid,done)});
+		}
+
 		async.parallel(updateCalls,function(err,results){
 			if(err)return cb(err);
 
