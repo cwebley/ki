@@ -5,6 +5,10 @@ CREATE TABLE `characters` (
   PRIMARY KEY (`id`)
 );
 
+-- N/A character to satisfy `history` foreign key edgecases where the character is not important
+INSERT INTO characters (id, name) VALUES
+	(99999, 'NA');
+
 INSERT INTO characters (name, season) VALUES
 	('jago',1),
 	('wulf',1),
@@ -18,7 +22,10 @@ INSERT INTO characters (name, season) VALUES
 	('maya',2),
 	('kanra',2),
 	('riptor',2),
-	('omen',13);
+	('omen',2),
+	('aganos',2),
+	('hisako',2),
+	('aria',2);
 
 CREATE TABLE `users` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,

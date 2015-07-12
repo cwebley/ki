@@ -11,7 +11,7 @@ HistoryModel.recordEvent = function(opts,cb) {
 
 	var tid = opts.tid,
 		uid = opts.uid,
-		cid = opts.cid || 1, // default to jago if it's not important
+		cid = opts.cid || 99999, // use character 'NA' if a character is not part of the transacation
 		eventString = opts.eventString,
 		value = opts.value || 1,
 		delta = opts.delta || value;
@@ -325,33 +325,6 @@ HistoryModel.deleteHistoryFrom = function(tid,hid,cb){
 		return cb(null, deleteFromHistoryRes);
 	});
 }
-
-// todo: value = number of powers left? any meaning there?
-// characterId just set to something to avoid foreign key errors, but it's meaningless
-HistoryModel.useInspect = function(tid,uid,cb){
-	var sql = 'SELECT id FROM events WHERE description = ?',
-		params = ['power-inspect'];
-
-	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/useInspect-events', function(err, eventResult){
-		if(err) return cb(err);
-
-		var sql = 'SELECT id FROM characters limit 1',
-			params = [];
-
-		mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/useInspect-characters', function(err, characterRes){
-			if(err) return cb(err);
-
-			var sql = 'INSERT INTO history (tournamentId,userId,characterId,eventId) VALUES (?,?,?,?)',
-				params = [tid,uid,characterRes[0].id,eventResult[0].id];
-
-			mysql.query('rw', sql, params, 'modules/history/history-model/useInspect', function(err, useOddsMakerRes){
-				if(err) return cb(err);
-				return cb(null, useOddsMakerRes);
-			});
-		});
-	});
-}
-
 
 // todo: value = number of powers left? any meaning there?
 HistoryModel.useOddsMaker = function(tid,uid,cName,cb){

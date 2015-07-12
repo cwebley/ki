@@ -51,12 +51,16 @@ PowerModel.setUserStock = function(tourneyId,userId,cb) {
 PowerModel.incrUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = userStockKey(tourneyId,userId);
-	conn.incr(key, cb);
+	conn.incr(key, function(err,result){
+		return cb(err, parseInt(result,10));
+	});
 };
 PowerModel.decrUserStock = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = userStockKey(tourneyId,userId);
-	conn.decr(key, cb);
+	conn.decr(key, function(err,result){
+		return cb(err, parseInt(result,10));
+	});
 };
 
 /*

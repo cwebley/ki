@@ -49,13 +49,31 @@ PowerupSvc.checkOrClaimInspect = function(opts,cb) {
 
 // inspect was successfully claimed. start the count, record the history.
 PowerupSvc.initiateInspect = function(tid,userId,cb){
-	powerMdl.setUserInspect(tid,opts.userId,function(err,success){
+	powerMdl.decrUserStock(tid,userId,function(err,stock){
 		if(err) return cb(err);
-		if(!success) return cb();
+		if(stock < 0){
+			// you locked inspect but didn't actually have the power stock to do so. 
+			// bump power back up to 0, and unlock inspect for next guy. this edgecase will be prevented on FE.
+			return powerMdl.incrUserStock(tid,userId,function(err,stock){
+				if(err) return cb(err);
+				powerMdl.clearInspectStatus(tid,cb);
+			});
+		}
 
-		//inspect just went through. record the history.	
-		historyMdl.useInspect(tid,opts.userId,function(err,historyRes){
-			return cb(null,constants._INSPECT_COUNT,tid);
+		powerMdl.setUserInspect(tid,opts.userId,function(err,success){
+			if(err) return cb(err);
+			if(!success) return cb();
+
+			//inspect just went through. record the history. value = current stock, delta = change in stock (-1)	
+			historyMdl.recordEvent({
+				tid: tid,
+				uid: opts.userId,
+				value: stock,
+				delta: -1,
+				eventString: 'power-inspect'
+			},function(err,historyRes){
+				return cb(null,constants._INSPECT_COUNT,tid);
+			});
 		});
 	});
 };
