@@ -7,30 +7,32 @@ var _ = require('lodash'),
 
 var TourneyInterface = {};
 
-TourneyInterface.allStatsDto = function(data,seeded,inspectOwner,inspectStock,requester){
+TourneyInterface.allStatsDto = function(o){
 	var dto = {
 		users: [], 
-		seeded: seeded, 
+		seeded: o.seeded, 
 		inspect: {
-			owner: inspectOwner,
-			stock: inspectStock
+			owner: o.inspectOwner,
+			stock: o.inspectStock
 		}
 	};
 
-	for (var i=0;i<data.length;i++){
-		dto.users.push(data[i])
+	for (var i=0;i<o.data.length;i++){
+		o.data[i].powerStock = o.powerStocks[i];
+		dto.users.push(o.data[i]);
 	}
+
 	//	order users so the client doesn't have to
-	if(requester){
+	if(o.requester){
 		for(var i=0; i<dto.users.length; i++){
-			if(dto.users[i].name === requester){
+			if(dto.users[i].name === o.requester){
 				// pop off and append to front
 				dto.users.unshift(dto.users.splice(i,1)[0])
 				break;
 			}
 		}
 	}
-	return dto
+	return dto;
 };
 
 // data: array of user-data objects
@@ -115,7 +117,22 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 					}
 					powerups.getInspectStatus(tourneyId,function(err,inspectOwner,inspectStock){
 						if(err) return cb(err);
-						return cb(err,TourneyInterface.allStatsDto(tournamentData, seeded, inspectOwner, inspectStock, requester));
+						
+						powerups.getPowerStocks(tourneyId,uids,function(err,powerStocks){
+							if(err) return cb(err);
+							if(powerStocks.length !== tournamentData.length){
+								return cb();
+							}
+							var dtoOpts = {
+								data: tournamentData,
+								seeded: seeded,
+								inspectOwner: inspectOwner,
+								inspectStock: inspectStock,
+								requester: requester,
+								powerStocks: powerStocks
+							}
+							return cb(err,TourneyInterface.allStatsDto(dtoOpts));
+						});
 					});
 				});
 			});

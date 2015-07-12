@@ -24,6 +24,19 @@ var inspectDto = function(next,players,requester){
 	};
 }
 
+PowerInterface.getPowerStocks = function(tid, uids, cb){
+	var calls = uids.map(function(u){
+		return function(done){
+			powerMdl.getUserStock(tid,u,done);
+		}
+	}.bind(this));
+
+	async.series(calls,function(err,results){
+		if(err) return cb(err);
+		return cb(null, results)
+	});
+};
+
 PowerInterface.getInspect = function(opts,cb) {
 	powerSvc.checkOrClaimInspect(opts,function(err,inspectCount,tid){
 		if(err) return cb(err);
