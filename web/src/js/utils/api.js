@@ -103,7 +103,7 @@ var Api = {
 	},
 	getInspect: function(slug,cb) {
 		xhr({
-			json:true,
+			json: true,
 			uri: "/api/tournaments/" + slug + "/pwr/inspect",
 			method: "get",
 			headers: {
@@ -115,7 +115,7 @@ var Api = {
 	},
 	postInspection: function(slug,data,cb) {
 		xhr({
-			json:data,
+			json: data,
 			uri: "/api/tournaments/" + slug + "/pwr/inspect",
 			method: "post",
 			headers: {
@@ -127,6 +127,7 @@ var Api = {
 	},
 	undoLastGame: function(slug,cb) {
 		xhr({
+			json: {"undo": 1},
 			uri: "/api/games/" + slug,
 			method: "put",
 			headers: {
@@ -138,7 +139,7 @@ var Api = {
 	},
 	useOddsMaker: function(slug,data,cb) {
 		xhr({
-			json:data,
+			json: data,
 			uri: "/api/tournaments/" + slug + "/pwr/oddsmaker",
 			method: "post",
 			headers: {

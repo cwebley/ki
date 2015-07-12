@@ -30,9 +30,12 @@ gameController.submitGame = function(req, res){
 
 
 gameController.undoLastGame = function(req, res){
-	history.undoLastGame(req.params.tourneySlug,function(err,dto){
-		if(err) return res.status(500).send({err: err});
-		res.status(201).send({success: true});
+	var requester = (req.user) ? req.user.name : '';
+
+	history.undoLastGame(req.params.tourneySlug,requester,function(err,dto){
+		if(err) return res.status(500).send({success: false, err: err});
+		if(!dto) return res.status(400).send({success:false});
+		res.status(201).send(dto);
 	});
 }
 

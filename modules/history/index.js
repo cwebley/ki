@@ -1,6 +1,8 @@
 var	historyMdl = require('./history-model'),
+	tourneyIndex = require('../tournaments'),
 	tourneyMdl = require('../tournaments/tournaments-model'),
 	powerups = require('../powerups'),
+	powerMdl = require('../powerups/powerups-model'),
 	upcoming = require('../upcoming'),
 	async = require('async'),
 	_ = require("lodash");
@@ -19,7 +21,7 @@ HistoryInterface.recalculateHistory = function(tid, cb){
 	});
 }
 
-HistoryInterface.undoLastGame = function(slug, cb) {
+HistoryInterface.undoLastGame = function(slug, requester, cb) {
 	tourneyMdl.getTourneyId(slug,function(err,tid){
 		if(err) return cb(err);
 		if(!tid) return cb();
@@ -53,6 +55,10 @@ HistoryInterface.undoLastGame = function(slug, cb) {
 								function(done){ historyMdl.undoIce(tid,item.userId,item.characterId,done) }
 							);
 							break;
+						case 'power-stock-incr':
+							reverseHistoryOps.push(
+								function(done){ powerMdl.decrUserStock(tid,item.userId,done) }
+							);
 
 					}
 				}.bind(this));
@@ -64,7 +70,7 @@ HistoryInterface.undoLastGame = function(slug, cb) {
 						powerups.incrInspect(tid,function(err,incrInspectRes){
 							if(err) return cb(err);
 							upcoming.rematch(tid);
-							return cb(null, incrInspectRes);
+							return tourneyIndex.getAllTourneyStats(slug,requester,cb); // return stats so user doesn't have to refresh
 						});
 					});
 				}.bind(this));

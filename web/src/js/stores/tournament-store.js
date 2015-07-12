@@ -65,6 +65,9 @@ function _oddsMakerFailure(){
 	_attemptedOddsMaker = true;
 }
 function _updatePowerStock(data){
+	if(!data || !data.powerStock){
+		return;
+	}
 	_me.powerStock = data.powerStock;
 }
 
@@ -161,6 +164,7 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 
 		case ActionTypes.UNDO_LAST:
 			(payload.action.code === 201) ? _undoSuccess() : _undoFailure();
+			_tourneyDataReceived(action.data);
 			TournamentStore.emitChange();
 			break;
 
