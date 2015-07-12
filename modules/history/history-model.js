@@ -13,8 +13,8 @@ HistoryModel.recordEvent = function(opts,cb) {
 		uid = opts.uid,
 		cid = opts.cid || 99999, // use character 'NA' if a character is not part of the transacation
 		eventString = opts.eventString,
-		value = opts.value || 1,
-		delta = opts.delta || value;
+		value = (opts.value === 0) ? opts.value : opts.value || 1, // 0 is reasonable here. prevent the falsey fallback.
+		delta = (opts.delta === 0) ? opts.delta : opts.delta || value;
 
 	var sql = 'SELECT id FROM events WHERE description = ?',
 		params = [eventString];
