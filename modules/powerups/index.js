@@ -167,18 +167,33 @@ PowerInterface.oddsMaker = function(opts,cb) {
 			if(err) return cb(err);
 			if(!cid) return cb();
 
-			var next = upcoming.getNextArray(tid,[{id:opts.userId}],constants._ODDS_MAKER_LENGTH, true)[0]; // just yours, ignore opponent
-			var resolved = next.map(function(c){
-				var equalsZeroMaybe = Math.floor(Math.random()*(constants._ODDS_MAKER_LENGTH/constants._ODDS_MAKER_VALUE))
-				return (equalsZeroMaybe === 0) ? opts.character : c
-			}.bind(this));
-			
-			historyMdl.useOddsMaker(tid, opts.userId, opts.character, function(err,historyRes){
+			powerMdl.decrUserStock(tid,opts.userId,function(err,stock){
 				if(err) return cb(err);
-				if(!historyRes) return cb();
+				if(stock < 0){
+					// you don't have the power stock to do this. this will be prevented on FE.
+					return powerMdl.incrUserStock(tid,opts.userId,cb);
+				}
 
-				upcoming.submitCustom(tid,[opts.userId],[resolved], true);
-				return cb(null,resolved);
+				var next = upcoming.getNextArray(tid,[{id:opts.userId}],constants._ODDS_MAKER_LENGTH, true)[0]; // just yours, ignore opponent
+				var resolved = next.map(function(c){
+					var equalsZeroMaybe = Math.floor(Math.random()*(constants._ODDS_MAKER_LENGTH/constants._ODDS_MAKER_VALUE))
+					return (equalsZeroMaybe === 0) ? opts.character : c
+				}.bind(this));
+
+				historyMdl.recordEvent({
+					tid: tid,
+					uid: opts.userId,
+					cid: cid,
+					eventString: 'power-oddsMaker',
+					value: stock,
+					delta: -1
+				}, function(err,historyRes){
+					if(err) return cb(err);
+					if(!historyRes) return cb();
+
+					upcoming.submitCustom(tid,[opts.userId],[resolved], true);
+					return cb(null,resolved);
+				});
 			});
 		});
 	});
