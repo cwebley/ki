@@ -127,7 +127,7 @@ var Api = {
 	},
 	undoLastGame: function(slug,cb) {
 		xhr({
-			json: {"undo": 1},
+			json: {undo: 1},
 			uri: "/api/games/" + slug,
 			method: "put",
 			headers: {
@@ -141,6 +141,18 @@ var Api = {
 		xhr({
 			json: data,
 			uri: "/api/tournaments/" + slug + "/pwr/oddsmaker",
+			method: "post",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body);
+		});
+	},
+	rematch: function(slug,cb) {
+		xhr({
+			json: {rematch: true},
+			uri: "/api/tournaments/" + slug + "/pwr/rematch",
 			method: "post",
 			headers: {
 				"x-access-token": localStorage.token

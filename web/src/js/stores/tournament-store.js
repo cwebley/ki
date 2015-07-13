@@ -18,6 +18,8 @@ var _attemptedUndo;
 var _succeededUndo;
 var _attemptedOddsMaker;
 var _succeededOddsMaker;
+var _attemptedRematch;
+var _succeededRematch;
 var _inspectOwner;
 
 function _tourneyDataReceived(data){
@@ -56,13 +58,25 @@ function _undoFailure(){
 	_succeededUndo = false;
 	_attemptedUndo = true;
 }
-function _oddsMakerSuccess(){
+function _oddsMakerSuccess(data){
 	_succeededOddsMaker = true;
 	_attemptedOddsMaker = true;
+	_updatePowerStock(data);
 }
 function _oddsMakerFailure(){
 	_succeededOddsMaker = false;
 	_attemptedOddsMaker = true;
+}
+function _rematchSuccess(data){
+	console.log("REMATCH SUCCESS")
+	_succeededRematch = true;
+	_attemptedRematch = true;
+	_updatePowerStock(data);
+}
+function _rematchFailure(){
+	console.log("REMATCH FAILURE")
+	_succeededRematch = false;
+	_attemptedRematch = true;
 }
 function _updatePowerStock(data){
 	if(!data || !data.powerStock){
@@ -118,6 +132,12 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 			success: _succeededOddsMaker
 		};
 	},
+	rematchStatus: function(){
+		return {
+			attempt: _attemptedRematch,
+			success: _succeededRematch
+		};
+	},
 	inspectOwner: function(){
 		return _inspectOwner;
 	}
@@ -163,13 +183,17 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			break;
 
 		case ActionTypes.UNDO_LAST:
-			(payload.action.code === 201) ? _undoSuccess() : _undoFailure();
+			(payload.action.code === 200) ? _undoSuccess() : _undoFailure();
 			_tourneyDataReceived(action.data);
 			TournamentStore.emitChange();
 			break;
 
 		case ActionTypes.USE_ODDS_MAKER:
-			(payload.action.code === 200) ? _oddsMakerSuccess() : _oddsMakerFailure();
+			(payload.action.code === 200) ? _oddsMakerSuccess(action.data) : _oddsMakerFailure();
+			TournamentStore.emitChange();
+			break;
+		case ActionTypes.USE_REMATCH:
+			(payload.action.code === 200) ? _rematchSuccess(action.data) : _rematchFailure();
 			_updatePowerStock(action.data);
 			TournamentStore.emitChange();
 			break;

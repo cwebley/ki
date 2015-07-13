@@ -35,7 +35,7 @@ gameController.undoLastGame = function(req, res){
 	history.undoLastGame(req.params.tourneySlug,requester,function(err,dto){
 		if(err) return res.status(500).send({success: false, err: err});
 		if(!dto) return res.status(400).send({success:false});
-		res.status(201).send(dto);
+		res.status(200).send(dto);
 	});
 }
 

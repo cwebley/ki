@@ -113,6 +113,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	rematch: function(slug){
+ 		api.rematch(slug,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.USE_REMATCH,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 

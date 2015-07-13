@@ -19,6 +19,7 @@ var TournamentPage = React.createClass({
 			supreme: false,
 			oddsMakerActive: false,
 			oddsMakerStatus: TournamentStore.oddsMakerStatus(),
+			rematchStatus: TournamentStore.rematchStatus(),
 			inspect: TournamentStore.inspectOwner()
 		};
 	},
@@ -81,6 +82,7 @@ var TournamentPage = React.createClass({
 			supreme: false,
 			oddsMakerActive: false,
 			oddsMakerStatus: TournamentStore.oddsMakerStatus(),
+			rematchStatus: TournamentStore.rematchStatus(),
 			inspect: TournamentStore.inspectOwner()
 		});
 	},
@@ -162,6 +164,10 @@ var TournamentPage = React.createClass({
 		if(this.state.oddsMakerStatus.attempt){
 			omButtonColor = (this.state.oddsMakerStatus.success) ? 'btn-success' : 'btn-danger'
 		}
+		var rematchButtonColor = 'btn-primary';
+		if(this.state.rematchStatus.attempt){
+			rematchButtonColor = (this.state.rematchStatus.success) ? 'btn-success' : 'btn-danger'
+		}
 
 		var inspectButton = this.renderInspectButton();
 		return(
@@ -181,6 +187,7 @@ var TournamentPage = React.createClass({
 				</div>
 				{inspectButton}
 				<button className={"btn btn-sm btn-block " + omButtonColor} onClick={this.toggleButtons}>Toggle OddsMaker</button>
+				<button className={"btn btn-sm btn-block " + rematchButtonColor} onClick={serverActions.rematch}>Rematch</button>
 			</div>
 		);
 	},
