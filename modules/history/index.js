@@ -21,7 +21,7 @@ HistoryInterface.recalculateHistory = function(tid, cb){
 	});
 }
 
-HistoryInterface.undoLastGame = function(slug, requester, cb) {
+HistoryInterface.undoLastGame = function(slug,requester,undoHard,cb) {
 	tourneyMdl.getTourneyId(slug,function(err,tid){
 		if(err) return cb(err);
 		if(!tid) return cb();
@@ -42,7 +42,7 @@ HistoryInterface.undoLastGame = function(slug, requester, cb) {
 						case 'game':
 							reverseHistoryOps.push(
 								// gets its info from the games table since it needs to remove that entry anyway
-								function(done){ historyMdl.revertLastGame(tid,done) }
+								function(done){ historyMdl.revertLastGame(tid,undoHard,done) }
 							);
 							break;
 						case 'fire':
@@ -64,17 +64,40 @@ HistoryInterface.undoLastGame = function(slug, requester, cb) {
 				}.bind(this));
 
 				async.series(reverseHistoryOps,function(err,results){
-					historyMdl.deleteHistoryFrom(tid, lastGameIds[1], function(err,deleteHistoryFromRes){
-						if(err) return cb(err);
+					if(err) return cb(err);
 
-						powerups.incrInspect(tid,function(err,incrInspectRes){
-							if(err) return cb(err);
-							upcoming.undo(tid);
-							return tourneyIndex.getAllTourneyStats(slug,requester,cb); // return stats so user doesn't have to refresh
-						});
-					});
+					if(undoHard){
+						return HistoryInterface.undoCleanup(tid, lastGameIds[1], slug, requester, cb);
+					}
+					return HistoryInterface.rematchCleanup(tid, lastGameIds, slug, requester, cb);
 				}.bind(this));
 			});
+		});
+	});
+}
+
+HistoryInterface.rematchCleanup = function(tid, gameIds, slug, requester, cb){
+	historyMdl.updateHistoryForRematch(tid, gameIds, function(err,updateHistoryRes){
+		if(err) return cb(err);
+
+		powerups.incrInspect(tid,function(err,incrInspectRes){
+			if(err) return cb(err);
+
+			upcoming.rematch(tid);
+			return tourneyIndex.getAllTourneyStats(slug,requester,cb); // return stats so user doesn't have to refresh
+		});
+	});
+}
+
+HistoryInterface.undoCleanup = function(tid, gameId, slug, requester, cb){
+	historyMdl.deleteHistoryFrom(tid, gameId, function(err,deleteHistoryFromRes){
+		if(err) return cb(err);
+
+		powerups.incrInspect(tid,function(err,incrInspectRes){
+			if(err) return cb(err);
+
+			upcoming.undo(tid);
+			return tourneyIndex.getAllTourneyStats(slug,requester,cb); // return stats so user doesn't have to refresh
 		});
 	});
 }

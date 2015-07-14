@@ -5,6 +5,7 @@ var _ = require('lodash'),
 	powerSvc = require('./powerups-service'),
 	powerMdl = require('./powerups-model'),
 	userMdl = require('../users/users-model'),
+	historyIndex = require('../history'),
 	historyMdl = require('../history/history-model'),
 	tourneyMdl = require('../tournaments/tournaments-model');
 
@@ -224,11 +225,10 @@ PowerInterface.rematch = function(opts,cb) {
 				// you don't have the power stock to do this. this should be prevented on FE.
 				return powerMdl.incrUserStock(tid,opts.userId,cb);
 			}
-			historyMdl.getPreviousStreaks(tid,function(err,streaks){
-				console.log("PREVIOUS STREAKS: ", err, streaks)
+
+			historyIndex.undoLastGame(opts.tourneySlug,opts.username,false,function(err,tourneyStats){
 				if(err) return cb(err);
-				
-				upcoming.rematch(tid);
+				if(!tourneyStats) return cb();
 
 				historyMdl.recordEvent({
 					tid: tid,
@@ -240,7 +240,7 @@ PowerInterface.rematch = function(opts,cb) {
 				}, function(err,historyRes){
 					if(err) return cb(err);
 					if(!historyRes) return cb();
-					return cb(null,{powerStock: stock});
+					return cb(null,tourneyStats);
 				});
 			});
 		});

@@ -223,11 +223,8 @@ HistoryModel.undoIce = function(tid,uid,cid,cb){
 	});
 }
 
-HistoryModel.rematchLastGame = function(tid,cb) {
-
-}
-
-HistoryModel.revertLastGame = function(tid,cb) {
+// undoHard: boolean. if true, revert win/loss stats for users and characters, and delete the game from games table.
+HistoryModel.revertLastGame = function(tid,undoHard,cb) {
 
 	var sql = 'SELECT * from games WHERE tournamentId = ? ORDER BY id DESC LIMIT 1',
 		params = [tid];
@@ -241,55 +238,48 @@ HistoryModel.revertLastGame = function(tid,cb) {
 
 			// decr wins from users, tournamentUsers, and handle streaks
 			var sql = 'UPDATE tournamentUsers tu, users u'
-					+ ' SET tu.wins = tu.wins -1'
-					+ ', u.tournamentWins = u.tournamentWins -1'
-					+ ', u.globalBestStreak = CASE WHEN u.globalBestStreak = tu.curStreak THEN tu.curStreak-1 END'
+					+ ' SET u.globalBestStreak = CASE WHEN u.globalBestStreak = tu.curStreak THEN tu.curStreak-1 END'
 					+ ', tu.bestStreak = CASE WHEN tu.bestStreak = tu.curStreak THEN tu.curStreak-1 END'
 					+ ', tu.curStreak = ?'
-					+ ', tu.score = tu.score - ?'
-					+ ' WHERE tu.userId = u.id' // JOIN
-					+ ' AND tu.tournamentId = ? AND tu.userId = ?',
-				params = [streakResults.winner, gameRes[0].value, tid, gameRes[0].winningPlayerId];
+					+ ', tu.score = tu.score - ?';
+			sql += (undoHard ? ' tu.wins = tu.wins -1, u.wins = u.wins -1' : '');
+			sql += ' WHERE tu.userId = u.id AND tu.tournamentId = ? AND tu.userId = ?';
+
+			var params = [streakResults.winner, gameRes[0].value, tid, gameRes[0].winningPlayerId];
 
 			mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-winnerdecr', function(err, winnerDecrRes){
 				if(err) return cb(err);
 
 				// decr losses from users, tournamentUsers, and handle streaks
 				var sql = 'UPDATE tournamentUsers tu, users u'
-						+ ' SET tu.losses = tu.losses -1'
-						+ ', u.tournamentLosses = u.tournamentLosses -1'
-						+ ', tu.curStreak = ?'
-						+ ' WHERE tu.userId = u.id' // JOIN
-						+ ' AND tu.tournamentId = ? AND tu.userId = ?',
-					params = [streakResults.loser, tid, gameRes[0].losingPlayerId];
+						+ ' SET tu.curStreak = ?';
+				sql += (undoHard ? ' tu.losses = tu.losses -1, u.losses = u.losses -1' : '');
+				sql += ' WHERE tu.userId = u.id AND tu.tournamentId = ? AND tu.userId = ?';
+				var params = [streakResults.loser, tid, gameRes[0].losingPlayerId];
 
 				mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-loserdecr', function(err, loserDecrRes){
 					if(err) return cb(err);
 
 					// winning character wins streak decr and value incr
 					var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
-							+ ' SET tc.wins = tc.wins -1'
-							+ ', cd.wins = cd.wins -1'
-							+ ', cd.globalBestStreak = CASE WHEN cd.globalBestStreak = tc.curStreak THEN tc.curStreak-1 END'
+							+ ' SET cd.globalBestStreak = CASE WHEN cd.globalBestStreak = tc.curStreak THEN tc.curStreak-1 END'
 							+ ', tc.bestStreak = CASE WHEN tc.bestStreak = tc.curStreak THEN tc.curStreak-1 END'
 							+ ', tc.curStreak = ?'
 							+ ', tc.value = ?' // we happen to have this value handy
-							+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
-							+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
-						params = [streakResults.charWinner, gameRes[0].value, tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
+					sql += (undoHard ? ' tc.wins = tc.wins -1, cd.wins = cd.wins -1' : '');
+					sql += ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?';
+					var params = [streakResults.charWinner, gameRes[0].value, tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
 
 					mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-winnerDecr', function(err, winningCharDecrRes){
 						if(err) return cb(err);
 
 						// losing character losses decr streak incr and value incr
 						var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
-								+ ' SET tc.losses = tc.losses -1'
-								+ ', cd.losses = cd.losses -1'
-								+ ', tc.curStreak = ?'
+								+ ' SET tc.curStreak = ?'
 								+ ', tc.value = tc.value - 1' // losing char went up 1 for false submission
-								+ ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId' // JOIN
-								+ ' AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?',
-							params = [streakResults.charLoser, tid, gameRes[0].losingPlayerId, gameRes[0].losingCharacterId];
+						sql += (undoHard ? ' tc.losses = tc.losses -1, cd.losses = cd.losses -1': '');
+						sql += ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?';
+						var params = [streakResults.charLoser, tid, gameRes[0].losingPlayerId, gameRes[0].losingCharacterId];
 
 						mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentCharacters-loserDecr', function(err, losingCharDecrRes){
 							if(err) return cb(err);
@@ -302,11 +292,14 @@ HistoryModel.revertLastGame = function(tid,cb) {
 							mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-decrFireWins', function(err, decrFireWins){
 								if(err) return cb(err);
 
-								// delete from games table
-								var sql = 'DELETE FROM games WHERE id = ?',
+								var sql = 'UPDATE games SET value = 0 WHERE id = ?',
 									params = [gameRes[0].id];
 
-								mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-games-deleteGame', function(err, deleteGameRes){
+								if(undoHard){
+									// delete the entire game from the games table
+									sql = 'DELETE FROM games WHERE id = ?';
+								}
+								return mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-games-deleteGame', function(err, deleteGameRes){
 									if(err) return cb(err);
 									return cb(null,deleteGameRes);
 								});
@@ -326,6 +319,24 @@ HistoryModel.deleteHistoryFrom = function(tid,hid,cb){
 		if(err) return cb(err);
 		
 		return cb(null, deleteFromHistoryRes);
+	});
+}
+
+//hids are ids for both sides of a game event in descending order as returned by getLastGameIds()
+HistoryModel.updateHistoryForRematch = function(tid,hids,cb){
+	// delete everything except the game last game ids
+	var sql = 'DELETE FROM history WHERE tournamentId = ? AND id > ?',
+		params = [tid,hids[0]];
+	mysql.query('rw', sql, params, 'modules/history/history-model/updateHistoryForRematch-delete', function(err, updateHistroyRes){
+		if(err) return cb(err);
+		
+		// set delta to 0 since the points didn't count here.
+		var sql = 'UPDATE history SET delta = 0 WHERE id IN (?,?)',
+			params = hids;
+		mysql.query('rw', sql, params, 'modules/history/history-model/updateHistoryForRematch-delete', function(err, updateHistroyRes){
+			if(err) return cb(err);
+			return cb(null, updateHistroyRes);
+		});
 	});
 }
 
