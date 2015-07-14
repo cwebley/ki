@@ -223,7 +223,10 @@ HistoryModel.undoIce = function(tid,uid,cid,cb){
 	});
 }
 
-// TODO fish through history or games table to handle streaks (users and characters) are busted here. losers streaks especially :(
+HistoryModel.rematchLastGame = function(tid,cb) {
+
+}
+
 HistoryModel.revertLastGame = function(tid,cb) {
 
 	var sql = 'SELECT * from games WHERE tournamentId = ? ORDER BY id DESC LIMIT 1',

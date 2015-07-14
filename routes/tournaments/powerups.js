@@ -66,4 +66,18 @@ powerupController.oddsMaker = function(req, res){
 	});
 }
 
+powerupController.rematch = function(req, res){
+	var opts = {
+		username: req.user.name,
+		userId: req.user.id,
+		tourneySlug: req.params.tourneySlug
+	};
+
+	powerups.rematch(opts, function(err,dto){
+		if(err) return res.status(500).send({success:false,err:err});
+		if(!dto) return res.status(400).send({success:false,reason:'invalid-inputs'});
+		res.status(200).send(dto);
+	});
+}
+
 module.exports = powerupController;

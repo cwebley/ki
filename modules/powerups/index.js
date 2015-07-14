@@ -170,7 +170,7 @@ PowerInterface.oddsMaker = function(opts,cb) {
 			powerMdl.decrUserStock(tid,opts.userId,function(err,stock){
 				if(err) return cb(err);
 				if(stock < 0){
-					// you don't have the power stock to do this. this will be prevented on FE.
+					// you don't have the power stock to do this. this should be prevented on FE.
 					return powerMdl.incrUserStock(tid,opts.userId,cb);
 				}
 
@@ -210,6 +210,40 @@ PowerInterface.incrUserStock = function(tid,uid,cb){
 			value: stock,
 			delta: 1
 		},cb);
+	});
+};
+
+PowerInterface.rematch = function(opts,cb) {
+	tourneyMdl.getTourneyId(opts.tourneySlug,function(err, tid){
+		if(err) return cb(err);
+		if(!tid) return cb();
+
+		powerMdl.decrUserStock(tid,opts.userId,function(err,stock){
+			if(err) return cb(err);
+			if(stock < 0){
+				// you don't have the power stock to do this. this should be prevented on FE.
+				return powerMdl.incrUserStock(tid,opts.userId,cb);
+			}
+			historyMdl.getPreviousStreaks(tid,function(err,streaks){
+				console.log("PREVIOUS STREAKS: ", err, streaks)
+				if(err) return cb(err);
+				
+				upcoming.rematch(tid);
+
+				historyMdl.recordEvent({
+					tid: tid,
+					uid: opts.userId,
+					cid: cid,
+					eventString: 'power-rematch',
+					value: stock,
+					delta: -1
+				}, function(err,historyRes){
+					if(err) return cb(err);
+					if(!historyRes) return cb();
+					return cb(null,{powerStock: stock});
+				});
+			});
+		});
 	});
 };
 

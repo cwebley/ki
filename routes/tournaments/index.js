@@ -93,29 +93,26 @@ app.use(auth.ensureAuthenticated);
 app.post('/',
  	tourneyController.postNewTourney
 );
-
 app.get('/:tourneySlug',
  	tourneyController.get
 );
-
 app.delete('/:tourneySlug',
  	tourneyController.deleteTourney
 );
-
 app.post('/:tourneySlug/edit',
  	tourneyController.edit
 );
-
 app.get('/:tourneySlug/pwr/inspect',
  	powerups.getInspect
 );
-
 app.post('/:tourneySlug/pwr/inspect',
  	powerups.postInspect
 );
-
 app.post('/:tourneySlug/pwr/oddsmaker',
  	powerups.oddsMaker
+);
+app.post('/:tourneySlug/pwr/rematch',
+ 	powerups.rematch
 );
 
 module.exports = app;

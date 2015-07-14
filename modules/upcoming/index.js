@@ -70,7 +70,7 @@ UpcomingInterface.removeFirst = function(tourneyId){
 	}
 }
 
-UpcomingInterface.rematch = function(tourneyId){
+UpcomingInterface.undo = function(tourneyId){
 	if(!UpcomingInterface.previous || !UpcomingInterface.previous[tourneyId]){
 		return;
 	}
@@ -80,6 +80,20 @@ UpcomingInterface.rematch = function(tourneyId){
 		}
 		// pop off most recent game, unshift onto front of pending matches
 		UpcomingInterface.pending[tourneyId][n].unshift(UpcomingInterface.previous[tourneyId][n].pop());
+	}
+}
+
+UpcomingInterface.rematch = function(tourneyId){
+	if(!UpcomingInterface.previous || !UpcomingInterface.previous[tourneyId]){
+		return;
+	}
+	for(var n in UpcomingInterface.previous[tourneyId]){
+		var prevLen = UpcomingInterface.previous[tourneyId][n].length;
+		if(!prevLen){
+			return;
+		}
+		// read most recent game (but keep it there), unshift onto front of pending matches as a rematch
+		UpcomingInterface.pending[tourneyId][n].unshift(UpcomingInterface.previous[tourneyId][n][prevLen-1]);
 	}
 }
 

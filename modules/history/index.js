@@ -69,7 +69,7 @@ HistoryInterface.undoLastGame = function(slug, requester, cb) {
 
 						powerups.incrInspect(tid,function(err,incrInspectRes){
 							if(err) return cb(err);
-							upcoming.rematch(tid);
+							upcoming.undo(tid);
 							return tourneyIndex.getAllTourneyStats(slug,requester,cb); // return stats so user doesn't have to refresh
 						});
 					});
