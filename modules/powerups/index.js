@@ -25,19 +25,6 @@ var inspectDto = function(next,players,requester){
 	};
 }
 
-PowerInterface.getPowerStocks = function(tid, uids, cb){
-	var calls = uids.map(function(u){
-		return function(done){
-			powerMdl.getUserStock(tid,u,done);
-		}
-	}.bind(this));
-
-	async.series(calls,function(err,results){
-		if(err) return cb(err);
-		return cb(null, results)
-	});
-};
-
 PowerInterface.getInspect = function(opts,cb) {
 	powerSvc.checkOrClaimInspect(opts,function(err,inspectCount,tid){
 		if(err) return cb(err);
@@ -53,33 +40,6 @@ PowerInterface.getInspect = function(opts,cb) {
 			}
 			next = upcoming.getNextArray(tid,players,inspectCount,true);
 			return cb(err,inspectDto(next,players,opts.username));
-		});
-	});
-};
-
-PowerInterface.getInspectStatus = function(tid,cb) {
-	powerMdl.getInspectStatus(tid,function(err,inspectOwner){
-		if(err) return cb(err);
-		if(!inspectOwner) return cb();
-
-		powerMdl.getUserInspect(tid,inspectOwner,function(err,stock){
-			if(err) return cb(err);
-			userMdl.getUserById(inspectOwner,function(err,userObj){
-				if(err) return cb(err);
-				return cb(null, userObj.name, parseInt(stock,10));
-			});
-		});
-	});
-};
-
-PowerInterface.incrInspect = function(tid,cb) {
-	powerMdl.getInspectStatus(tid,function(err,inspectOwner){
-		if(err) return cb(err);
-		if(!inspectOwner) return cb();
-
-		powerMdl.incrUserInspect(tid,inspectOwner,function(err,stock){
-			if(err) return cb(err);
-			return cb(null, stock);
 		});
 	});
 };

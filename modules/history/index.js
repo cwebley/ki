@@ -1,7 +1,7 @@
 var	historyMdl = require('./history-model'),
 	tourneyIndex = require('../tournaments'),
 	tourneyMdl = require('../tournaments/tournaments-model'),
-	powerups = require('../powerups'),
+	powerSvc = require('../powerups/powerups-service'),
 	powerMdl = require('../powerups/powerups-model'),
 	upcoming = require('../upcoming'),
 	async = require('async'),
@@ -80,7 +80,7 @@ HistoryInterface.rematchCleanup = function(tid, gameIds, slug, requester, cb){
 	historyMdl.updateHistoryForRematch(tid, gameIds, function(err,updateHistoryRes){
 		if(err) return cb(err);
 
-		powerups.incrInspect(tid,function(err,incrInspectRes){
+		powerSvc.incrInspect(tid,function(err,incrInspectRes){
 			if(err) return cb(err);
 
 			upcoming.rematch(tid);

@@ -3,7 +3,7 @@ var _ = require('lodash'),
 	upcoming = require('../upcoming'),
 	tourneySvc = require('./tournaments-service'),
 	tourneyMdl = require('./tournaments-model'),
-	powerups = require('../powerups');
+	powerSvc = require('../powerups/powerups-service');
 
 var TourneyInterface = {};
 
@@ -115,10 +115,10 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 					for(var i=0;i<tournamentData.length;i++){
 						tournamentData[i].characters = charData[i]
 					}
-					powerups.getInspectStatus(tourneyId,function(err,inspectOwner,inspectStock){
+					powerSvc.getInspectStatus(tourneyId,function(err,inspectOwner,inspectStock){
 						if(err) return cb(err);
 						
-						powerups.getPowerStocks(tourneyId,uids,function(err,powerStocks){
+						powerSvc.getPowerStocks(tourneyId,uids,function(err,powerStocks){
 							if(err) return cb(err);
 							if(powerStocks.length !== tournamentData.length){
 								return cb();
