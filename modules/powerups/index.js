@@ -186,7 +186,7 @@ PowerInterface.rematch = function(opts,cb) {
 				return powerMdl.incrUserStock(tid,opts.userId,cb);
 			}
 
-			historyIndex.undoLastGame(opts.tourneySlug,opts.username,false,function(err,tourneyStats){
+			historyIndex.undoLastGame(tid,opts.tourneySlug,opts.username,false,function(err,tourneyStats){
 				if(err) return cb(err);
 				if(!tourneyStats) return cb();
 

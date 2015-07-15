@@ -1,7 +1,8 @@
 var express = require('express'),
 	auth = require('../modules/auth'),
 	games = require('../modules/games'),
-	history = require('../modules/history');
+	history = require('../modules/history'),
+	games = require('../modules/games');
 
 var app = express();
 var gameController = {};

@@ -21,57 +21,52 @@ HistoryInterface.recalculateHistory = function(tid, cb){
 	});
 }
 
-HistoryInterface.undoLastGame = function(slug,requester,undoHard,cb) {
-	tourneyMdl.getTourneyId(slug,function(err,tid){
+HistoryInterface.undoLastGame = function(tid,slug,requester,undoHard,cb) {
+	// get most recent game
+	historyMdl.getLastGameId(tid, function(err,lastGameIds){
 		if(err) return cb(err);
-		if(!tid) return cb();
+		if(lastGameIds.length !== 2){
+			return cb(new Error('last-game-not-found'));
+		}
 
-		// get most recent game
-		historyMdl.getLastGameId(tid, function(err,lastGameIds){
+		historyMdl.getAllHistorySinceId(tid, lastGameIds[0],function(err,historyData){
 			if(err) return cb(err);
-			if(lastGameIds.length !== 2){
-				return cb(new Error('last-game-not-found'));
-			}
 
-			historyMdl.getAllHistorySinceId(tid, lastGameIds[0],function(err,historyData){
+			var reverseHistoryOps = [];
+			historyData.forEach(function(item){
+				switch (item.description) {
+					case 'game':
+						reverseHistoryOps.push(
+							// gets its info from the games table since it needs to remove that entry anyway
+							function(done){ historyMdl.revertLastGame(tid,undoHard,done) }
+						);
+						break;
+					case 'fire':
+						reverseHistoryOps.push(
+							function(done){ historyMdl.undoFire(tid,item.userId,item.characterId,done) }
+						);
+						break;
+					case 'ice':
+						reverseHistoryOps.push(
+							function(done){ historyMdl.undoIce(tid,item.userId,item.characterId,done) }
+						);
+						break;
+					case 'power-stock-incr':
+						reverseHistoryOps.push(
+							function(done){ powerMdl.decrUserStock(tid,item.userId,done) }
+						);
+
+				}
+			}.bind(this));
+
+			async.series(reverseHistoryOps,function(err,results){
 				if(err) return cb(err);
 
-				var reverseHistoryOps = [];
-				historyData.forEach(function(item){
-					switch (item.description) {
-						case 'game':
-							reverseHistoryOps.push(
-								// gets its info from the games table since it needs to remove that entry anyway
-								function(done){ historyMdl.revertLastGame(tid,undoHard,done) }
-							);
-							break;
-						case 'fire':
-							reverseHistoryOps.push(
-								function(done){ historyMdl.undoFire(tid,item.userId,item.characterId,done) }
-							);
-							break;
-						case 'ice':
-							reverseHistoryOps.push(
-								function(done){ historyMdl.undoIce(tid,item.userId,item.characterId,done) }
-							);
-							break;
-						case 'power-stock-incr':
-							reverseHistoryOps.push(
-								function(done){ powerMdl.decrUserStock(tid,item.userId,done) }
-							);
-
-					}
-				}.bind(this));
-
-				async.series(reverseHistoryOps,function(err,results){
-					if(err) return cb(err);
-
-					if(undoHard){
-						return HistoryInterface.undoCleanup(tid, lastGameIds[1], slug, requester, cb);
-					}
-					return HistoryInterface.rematchCleanup(tid, lastGameIds, slug, requester, cb);
-				}.bind(this));
-			});
+				if(undoHard){
+					return HistoryInterface.undoCleanup(tid, lastGameIds[1], slug, requester, cb);
+				}
+				return HistoryInterface.rematchCleanup(tid, lastGameIds, slug, requester, cb);
+			}.bind(this));
 		});
 	});
 }

@@ -137,30 +137,18 @@ HistoryModel.getPreviousStreaks = function(tid,cb) {
 		var winningPlayerId = allGames[0].winningPlayerId,
 			losingPlayerId = allGames[0].losingPlayerId,
 			winningCharId = allGames[0].winningCharacterId,
-			losingCharId = allGames[0].losingCharacterId,
-			prevWinnerId = allGames[1].winningPlayerId,
-			prevLoserId = allGames[1].losingPlayerId;
-
-		// update user streaks wrt last game
-		if(winningPlayerId === prevWinnerId){
-			streaks.winner++;
-			streaks.loser--;
-		}
-		if(winningPlayerId === prevLoserId){
-			streaks.winner--;
-			streaks.loser++;
-		}
+			losingCharId = allGames[0].losingCharacterId;
 
 		// calculate the depth of the previous streaks for the winning character
 		for(var i=1; i<allGames.length; i++){
-			if(allGames[i].winningCharacterId === winningCharId && allGames[i].winningPlayerId === winningPlayerId){
+			if(allGames[i].winningCharacterId === winningCharId && allGames[i].winningPlayerId === winningPlayerId && allGames[i].value !== 0){
 				if(streaks.charWinner < 0){
 					// he is on a losing streak. this is the start of it.
 					break;
 				}
 				streaks.charWinner++;
 			}
-			if(allGames[i].losingCharacterId === winningCharId && allGames[i].losingPlayerId === winningPlayerId){
+			if(allGames[i].losingCharacterId === winningCharId && allGames[i].losingPlayerId === winningPlayerId && allGames[i].value !== 0){
 				if(streaks.charWinner > 0){
 					// he is on a winning streak. this was the start of it.
 					break;
@@ -171,14 +159,14 @@ HistoryModel.getPreviousStreaks = function(tid,cb) {
 
 		// calculate the depth of the previous streaks for the losing character
 		for(var i=1; i<allGames.length; i++){
-			if(allGames[i].winningCharacterId === losingCharId && allGames[i].winningPlayerId === losingPlayerId){
+			if(allGames[i].winningCharacterId === losingCharId && allGames[i].winningPlayerId === losingPlayerId && allGames[i].value !== 0){
 				if(streaks.charLoser < 0){
 					// he is on a losing streak. this is the start of it.
 					break;
 				}
 				streaks.charLoser++;
 			}
-			if(allGames[i].losingCharacterId === losingCharId && allGames[i].losingPlayerId === losingPlayerId){
+			if(allGames[i].losingCharacterId === losingCharId && allGames[i].losingPlayerId === losingPlayerId && allGames[i].value !== 0){
 				if(streaks.charLoser > 0){
 					// he is on a winning streak. this was the start of it.
 					break;
@@ -192,13 +180,29 @@ HistoryModel.getPreviousStreaks = function(tid,cb) {
 			return cb(null,streaks)
 		}
 
-		// starting at 2 games back, calculate the depth of the previous streaks for users
-		for(var i=2; i<allGames.length; i++){
-			if(allGames[i].winningPlayerId !== prevWinnerId){
+		// calculate the depth of the previous streaks for users
+		var prevWinnerId;
+		for(var i=1; i<allGames.length; i++){
+			// value of 0 means game was rematched. doesnt count for streaks
+			if(allGames[i].value === 0){
+				continue;
+			}
+			// find out who was streaking before
+			if(!prevWinnerId){
+				prevWinnerId = allGames[i].winningPlayerId;
+			}
+			if(prevWinnerId !== allGames[i].winningPlayerId){
+				//streak started here, this is all we need.
 				break;
 			}
-			streaks.winner++;
-			streaks.loser--;
+			if(prevWinnerId === winningPlayerId){
+				streaks.winner++;
+				streaks.loser--;
+			}
+			if(prevWinnerId === losingPlayerId){
+				streaks.loser++;
+				streaks.winner--;
+			}
 		}
 		return cb(null,streaks);
 	});
