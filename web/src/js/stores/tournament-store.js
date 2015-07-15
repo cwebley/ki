@@ -74,7 +74,6 @@ function _rematchSuccess(data){
 	_tourneyDataReceived(data);
 }
 function _rematchFailure(){
-	console.log("REMATCH FAILURE")
 	_succeededRematch = false;
 	_attemptedRematch = true;
 }
@@ -194,7 +193,6 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			break;
 		case ActionTypes.USE_REMATCH:
 			(payload.action.code === 200) ? _rematchSuccess(action.data) : _rematchFailure();
-			_updatePowerStock(action.data);
 			TournamentStore.emitChange();
 			break;
 
