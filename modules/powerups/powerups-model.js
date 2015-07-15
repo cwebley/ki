@@ -18,6 +18,9 @@ var inspectStatusKey = function(tourneyId) {
 var userInspectKey = function(tourneyId,userId) {
 	return tourneyId + ':' + userId + ':inspect'
 };
+var rematchKey = function(tourneyId) {
+	return tourneyId + ':' + ':rematch'
+};
 
 
 /*
@@ -110,6 +113,40 @@ PowerModel.setUserInspect = function(tourneyId,userId,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = userInspectKey(tourneyId,userId);
 	conn.set(key, constants._INSPECT_COUNT, cb);
+};
+
+// rematches can only be used once per game, and not back to back
+PowerModel.setnxRematchStatus = function(tourneyId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = rematchKey(tourneyId);
+	conn.setnx(key, 2, function(err,result){
+		if(err) return cb(err);
+		return cb(null, parseInt(result,10));
+	});
+};
+
+PowerModel.decrRematchStatus = function(tourneyId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = rematchKey(tourneyId);
+	conn.decr(key, function(err,result){
+		return cb(err,parseInt(result,10));
+	});
+};
+PowerModel.delRematchStatus = function(tourneyId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = rematchKey(tourneyId);
+	conn.del(key, cb);
+};
+PowerModel.getRematchStatus = function(tourneyId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = rematchKey(tourneyId);
+	conn.get(key, function(err,result){
+		if(err) return cb(err);
+		if(!result){
+			return cb();
+		}
+		return cb(null, parseInt(result,10));
+	});
 };
 
 module.exports = PowerModel;

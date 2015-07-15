@@ -117,6 +117,17 @@ PowerInterface.postInspect = function(opts,cb) {
 PowerInterface.decrInspection = function(options, cb){
 	return powerSvc.decrInspection(options.tourneyId, cb);
 };
+PowerInterface.decrRematchStatus = function(options, cb){
+	return powerMdl.decrRematchStatus(options.tourneyId, function(err,count){
+		if(err) return cb(err);
+		if(count > 0){
+			return cb(null, count);
+		}
+		powerMdl.delRematchStatus(options.tourneyId,function(err,result){
+			return cb(err,0) // return 0 if its available
+		});
+	});
+};
 
 PowerInterface.oddsMaker = function(opts,cb) {
 	tourneyMdl.getTourneyId(opts.tourneySlug,function(err, tid){
@@ -185,21 +196,25 @@ PowerInterface.rematch = function(opts,cb) {
 				// you don't have the power stock to do this. this should be prevented on FE.
 				return powerMdl.incrUserStock(tid,opts.userId,cb);
 			}
-
-			historyIndex.undoLastGame(tid,opts.tourneySlug,opts.username,false,function(err,tourneyStats){
+			powerMdl.setnxRematchStatus(tid,function(err,success){
 				if(err) return cb(err);
-				if(!tourneyStats) return cb();
+				if(!success) return cb();
 
-				historyMdl.recordEvent({
-					tid: tid,
-					uid: opts.userId,
-					eventString: 'power-rematch',
-					value: stock,
-					delta: -1
-				}, function(err,historyRes){
+				historyIndex.undoLastGame(tid,opts.tourneySlug,opts.username,false,function(err,tourneyStats){
 					if(err) return cb(err);
-					if(!historyRes) return cb();
-					return cb(null,tourneyStats);
+					if(!tourneyStats) return cb();
+
+					historyMdl.recordEvent({
+						tid: tid,
+						uid: opts.userId,
+						eventString: 'power-rematch',
+						value: stock,
+						delta: -1
+					}, function(err,historyRes){
+						if(err) return cb(err);
+						if(!historyRes) return cb();
+						return cb(null,tourneyStats);
+					});
 				});
 			});
 		});

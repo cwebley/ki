@@ -3,7 +3,8 @@ var _ = require('lodash'),
 	upcoming = require('../upcoming'),
 	tourneySvc = require('./tournaments-service'),
 	tourneyMdl = require('./tournaments-model'),
-	powerSvc = require('../powerups/powerups-service');
+	powerSvc = require('../powerups/powerups-service'),
+	powerMdl = require('../powerups/powerups-model');
 
 var TourneyInterface = {};
 
@@ -14,7 +15,8 @@ TourneyInterface.allStatsDto = function(o){
 		inspect: {
 			owner: o.inspectOwner,
 			stock: o.inspectStock
-		}
+		},
+		rematch: o.rematch
 	};
 
 	for (var i=0;i<o.data.length;i++){
@@ -118,20 +120,25 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 					powerSvc.getInspectStatus(tourneyId,function(err,inspectOwner,inspectStock){
 						if(err) return cb(err);
 						
-						powerSvc.getPowerStocks(tourneyId,uids,function(err,powerStocks){
+						powerMdl.getRematchStatus(tourneyId,function(err,rematchStatus){
 							if(err) return cb(err);
-							if(powerStocks.length !== tournamentData.length){
-								return cb();
-							}
-							var dtoOpts = {
-								data: tournamentData,
-								seeded: seeded,
-								inspectOwner: inspectOwner,
-								inspectStock: inspectStock,
-								requester: requester,
-								powerStocks: powerStocks
-							}
-							return cb(err,TourneyInterface.allStatsDto(dtoOpts));
+
+							powerSvc.getPowerStocks(tourneyId,uids,function(err,powerStocks){
+								if(err) return cb(err);
+								if(powerStocks.length !== tournamentData.length){
+									return cb();
+								}
+								var dtoOpts = {
+									data: tournamentData,
+									seeded: seeded,
+									inspectOwner: inspectOwner,
+									inspectStock: inspectStock,
+									requester: requester,
+									powerStocks: powerStocks,
+									rematch: !!rematchStatus
+								}
+								return cb(err,TourneyInterface.allStatsDto(dtoOpts));
+							});
 						});
 					});
 				});

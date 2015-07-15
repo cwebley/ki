@@ -132,8 +132,12 @@ GamesService.updateData = function(options, cb) {
 			powerIndex.decrInspection({tourneyId: options.tourneyId}, function(err,response){
 				if(err) return cb(err);
 
-				GamesService.checkAndUpdateTournament(options,function(err,endTournament){
-					return cb(err,results,endTournament);
+				powerIndex.decrRematchStatus({tourneyId: options.tourneyId}, function(err,response){
+					if(err) return cb(err);
+
+					GamesService.checkAndUpdateTournament(options,function(err,endTournament){
+						return cb(err,results,endTournament);
+					});
 				});
 			});
 		});
