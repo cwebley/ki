@@ -79,7 +79,7 @@ function _rematchFailure(){
 	_attemptedRematch = true;
 }
 function _updatePowerStock(data){
-	if(!data || !data.powerStock){
+	if(!data){
 		return;
 	}
 	_me.powerStock = data.powerStock;
