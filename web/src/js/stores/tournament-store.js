@@ -21,6 +21,7 @@ var _succeededOddsMaker;
 var _attemptedRematch;
 var _succeededRematch;
 var _inspectOwner;
+var _rematchStatus;
 
 function _tourneyDataReceived(data){
 	console.log("TDATA: ", data);
@@ -31,6 +32,7 @@ function _tourneyDataReceived(data){
 	_attemptedOddsMaker = false;
 	_attemptedRematch = false;
 	_inspectOwner = data.inspect;
+	_rematchStatus = data.rematch;
 }
 function _inspectDataReceived(data){
 	_inspectMe = data.me;
@@ -134,7 +136,8 @@ var TournamentStore = assign({}, EventEmitter.prototype, {
 	rematchStatus: function(){
 		return {
 			attempt: _attemptedRematch,
-			success: _succeededRematch
+			success: _succeededRematch,
+			status: _rematchStatus
 		};
 	},
 	inspectOwner: function(){

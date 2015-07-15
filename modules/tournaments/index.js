@@ -98,11 +98,17 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 					upcoming.create(tourneyId,uids)
 				}
 
-				var next = upcoming.getNextArray(tourneyId,players,1)
+				var next = upcoming.getNextArray(tourneyId,players,1);
+				var prev = upcoming.lastMatchup(tourneyId,players);
+
 				// add next data for each user
 				for(var i=0;i<tournamentData.length;i++){
 					tournamentData[i].next = next[i];
+					if(prev){
+						tournamentData[i].prev = prev[i];
+					}
 				}
+
 
 				// get stats for each character
 				var calls = [];

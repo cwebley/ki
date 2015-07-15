@@ -192,8 +192,10 @@ var TournamentPage = React.createClass({
 					<button disabled={true} className={"btn btn-sm btn-block"}>Toggle OddsMaker</button>
 				}
 				{
-					this.state.me.powerStock ?
-					<button className={"btn btn-sm btn-block " + rematchButtonColor} onClick={this.rematchClick}>Rematch</button> : 
+					(this.state.me.powerStock && !this.state.rematchStatus.status && this.state.me.prev)?
+					<button className={"btn btn-sm btn-block " + rematchButtonColor} onClick={this.rematchClick}>
+						Rematch {this.state.me.prev} vs {this.state.them.prev}
+					</button> : 
 					<button disabled={true} className={"btn btn-sm btn-block"}>Rematch</button>
 
 				}

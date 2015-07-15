@@ -57,6 +57,25 @@ UpcomingInterface.getNextArray = function(tourneyId,userArr,num,skipCurrent){
 	return nextUp;
 }
 
+UpcomingInterface.lastMatchup = function(tourneyId,userArr){
+	var lastMatch = [];
+	var prevArr;
+	for(var i=0;i<userArr.length;i++){
+		if(!UpcomingInterface.previous[tourneyId]){
+			UpcomingInterface.previous[tourneyId] = {};
+		}
+		if(!UpcomingInterface.previous[tourneyId][userArr[i].id]){
+			UpcomingInterface.previous[tourneyId][userArr[i].id] = [];
+		};
+		prevArr = UpcomingInterface.previous[tourneyId][userArr[i].id];
+		if(!prevArr.length){
+			return false;
+		}
+		lastMatch.push(prevArr.slice(prevArr.length-1, prevArr.length));
+	}
+	return lastMatch;
+}
+
 UpcomingInterface.removeFirst = function(tourneyId){
 	for(var n in UpcomingInterface.pending[tourneyId]){
 		if(!UpcomingInterface.previous[tourneyId]){
