@@ -20,6 +20,9 @@ HistoryModel.recordEvent = function(opts,cb) {
 		params = [eventString];
 	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/recordEvent-events', function(err, eventResult){
 		if(err) return cb(err);
+		if(!eventResult || !eventResult.length){
+			return cb();
+		}
 
 		var sql = 'INSERT INTO `history` (tournamentId, userId, characterId, eventId, value, delta)'
 				+ ' VALUES (?,?,?,?,?,?)'
@@ -242,22 +245,24 @@ HistoryModel.revertLastGame = function(tid,undoHard,cb) {
 					+ ', tu.bestStreak = CASE WHEN tu.bestStreak = tu.curStreak THEN tu.curStreak-1 END'
 					+ ', tu.curStreak = ?'
 					+ ', tu.score = tu.score - ?';
-			sql += (undoHard ? ' tu.wins = tu.wins -1, u.wins = u.wins -1' : '');
+			sql += (undoHard ? ', tu.wins = tu.wins -1, u.wins = u.wins -1' : '');
 			sql += ' WHERE tu.userId = u.id AND tu.tournamentId = ? AND tu.userId = ?';
 
 			var params = [streakResults.winner, gameRes[0].value, tid, gameRes[0].winningPlayerId];
 
 			mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-winnerdecr', function(err, winnerDecrRes){
+
 				if(err) return cb(err);
 
 				// decr losses from users, tournamentUsers, and handle streaks
 				var sql = 'UPDATE tournamentUsers tu, users u'
 						+ ' SET tu.curStreak = ?';
-				sql += (undoHard ? ' tu.losses = tu.losses -1, u.losses = u.losses -1' : '');
+				sql += (undoHard ? ', tu.losses = tu.losses -1, u.losses = u.losses -1' : '');
 				sql += ' WHERE tu.userId = u.id AND tu.tournamentId = ? AND tu.userId = ?';
 				var params = [streakResults.loser, tid, gameRes[0].losingPlayerId];
 
 				mysql.query('rw', sql, params, 'modules/history/history-model/revertLastGame-tournamentUsers-loserdecr', function(err, loserDecrRes){
+
 					if(err) return cb(err);
 
 					// winning character wins streak decr and value incr
@@ -266,7 +271,7 @@ HistoryModel.revertLastGame = function(tid,undoHard,cb) {
 							+ ', tc.bestStreak = CASE WHEN tc.bestStreak = tc.curStreak THEN tc.curStreak-1 END'
 							+ ', tc.curStreak = ?'
 							+ ', tc.value = ?' // we happen to have this value handy
-					sql += (undoHard ? ' tc.wins = tc.wins -1, cd.wins = cd.wins -1' : '');
+					sql += (undoHard ? ', tc.wins = tc.wins -1, cd.wins = cd.wins -1' : '');
 					sql += ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?';
 					var params = [streakResults.charWinner, gameRes[0].value, tid, gameRes[0].winningPlayerId, gameRes[0].winningCharacterId];
 
@@ -277,7 +282,7 @@ HistoryModel.revertLastGame = function(tid,undoHard,cb) {
 						var sql = 'UPDATE tournamentCharacters tc, charactersData cd'
 								+ ' SET tc.curStreak = ?'
 								+ ', tc.value = tc.value - 1' // losing char went up 1 for false submission
-						sql += (undoHard ? ' tc.losses = tc.losses -1, cd.losses = cd.losses -1': '');
+						sql += (undoHard ? ', tc.losses = tc.losses -1, cd.losses = cd.losses -1': '');
 						sql += ' WHERE tc.userId = cd.userId AND tc.characterId = cd.characterId AND tc.tournamentId = ? AND tc.userId = ? AND tc.characterId = ?';
 						var params = [streakResults.charLoser, tid, gameRes[0].losingPlayerId, gameRes[0].losingCharacterId];
 

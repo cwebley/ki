@@ -193,7 +193,6 @@ PowerInterface.rematch = function(opts,cb) {
 				historyMdl.recordEvent({
 					tid: tid,
 					uid: opts.userId,
-					cid: cid,
 					eventString: 'power-rematch',
 					value: stock,
 					delta: -1

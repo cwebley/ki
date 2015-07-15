@@ -93,7 +93,7 @@ HistoryInterface.undoCleanup = function(tid, gameId, slug, requester, cb){
 	historyMdl.deleteHistoryFrom(tid, gameId, function(err,deleteHistoryFromRes){
 		if(err) return cb(err);
 
-		powerups.incrInspect(tid,function(err,incrInspectRes){
+		powerSvc.incrInspect(tid,function(err,incrInspectRes){
 			if(err) return cb(err);
 
 			upcoming.undo(tid);

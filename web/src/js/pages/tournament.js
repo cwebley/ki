@@ -187,7 +187,7 @@ var TournamentPage = React.createClass({
 				</div>
 				{inspectButton}
 				<button className={"btn btn-sm btn-block " + omButtonColor} onClick={this.toggleButtons}>Toggle OddsMaker</button>
-				<button className={"btn btn-sm btn-block " + rematchButtonColor} onClick={serverActions.rematch}>Rematch</button>
+				<button className={"btn btn-sm btn-block " + rematchButtonColor} onClick={this.rematchClick}>Rematch</button>
 			</div>
 		);
 	},
@@ -235,6 +235,9 @@ var TournamentPage = React.createClass({
 			return;
 		}
 		serverActions.undoLastGame(this.getParams().titleSlug);
+	},
+	rematchClick: function(){
+		serverActions.rematch(this.getParams().titleSlug);
 	},
 	toggleButtons: function() {
 		var status = this.state.oddsMakerActive;

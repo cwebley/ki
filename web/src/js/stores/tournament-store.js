@@ -29,6 +29,7 @@ function _tourneyDataReceived(data){
 	_them = data.users[1];
 	_attemptedUndo = false;
 	_attemptedOddsMaker = false;
+	_attemptedRematch = false;
 	_inspectOwner = data.inspect;
 }
 function _inspectDataReceived(data){
@@ -68,10 +69,9 @@ function _oddsMakerFailure(){
 	_attemptedOddsMaker = true;
 }
 function _rematchSuccess(data){
-	console.log("REMATCH SUCCESS")
 	_succeededRematch = true;
 	_attemptedRematch = true;
-	_updatePowerStock(data);
+	_tourneyDataReceived(data);
 }
 function _rematchFailure(){
 	console.log("REMATCH FAILURE")

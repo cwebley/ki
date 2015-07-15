@@ -161,7 +161,8 @@ INSERT INTO events (description) VALUES
 	('power-oddsMaker'),
 	('power-inspect'),
 	('power-stock-init'),
-	('power-stock-incr');
+	('power-stock-incr'),
+	('power-rematch');
 
 CREATE TABLE `history` (
 	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,

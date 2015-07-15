@@ -3,6 +3,7 @@ var _ = require('lodash'),
 	constants = require('../constants'),
 	upcoming = require('../upcoming'),
 	powerMdl = require('./powerups-model'),
+	userMdl = require('../users/users-model'),
 	historyMdl = require('../history/history-model'),
 	tourneyMdl = require('../tournaments/tournaments-model');
 
