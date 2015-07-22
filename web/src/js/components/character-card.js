@@ -8,7 +8,9 @@ var CharacterCard = React.createClass({
 		wins: React.PropTypes.number,
 		losses: React.PropTypes.number,
 		streak: React.PropTypes.number,
-		clickButton: React.PropTypes.func
+		clickButton: React.PropTypes.func,
+		upClick: React.PropTypes.func,
+		downClick: React.PropTypes.func
 	},
 
 	render: function(){
@@ -23,6 +25,11 @@ var CharacterCard = React.createClass({
 
 		return (
 			<div className={topClass.join(' ')}>
+				<div className="docker-buttons">
+					<button className="up-arrow"></button>
+					<button className="down-arrow" onClick={this._downArrowClick}></button>
+				</div>
+
 				<div className="card-left-column">
 					<h3 className="character-name">{this.props.name}</h3>
 				</div>
@@ -39,13 +46,15 @@ var CharacterCard = React.createClass({
 						</li>
 					</ul>
 				</div>
-				<button className={btnClasses.join(' ')} onClick={this._onClick}>Choose</button>
+				<button className={btnClasses.join(' ')} onClick={this._onClick}>Choose</button>	
 			</div>
 		);
 	},
-
 	_onClick: function(){
 		this.props.clickButton(this.props.name);
+	},
+	_downArrowClick: function(){
+		this.props.downClick(this.props.name);
 	}
 });
 

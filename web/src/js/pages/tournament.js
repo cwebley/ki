@@ -19,8 +19,10 @@ var TournamentPage = React.createClass({
 			supreme: false,
 			oddsMakerActive: false,
 			oddsMakerStatus: TournamentStore.oddsMakerStatus(),
+			dockersActive: false,
 			rematchStatus: TournamentStore.rematchStatus(),
-			inspect: TournamentStore.inspectOwner()
+			inspect: TournamentStore.inspectOwner(),
+			points: 0
 		};
 	},
 	componentWillMount:function(){
@@ -90,8 +92,14 @@ var TournamentPage = React.createClass({
 		if(!user.characters){
 			return false;
 		}
+		var clickButton;
 		if((who === 'me') && this.state.oddsMakerActive){
-			var clickButton = this.useOddsMaker;
+			clickButton = this.useOddsMaker;
+		}
+		var upArrow,
+			downArrow;
+		if(who === 'them' && this.state.dockersActive){
+			
 		}
 		var characters = user.characters.map(function(character){
 			return (
@@ -132,6 +140,9 @@ var TournamentPage = React.createClass({
 					</li>
 					<li className="stat-item power-stock">
 						powers: {user.powerStock}
+					</li>
+					<li className="stat-item decr-points">
+						dockers: {this.state.points}
 					</li>
 				</ul>
 				{characterCards}
@@ -197,7 +208,11 @@ var TournamentPage = React.createClass({
 						Rematch {this.state.me.prev} vs {this.state.them.prev}
 					</button> : 
 					<button disabled={true} className={"btn btn-sm btn-block"}>Rematch</button>
-
+				}
+				{
+					<button className={"btn btn-sm btn-block"} onClick={this.toggleDockerArrows} disabled={this.state.points ? false : true}>
+						Dock {this.state.them.name}s Characters
+					</button>
 				}
 			</div>
 		);
@@ -261,6 +276,12 @@ var TournamentPage = React.createClass({
 			oddsMakerStatus: {
 				attempt: false
 			}
+		});
+	},
+	toggleDockerArrows: function(){
+		var status = this.state.dockersActive;
+		this.setState({
+			dockerStatus: !status
 		});
 	},
 	useOddsMaker: function(character) {
