@@ -1,7 +1,9 @@
 ki
 ==
 
-the tournament of champions
+the tournament of champions.
+1v1 full cast killer instinct 3 tournament app. 
+complete work in progress. master branch generally stable.
 
 TODO: 
 
