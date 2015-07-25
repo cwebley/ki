@@ -5,6 +5,12 @@ the tournament of champions.
 1v1 full cast killer instinct 3 tournament app. 
 complete work in progress. master branch generally stable.
 
+problems 7/22:
+post inspect doesn't give success/fail response
+current matchup needs to remain on inspect page
+polling would be helpful
+
+
 TODO: 
 
 --api middleware overhaul to protect and simplfy resources. can't submit the incorrect games. cant submit games as non-tourney player etc.
