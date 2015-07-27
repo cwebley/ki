@@ -53,7 +53,6 @@ var DraggableCard = React.createClass({
 			topClass.push('dragging');
 		}
 
-		var topClass = ['character']
 		if(this.props.streak === 2){
 			topClass.push('heating');
 		}
@@ -74,11 +73,9 @@ var DraggableCard = React.createClass({
 			  <div className="card-left-column">
 
 			    <div className="value-wrapper">
-			      <button className="up-arrow"></button>
 			      <div className="value">
 			        <span className="value-text">{this.props.value}</span>
 			      </div>
-			      <button className="down-arrow"></button>
 			    </div>
 			    <div className="character-info">
 			      <h3 className="character-name">{this.props.name}</h3>
@@ -88,9 +85,6 @@ var DraggableCard = React.createClass({
 			  </div>
 			  <div className="card-right-column">
 			  <span className="streak">{streakText}</span>
-			  </div>
-			  <div className="card-center-column">
-			    <button className={btnClass} onClick={this._onClick}>Choose</button>
 			  </div>
 			</div>
 		));
