@@ -63,10 +63,14 @@ var InspectPage = React.createClass({
 		if(!this.state.me || !this.state.me.length){
 			return false;
 		}
-		var characters = this.state.me.map(function(character,i){
+		var characters = this.state.me.map(function(c,i){
 			return {
 				id: i,
-				name: character,
+				name: c.name,
+				value: c.value,
+				wins: c.wins,
+				losses: c.losses,
+				streak: c.curStreak,
 			};
 		});
 
@@ -98,10 +102,14 @@ var InspectPage = React.createClass({
 		if(!this.state.them || !this.state.them.length){
 			return false;
 		}
-		var characters = this.state.them.map(function(character,i){
+		var characters = this.state.them.map(function(c,i){
 			return {
 				id: i,
-				name: character,
+				name: c.name,
+				value: c.value,
+				wins: c.wins,
+				losses: c.losses,
+				streak: c.curStreak,
 			};
 		});
 

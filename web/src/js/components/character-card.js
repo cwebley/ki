@@ -21,32 +21,38 @@ var CharacterCard = React.createClass({
 		if(this.props.streak >=3){
 			topClass.push('fire');
 		}
-		var btnClasses = (this.props.clickButton) ? ['character-button', 'btn', 'btn-sm', 'btn-info'] : ['hide']
+		var btnClass = (this.props.clickButton) ? 'character-button' : 'hide';
+		var streakText = '';
+		if(this.props.streak > 0){
+			streakText = this.props.streak + 'W'
+		}
+		if(this.props.streak < 0){
+			streakText = -1* this.props.streak + 'L'
+		}
 
 		return (
 			<div className={topClass.join(' ')}>
-				<div className="docker-buttons">
-					<button className="up-arrow"></button>
-					<button className="down-arrow" onClick={this._downArrowClick}></button>
-				</div>
+			  <div className="card-left-column">
 
-				<div className="card-left-column">
-					<h3 className="character-name">{this.props.name}</h3>
-				</div>
-				<div className="card-right-column">
-					<ul className="character-stats">
-						<li className="char-stat-item value">
-							value: {this.props.value}
-						</li>
-						<li className="char-stat-item record">
-							record: {this.props.wins} - {this.props.losses}
-						</li>
-						<li className="char-stat-item streak">
-							streak: {this.props.streak}
-						</li>
-					</ul>
-				</div>
-				<button className={btnClasses.join(' ')} onClick={this._onClick}>Choose</button>	
+			    <div className="value-wrapper">
+			      <button className="up-arrow"></button>
+			      <div className="value">
+			        <span className="value-text">{this.props.value}</span>
+			      </div>
+			      <button className="down-arrow"></button>
+			    </div>
+			    <div className="character-info">
+			      <h3 className="character-name">{this.props.name}</h3>
+			      <div className="record">{this.props.wins} - {this.props.losses}</div>
+			    </div>
+
+			  </div>
+			  <div className="card-right-column">
+			  <span className="streak">{streakText}</span>
+			  </div>
+			  <div className="card-center-column">
+			    <button className={btnClass} onClick={this._onClick}>Choose</button>
+			  </div>
 			</div>
 		);
 	},
