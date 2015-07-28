@@ -19,7 +19,10 @@ var userInspectKey = function(tourneyId,userId) {
 	return tourneyId + ':' + userId + ':inspect'
 };
 var rematchKey = function(tourneyId) {
-	return tourneyId + ':' + ':rematch'
+	return tourneyId + ':rematch'
+};
+var streakPointsKey = function(tourneyId,userId) {
+	return tourneyId + ':' + userId + ':streakPoints'
 };
 
 
@@ -145,6 +148,33 @@ PowerModel.getRematchStatus = function(tourneyId,cb) {
 		if(!result){
 			return cb();
 		}
+		return cb(null, parseInt(result,10));
+	});
+};
+
+/* Streak Points */
+PowerModel.getStreakPoints = function(tourneyId,userId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = streakPointsKey(tourneyId,userId);
+	conn.get(key, function(err,result){
+		if(err) return cb(err);
+		if(!result) return cb(null, 0);
+		return cb(null, parseInt(result,10));
+	});
+};
+PowerModel.incrStreakPoints = function(tourneyId,userId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = streakPointsKey(tourneyId,userId);
+	conn.incr(key, function(err,result){
+		if(err) return cb(err);
+		return cb(null, parseInt(result,10));
+	});
+};
+PowerModel.decrStreakPoints = function(tourneyId,userId,cb) {
+	var conn = redis.get('persistent', 'rw'),
+		key = streakPointsKey(tourneyId,userId);
+	conn.decr(key, function(err,result){
+		if(err) return cb(err);
 		return cb(null, parseInt(result,10));
 	});
 };

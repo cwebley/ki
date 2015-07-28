@@ -19,10 +19,8 @@ var TournamentPage = React.createClass({
 			supreme: false,
 			oddsMakerActive: false,
 			oddsMakerStatus: TournamentStore.oddsMakerStatus(),
-			dockersActive: false,
 			rematchStatus: TournamentStore.rematchStatus(),
-			inspect: TournamentStore.inspectOwner(),
-			points: 5
+			inspect: TournamentStore.inspectOwner()
 		};
 	},
 	componentWillMount:function(){
@@ -39,7 +37,6 @@ var TournamentPage = React.createClass({
 		serverActions.getTournamentData(this.getParams().titleSlug);
 	},
 	render: function(){
-		console.log("DOCKER STATE: ", this.state.dockersActive)
 		var me = this.renderUser(this.state.me,'me');
 		var them = this.renderUser(this.state.them,'them');
 		var middle = (!this.state.them.seeded) ? this.renderSeedButton() : this.renderMatchup();
@@ -99,7 +96,9 @@ var TournamentPage = React.createClass({
 		}
 		var upClick,
 			downClick;
-		if(who === 'them' && this.state.dockersActive){
+		console.log("STREAK POINTS: ", this.state.me.streakPoints)
+
+		if(this.state.me.streakPoints && who === "them"){
 			downClick = this.dockDown;
 		}
 		var characters = user.characters.map(function(character){
@@ -145,7 +144,7 @@ var TournamentPage = React.createClass({
 						powers: {user.powerStock}
 					</li>
 					<li className="stat-item decr-points">
-						dockers: {this.state.points}
+						dockers: {user.streakPoints}
 					</li>
 				</ul>
 				{characterCards}
@@ -212,11 +211,6 @@ var TournamentPage = React.createClass({
 					</button> : 
 					<button disabled={true} className={"btn btn-sm btn-block"}>Rematch</button>
 				}
-				{
-					<button className={"btn btn-sm btn-block btn-primary"} onClick={this.toggleDockerArrows} disabled={this.state.points ? false : true}>
-						Dock {this.state.them.name}s Characters
-					</button>
-				}
 			</div>
 		);
 	},
@@ -281,12 +275,6 @@ var TournamentPage = React.createClass({
 			}
 		});
 	},	
-	toggleDockerArrows: function(){
-		var status = this.state.dockersActive;
-		this.setState({
-			dockersActive: !status
-		});
-	},
 	useOddsMaker: function(character) {
 		var d = {
 			character: character

@@ -314,9 +314,9 @@ UsersModel.getCharacterStreak = function(tid,uid,cid,cb) {
 	});
 };
 
-UsersModel.getUserStreak = function(uid,cb) {
-	var sql = 'SELECT curStreak FROM users WHERE id = ?',
-		params = [uid];
+UsersModel.getUserStreak = function(tid,uid,cb) {
+	var sql = 'SELECT curStreak FROM tournamentUsers WHERE tournamentId = ? AND userId = ?',
+		params = [tid,uid];
 
 	mysql.query('rw', sql, params, 'modules/users/users-model/getCharacterStreak', function(err, results){
 		if(err) return cb(err)

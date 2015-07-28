@@ -131,7 +131,20 @@ PowerupSvc.getPowerStocks = function(tid, uids, cb){
 		}
 	}.bind(this));
 
-	async.series(calls,function(err,results){
+	async.parallel(calls,function(err,results){
+		if(err) return cb(err);
+		return cb(null, results)
+	});
+};
+
+PowerupSvc.getStreakPoints = function(tid, uids, cb){
+	var calls = uids.map(function(u){
+		return function(done){
+			powerMdl.getStreakPoints(tid,u,done);
+		}
+	}.bind(this));
+
+	async.parallel(calls,function(err,results){
 		if(err) return cb(err);
 		return cb(null, results)
 	});

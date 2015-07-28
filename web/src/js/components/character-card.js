@@ -24,7 +24,6 @@ var CharacterCard = React.createClass({
 		var btnClass = (this.props.clickButton) ? 'character-button' : 'hide';
 		var downArrowClass = (this.props.downClick) ? 'down-arrow' : 'hide';
 		var upArrowClass = (this.props.upClick) ? 'up-arrow' : 'hide';
-		console.log("THIS PROPS downClick: ", this.props.downClick)
 		var streakText = '';
 		if(this.props.streak > 0){
 			streakText = this.props.streak + 'W'

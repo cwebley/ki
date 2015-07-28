@@ -21,6 +21,7 @@ TourneyInterface.allStatsDto = function(o){
 
 	for (var i=0;i<o.data.length;i++){
 		o.data[i].powerStock = o.powerStocks[i];
+		o.data[i].streakPoints = o.streakPoints[i];
 		dto.users.push(o.data[i]);
 	}
 
@@ -134,16 +135,24 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 								if(powerStocks.length !== tournamentData.length){
 									return cb();
 								}
-								var dtoOpts = {
-									data: tournamentData,
-									seeded: seeded,
-									inspectOwner: inspectOwner,
-									inspectStock: inspectStock,
-									requester: requester,
-									powerStocks: powerStocks,
-									rematch: !!rematchStatus
-								}
-								return cb(err,TourneyInterface.allStatsDto(dtoOpts));
+
+								powerSvc.getStreakPoints(tourneyId,uids,function(err,streakPoints){
+									if(err) return cb(err);
+									if(streakPoints.length !== tournamentData.length){
+										return cb();
+									}
+									var dtoOpts = {
+										data: tournamentData,
+										seeded: seeded,
+										inspectOwner: inspectOwner,
+										inspectStock: inspectStock,
+										requester: requester,
+										powerStocks: powerStocks,
+										streakPoints: streakPoints,
+										rematch: !!rematchStatus
+									}
+									return cb(err,TourneyInterface.allStatsDto(dtoOpts));
+								});
 							});
 						});
 					});
