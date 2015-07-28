@@ -18,6 +18,7 @@ module.exports = {
     UNDO_LAST: null,
     USE_ODDSMAKER: null,
     USE_REMATCH: null,
+    DOCK_POINT: null,
 
     // not in use
     EDIT_TOURNAMENT: null,

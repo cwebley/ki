@@ -22,7 +22,7 @@ var TournamentPage = React.createClass({
 			dockersActive: false,
 			rematchStatus: TournamentStore.rematchStatus(),
 			inspect: TournamentStore.inspectOwner(),
-			points: 0
+			points: 5
 		};
 	},
 	componentWillMount:function(){
@@ -39,6 +39,7 @@ var TournamentPage = React.createClass({
 		serverActions.getTournamentData(this.getParams().titleSlug);
 	},
 	render: function(){
+		console.log("DOCKER STATE: ", this.state.dockersActive)
 		var me = this.renderUser(this.state.me,'me');
 		var them = this.renderUser(this.state.them,'them');
 		var middle = (!this.state.them.seeded) ? this.renderSeedButton() : this.renderMatchup();
@@ -96,10 +97,10 @@ var TournamentPage = React.createClass({
 		if((who === 'me') && this.state.oddsMakerActive){
 			clickButton = this.useOddsMaker;
 		}
-		var upArrow,
-			downArrow;
+		var upClick,
+			downClick;
 		if(who === 'them' && this.state.dockersActive){
-			
+			downClick = this.dockDown;
 		}
 		var characters = user.characters.map(function(character){
 			return (
@@ -110,7 +111,9 @@ var TournamentPage = React.createClass({
 						wins={character.wins}
 						losses={character.losses}
 						streak={character.curStreak}
-						clickButton={clickButton} />
+						clickButton={clickButton}
+						upClick={upClick}
+						downClick={downClick} />
 				</li>
 			);
 		}.bind(this));
@@ -210,7 +213,7 @@ var TournamentPage = React.createClass({
 					<button disabled={true} className={"btn btn-sm btn-block"}>Rematch</button>
 				}
 				{
-					<button className={"btn btn-sm btn-block"} onClick={this.toggleDockerArrows} disabled={this.state.points ? false : true}>
+					<button className={"btn btn-sm btn-block btn-primary"} onClick={this.toggleDockerArrows} disabled={this.state.points ? false : true}>
 						Dock {this.state.them.name}s Characters
 					</button>
 				}
@@ -277,11 +280,11 @@ var TournamentPage = React.createClass({
 				attempt: false
 			}
 		});
-	},
+	},	
 	toggleDockerArrows: function(){
 		var status = this.state.dockersActive;
 		this.setState({
-			dockerStatus: !status
+			dockersActive: !status
 		});
 	},
 	useOddsMaker: function(character) {
@@ -289,6 +292,12 @@ var TournamentPage = React.createClass({
 			character: character
 		}
 		serverActions.useOddsMaker(this.getParams().titleSlug,d)
+	},
+	dockDown: function(character) {
+		console.log("DOWNCLICK: ", character)
+		var d = {};
+		d[character] = -1;
+		serverActions.dockPoints(this.getParams().titleSlug,d)
 	},
 	toggleSupreme: function(){
 		var supreme = !this.state.supreme;

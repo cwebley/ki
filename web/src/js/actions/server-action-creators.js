@@ -122,6 +122,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	dockPoints: function(slug,data){
+ 		api.dockPoints(slug,data,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.DOCK_POINT,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 

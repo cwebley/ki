@@ -160,6 +160,18 @@ var Api = {
 		}, function (err, res, body) {
 			cb(res.statusCode, body);
 		});
+	},
+	dockPoints: function(slug,data,cb) {
+		xhr({
+			json: data,
+			uri: "/api/tournaments/" + slug + "/adjust-points",
+			method: "post",
+			headers: {
+				"x-access-token": localStorage.token
+			}
+		}, function (err, res, body) {
+			cb(res.statusCode, body);
+		});
 	}
 }
 

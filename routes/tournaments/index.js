@@ -80,6 +80,15 @@ tourneyController.getTourneyList = function(req, res){
 	})
 }
 
+//TODO
+tourneyController.dockPoints = function(req, res){
+	// tournaments.getTourneyList(function(err,dto){
+		console.log("REQ BODY: ", req.body)
+		if(err) return res.status(500).send({success:false,err:err})
+		res.status(200).send(dto)
+	// })
+}
+
 app.get('/',
 	tourneyController.getTourneyList
 );
@@ -113,6 +122,9 @@ app.post('/:tourneySlug/pwr/oddsmaker',
 );
 app.post('/:tourneySlug/pwr/rematch',
  	powerups.rematch
+);
+app.post('/:tourneySlug/adjust-points',
+ 	tourneyController.dockPoints
 );
 
 module.exports = app;
