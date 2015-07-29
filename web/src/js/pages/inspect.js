@@ -30,6 +30,11 @@ var InspectPage = React.createClass({
 	componentDidMount: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);
 		serverActions.getInspect(this.getParams().titleSlug);
+
+		setInterval(function(){
+			serverActions.getTournamentData(this.getParams().titleSlug);
+			serverActions.getInspect(this.getParams().titleSlug);
+		}.bind(this),5000)
 	},
 	_onChange: function(){
 		this.setState({

@@ -87,8 +87,6 @@ tournamentsService.getCharacterLevelStats = function(tourneySlug,userName,cb){
 
 // characters = list of charactersNames wanted. will return stats in the same order.
 tournamentsService.getSomeCharacterStats = function(tourneySlug,userName,characters,cb){
-	console.log("character service characters : ", characters);
-
 	var seen = {};
 	var deduped = [];
 

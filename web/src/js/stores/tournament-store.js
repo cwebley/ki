@@ -41,7 +41,6 @@ function _tourneyDataReceived(data){
 function _inspectDataReceived(data){
 	_inspectMe = data.me;
 	_inspectThem = data.them;
-	_attemptedPostInspect = false;
 }
 function _submitMatchupsSuccess(){
 	_attemptedPostInspect = true;

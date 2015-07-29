@@ -29,6 +29,10 @@ var TournamentIndex = React.createClass({
 	},
 	componentDidMount: function(){
 		serverActions.getTournamentIndex();
+		// poll index somewhat infrequently
+		setInterval(function(){
+			serverActions.getTournamentIndex();
+		},30000)
 	},
 	_onChange: function(){
 		this.setState({

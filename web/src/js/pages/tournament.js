@@ -32,6 +32,11 @@ var TournamentPage = React.createClass({
 	componentDidMount: function(){
 		viewActions.focusTournament(this.getParams().titleSlug);
 		serverActions.getTournamentData(this.getParams().titleSlug);
+
+		// poll data tournament data
+		setInterval(function(){
+			serverActions.getTournamentData(this.getParams().titleSlug);
+		}.bind(this),5000)
 	},
 	componentWillReceiveProps: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);
