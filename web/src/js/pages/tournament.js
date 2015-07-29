@@ -5,8 +5,7 @@ var React = require('react'),
 	TournamentStore = require('../stores/tournament-store'),
 	TournamentListStore = require('../stores/tournament-list-store'),
 	Link = Router.Link,
-	CharacterCard = require('../components/character-card'),
-	MatchupItem = require('../components/matchup-item');
+	CharacterCard = require('../components/character-card');
 
 var TournamentPage = React.createClass({
 	mixins: [ Router.Navigation, Router.State ],
@@ -77,15 +76,11 @@ var TournamentPage = React.createClass({
 		);
 	},
 	_onChange: function(){
-		if(React.findDOMNode(this.refs.supreme)){
-			React.findDOMNode(this.refs.supreme).checked = false;
-		}
 		this.setState({
 			me: TournamentStore.getMe(),
 			them: TournamentStore.getThem(),
 			undoStatus: TournamentStore.undoStatus(),
 			supreme: false,
-			oddsMakerActive: false,
 			oddsMakerStatus: TournamentStore.oddsMakerStatus(),
 			rematchStatus: TournamentStore.rematchStatus(),
 			inspect: TournamentStore.inspectOwner()
@@ -104,7 +99,7 @@ var TournamentPage = React.createClass({
 
 		var iAmInspecting = this.state.inspect.owner && this.state.inspect.owner === this.state.me.name;
 		if(this.state.me.streakPoints && who === "them" && !iAmInspecting){
-			downClick = this.dockDown;
+			downClick = this.dockOpponentCharacter;
 		}
 		var characters = user.characters.map(function(character){
 			return (
@@ -149,7 +144,7 @@ var TournamentPage = React.createClass({
 						powers: {user.powerStock}
 					</li>
 					<li className="stat-item decr-points">
-						dockers: {user.streakPoints}
+						streakPoints: {user.streakPoints}
 					</li>
 				</ul>
 				{characterCards}
@@ -191,11 +186,11 @@ var TournamentPage = React.createClass({
 		return(
 			<div className="matchup">
 				<div className="matchup-left">
-					<MatchupItem data={IWin} display={this.state.me.next[0]} />
+					<button className="btn btn-block btn-primary" onClick={this.submitGame.bind(this,IWin)}>{this.state.me.next[0]}</button>
 				</div>
 				<div className="versus">VS</div>
 				<div className="matchup-right">
-					<MatchupItem data={TheyWin} display={this.state.them.next[0]} />
+					<button className="btn btn-block btn-primary" onClick={this.submitGame.bind(this,TheyWin)}>{this.state.them.next[0]}</button>
 				</div>
 				<div className="checkbox">
 					<label>
@@ -284,15 +279,24 @@ var TournamentPage = React.createClass({
 		var d = {
 			character: character
 		}
+		this.setState({
+			oddsMakerActive: false
+		});
 		serverActions.useOddsMaker(this.getParams().titleSlug,d)
 	},
-	dockDown: function(character) {
+	dockOpponentCharacter: function(character) {
 		var d = {adjustments: []};
 		d.adjustments.push({
 			name: character,
 			change: -1
 		});
 		serverActions.dockPoints(this.getParams().titleSlug,d)
+	},
+	submitGame: function(data) {
+		serverActions.submitGame(data);
+		if(React.findDOMNode(this.refs.supreme)){
+			React.findDOMNode(this.refs.supreme).checked = false;
+		}
 	},
 	toggleSupreme: function(){
 		var supreme = !this.state.supreme;

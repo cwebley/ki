@@ -60,3 +60,9 @@ achievements? milestones not unique to one tourney:
 	win with every character
 	highest streak with a character
 	highest player streak
+	the charm
+
+icon denoting previous champion in a current player matchup
+icon denoting previous winner in a character matchup
+
+iterate through history table and clean up aggregate w/l data for players and characters. gets messed up after deleting tournaments.
