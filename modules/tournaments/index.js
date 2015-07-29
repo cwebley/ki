@@ -171,7 +171,7 @@ TourneyInterface.updateSeedStatus = function(tourneySlug,cb) {
 	});
 };
 
-TourneyInterface.dockPoints = function(opts,cb) {
+TourneyInterface.adjustPoints = function(opts,cb) {
 	// make sure user has the streak points
 	powerMdl.getStreakPoints(opts.user.tournament.id, opts.user.id,function(err,streakPoints){
 		if(err) return cb(err);

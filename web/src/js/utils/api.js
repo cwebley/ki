@@ -161,7 +161,7 @@ var Api = {
 			cb(res.statusCode, body);
 		});
 	},
-	dockPoints: function(slug,data,cb) {
+	adjustOpponentPoints: function(slug,data,cb) {
 		xhr({
 			json: data,
 			uri: "/api/tournaments/" + slug + "/adjust-points",

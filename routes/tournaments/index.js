@@ -123,7 +123,7 @@ var verifyCharacters = function(data,cb){
 };
 
 
-tourneyController.dockPoints = function(req, res){
+tourneyController.adjustPoints = function(req, res){
 	verifyCharacters(req.body && req.body.adjustments,function(err,hydrated){
 
 		if(err || !hydrated){
@@ -135,7 +135,7 @@ tourneyController.dockPoints = function(req, res){
 			user: req.user,
 			tourneySlug: req.params.tourneySlug
 		}
-		tournaments.dockPoints(opts,function(err,dto){
+		tournaments.adjustPoints(opts,function(err,dto){
 			if(err) return res.status(500).send({success:false,err:err});
 			if(!dto) return res.status(400).send({success:false});
 			res.status(200).send(dto);
@@ -180,7 +180,7 @@ app.post('/:tourneySlug/pwr/rematch',
 );
 app.post('/:tourneySlug/adjust-points',
 	um.userInTournament,
- 	tourneyController.dockPoints
+ 	tourneyController.adjustPoints
 );
 
 module.exports = app;

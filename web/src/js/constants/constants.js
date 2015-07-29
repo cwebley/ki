@@ -18,7 +18,7 @@ module.exports = {
     UNDO_LAST: null,
     USE_ODDSMAKER: null,
     USE_REMATCH: null,
-    DOCK_POINT: null,
+    ADJUST_OPPONENT_POINTS: null,
 
     // not in use
     EDIT_TOURNAMENT: null,

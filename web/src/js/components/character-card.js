@@ -22,7 +22,7 @@ var CharacterCard = React.createClass({
 			topClass.push('fire');
 		}
 		var btnClass = (this.props.clickButton) ? 'character-button' : 'hide';
-		var downArrowClass = (this.props.downClick) ? 'down-arrow' : 'hide';
+		var downArrowClass = (this.props.downClick && this.props.value > 1) ? 'down-arrow' : 'hide';
 		var upArrowClass = (this.props.upClick) ? 'up-arrow' : 'hide';
 		var streakText = '';
 		if(this.props.streak > 0){

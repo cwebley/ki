@@ -96,7 +96,6 @@ var TournamentPage = React.createClass({
 		}
 		var upClick,
 			downClick;
-		console.log("STREAK POINTS: ", this.state.me.streakPoints)
 
 		if(this.state.me.streakPoints && who === "them"){
 			downClick = this.dockDown;
@@ -282,7 +281,6 @@ var TournamentPage = React.createClass({
 		serverActions.useOddsMaker(this.getParams().titleSlug,d)
 	},
 	dockDown: function(character) {
-		console.log("DOWNCLICK: ", character)
 		var d = {adjustments: []};
 		d.adjustments.push({
 			name: character,

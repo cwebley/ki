@@ -124,9 +124,9 @@ serverActions = {
  		});
  	},
  	dockPoints: function(slug,data){
- 		api.dockPoints(slug,data,function(code,body){
+ 		api.adjustOpponentPoints(slug,data,function(code,body){
  			dispatcher.handleServerAction({
- 				type: ActionTypes.DOCK_POINT,
+ 				type: ActionTypes.ADJUST_OPPONENT_POINTS,
  				code: code,
  				data: body
  			});
