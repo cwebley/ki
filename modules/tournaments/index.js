@@ -5,6 +5,7 @@ var _ = require('lodash'),
 	tourneyMdl = require('./tournaments-model'),
 	powerSvc = require('../powerups/powerups-service'),
 	powerMdl = require('../powerups/powerups-model'),
+	usersSvc = require('../users/users-service'),
 	usersMdl = require('../users/users-model'),
 	dto = require('../dto');
 
@@ -179,23 +180,12 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 
 		var totalAdjustments = 0;
 		var updateCalls = [];
-		var getUpdatedValueCalls = {};
+		var getCharValueCalls = {};
 
 		opts.adjustments.forEach(function(character){
 			totalAdjustments += dto.negative(character.change,0);
-			// for each adjustment, get character id and make the adjustment
-			updateCalls.push(
-				function(done){
-					usersMdl.updateCharacterValue(
-						opts.user.tournament.id,
-						opts.user.tournament.opponent.id,
-						character.id,
-						character.change,
-						done
-					);
-				}
-			);
-			getUpdatedValueCalls[character.name] = function(done){
+
+			getCharValueCalls[character.name] = function(done){
 				usersMdl.getCharacterValue(
 					opts.user.tournament.id,
 					opts.user.tournament.opponent.id,
@@ -210,30 +200,51 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 			return cb();
 		}
 
-		// for balance purposes: you can't dock points if you currently own inpsect
-		powerSvc.getInspectStatus(opts.user.tournament.id,function(err,inspectOwner){
-			if(err) return cb(err);
-			if(inspectOwner === opts.user.name){
-				return cb();
-			}
-			async.parallel(updateCalls,function(err,results){
-				if(err) return cb(err);
 
-				var somethingFailed;
-				results.forEach(function(oneRes){
-					if(oneRes.affectedRows === 0){
-						somethingFailed = true;
+		async.parallel(getCharValueCalls,function(err,updatedValues){
+			if(err) return cb(err);
+			// done in a separate loop so that history has access to the character values
+			opts.adjustments.forEach(function(character){
+				// the value of the character if the change is successful
+				updatedValues[character.name] += character.change;
+
+				updateCalls.push(
+					function(done){
+						// like many other svc layer funcs, this also records history
+						usersSvc.updateCharacterValue(
+							opts.user.tournament.id,
+							opts.user.tournament.opponent.id,
+							character.id,
+							updatedValues[character.name],
+							character.change,
+							done
+						);
 					}
-				});
-				if(somethingFailed){
+				);
+			});
+
+			// for balance purposes: you can't dock points if you currently own inpsect
+			powerSvc.getInspectStatus(opts.user.tournament.id,function(err,inspectOwner){
+				if(err) return cb(err);
+				if(inspectOwner === opts.user.name){
 					return cb();
 				}
-
-				powerSvc.decrStreakPoints(opts.user.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
+				async.parallel(updateCalls,function(err,results){
 					if(err) return cb(err);
 
-					async.parallel(getUpdatedValueCalls,function(err,updatedValues){
+					var somethingFailed;
+					results.forEach(function(oneRes){
+						if(oneRes.affectedRows === 0){
+							somethingFailed = true;
+						}
+					});
+					if(somethingFailed){
+						return cb();
+					}
+
+					powerSvc.decrStreakPoints(opts.user.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
 						if(err) return cb(err);
+
 						return cb(null, {
 							streakPoints: streakPoints,
 							updatedCharacters: updatedValues

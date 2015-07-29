@@ -55,6 +55,11 @@ HistoryInterface.undoLastGame = function(tid,slug,requester,undoHard,cb) {
 						reverseHistoryOps.push(
 							function(done){ powerMdl.decrUserStock(tid,item.userId,done) }
 						);
+						break;
+					case 'streak-points-incr':
+						reverseHistoryOps.push(
+							function(done){ powerMdl.decrStreakPoints(tid,item.userId,item.delta,done) }
+						);
 
 				}
 			}.bind(this));

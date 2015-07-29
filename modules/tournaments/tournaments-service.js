@@ -153,8 +153,4 @@ tournamentsService.editTournament = function(options,cb){
 	});
 };
 
-tournamentsService.updateSeedStatus = function(options,cb){
-	
-};
-
 module.exports = tournamentsService;

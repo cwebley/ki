@@ -109,12 +109,12 @@ PowerupSvc.decrStreakPoints = function(tid,userId,interval,cb){
 			tid: tid,
 			uid: userId,
 			value: streakPoints,
-			delta: interval,
+			delta: -1*interval,
 			eventString: 'streak-points-adjust-opponent'
 		}
 		historyMdl.recordEvent(data,function(err,historyRes){
 			if(err){
-				console.log("error recording history for incrStreakPoints: ", JSON.stringify(data,null,4));
+				console.log("error recording history for decrStreakPoints: ", JSON.stringify(data,null,4));
 			}
 			return cb(null,streakPoints);
 		});

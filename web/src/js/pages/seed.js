@@ -6,7 +6,6 @@ var React = require('react'),
 	TournamentStore = require('../stores/tournament-store'),
 	Link = Router.Link,
 	CharacterCard = require('../components/character-card'),
-	MatchupItem = require('../components/matchup-item'),
 	DragContainer = require('../components/drag-card-container');
 
 var SeedPage = React.createClass({

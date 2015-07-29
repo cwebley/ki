@@ -2,7 +2,8 @@ var _ = require('lodash'),
 	async = require('async'),
 	gamesMdl = require('../games/games-model'),
 	tourneyMdl = require('../tournaments/tournaments-model'),
-	usersMdl = require('./users-model');
+	usersMdl = require('./users-model'),
+	historyMdl = require('../history/history-model');
 
 var UsersService = {};
 
@@ -64,6 +65,28 @@ UsersService.login = function(options, cb) {
 			return cb(null,seedResults,uid)
 		})
 	})
+};
+
+UsersService.updateCharacterValue = function(tid,uid,cid,postUpdateValue,change,cb) {
+	usersMdl.updateCharacterValue(tid,uid,cid,change,function(err,results){
+		if(err) return cb(err)
+		if(!results) return cb();
+
+		var data = {
+			tid: tid,
+			uid: uid,
+			cid: cid,
+			value: postUpdateValue,
+			delta: change,
+			eventString: 'character-adjustment'
+		}
+		historyMdl.recordEvent(data,function(err,historyRes){
+			if(err){
+				console.log("error recording history for updateCharacterValue: ", JSON.stringify(data,null,4));
+			}
+			return cb(null,results);
+		});
+	});
 };
 
 module.exports = UsersService;
