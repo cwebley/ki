@@ -1,0 +1,133 @@
+.character {
+  width: 100%;
+  height: 6em;
+  background: #eee;
+  margin: 0.25em;
+  
+  &.drag-card {
+    border: 1px dashed gray;
+    cursor: move;
+  }
+  
+  &.dragging {
+    opacity: 0.5;
+  }
+
+  &.heating {
+    background: #f0e251;
+  }
+
+  &.fire {
+    background: #db521f;
+  }
+
+  .card-left-column {
+    float: left;
+    position: relative;
+    width: 50%;
+    height: 100%;
+    
+      .value-wrapper {
+        float: left;
+        position: relative;
+        height:100%;
+        width: 45%;
+        
+        .value {
+          position: absolute;
+          top:25%;
+          left:16%;
+          width: 1.5em;
+          height: 1.5em;
+          border: 2px solid black;
+          border-radius: 50%;
+          font-size: 2em;
+          text-align: center;
+          font-weight: 600;
+        }
+        .up-arrow {
+            position: absolute;
+            top: 5%;
+            left: 24%;
+            background: transparent;
+            cursor: pointer;
+            padding: 0;
+            border-top: 0 solid transparent;
+	          border-left: 1em solid transparent;
+	          border-right: 1em solid transparent;
+	          border-bottom: 1em solid black;
+        }
+        .down-arrow {
+            position: absolute;
+            bottom: 5%;
+            left: 24%;
+            background: transparent;
+            cursor: pointer;
+            padding: 0;
+            border-bottom: 0 solid transparent;
+	          border-left: 1em solid transparent;
+	          border-right: 1em solid transparent;
+	          border-top: 1em solid black;
+        }
+      }
+      .character-info{
+        position: absolute;
+        left: 40%;
+        top: 37%;
+        
+        .character-name{
+          margin: 0;
+          text-transform: capitalize;
+          font-weight:bold;
+          font-size: 1.25em;
+        }
+        .record {
+          text-align: center;
+        }
+      }
+  }
+
+  .card-right-column {
+    float: right;
+    position: relative;
+    height: 100%;
+    width: 25%;
+    padding: 0 .75em;
+  }
+  .streak {
+    position: absolute;
+    top: 33%;
+    font-size: 1.75em;
+  }
+  .card-center-column {
+    float: right;
+    position: relative;
+    height: 100%;
+    width: 25%;
+
+    .character-button {
+      position: absolute;
+      border-radius: 1em;
+      background-color: #5bc0de;
+      border-color: #46b8da;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: white;
+      top: 40%;
+      left: 0%;
+      width:100%;
+      height: 2em;
+      
+      &:hover {
+        color: #fff;
+        background-color: #31b0d5;
+        border-color: #269abc;
+      }
+      &:active {
+        color: #fff;
+        background-color: #269abc;
+        border-color: #1b6d85;
+      }
+    }
+  }
+}

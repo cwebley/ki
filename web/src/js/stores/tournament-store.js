@@ -22,6 +22,9 @@ var _attemptedRematch;
 var _succeededRematch;
 var _inspectOwner;
 var _rematchStatus;
+var _attemptedAdjust;
+var _succeededAdjust;
+
 
 function _tourneyDataReceived(data){
 	console.log("TDATA: ", data);
@@ -31,6 +34,7 @@ function _tourneyDataReceived(data){
 	_attemptedUndo = false;
 	_attemptedOddsMaker = false;
 	_attemptedRematch = false;
+	_attemptedAdjust = false;
 	_inspectOwner = data.inspect;
 	_rematchStatus = data.rematch;
 }
@@ -42,12 +46,18 @@ function _inspectDataReceived(data){
 function _submitMatchupsSuccess(){
 	_attemptedPostInspect = true;
 	_succeededPostInspect = true;
-	_attemptedUndo = false;
-	_attemptedOddsMaker = false;
+	_queueStatusReset();
 }
 function _submitMatchupFailure(){
 	_attemptedPostInspect = true;
 	_succeededPostInspect = false;
+	_queueStatusReset();
+}
+function _queueStatusReset(){
+	setTimeout(function(){
+		_attemptedPostInspect = false;
+		_succeededPostInspect = false;
+	},3000)
 }
 function _clearInspectData(){
 	_inspectMe = [];
@@ -78,6 +88,21 @@ function _rematchSuccess(data){
 function _rematchFailure(){
 	_succeededRematch = false;
 	_attemptedRematch = true;
+}
+function _adjustSuccess(data){
+	_them.characters.forEach(function(c){
+		if(data.updatedCharacters[c.name]){
+			c.value = data.updatedCharacters[c.name];
+		}
+	});
+	_me.streakPoints = data.streakPoints;
+	_succeededAdjust = true;
+	_attemptedAdjust = true;
+}
+
+function _adjustFailure(){
+	_succeededAdjust = false;
+	_attemptedAdjust = true;
 }
 function _updatePowerStock(data){
 	if(!data){
@@ -154,20 +179,17 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			_tourneyDataReceived(payload.action.data);
 			TournamentStore.emitChange();
 			break;
-
 		case ActionTypes.SUBMIT_GAME:
 			if(payload.action.code !== 201){
 				// do some sort of roll back when/if view-action based rendering happens?
 				console.log("Tournament-store-found-an-error-submitting-game");
 			}
 			break;
-
 		case ActionTypes.DELETE_TOURNAMENT:
 			if(payload.action.code !== 200){
 				console.log("error-deleting-tournament");
 			}
 			break;
-
 		case ActionTypes.GET_INSPECT:
 			if(payload.action.code !== 200){
 				// probably need a better way to handle this
@@ -179,23 +201,25 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			_inspectDataReceived(payload.action.data);
 			TournamentStore.emitChange();
 			break;
-
 		case ActionTypes.POST_INSPECT:
 			(payload.action.code === 201) ? _submitMatchupsSuccess() : _submitMatchupFailure();
+			TournamentStore.emitChange();
 			break;
-
 		case ActionTypes.UNDO_LAST:
 			(payload.action.code === 200) ? _undoSuccess() : _undoFailure();
 			_tourneyDataReceived(action.data);
 			TournamentStore.emitChange();
 			break;
-
 		case ActionTypes.USE_ODDS_MAKER:
 			(payload.action.code === 200) ? _oddsMakerSuccess(action.data) : _oddsMakerFailure();
 			TournamentStore.emitChange();
 			break;
 		case ActionTypes.USE_REMATCH:
 			(payload.action.code === 200) ? _rematchSuccess(action.data) : _rematchFailure();
+			TournamentStore.emitChange();
+			break;
+		case ActionTypes.ADJUST_OPPONENT_POINTS:
+			(payload.action.code === 200) ? _adjustSuccess(action.data) : _adjustFailure();
 			TournamentStore.emitChange();
 			break;
 

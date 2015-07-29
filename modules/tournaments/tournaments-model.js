@@ -174,11 +174,29 @@ TournamentsModel.getCharacterStats = function(tourneySlug, userName, cb) {
 	});
 };
 
+// characters: ['jago','hisako','aria'... ]. order not guaranteed and duplicates won't return twice.
+// use service layer to resolve these issues.
+TournamentsModel.getSomeCharacterStats = function(tourneySlug, userName, characters, cb) {
+	var sql = 'SELECT c.name,tc.value,tc.curStreak,tc.wins,tc.losses FROM characters c'
+			+ ' JOIN tournamentCharacters tc ON tc.characterId = c.id'
+			+ ' JOIN tournaments t ON t.id = tc.tournamentId'
+			+ ' JOIN users u ON u.id = tc.userId'
+			+ ' WHERE u.name = ? AND t.slug = ? AND c.name IN ('
+		params = [userName, tourneySlug];
+
+	var nameIn  = '"' + characters.join('","') + '")';
+
+	mysql.query('rw', sql + nameIn, params, 'modules/tournaments/tournaments-model/getCharacterStats', function(err, results){
+		if (err) return cb(err);
+		return cb(null,results);
+	});
+};
+
 TournamentsModel.getTourneyList = function(cb) {
-	var sql = 'SELECT t.id, t.name, t.slug, t.goal, t.active, t.time, u.name champion FROM tournaments t LEFT JOIN users u ON t.championId = u.id'
+	var sql = 'SELECT t.id, t.name, t.slug, t.goal, t.active, t.time, u.name champion FROM tournaments t LEFT JOIN users u ON t.championId = u.id';
 
 	mysql.query('rw', sql, [], 'modules/tournaments/tournaments-model/getTourneyList', function(err, results){
-		if(err) return cb(err)
+		if(err) return cb(err);
 		return cb(null,results);
 	});
 };

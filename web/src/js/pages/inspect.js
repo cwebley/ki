@@ -40,6 +40,11 @@ var InspectPage = React.createClass({
 			duration: TournamentStore.inspectDuration(),
 			status: TournamentStore.inspectStatus(),
 		});
+		setTimeout(function(){
+			this.setState({
+				status: TournamentStore.inspectStatus()
+			});
+		}.bind(this),3000);
 	},
 	render: function(){
 		var leftColumn = this.renderLeftColumn();
@@ -63,10 +68,14 @@ var InspectPage = React.createClass({
 		if(!this.state.me || !this.state.me.length){
 			return false;
 		}
-		var characters = this.state.me.map(function(character,i){
+		var characters = this.state.me.map(function(c,i){
 			return {
 				id: i,
-				name: character,
+				name: c.name,
+				value: c.value,
+				wins: c.wins,
+				losses: c.losses,
+				streak: c.curStreak,
 			};
 		});
 
@@ -79,15 +88,14 @@ var InspectPage = React.createClass({
 		);
 	},
 	renderCenterColumn: function() {
-		var btnClasses = ['btn','btn-lg','btn-primary']
-
-		if(this.state.status.attempt && this.state.status.success){
-			btnClasses.push("btn-success")
+		submitInspectButtonColor = 'btn-primary';
+		if(this.state.status.attempt){
+			submitInspectButtonColor = 'btn-danger';
 		}
-		if(this.state.status.attempt && !this.state.status.success){
-			btnClasses.push("btn-danger")
+		if(this.state.status.success){
+			submitInspectButtonColor = 'btn-success';
 		}
-
+		var btnClasses = ['btn','btn-lg',submitInspectButtonColor];
 		return(
 			<div className="column-center">
 				<button className={btnClasses.join(' ')} onClick={this.postInspection}>Submit Matchups</button>
@@ -98,10 +106,14 @@ var InspectPage = React.createClass({
 		if(!this.state.them || !this.state.them.length){
 			return false;
 		}
-		var characters = this.state.them.map(function(character,i){
+		var characters = this.state.them.map(function(c,i){
 			return {
 				id: i,
-				name: character,
+				name: c.name,
+				value: c.value,
+				wins: c.wins,
+				losses: c.losses,
+				streak: c.curStreak,
 			};
 		});
 

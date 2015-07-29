@@ -90,8 +90,15 @@ var TournamentPage = React.createClass({
 		if(!user.characters){
 			return false;
 		}
+		var clickButton;
 		if((who === 'me') && this.state.oddsMakerActive){
-			var clickButton = this.useOddsMaker;
+			clickButton = this.useOddsMaker;
+		}
+		var upClick,
+			downClick;
+
+		if(this.state.me.streakPoints && who === "them"){
+			downClick = this.dockDown;
 		}
 		var characters = user.characters.map(function(character){
 			return (
@@ -102,7 +109,9 @@ var TournamentPage = React.createClass({
 						wins={character.wins}
 						losses={character.losses}
 						streak={character.curStreak}
-						clickButton={clickButton} />
+						clickButton={clickButton}
+						upClick={upClick}
+						downClick={downClick} />
 				</li>
 			);
 		}.bind(this));
@@ -132,6 +141,9 @@ var TournamentPage = React.createClass({
 					</li>
 					<li className="stat-item power-stock">
 						powers: {user.powerStock}
+					</li>
+					<li className="stat-item decr-points">
+						dockers: {user.streakPoints}
 					</li>
 				</ul>
 				{characterCards}
@@ -197,7 +209,6 @@ var TournamentPage = React.createClass({
 						Rematch {this.state.me.prev} vs {this.state.them.prev}
 					</button> : 
 					<button disabled={true} className={"btn btn-sm btn-block"}>Rematch</button>
-
 				}
 			</div>
 		);
@@ -262,12 +273,20 @@ var TournamentPage = React.createClass({
 				attempt: false
 			}
 		});
-	},
+	},	
 	useOddsMaker: function(character) {
 		var d = {
 			character: character
 		}
 		serverActions.useOddsMaker(this.getParams().titleSlug,d)
+	},
+	dockDown: function(character) {
+		var d = {adjustments: []};
+		d.adjustments.push({
+			name: character,
+			change: -1
+		});
+		serverActions.dockPoints(this.getParams().titleSlug,d)
 	},
 	toggleSupreme: function(){
 		var supreme = !this.state.supreme;

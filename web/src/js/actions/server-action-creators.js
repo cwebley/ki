@@ -122,6 +122,15 @@ serverActions = {
  				data: body
  			});
  		});
+ 	},
+ 	dockPoints: function(slug,data){
+ 		api.adjustOpponentPoints(slug,data,function(code,body){
+ 			dispatcher.handleServerAction({
+ 				type: ActionTypes.ADJUST_OPPONENT_POINTS,
+ 				code: code,
+ 				data: body
+ 			});
+ 		});
  	}
 };
 

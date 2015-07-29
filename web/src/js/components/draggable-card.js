@@ -53,24 +53,39 @@ var DraggableCard = React.createClass({
 			topClass.push('dragging');
 		}
 
+		if(this.props.streak === 2){
+			topClass.push('heating');
+		}
+		if(this.props.streak >=3){
+			topClass.push('fire');
+		}
+		var btnClass = (this.props.clickButton) ? 'character-button' : 'hide';
+		var streakText = '';
+		if(this.props.streak > 0){
+			streakText = this.props.streak + 'W'
+		}
+		if(this.props.streak < 0){
+			streakText = -1* this.props.streak + 'L'
+		}
+
 		return this.props.connectDragSource(this.props.connectDropTarget(
 			<div className={topClass.join(' ')}>
-				<div className="card-left-column">
-					<h3 className="character-name">{this.props.name}</h3>
-				</div>
-				<div className="card-right-column">
-					<ul className="character-stats">
-						<li className="char-stat-item value">
-							value: {this.props.value}
-						</li>
-						<li className="char-stat-item record">
-							record: {this.props.wins} - {this.props.losses}
-						</li>
-						<li className="char-stat-item streak">
-							streak: {this.props.streak}
-						</li>
-					</ul>
-				</div>
+			  <div className="card-left-column">
+
+			    <div className="value-wrapper">
+			      <div className="value">
+			        <span className="value-text">{this.props.value}</span>
+			      </div>
+			    </div>
+			    <div className="character-info">
+			      <h3 className="character-name">{this.props.name}</h3>
+			      <div className="record">{this.props.wins} - {this.props.losses}</div>
+			    </div>
+
+			  </div>
+			  <div className="card-right-column">
+			  <span className="streak">{streakText}</span>
+			  </div>
 			</div>
 		));
 	}

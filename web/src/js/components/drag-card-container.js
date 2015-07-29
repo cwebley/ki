@@ -4,9 +4,6 @@ var React = require('React'),
 	DragDropContext = require('react-dnd').DragDropContext,
 	HTML5Backend = require('react-dnd/modules/backends/HTML5');
 
-
-
-
 var DragCardContainer = React.createClass({
 	displayName:'DragCardContainer',
 	propTypes: {

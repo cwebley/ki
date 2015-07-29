@@ -85,6 +85,34 @@ tournamentsService.getCharacterLevelStats = function(tourneySlug,userName,cb){
 	});
 };
 
+// characters = list of charactersNames wanted. will return stats in the same order.
+tournamentsService.getSomeCharacterStats = function(tourneySlug,userName,characters,cb){
+	console.log("character service characters : ", characters);
+
+	var seen = {};
+	var deduped = [];
+
+	characters.forEach(function(c){
+		if(seen.hasOwnProperty(c)){
+			return;
+		}
+		seen[c] = true;
+		deduped.push(c);
+	});
+
+	tourneyMdl.getSomeCharacterStats(tourneySlug,userName,deduped,function(err,results){
+		// put each character into object for easy lookup
+		results.forEach(function(d){
+			seen[d.name] = d;
+		});
+		// hydrate original character array with character stats
+		characters = characters.map(function(c){
+			return seen[c];
+		});
+		return cb(err,characters);
+	});
+};
+
 tournamentsService.getTourneyList = function(cb){
 	tourneyMdl.getTourneyList(function(err, results){
 		if(err)return cb(err)

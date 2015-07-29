@@ -7,6 +7,7 @@ var _ = require('lodash'),
 	userMdl = require('../users/users-model'),
 	historyIndex = require('../history'),
 	historyMdl = require('../history/history-model'),
+	tourneySvc = require('../tournaments/tournaments-service'),
 	tourneyMdl = require('../tournaments/tournaments-model');
 
 var PowerInterface = {};
@@ -38,8 +39,15 @@ PowerInterface.getInspect = function(opts,cb) {
 			if(!upcoming.check(tid,uids)) {
 				upcoming.create(tid,uids);
 			}
-			next = upcoming.getNextArray(tid,players,inspectCount,true);
-			return cb(err,inspectDto(next,players,opts.username));
+			var next = upcoming.getNextArray(tid,players,inspectCount,true);
+
+			var characterStatCalls = [];
+			players.forEach(function(p, i){
+				characterStatCalls.push(function(done){tourneySvc.getSomeCharacterStats(opts.tourneySlug,p.name,next[i],done)});
+			});
+			async.parallel(characterStatCalls,function(err,hydratedNext){
+				return cb(err,inspectDto(hydratedNext,players,opts.username));
+			});
 		});
 	});
 };

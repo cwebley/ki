@@ -1,4 +1,5 @@
 @import 'src/sass/bootstrap';
+@import 'src/sass/character-card';
 
 .header {
   height: 3.5em;
@@ -69,12 +70,12 @@
 
 .column-left {
   float:left;
-  width: 33%;
+  width: 35%;
 }
 
 .column-center {
   text-align: center;
-  width: 34%;
+  width: 30%;
   float:left;
   margin-top: 3em;
 
@@ -99,7 +100,7 @@
 }
 
 .column-right {
-  width: 33%;
+  width: 35%;
   float: right;
 }
 .player-wrapper {
@@ -128,55 +129,6 @@
   list-style-type: none;
   margin: 0;
   padding: 0.25em 0.5em;
-}
-
-.drag-card {
-  border: 1px dashed gray;
-  cursor: move;
-}
-
-.character {
-  display: block;
-  background: #eee;
-  padding: 0.9em;
-  margin: 0.25em;
-  line-height: 1.5em;
-
-  &.dragging {
-    opacity: 0.5;
-  }
-
-  &.heating {
-    background: #f0e251;
-  }
-
-  &.fire {
-    background: #db521f;
-  }
-
-  .card-left-column {
-    width:40%;
-    float:left;
-    padding: 1.75em 0;
-
-    .character-name {
-      font-size: 1em;
-      font-weight: bold;
-      margin: 0;
-    }
-  }
-
-  .card-right-column {
-  }
-
-  .character-stats {
-    list-style-type: none;
-    margin: 0;
-  }
-
-  .character-button {
-    border-radius: 30px;
-  }
 }
 
 .hide {

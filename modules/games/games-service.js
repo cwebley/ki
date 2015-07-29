@@ -6,7 +6,8 @@ var _ = require('lodash'),
 	constants = require('../constants'),
 	upcoming = require('../upcoming'),
 	mysql = require('../persistence').mysql,
-	powerIndex = require('../powerups');
+	powerIndex = require('../powerups'),
+	powerMdl = require('../powerups/powerups-model');
 
 var GamesService = {};
 
@@ -91,6 +92,7 @@ GamesService.updateData = function(options, cb) {
 	streakCalls.winXter = function(done){usersMdl.getCharacterStreak(options.tourneyId,options.winPid,options.winXid,done)}
 	streakCalls.loseXter = function(done){usersMdl.getCharacterStreak(options.tourneyId,options.losePid,options.loseXid,done)}
 	streakCalls.fireChars = function(done){gamesMdl.getFireChars(options.tourneyId,options.winPid,options.winXid,done)}
+	streakCalls.winningPlayer = function(done){usersMdl.getUserStreak(options.tourneyId,options.winPid,done)}
 
 	async.parallel(streakCalls,function(err,streaks){
 		if(err) return cb(err);
@@ -104,6 +106,9 @@ GamesService.updateData = function(options, cb) {
 		}
 		if(streaks.fireChars.length) {
 			updateCalls.push(function(done){gamesMdl.updateFireWins(streaks.fireChars,options.tourneyId,options.winPid,done)})
+		}
+		if(constants.shouldIncreaseStreakPoints(streaks.winningPlayer.curStreak + 1)){ // +1 since streak hasn't been updated yet.
+			updateCalls.push(function(done){powerMdl.incrStreakPoints(options.tourneyId,options.winPid,done)})
 		}
 
 		//char data

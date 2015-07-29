@@ -12,4 +12,13 @@ ConstantsInterface._INSPECT_COUNT = 8;
 ConstantsInterface._ODDS_MAKER_LENGTH = 15;
 ConstantsInterface._ODDS_MAKER_VALUE = 3.1;
 
+// give winning player's streak through this function. if returns true, streakPoints should be updated.
+// default to 3,5,6... etc
+ConstantsInterface.shouldIncreaseStreakPoints = function(streak){
+	if(streak === 3 || streak > 4){
+		return true;
+	}
+	return false;
+};
+
 module.exports = ConstantsInterface;
