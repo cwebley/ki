@@ -162,7 +162,9 @@ INSERT INTO events (description) VALUES
 	('power-inspect'),
 	('power-stock-init'),
 	('power-stock-incr'),
-	('power-rematch');
+	('power-rematch'),
+	('streak-points-incr'),
+	('streak-points-adjust-opponent');
 
 CREATE TABLE `history` (
 	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,

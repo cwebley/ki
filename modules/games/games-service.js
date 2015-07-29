@@ -7,7 +7,7 @@ var _ = require('lodash'),
 	upcoming = require('../upcoming'),
 	mysql = require('../persistence').mysql,
 	powerIndex = require('../powerups'),
-	powerMdl = require('../powerups/powerups-model');
+	powerSvc = require('../powerups/powerups-service');
 
 var GamesService = {};
 
@@ -108,7 +108,7 @@ GamesService.updateData = function(options, cb) {
 			updateCalls.push(function(done){gamesMdl.updateFireWins(streaks.fireChars,options.tourneyId,options.winPid,done)})
 		}
 		if(constants.shouldIncreaseStreakPoints(streaks.winningPlayer.curStreak + 1)){ // +1 since streak hasn't been updated yet.
-			updateCalls.push(function(done){powerMdl.incrStreakPoints(options.tourneyId,options.winPid,done)})
+			updateCalls.push(function(done){powerSvc.incrStreakPoints(options.tourneyId,options.winPid,1,done)})
 		}
 
 		//char data

@@ -79,6 +79,48 @@ PowerupSvc.initiateInspect = function(tid,userId,cb){
 	});
 };
 
+PowerupSvc.incrStreakPoints = function(tid,userId,interval,cb){
+	powerMdl.incrStreakPoints(tid,userId,interval,function(err,streakPoints){
+		if(err) return cb(err);
+
+		//record the history. value = current streakPoints, delta = change from previous amount
+		var data = {
+			tid: tid,
+			uid: userId,
+			value: streakPoints,
+			delta: interval,
+			eventString: 'streak-points-incr'
+		}
+		historyMdl.recordEvent(data,function(err,historyRes){
+			if(err){
+				console.log("error recording history for incrStreakPoints: ", JSON.stringify(data,null,4));
+			}
+			return cb(null,streakPoints);
+		});
+	});
+};
+
+PowerupSvc.decrStreakPoints = function(tid,userId,interval,cb){
+	powerMdl.decrStreakPoints(tid,userId,interval,function(err,streakPoints){
+		if(err) return cb(err);
+
+		//record the history. value = current streakPoints, delta = change from previous amount
+		var data = {
+			tid: tid,
+			uid: userId,
+			value: streakPoints,
+			delta: interval,
+			eventString: 'streak-points-adjust-opponent'
+		}
+		historyMdl.recordEvent(data,function(err,historyRes){
+			if(err){
+				console.log("error recording history for incrStreakPoints: ", JSON.stringify(data,null,4));
+			}
+			return cb(null,streakPoints);
+		});
+	});
+};
+
 PowerupSvc.decrInspection = function(tid,cb) {
 	powerMdl.getInspectStatus(tid,function(err,owner){
 		if(err) return cb(err);

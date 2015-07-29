@@ -181,7 +181,6 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 		var updateCalls = [];
 		var getUpdatedValueCalls = {};
 
-
 		opts.adjustments.forEach(function(character){
 			totalAdjustments += dto.negative(character.change,0);
 			// for each adjustment, get character id and make the adjustment
@@ -230,7 +229,7 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 					return cb();
 				}
 
-				powerMdl.decrStreakPoints(opts.user.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
+				powerSvc.decrStreakPoints(opts.user.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
 					if(err) return cb(err);
 
 					async.parallel(getUpdatedValueCalls,function(err,updatedValues){

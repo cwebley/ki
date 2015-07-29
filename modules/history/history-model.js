@@ -349,29 +349,4 @@ HistoryModel.updateHistoryForRematch = function(tid,hids,cb){
 	});
 }
 
-// todo: value = number of powers left? any meaning there?
-HistoryModel.useOddsMaker = function(tid,uid,cName,cb){
-	var sql = 'SELECT id FROM events WHERE description = ?',
-		params = ['power-oddsMaker'];
-
-	mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/useOddsMaker-events', function(err, eventResult){
-		if(err) return cb(err);
-
-		var sql = 'SELECT id FROM characters WHERE name = ?',
-			params = [cName];
-
-		mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/useOddsMaker-characters', function(err, characterRes){
-			if(err) return cb(err);
-
-			var sql = 'INSERT INTO history (tournamentId,userId,characterId,eventId,value,delta) VALUES (?,?,?,?,?,?)',
-				params = [tid,uid,characterRes[0].id,eventResult[0].id,0,0];
-
-			mysql.query('rw', sql, params, 'modules/history/history-model/useOddsMaker', function(err, useOddsMakerRes){
-				if(err) return cb(err);
-				return cb(null, useOddsMakerRes);
-			});
-		});
-	});
-}
-
 module.exports = HistoryModel;
