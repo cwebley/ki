@@ -102,7 +102,8 @@ var TournamentPage = React.createClass({
 		var upClick,
 			downClick;
 
-		if(this.state.me.streakPoints && who === "them"){
+		var iAmInspecting = this.state.inspect.owner && this.state.inspect.owner === this.state.me.name;
+		if(this.state.me.streakPoints && who === "them" && !iAmInspecting){
 			downClick = this.dockDown;
 		}
 		var characters = user.characters.map(function(character){
