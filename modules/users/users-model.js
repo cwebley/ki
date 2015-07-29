@@ -292,14 +292,25 @@ UsersModel.getActiveSeedStatus = function(uid, cb) {
 
 // Not in use right now
 // rows: object {cid:1,:uid:1,:value:1}
-UsersModel.updateCharacterValue = function(rows, cb) {
-	var sql = 'UPDATE charactersData SET value = ? WHERE userId = ? AND characterId = ?',
-		params = [value, uid, cid];
+// UsersModel.updateCharacterValue = function(rows, cb) {
+// 	var sql = 'UPDATE charactersData SET value = ? WHERE userId = ? AND characterId = ?',
+// 		params = [value, uid, cid];
+
+// 	mysql.query('rw', sql, params, 'modules/users/users-model/updateCharacterValue', function(err, results){
+// 		if(err) return cb(err)
+// 		if(!results || !results.length) return cb()
+// 		return cb(null, results[0].id);
+// 	});
+// };
+
+UsersModel.updateCharacterValue = function(tid,uid,cid,change,cb){
+	var sql = 'UPDATE tournamentCharacters SET value = value + ?'
+			+ ' WHERE tournamentId = ? AND userId = ? and characterId = ? AND value + ? > 0', // can't drop below 1.
+	params = [change,tid,uid,cid,change];
 
 	mysql.query('rw', sql, params, 'modules/users/users-model/updateCharacterValue', function(err, results){
 		if(err) return cb(err)
-		if(!results || !results.length) return cb()
-		return cb(null, results[0].id);
+		return cb(null, results);
 	});
 };
 

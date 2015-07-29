@@ -283,8 +283,11 @@ var TournamentPage = React.createClass({
 	},
 	dockDown: function(character) {
 		console.log("DOWNCLICK: ", character)
-		var d = {};
-		d[character] = -1;
+		var d = {adjustments: []};
+		d.adjustments.push({
+			name: character,
+			change: -1
+		});
 		serverActions.dockPoints(this.getParams().titleSlug,d)
 	},
 	toggleSupreme: function(){

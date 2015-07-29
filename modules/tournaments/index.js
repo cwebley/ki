@@ -4,7 +4,9 @@ var _ = require('lodash'),
 	tourneySvc = require('./tournaments-service'),
 	tourneyMdl = require('./tournaments-model'),
 	powerSvc = require('../powerups/powerups-service'),
-	powerMdl = require('../powerups/powerups-model');
+	powerMdl = require('../powerups/powerups-model'),
+	usersMdl = require('../users/users-model'),
+	dto = require('../dto');
 
 var TourneyInterface = {};
 
@@ -166,6 +168,74 @@ TourneyInterface.updateSeedStatus = function(tourneySlug,cb) {
 	tourneyMdl.updateSeedStatus(tourneySlug,function(err,results){
 		if(err) return cb(err);
 		return cb(null,results);
+	});
+};
+
+TourneyInterface.dockPoints = function(opts,cb) {
+	// make sure user has the streak points
+	powerMdl.getStreakPoints(opts.user.tournament.id, opts.user.id,function(err,streakPoints){
+		if(err) return cb(err);
+		if(!streakPoints) return cb();
+
+		var totalAdjustments = 0;
+		var updateCalls = [];
+		var getUpdatedValueCalls = {};
+
+
+		opts.adjustments.forEach(function(character){
+			totalAdjustments += dto.negative(character.change,0);
+			// for each adjustment, get character id and make the adjustment
+			updateCalls.push(
+				function(done){
+					usersMdl.updateCharacterValue(
+						opts.user.tournament.id,
+						opts.user.tournament.opponent.id,
+						character.id,
+						character.change,
+						done
+					);
+				}
+			);
+			getUpdatedValueCalls[character.name] = function(done){
+				usersMdl.getCharacterValue(
+					opts.user.tournament.id,
+					opts.user.tournament.opponent.id,
+					character.id,
+					done
+				);
+			}
+		});
+
+		if(streakPoints + totalAdjustments < 0){
+			// you don't have enough streakPoints to make this change.
+			return cb();
+		}
+
+		async.parallel(updateCalls,function(err,results){
+			if(err) return cb(err);
+
+			var somethingFailed;
+			results.forEach(function(oneRes){
+				if(oneRes.affectedRows === 0){
+					somethingFailed = true;
+				}
+			});
+			if(somethingFailed){
+				return cb();
+			}
+
+			powerMdl.decrStreakPoints(opts.user.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
+				if(err) return cb(err);
+
+				async.parallel(getUpdatedValueCalls,function(err,updatedValues){
+					if(err) return cb(err);
+					return cb(null, {
+						streakPoints: streakPoints,
+						updatedCharacters: updatedValues
+					});
+				});
+			});
+		});
 	});
 };
 

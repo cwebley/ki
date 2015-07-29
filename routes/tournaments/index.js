@@ -1,12 +1,14 @@
 var express = require('express'),
-	passport = require('passport'),
+	async = require('async'),
 	powerups = require('./powerups'),
+	constants = require('../../modules/constants'),
 	users = require('../../modules/users'),
 	um = require('../../modules/users/middleware'),
 	dto = require('../../modules/dto'),
 	auth = require('../../modules/auth'),
 	tournaments = require('../../modules/tournaments'),
-	history = require('../../modules/history');
+	history = require('../../modules/history'),
+	userMdl = require('../../modules/users/users-model');
 
 var app = express();
 
@@ -80,13 +82,66 @@ tourneyController.getTourneyList = function(req, res){
 	})
 }
 
-//TODO
+// var verifyAdjustments = function(data){
+// 	if(!data || !data.length){
+// 		return false
+// 	};
+// 	var filtered = data.filter(function(character){
+// 		// check that character is valid
+// 		if(!character.name || constants.characters.indexOf(character.name) === -1){
+// 			return false;
+// 		}
+// 		return true;
+// 	});
+
+// 	if(filtered.length !== data.length) {
+// 		return false;
+// 	}
+// 	return true;
+// };
+
+var verifyCharacters = function(data,cb){
+	if(!data || !data.length){
+		return cb();
+	};
+
+	var charIdCalls = data.map(function(character){
+		return function(done){
+			userMdl.getCharacterId(character.name,done);
+		}
+	});
+	async.parallel(charIdCalls,function(err,results){
+		if(err) return cb(err);
+
+		var hydrated = data.map(function(character,i){
+			character.id = results[i]
+			return character;
+		});
+
+		return cb(null,hydrated);
+	});	
+};
+
+
 tourneyController.dockPoints = function(req, res){
-	// tournaments.getTourneyList(function(err,dto){
-		console.log("REQ BODY: ", req.body)
-		if(err) return res.status(500).send({success:false,err:err})
-		res.status(200).send(dto)
-	// })
+	verifyCharacters(req.body && req.body.adjustments,function(err,hydrated){
+
+		if(err || !hydrated){
+			res.status(400).send({success:false,reason:'malformed-data'});
+		}
+		
+		var opts = {
+			adjustments: req.body.adjustments,
+			user: req.user,
+			tourneySlug: req.params.tourneySlug
+		}
+		tournaments.dockPoints(opts,function(err,dto){
+			if(err) return res.status(500).send({success:false,err:err});
+			if(!dto) return res.status(400).send({success:false});
+			res.status(200).send(dto);
+		});
+
+	});
 }
 
 app.get('/',
@@ -124,6 +179,7 @@ app.post('/:tourneySlug/pwr/rematch',
  	powerups.rematch
 );
 app.post('/:tourneySlug/adjust-points',
+	um.userInTournament,
  	tourneyController.dockPoints
 );
 

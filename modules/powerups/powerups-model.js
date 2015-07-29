@@ -170,10 +170,10 @@ PowerModel.incrStreakPoints = function(tourneyId,userId,cb) {
 		return cb(null, parseInt(result,10));
 	});
 };
-PowerModel.decrStreakPoints = function(tourneyId,userId,cb) {
+PowerModel.decrStreakPoints = function(tourneyId,userId,interval,cb) {
 	var conn = redis.get('persistent', 'rw'),
 		key = streakPointsKey(tourneyId,userId);
-	conn.decr(key, function(err,result){
+	conn.decrby(key, interval, function(err,result){
 		if(err) return cb(err);
 		return cb(null, parseInt(result,10));
 	});
