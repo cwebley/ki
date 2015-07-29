@@ -2,6 +2,7 @@ var express = require('express'),
 	auth = require('../modules/auth'),
 	games = require('../modules/games'),
 	history = require('../modules/history'),
+	um = require('../modules/users/middleware'),
 	games = require('../modules/games');
 
 var app = express();
@@ -33,7 +34,7 @@ gameController.submitGame = function(req, res){
 gameController.undoLastGame = function(req, res){
 	var requester = (req.user) ? req.user.name : '';
 
-	history.undoLastGame(req.params.tourneySlug,requester,true,function(err,dto){
+	history.undoLastGame(req.user.tournament.id,req.params.tourneySlug,requester,true,function(err,dto){
 		if(err) return res.status(500).send({success: false, err: err});
 		if(!dto) return res.status(400).send({success:false});
 		res.status(200).send(dto);
@@ -51,6 +52,7 @@ app.post('/',
 );
 
 app.put('/:tourneySlug',
+	um.userInTournament,
  	gameController.undoLastGame
 );
 module.exports = app;

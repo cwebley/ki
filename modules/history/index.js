@@ -3,6 +3,7 @@ var	historyMdl = require('./history-model'),
 	tourneyMdl = require('../tournaments/tournaments-model'),
 	powerSvc = require('../powerups/powerups-service'),
 	powerMdl = require('../powerups/powerups-model'),
+	usersMdl = require('../users/users-model'),
 	upcoming = require('../upcoming'),
 	async = require('async'),
 	_ = require("lodash");
@@ -60,6 +61,17 @@ HistoryInterface.undoLastGame = function(tid,slug,requester,undoHard,cb) {
 						reverseHistoryOps.push(
 							function(done){ powerMdl.decrStreakPoints(tid,item.userId,item.delta,done) }
 						);
+						break;
+					case 'streak-points-adjust-opponent':
+						reverseHistoryOps.push(
+							function(done){ powerMdl.incrStreakPoints(tid,item.userId,item.delta,done) }
+						);
+						break;
+					case 'character-adjustment':
+						reverseHistoryOps.push(
+							function(done){usersMdl.updateCharacterValue(tid,item.userId,item.characterId,-1*item.delta,done) }
+						);
+						break;
 
 				}
 			}.bind(this));
