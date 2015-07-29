@@ -31,6 +31,7 @@ var InspectPage = React.createClass({
 		serverActions.getTournamentData(this.getParams().titleSlug);
 		serverActions.getInspect(this.getParams().titleSlug);
 
+		// TODO: something more elegant here. this causes an extra render since we're firing off two actions
 		setInterval(function(){
 			serverActions.getTournamentData(this.getParams().titleSlug);
 			serverActions.getInspect(this.getParams().titleSlug);
@@ -101,8 +102,21 @@ var InspectPage = React.createClass({
 			submitInspectButtonColor = 'btn-success';
 		}
 		var btnClasses = ['btn','btn-lg',submitInspectButtonColor];
+
+		var leftMatch = this.state.myStats && this.state.myStats.next ? this.state.myStats.next[0] : ''
+		var rightMatch = this.state.theirStats && this.state.theirStats.next ? this.state.theirStats.next[0] : ''
 		return(
 			<div className="column-center">
+				<h2>Current Match</h2>
+				<div className="matchup">
+					<div className="matchup-left">
+						<h2>{leftMatch}</h2>
+					</div>
+					<div className="versus">VS</div>
+					<div className="matchup-right">
+						<h2>{rightMatch}</h2>
+					</div>
+				</div>
 				<button className={btnClasses.join(' ')} onClick={this.postInspection}>Submit Matchups</button>
 			</div>
 		);

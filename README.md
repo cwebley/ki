@@ -5,11 +5,6 @@ the tournament of champions.
 1v1 full cast killer instinct 3 tournament app. 
 complete work in progress. master branch generally stable.
 
-problems 7/22:
-current matchup needs to remain on inspect page
-polling would be helpful
-
-
 TODO: 
 
 --api middleware overhaul to protect and simplfy resources. can't submit the incorrect games. cant submit games as non-tourney player etc.
@@ -44,18 +39,21 @@ user-stats/ character-stats(character curStreaks, player streaks, biggest wins, 
 user-overall-stats
 	spanning multiple tourneys, or over a given data range
 
-powerups:
+powerups ideas:
 	reseed opponents characters
 
 	subtract 4 total points from opponents values
-		put {bj:{jago:2,glacius:1,wulf:1}},
-		check pwr avail, 
-		validate names,
-		check points add to 4,
-		decr from charData.value
-		decr pwr
 
 	best of 3 against opponent of your choice (or top streaker?) (streaks count here? values count here?)
+
+	matchMaker: since KI is a matchup based game and inspect is already good, another way to manipulate matches.
+		choice of 2 or 3 characters for current matchup. choice of 2 or 3 opponents for next matchup		
+		or maybe this is better implemented in bosses.
+
+	jack of all trades: 
+		count future appearances of certain characters in next 15 games,
+		reseed opponent and dock 3 points,
+		matchMaker stuff for next 2 games?
 
 achievements? milestones not unique to one tourney:
 	beat every character
