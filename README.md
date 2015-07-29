@@ -6,7 +6,6 @@ the tournament of champions.
 complete work in progress. master branch generally stable.
 
 problems 7/22:
-post inspect doesn't give success/fail response
 current matchup needs to remain on inspect page
 polling would be helpful
 
