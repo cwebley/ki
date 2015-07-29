@@ -211,27 +211,34 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 			return cb();
 		}
 
-		async.parallel(updateCalls,function(err,results){
+		// for balance purposes: you can't dock points if you currently own inpsect
+		powerSvc.getInspectStatus(opts.user.tournament.id,function(err,inspectOwner){
 			if(err) return cb(err);
-
-			var somethingFailed;
-			results.forEach(function(oneRes){
-				if(oneRes.affectedRows === 0){
-					somethingFailed = true;
-				}
-			});
-			if(somethingFailed){
+			if(inspectOwner === opts.user.name){
 				return cb();
 			}
-
-			powerMdl.decrStreakPoints(opts.user.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
+			async.parallel(updateCalls,function(err,results){
 				if(err) return cb(err);
 
-				async.parallel(getUpdatedValueCalls,function(err,updatedValues){
+				var somethingFailed;
+				results.forEach(function(oneRes){
+					if(oneRes.affectedRows === 0){
+						somethingFailed = true;
+					}
+				});
+				if(somethingFailed){
+					return cb();
+				}
+
+				powerMdl.decrStreakPoints(opts.user.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
 					if(err) return cb(err);
-					return cb(null, {
-						streakPoints: streakPoints,
-						updatedCharacters: updatedValues
+
+					async.parallel(getUpdatedValueCalls,function(err,updatedValues){
+						if(err) return cb(err);
+						return cb(null, {
+							streakPoints: streakPoints,
+							updatedCharacters: updatedValues
+						});
 					});
 				});
 			});
