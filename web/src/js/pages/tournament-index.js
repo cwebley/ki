@@ -24,16 +24,18 @@ var TournamentIndex = React.createClass({
 	componentWillMount:function(){
 		TournamentListStore.addChangeListener(this._onChange);
 	},
-	componentWillUnmount:function(){
-		TournamentListStore.removeChangeListener(this._onChange);
-	},
 	componentDidMount: function(){
 		serverActions.getTournamentIndex();
 		// poll index somewhat infrequently
-		setInterval(function(){
+		this.intervalId = setInterval(function(){
 			serverActions.getTournamentIndex();
 		},30000)
 	},
+	componentWillUnmount:function(){
+		clearInterval(this.intervalId);
+		TournamentListStore.removeChangeListener(this._onChange);
+	},
+
 	_onChange: function(){
 		this.setState({
 			tournaments: TournamentListStore.get()

@@ -25,17 +25,18 @@ var TournamentPage = React.createClass({
 	componentWillMount:function(){
 		TournamentStore.addChangeListener(this._onChange);
 	},
-	componentWillUnmount:function(){
-		TournamentStore.removeChangeListener(this._onChange);
-	},
 	componentDidMount: function(){
 		viewActions.focusTournament(this.getParams().titleSlug);
 		serverActions.getTournamentData(this.getParams().titleSlug);
 
 		// poll data tournament data
-		setInterval(function(){
+		this.intervalId = setInterval(function(){
 			serverActions.getTournamentData(this.getParams().titleSlug);
 		}.bind(this),5000)
+	},
+	componentWillUnmount:function(){
+		TournamentStore.removeChangeListener(this._onChange);
+		clearInterval(this.intervalId);
 	},
 	componentWillReceiveProps: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);

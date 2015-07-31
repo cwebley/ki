@@ -24,18 +24,19 @@ var InspectPage = React.createClass({
 	componentWillMount:function(){
 		TournamentStore.addChangeListener(this._onChange);
 	},
-	componentWillUnmount:function(){
-		TournamentStore.removeChangeListener(this._onChange);
-	},
 	componentDidMount: function(){
 		serverActions.getTournamentData(this.getParams().titleSlug);
 		serverActions.getInspect(this.getParams().titleSlug);
 
 		// TODO: something more elegant here. this causes an extra render since we're firing off two actions
-		setInterval(function(){
+		this.intervalId = setInterval(function(){
 			serverActions.getTournamentData(this.getParams().titleSlug);
 			serverActions.getInspect(this.getParams().titleSlug);
 		}.bind(this),5000)
+	},
+	componentWillUnmount:function(){
+		TournamentStore.removeChangeListener(this._onChange);
+		clearInterval(this.intervalId);
 	},
 	_onChange: function(){
 		this.setState({
