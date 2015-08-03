@@ -29,29 +29,36 @@ var InspectPage = React.createClass({
 		serverActions.getInspect(this.getParams().titleSlug);
 
 		// TODO: something more elegant here. this causes an extra render since we're firing off two actions
-		this.intervalId = setInterval(function(){
-			serverActions.getTournamentData(this.getParams().titleSlug);
-			serverActions.getInspect(this.getParams().titleSlug);
-		}.bind(this),5000)
+		// this.intervalId = setInterval(function(){
+		// 	serverActions.getTournamentData(this.getParams().titleSlug);
+		// 	serverActions.getInspect(this.getParams().titleSlug);
+		// }.bind(this),5000)
 	},
 	componentWillUnmount:function(){
 		TournamentStore.removeChangeListener(this._onChange);
-		clearInterval(this.intervalId);
+		// clearInterval(this.intervalId);
 	},
 	_onChange: function(){
-		this.setState({
-			me: TournamentStore.inspectMe(),
-			them: TournamentStore.inspectThem(),
+		var newState = {
 			myStats: TournamentStore.getMe(),
 			theirStats: TournamentStore.getThem(),
 			duration: TournamentStore.inspectDuration(),
 			status: TournamentStore.inspectStatus(),
-		});
-		setTimeout(function(){
-			this.setState({
-				status: TournamentStore.inspectStatus()
-			});
-		}.bind(this),3000);
+		};
+		if(this.state.them.length !== TournamentStore.inspectThem().length){
+			newState.me = TournamentStore.inspectMe();
+			newState.them = TournamentStore.inspectThem();
+		}
+
+
+		this.setState(newState);
+		if(this.state.status.attempt){
+			setTimeout(function(){
+				this.setState({
+					status: TournamentStore.inspectStatus()
+				});
+			}.bind(this),3000);
+		}
 	},
 	render: function(){
 		var leftColumn = this.renderLeftColumn();
