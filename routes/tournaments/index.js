@@ -82,24 +82,6 @@ tourneyController.getTourneyList = function(req, res){
 	})
 }
 
-// var verifyAdjustments = function(data){
-// 	if(!data || !data.length){
-// 		return false
-// 	};
-// 	var filtered = data.filter(function(character){
-// 		// check that character is valid
-// 		if(!character.name || constants.characters.indexOf(character.name) === -1){
-// 			return false;
-// 		}
-// 		return true;
-// 	});
-
-// 	if(filtered.length !== data.length) {
-// 		return false;
-// 	}
-// 	return true;
-// };
-
 var verifyCharacters = function(data,cb){
 	if(!data || !data.length){
 		return cb();
@@ -133,7 +115,7 @@ tourneyController.adjustPoints = function(req, res){
 		var opts = {
 			adjustments: req.body.adjustments,
 			user: req.user,
-			tourneySlug: req.params.tourneySlug
+			tournament: req.tournament
 		}
 		tournaments.adjustPoints(opts,function(err,dto){
 			if(err) return res.status(500).send({success:false,err:err});
@@ -171,6 +153,7 @@ app.get('/:tourneySlug/pwr/inspect',
  	powerups.getInspect
 );
 app.post('/:tourneySlug/pwr/inspect',
+	um.userInTournament,
  	powerups.postInspect
 );
 app.post('/:tourneySlug/pwr/oddsmaker',

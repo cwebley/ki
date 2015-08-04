@@ -20,24 +20,23 @@ module.exports.userInTournament = function(req, res, next) {
 			if(err) res.status(500).send({success:false,reason:'internal-server-error'});
 
 			var userInTourney;
-			var opponent;
-			players.forEach(function(p){
+			players.forEach(function(p,i){
 				if(p.id === req.user.id){
 					userInTourney = true;
-				} else {
-					opponent = p;
 				}
 			});
 			if(!userInTourney){
 				return res.status(403).send({success: false, reason:'Not-authorized. Must-be-in-the-tournament-to-perform-this-action'});
 			}
-
-			req.user.tournament = {
+			if(players[1].id === req.user.id){
+				// flip players so logged in user is presented first
+				players.push(players.splice(0,1)[0]);
+			}
+			req.tournament = {
 				id: tourneyId,
 				slug: req.params.tourneySlug,
 				seeded: seeded,
-				players: players,
-				opponent: opponent
+				players: players
 			};
 			next();
 		});

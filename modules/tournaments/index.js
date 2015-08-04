@@ -174,7 +174,7 @@ TourneyInterface.updateSeedStatus = function(tourneySlug,cb) {
 
 TourneyInterface.adjustPoints = function(opts,cb) {
 	// make sure user has the streak points
-	powerMdl.getStreakPoints(opts.user.tournament.id, opts.user.id,function(err,streakPoints){
+	powerMdl.getStreakPoints(opts.tournament.id, opts.user.id,function(err,streakPoints){
 		if(err) return cb(err);
 		if(!streakPoints) return cb();
 
@@ -187,8 +187,8 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 
 			getCharValueCalls[character.name] = function(done){
 				usersMdl.getCharacterValue(
-					opts.user.tournament.id,
-					opts.user.tournament.opponent.id,
+					opts.tournament.id,
+					opts.tournament.opponent.id,
 					character.id,
 					done
 				);
@@ -212,8 +212,8 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 					function(done){
 						// like many other svc layer funcs, this also records history
 						usersSvc.updateCharacterValue(
-							opts.user.tournament.id,
-							opts.user.tournament.opponent.id,
+							opts.tournament.id,
+							opts.tournament.opponent.id,
 							character.id,
 							updatedValues[character.name],
 							character.change,
@@ -224,7 +224,7 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 			});
 
 			// for balance purposes: you can't dock points if you currently own inpsect
-			powerSvc.getInspectStatus(opts.user.tournament.id,function(err,inspectOwner){
+			powerSvc.getInspectStatus(opts.tournament.id,function(err,inspectOwner){
 				if(err) return cb(err);
 				if(inspectOwner === opts.user.name){
 					return cb();
@@ -242,7 +242,7 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 						return cb();
 					}
 
-					powerSvc.decrStreakPoints(opts.user.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
+					powerSvc.decrStreakPoints(opts.tournament.id, opts.user.id, -1*totalAdjustments, function(err,streakPoints){
 						if(err) return cb(err);
 
 						return cb(null, {

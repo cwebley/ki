@@ -5,7 +5,11 @@ var router = express.Router();
 var powerupController = {};
 
 powerupController.getInspect = function(req, res){
-	powerups.getInspect(req.user, function(err,dto){
+	var opts = {
+		user: req.user,
+		tournament: req.tournament
+	};
+	powerups.getInspect(opts, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err});
 		if(!dto) return res.status(400).send({success:false,reason:'inspect-already-in-use'});
 		res.status(200).send(dto);
@@ -14,9 +18,8 @@ powerupController.getInspect = function(req, res){
 
 var getPostInspectOpts = function(req){
 	opts = {
-		username: req.user.name,
-		userId: req.user.id,
-		tourneySlug: req.params.tourneySlug
+		user: req.user,
+		tournament: req.tournament
 	};
 	/* 
 		matchups: {
@@ -34,10 +37,10 @@ powerupController.postInspect = function(req, res){
 		return res.status(400).send({success: false, reason:'matchup-data-not-provided'});
 	}
 
-	powerups.postInspect(opts, function(err,success){
+	powerups.postInspect(opts, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err});
-		if(!success) return res.status(400).send({success:false,reason:'invalid-inputs'});
-		res.status(201).send({success: true});
+		if(!dto) return res.status(400).send({success:false,reason:'invalid-inputs'});
+		res.status(200).send(dto);
 	});
 }
 

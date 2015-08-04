@@ -12,39 +12,30 @@ var _ = require('lodash'),
 
 var PowerInterface = {};
 
-var inspectDto = function(next,current,sessionData){
-	//make sure me/them are in the correct places
-	var players = sessionData.tournament.players;
-	if(players[1].name === sessionData.username){
-		//reverse these guys
-		players.push(players.splice(0,1)[0]);
-		current.push(current.splice(0,1)[0]);
-		next.push(next.splice(0,1)[0]);
-	}
-
+var inspectDto = function(next,current,tournament){
 	return {
 		me: {
-			name: players[0].name,
+			name: tournament.players[0].name,
 			current: current[0],
 			upcoming: next[0]
 		},
 		them: {
-			name: players[1].name,
+			name: tournament.players[1].name,
 			current: current[1],
 			upcoming: next[1]
 		}
 	};
 }
 
-PowerInterface.getInspect = function(sessionData,cb) {
+PowerInterface.getInspect = function(opts,cb) {
 	powerSvc.checkOrClaimInspect({
-		tid: sessionData.tournament.id,
-		userId: sessionData.id
+		tid: opts.tournament.id,
+		userId: opts.user.id
 	},function(err,inspectCount,tid){
 		if(err) return cb(err);
 		if(!inspectCount || !tid) return cb();
 
-		var players = sessionData.tournament.players
+		var players = opts.tournament.players
 		var uids = _.pluck(players,'id');
 	
 		if(!upcoming.check(tid,uids)) {
@@ -58,7 +49,7 @@ PowerInterface.getInspect = function(sessionData,cb) {
 		players.forEach(function(p, i){
 			characterStatCalls.push(function(done){
 				tourneySvc.getSomeCharacterStats(
-					sessionData.tournament.slug,
+					opts.tournament.slug,
 					p.name,
 					upcomingMatches[i],
 					done
@@ -66,78 +57,89 @@ PowerInterface.getInspect = function(sessionData,cb) {
 			});
 		});
 		async.parallel(characterStatCalls,function(err,hydratedNext){
-			return cb(err,inspectDto(hydratedNext,current,sessionData));
+			return cb(err,inspectDto(hydratedNext,current,opts.tournament));
 		});
 	});
 };
 
 PowerInterface.postInspect = function(opts,cb) {
-	tourneyMdl.getTourneyId(opts.tourneySlug,function(err, tid){
-		if(err) return cb(err);
-		if(!tid) return cb();
+	var players = opts.tournament.players;
 
-		tourneyMdl.getPlayersNamesIds(opts.tourneySlug,function(err,players){	
-			if(err) return cb(err);
+	//shallow verify matchups and players
+	players.forEach(function(p){
+		if(!opts.matchups[p.name] || !opts.matchups[p.name].length){
+			//matchup data not present or invalid
+			return cb();
+		}
+		p.matchups = opts.matchups[p.name];
+	}.bind(this));
 
-			//shallow verify matchups and players
-			players.forEach(function(p){
-				if(!opts.matchups[p.name] || !opts.matchups[p.name].length){
-					//matchup data not present or invalid
-					return cb();
-				}
-				p.matchups = opts.matchups[p.name];
-			}.bind(this));
-			if(players[0].matchups.length !== players[1].matchups.length){
-				//matchups submitted must be equal in number for each player
-				return cb();
-			}
-			var uids = _.pluck(players,'id');
-			
-			// make sure upcoming data exists
-			if(!upcoming.check(tid,uids)) {
-				upcoming.create(tid,uids);
-			}
-			var inspectCount = players[0].matchups.length;
-			Math.min(inspectCount, 19); // 19 because upcoming only keep 20 games in memory and skipCurrent is a thing
+	if(players[0].matchups.length !== players[1].matchups.length){
+		//matchups submitted must be equal in number for each player
+		return cb();
+	}
+	var uids = _.pluck(players,'id');
 	
-			//getNextArray preserves the player ordering
-			var next = upcoming.getNextArray(tid,players,inspectCount,true);
+	// make sure upcoming data exists
+	if(!upcoming.check(opts.tournament.id,uids)) {
+		upcoming.create(opts.tournament.id,uids);
+	}
+	var inspectCount = players[0].matchups.length;
+	Math.min(inspectCount, 19); // 19 because upcoming only keep 20 games in memory and skipCurrent is a thing
 
-			//deep verify matchups
-			players.forEach(function(p,pIndex){
-				if(!next){
-					return;
-				}
-				p.matchups.forEach(function(m){
-					var validatedIndex;
-					// for each submitted match, verify it exists in the next data, then remove that value
-					validatedIndex = next[pIndex].indexOf(m);
+	//getNextArray preserves the player ordering
+	var next = upcoming.getNextArray(opts.tournament.id,players,inspectCount);
 
-					if(validatedIndex === -1){
-						// submitted character not found in next data
-						return;
-					}
-					// remove found character from the next data
-					next[pIndex].splice(validatedIndex,1);
-				}.bind(this));
+	// splice off current match since its not part of inspect. needed in dto though.
+	var current = [next[0].splice(0,1)[0],next[1].splice(0,1)[0]];
 
-				if(next[pIndex].length){
-					// not empty, submitted characters were invalid
-					// reset next to indicate failure to the parent func
-					next = null;
-					return;
-				}
-			}.bind(this));
+	//deep verify matchups
+	players.forEach(function(p,pIndex){
+		if(!next){
+			return;
+		}
+		p.matchups.forEach(function(m){
+			var validatedIndex;
+			// for each submitted match, verify it exists in the next data, then remove that value
+			validatedIndex = next[pIndex].indexOf(m);
 
-			// empty next means deep verify failed, exit 400
-			if(!next){
-				return cb();
+			if(validatedIndex === -1){
+				// submitted character not found in next data
+				return;
 			}
-			if(!upcoming.submitCustom(tid,uids,[players[0].matchups,players[1].matchups],true)){
-				return cb(new Error('failed-to-submit-new-custom-matchups'));
-			}
-			return cb(null, true);
+			// remove found character from the next data
+			next[pIndex].splice(validatedIndex,1);
+		}.bind(this));
+
+		if(next[pIndex].length){
+			// not empty, submitted characters were invalid
+			// reset next to indicate failure to the parent func
+			next = null;
+			return;
+		}
+	}.bind(this));
+	// empty next means deep verify failed, exit 400
+	if(!next){
+		return cb();
+	}
+	if(!upcoming.submitCustom(opts.tournament.id,uids,[players[0].matchups,players[1].matchups],true)){
+		return cb(new Error('failed-to-submit-new-custom-matchups'));
+	}
+
+	// postInspect was successful, retreive up-to-date data to send with response
+	var characterStatCalls = [];
+	players.forEach(function(p, i){
+		characterStatCalls.push(function(done){
+			tourneySvc.getSomeCharacterStats(
+				opts.tournament.slug,
+				p.name,
+				p.matchups,
+				done
+			)
 		});
+	});
+	async.parallel(characterStatCalls,function(err,hydratedNext){
+		return cb(err,inspectDto(hydratedNext,current,opts.tournament));
 	});
 };
 

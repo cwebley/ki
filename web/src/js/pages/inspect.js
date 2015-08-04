@@ -58,9 +58,9 @@ var InspectPage = React.createClass({
 						{'Back to ' + this.getParams().titleSlug}
 					</Link>
 				</h1>
-					{leftColumn}
-					{middleColumn}
-					{rightColumn}
+				{leftColumn}
+				{middleColumn}
+				{rightColumn}
 			</div>
 		);
 	},
