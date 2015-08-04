@@ -24,14 +24,13 @@ var InspectPage = React.createClass({
 		serverActions.getTournamentData(this.getParams().titleSlug);
 		serverActions.getInspect(this.getParams().titleSlug);
 
-		// TODO: something more elegant here. this causes an extra render since we're firing off two actions
-		// this.intervalId = setInterval(function(){
-		// 	serverActions.getInspect(this.getParams().titleSlug);
-		// }.bind(this),5000)
+		this.intervalId = setInterval(function(){
+			serverActions.getInspect(this.getParams().titleSlug);
+		}.bind(this),5000)
 	},
 	componentWillUnmount:function(){
 		TournamentStore.removeChangeListener(this._onChange);
-		// clearInterval(this.intervalId);
+		clearInterval(this.intervalId);
 	},
 	_onChange: function(){
 		var newState = {
@@ -40,11 +39,11 @@ var InspectPage = React.createClass({
 		};
 
 		this.setState(newState);
-		// setTimeout(function(){
-		// 	this.setState({
-		// 		status: TournamentStore.inspectStatus()
-		// 	});
-		// }.bind(this),3000);
+		setTimeout(function(){
+			this.setState({
+				status: TournamentStore.inspectStatus()
+			});
+		}.bind(this),3000);
 	},
 	render: function(){
 		var leftColumn = this.renderLeftColumn();
@@ -79,9 +78,8 @@ var InspectPage = React.createClass({
 		return (
 			<div className="column-left">
 				<h2 className="column-title">Me</h2>
-					<DragContainer ref="containerMe" cards={characters}/>
+				<DragContainer ref="containerMe" cards={characters} who="me"/>
 			</div>
-
 		);
 	},
 	renderCenterColumn: function() {
@@ -127,7 +125,7 @@ var InspectPage = React.createClass({
 		return (
 			<div className="column-right">
 				<h2 className="column-title">The Other Guy</h2>
-					<DragContainer ref="containerThem" cards={characters}/>
+				<DragContainer ref="containerThem" cards={characters} who="them"/>
 			</div>
 		);
 	},

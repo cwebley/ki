@@ -6,20 +6,14 @@ var React = require('react'),
 	flow = require('lodash.flow'),
 	ItemTypes = require('../constants/dnd-constants').ItemTypes;
 
-	
-var style = {
-	border: '1px dashed gray',
-	padding: '0.5rem 1rem',
-	marginBottom: '.5rem',
-	backgroundColor: 'white',
-	cursor: 'move'
-};
-
 var cardSource = {
 	beginDrag: function(props){
 		return {
 			id: props.id
 		};
+	},
+	endDrag: function(props,monitor,component){
+		props.dropCard();
 	}
 }
 
@@ -44,7 +38,8 @@ var DraggableCard = React.createClass({
 		wins: React.PropTypes.number,
 		losses: React.PropTypes.number,
 		streak: React.PropTypes.number,
-		moveCard: React.PropTypes.func.isRequired
+		moveCard: React.PropTypes.func.isRequired,
+		dropCard: React.PropTypes.func.isRequired,
 	},
 
 	render: function(){

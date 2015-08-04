@@ -17,10 +17,10 @@ module.exports = {
  			slug: slug
  		});
  	},
- 	reorderInspect: function(cards) {
+ 	rearrangeMatchups: function(data) {
  		dispatcher.handleViewAction({
- 			type: ActionTypes.REORDER_INSPECT,
- 			cards: cards
+ 			type: ActionTypes.REARRANGE_MATCHUPS,
+ 			data: data
  		});
  	}
 };

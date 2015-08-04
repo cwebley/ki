@@ -48,8 +48,16 @@ function _tourneyDataReceived(data){
 }
 function _inspectDataReceived(data){
 	console.log("INSPECT DATA: ", data)
-	_inspectMe = data.me;
-	_inspectThem = data.them;
+	_inspectMe.name = data.me.name;
+	_inspectMe.current = data.me.current;
+	_inspectThem.name = data.them.name;
+	_inspectThem.current = data.them.current;
+
+	// only update the upcoming matches if polling detected a match has been submitted
+	if(_inspectMe.upcoming.length !== data.me.upcoming.length){
+		_inspectMe.upcoming = data.me.upcoming;
+		_inspectThem.upcoming = data.them.upcoming;
+	}
 }
 function _submitMatchupsSuccess(){
 	_attemptedPostInspect = true;
@@ -125,6 +133,12 @@ function _updatePowerStock(data){
 		return;
 	}
 	_me.powerStock = data.powerStock;
+}
+function _rearrangeMyMatchups(data){
+	_inspectMe.upcoming = data
+}
+function _rearrangeTheirMatchups(data){
+	_inspectThem.upcoming = data
 }
 
 var TournamentStore = assign({}, EventEmitter.prototype, {
@@ -238,6 +252,9 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 		case ActionTypes.ADJUST_OPPONENT_POINTS:
 			(payload.action.code === 200) ? _adjustSuccess(action.data) : _adjustFailure();
 			TournamentStore.emitChange();
+			break;
+		case ActionTypes.REARRANGE_MATCHUPS:
+			(payload.action.data.who === "me") ? _rearrangeMyMatchups(payload.action.data.matchups) : _rearrangeTheirMatchups(payload.action.data.matchups);
 			break;
 
 		default:

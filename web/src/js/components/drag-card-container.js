@@ -10,7 +10,8 @@ var DragCardContainer = React.createClass({
 	propTypes: {
 		cards: React.PropTypes.arrayOf(
 			React.PropTypes.object.isRequired
-		).isRequired
+		).isRequired,
+		who: React.PropTypes.string.isRequired
 	},
 
 	getInitialState: function(){
@@ -29,17 +30,17 @@ var DragCardContainer = React.createClass({
 		var cards = this.state.cards;
 
 		var card = cards.filter(function(c){
-			return c.id === id
+			return c.id === id;
 		})[0];
 
 		var afterCard = cards.filter(function(c){
-			return c.id === afterId
+			return c.id === afterId;
 		})[0];
 
 		var cardIndex = cards.indexOf(card);
 		var afterIndex = cards.indexOf(afterCard);
 
-		this.setState(update(this.state, {
+		this.setState(update(this.state,{
 			cards: {
 				$splice: [
 					[cardIndex, 1],
@@ -47,6 +48,12 @@ var DragCardContainer = React.createClass({
 				]
 			}
 		}));
+	},
+	dropCard: function(){
+		viewActions.rearrangeMatchups({
+			matchups: this.state.cards,
+			who: this.props.who
+		});
 	},
 
 	render: function(){
@@ -63,7 +70,8 @@ var DragCardContainer = React.createClass({
 							wins={card.wins}
 							losses={card.losses}
 							streak={card.streak}
-							moveCard={this.moveCard} />
+							moveCard={this.moveCard}
+							dropCard={this.dropCard} />
 					);
 				}.bind(this))
 			}
