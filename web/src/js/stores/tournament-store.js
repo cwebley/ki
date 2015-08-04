@@ -68,8 +68,16 @@ function _queueStatusReset(){
 	},3000)
 }
 function _clearInspectData(){
-	_inspectMe = [];
-	_inspectThem = [];
+	_inspectMe = {
+		name: "",
+		current: "",
+		upcoming: []
+	};
+	_inspectThem = {
+		name: "",
+		current: "",
+		upcoming: []
+	};
 }
 function _undoSuccess(){
 	_attemptedUndo = true;
@@ -211,6 +219,7 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			break;
 		case ActionTypes.POST_INSPECT:
 			(payload.action.code === 201) ? _submitMatchupsSuccess() : _submitMatchupFailure();
+			_inspectDataReceived(payload.action.data);
 			TournamentStore.emitChange();
 			break;
 		case ActionTypes.UNDO_LAST:
