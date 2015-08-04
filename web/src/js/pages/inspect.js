@@ -3,6 +3,7 @@ var React = require('react'),
 	serverActions = require('../actions/server-action-creators'),
 	TournamentStore = require('../stores/tournament-store'),
 	Link = Router.Link,
+	update = require('React/lib/update'),
 	DragContainer = require('../components/drag-card-container');
 
 
@@ -35,15 +36,18 @@ var InspectPage = React.createClass({
 	_onChange: function(){
 		var newState = {
 			me: TournamentStore.inspectMe(),
-			them: TournamentStore.inspectThem()
+			them: TournamentStore.inspectThem(),
+			status: TournamentStore.inspectStatus()
 		};
 
 		this.setState(newState);
 		setTimeout(function(){
-			this.setState({
-				status: TournamentStore.inspectStatus()
-			});
-		}.bind(this),3000);
+			this.setState(update(this.state,{
+				status: {
+					$set: TournamentStore.inspectStatus()
+				}
+			}));
+		}.bind(this),3000)
 	},
 	render: function(){
 		var leftColumn = this.renderLeftColumn();

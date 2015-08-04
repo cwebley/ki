@@ -11,19 +11,29 @@ var DragCardContainer = React.createClass({
 		cards: React.PropTypes.arrayOf(
 			React.PropTypes.object.isRequired
 		).isRequired,
-		who: React.PropTypes.string.isRequired
+		who: React.PropTypes.string
 	},
 
 	getInitialState: function(){
 		return {
-			cards: this.props.cards
+			cards: this.props.cards,
+			dragActive: false
 		};
 	},
 
 	componentWillReceiveProps: function(newProps){
-		this.setState({
-			cards: newProps.cards
-		});
+		// While we're dragging, don't re-render unless polling picked up a significant change 
+		if(this.state.dragActive && this.state.cards.length === newProps.cards.length){
+			return;
+		}
+		this.setState(update(this.state,{
+			cards: {
+				$set: newProps.cards
+			},
+			dragActive: {
+				$set: false
+			}
+		}));
 	},
 
 	moveCard: function(id, afterId){
@@ -46,10 +56,18 @@ var DragCardContainer = React.createClass({
 					[cardIndex, 1],
 					[afterIndex, 0, card]
 				]
+			},
+			dragActive: {
+				$set: true
 			}
 		}));
 	},
 	dropCard: function(){
+		// do nothing if this isn't the inspect page
+		if(!this.props.who){
+			return;
+		}
+		// update store so current state doesn't get overridden by polling
 		viewActions.rearrangeMatchups({
 			matchups: this.state.cards,
 			who: this.props.who

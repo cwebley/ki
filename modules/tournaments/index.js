@@ -188,7 +188,7 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 			getCharValueCalls[character.name] = function(done){
 				usersMdl.getCharacterValue(
 					opts.tournament.id,
-					opts.tournament.opponent.id,
+					opts.tournament.players[1].id,
 					character.id,
 					done
 				);
@@ -213,7 +213,7 @@ TourneyInterface.adjustPoints = function(opts,cb) {
 						// like many other svc layer funcs, this also records history
 						usersSvc.updateCharacterValue(
 							opts.tournament.id,
-							opts.tournament.opponent.id,
+							opts.tournament.players[1].id,
 							character.id,
 							updatedValues[character.name],
 							character.change,

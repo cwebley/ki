@@ -232,7 +232,7 @@ TournamentStore.dispatchToken = dispatcher.register(function(payload) {
 			TournamentStore.emitChange();
 			break;
 		case ActionTypes.POST_INSPECT:
-			(payload.action.code === 201) ? _submitMatchupsSuccess() : _submitMatchupFailure();
+			(payload.action.code === 200) ? _submitMatchupsSuccess() : _submitMatchupFailure();
 			_inspectDataReceived(payload.action.data);
 			TournamentStore.emitChange();
 			break;
