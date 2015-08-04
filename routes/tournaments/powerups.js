@@ -5,17 +5,11 @@ var router = express.Router();
 var powerupController = {};
 
 powerupController.getInspect = function(req, res){
-	opts = {
-		username: req.user.name,
-		userId: req.user.id,
-		tourneySlug: req.params.tourneySlug
-	};
-
-	powerups.getInspect(opts, function(err,dto){
+	powerups.getInspect(req.user, function(err,dto){
 		if(err) return res.status(500).send({success:false,err:err});
 		if(!dto) return res.status(400).send({success:false,reason:'inspect-already-in-use'});
 		res.status(200).send(dto);
-	})
+	});
 }
 
 var getPostInspectOpts = function(req){

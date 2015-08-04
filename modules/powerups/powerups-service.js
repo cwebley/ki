@@ -10,38 +10,33 @@ var _ = require('lodash'),
 var PowerupSvc = {};
 
 PowerupSvc.checkOrClaimInspect = function(opts,cb) {
-	tourneyMdl.getTourneyId(opts.tourneySlug,function(err,tid){	
+	// check if inspect is currently in use
+	powerMdl.setnxInspectStatus(opts.tid,opts.userId,function(err,success){
 		if(err) return cb(err);
-		if(!tid) return cb();
-
-		// check if inspect is currently in use
-		powerMdl.setnxInspectStatus(tid,opts.userId,function(err,success){
+		if(success){
+			return PowerupSvc.initiateInspect(opts.tid,opts.userId,cb);
+		}
+		//inspect already in progress
+		//check if owner is you
+		powerMdl.getInspectStatus(opts.tid,function(err,owner){
 			if(err) return cb(err);
-			if(success){
-				return PowerupSvc.initiateInspect(tid,opts.userId,cb);
+			// you own it. return the remaining count.
+			if(owner === opts.userId.toString()) {
+				return powerMdl.getUserInspect(opts.tid,opts.userId,function(err,remaining){
+					return cb(err,remaining,opts.tid);
+				});
 			}
-			//inspect already in progress
-			//check if owner is you
-			powerMdl.getInspectStatus(tid,function(err,owner){
+			// you don't own it.
+			// check how many inspects are left. if 0, you can still claim the power.
+			powerMdl.getUserInspect(opts.tid,owner,function(err,remaining){
 				if(err) return cb(err);
-				// you own it. return the remaining count.
-				if(owner === opts.userId.toString()) {
-					return powerMdl.getUserInspect(tid,opts.userId,function(err,remaining){
-						return cb(err,remaining,tid);
-					});
+				if(remaining > 0){ 
+					// nah, nice try.
+					return cb();
 				}
-				// you don't own it.
-				// check how many inspects are left. if 0, you can still claim the power.
-				powerMdl.getUserInspect(tid,owner,function(err,remaining){
+				powerMdl.setInspectStatus(opts.tid,opts.userId,function(err,results){
 					if(err) return cb(err);
-					if(remaining > 0){ 
-						// nah, nice try.
-						return cb();
-					}
-					powerMdl.setInspectStatus(tid,opts.userId,function(err,results){
-						if(err) return cb(err);
-						return PowerupSvc.initiateInspect(tid,opts.userId,cb);
-					});
+					return PowerupSvc.initiateInspect(opts.tid,opts.userId,cb);
 				});
 			});
 		});
@@ -73,7 +68,7 @@ PowerupSvc.initiateInspect = function(tid,userId,cb){
 				delta: -1,
 				eventString: 'power-inspect'
 			},function(err,historyRes){
-				return cb(null,constants._INSPECT_COUNT,tid);
+				return cb(null,constants._INSPECT_COUNT);
 			});
 		});
 	});

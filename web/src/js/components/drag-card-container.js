@@ -1,5 +1,6 @@
 var React = require('React'),
 	update = require('React/lib/update'),
+	viewActions = require('../actions/view-action-creators'),
 	DragCard = require('./draggable-card'),
 	DragDropContext = require('react-dnd').DragDropContext,
 	HTML5Backend = require('react-dnd/modules/backends/HTML5');

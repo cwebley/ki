@@ -34,6 +34,7 @@ module.exports.userInTournament = function(req, res, next) {
 
 			req.user.tournament = {
 				id: tourneyId,
+				slug: req.params.tourneySlug,
 				seeded: seeded,
 				players: players,
 				opponent: opponent

@@ -12,42 +12,61 @@ var _ = require('lodash'),
 
 var PowerInterface = {};
 
-var inspectDto = function(next,players,requester){
+var inspectDto = function(next,current,sessionData){
 	//make sure me/them are in the correct places
-	if(players[1].name === requester){
+	var players = sessionData.tournament.players;
+	if(players[1].name === sessionData.username){
 		//reverse these guys
 		players.push(players.splice(0,1)[0]);
+		current.push(current.splice(0,1)[0]);
 		next.push(next.splice(0,1)[0]);
 	}
 
 	return {
-		me: next[0],
-		them: next[1]
+		me: {
+			name: players[0].name,
+			current: current[0],
+			upcoming: next[0]
+		},
+		them: {
+			name: players[1].name,
+			current: current[1],
+			upcoming: next[1]
+		}
 	};
 }
 
-PowerInterface.getInspect = function(opts,cb) {
-	powerSvc.checkOrClaimInspect(opts,function(err,inspectCount,tid){
+PowerInterface.getInspect = function(sessionData,cb) {
+	powerSvc.checkOrClaimInspect({
+		tid: sessionData.tournament.id,
+		userId: sessionData.id
+	},function(err,inspectCount,tid){
 		if(err) return cb(err);
 		if(!inspectCount || !tid) return cb();
 
-		tourneyMdl.getPlayersNamesIds(opts.tourneySlug,function(err,players){	
-			if(err) return cb(err);
+		var players = sessionData.tournament.players
+		var uids = _.pluck(players,'id');
+	
+		if(!upcoming.check(tid,uids)) {
+			upcoming.create(tid,uids);
+		}
+		var upcomingMatches = upcoming.getNextArray(tid,players,inspectCount);
 
-			var uids = _.pluck(players,'id');
-		
-			if(!upcoming.check(tid,uids)) {
-				upcoming.create(tid,uids);
-			}
-			var next = upcoming.getNextArray(tid,players,inspectCount,true);
-
-			var characterStatCalls = [];
-			players.forEach(function(p, i){
-				characterStatCalls.push(function(done){tourneySvc.getSomeCharacterStats(opts.tourneySlug,p.name,next[i],done)});
+		// splice off current match since its not part of inspect. needed in dto though.
+		var current = [upcomingMatches[0].splice(0,1)[0],upcomingMatches[1].splice(0,1)[0]]
+		var characterStatCalls = [];
+		players.forEach(function(p, i){
+			characterStatCalls.push(function(done){
+				tourneySvc.getSomeCharacterStats(
+					sessionData.tournament.slug,
+					p.name,
+					upcomingMatches[i],
+					done
+				)
 			});
-			async.parallel(characterStatCalls,function(err,hydratedNext){
-				return cb(err,inspectDto(hydratedNext,players,opts.username));
-			});
+		});
+		async.parallel(characterStatCalls,function(err,hydratedNext){
+			return cb(err,inspectDto(hydratedNext,current,sessionData));
 		});
 	});
 };

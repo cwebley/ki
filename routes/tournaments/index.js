@@ -167,6 +167,7 @@ app.post('/:tourneySlug/edit',
  	tourneyController.edit
 );
 app.get('/:tourneySlug/pwr/inspect',
+	um.userInTournament,
  	powerups.getInspect
 );
 app.post('/:tourneySlug/pwr/inspect',

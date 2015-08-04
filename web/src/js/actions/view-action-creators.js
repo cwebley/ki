@@ -16,5 +16,11 @@ module.exports = {
  			type: ActionTypes.FOCUS_TOURNAMENT,
  			slug: slug
  		});
+ 	},
+ 	reorderInspect: function(cards) {
+ 		dispatcher.handleViewAction({
+ 			type: ActionTypes.REORDER_INSPECT,
+ 			cards: cards
+ 		});
  	}
 };

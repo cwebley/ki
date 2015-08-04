@@ -19,6 +19,7 @@ module.exports = {
     USE_ODDSMAKER: null,
     USE_REMATCH: null,
     ADJUST_OPPONENT_POINTS: null,
+    REORDER_INSPECT: null,
 
     // not in use
     EDIT_TOURNAMENT: null,

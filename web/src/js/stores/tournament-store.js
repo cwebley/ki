@@ -10,8 +10,16 @@ var CHANGE_EVENT = 'change';
 var _tournamentHash = {};
 var _me = {};
 var _them = {};
-var _inspectMe = [];
-var _inspectThem = [];
+var _inspectMe = {
+	name: "",
+	current: "",
+	upcoming: []
+};
+var _inspectThem = {
+	name: "",
+	current: "",
+	upcoming: []
+};
 var _attemptedPostInspect;
 var _succeededPostInspect;
 var _attemptedUndo;
@@ -39,6 +47,7 @@ function _tourneyDataReceived(data){
 	_rematchStatus = data.rematch;
 }
 function _inspectDataReceived(data){
+	console.log("INSPECT DATA: ", data)
 	_inspectMe = data.me;
 	_inspectThem = data.them;
 }

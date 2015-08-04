@@ -1,7 +1,6 @@
 var React = require('react'),
 	Router = require('react-router'),
 	serverActions = require('../actions/server-action-creators'),
-	viewActions = require('../actions/view-action-creators'),
 	TournamentStore = require('../stores/tournament-store'),
 	Link = Router.Link,
 	DragContainer = require('../components/drag-card-container');
@@ -15,10 +14,7 @@ var InspectPage = React.createClass({
 		return {
 			me: TournamentStore.inspectMe(),
 			them: TournamentStore.inspectThem(),
-			myStats: TournamentStore.getMe(),
-			theirStats: TournamentStore.getThem(),
-			status: TournamentStore.inspectStatus(),
-			duration: TournamentStore.inspectDuration()
+			status: TournamentStore.inspectStatus()
 		};
 	},
 	componentWillMount:function(){
@@ -30,7 +26,6 @@ var InspectPage = React.createClass({
 
 		// TODO: something more elegant here. this causes an extra render since we're firing off two actions
 		// this.intervalId = setInterval(function(){
-		// 	serverActions.getTournamentData(this.getParams().titleSlug);
 		// 	serverActions.getInspect(this.getParams().titleSlug);
 		// }.bind(this),5000)
 	},
@@ -40,25 +35,16 @@ var InspectPage = React.createClass({
 	},
 	_onChange: function(){
 		var newState = {
-			myStats: TournamentStore.getMe(),
-			theirStats: TournamentStore.getThem(),
-			duration: TournamentStore.inspectDuration(),
-			status: TournamentStore.inspectStatus(),
+			me: TournamentStore.inspectMe(),
+			them: TournamentStore.inspectThem()
 		};
-		if(this.state.them.length !== TournamentStore.inspectThem().length){
-			newState.me = TournamentStore.inspectMe();
-			newState.them = TournamentStore.inspectThem();
-		}
-
 
 		this.setState(newState);
-		if(this.state.status.attempt){
-			setTimeout(function(){
-				this.setState({
-					status: TournamentStore.inspectStatus()
-				});
-			}.bind(this),3000);
-		}
+		// setTimeout(function(){
+		// 	this.setState({
+		// 		status: TournamentStore.inspectStatus()
+		// 	});
+		// }.bind(this),3000);
 	},
 	render: function(){
 		var leftColumn = this.renderLeftColumn();
@@ -79,10 +65,7 @@ var InspectPage = React.createClass({
 		);
 	},
 	renderLeftColumn: function() {
-		if(!this.state.me || !this.state.me.length){
-			return false;
-		}
-		var characters = this.state.me.map(function(c,i){
+		var characters = this.state.me.upcoming.map(function(c,i){
 			return {
 				id: i,
 				name: c.name,
@@ -111,8 +94,8 @@ var InspectPage = React.createClass({
 		}
 		var btnClasses = ['btn','btn-lg',submitInspectButtonColor];
 
-		var leftMatch = this.state.myStats && this.state.myStats.next ? this.state.myStats.next[0] : ''
-		var rightMatch = this.state.theirStats && this.state.theirStats.next ? this.state.theirStats.next[0] : ''
+		var leftMatch = this.state.me.current;
+		var rightMatch = this.state.them.current;
 		return(
 			<div className="column-center">
 				<h2>Current Match</h2>
@@ -130,10 +113,7 @@ var InspectPage = React.createClass({
 		);
 	},
 	renderRightColumn: function() {
-		if(!this.state.them || !this.state.them.length){
-			return false;
-		}
-		var characters = this.state.them.map(function(c,i){
+		var characters = this.state.them.upcoming.map(function(c,i){
 			return {
 				id: i,
 				name: c.name,
@@ -149,22 +129,20 @@ var InspectPage = React.createClass({
 				<h2 className="column-title">The Other Guy</h2>
 					<DragContainer ref="containerThem" cards={characters}/>
 			</div>
-
 		);
 	},
 	postInspection: function(){
-		if(!this.state.myStats.name || !this.state.theirStats.name){
-			console.log("failed-render-some-error-now")
+		if(!this.state.me.name || !this.state.them.name){
 			return
 		}
 
 		var data = {
 			matchups: {}
 		}
-		data.matchups[this.state.myStats.name] = this.refs.containerMe.refs.child.state.cards.map(function(card){
+		data.matchups[this.state.me.name] = this.refs.containerMe.refs.child.state.cards.map(function(card){
 			return card.name
 		});
-		data.matchups[this.state.theirStats.name] = this.refs.containerThem.refs.child.state.cards.map(function(card){
+		data.matchups[this.state.them.name] = this.refs.containerThem.refs.child.state.cards.map(function(card){
 			return card.name
 		});
 
