@@ -5,6 +5,10 @@ the tournament of champions.
 1v1 full cast killer instinct 3 tournament app. 
 complete work in progress. master branch generally stable.
 
+Issues 7/30:
+-Seed page previous data slightly inaccurate and not showing losing streaks
+-put character value in matchup buttons and rematch button
+
 TODO: 
 
 --api middleware overhaul to protect and simplfy resources. can't submit the incorrect games. cant submit games as non-tourney player etc.

@@ -56,14 +56,14 @@ PowerupSvc.initiateInspect = function(tid,userId,cb){
 			});
 		}
 
-		powerMdl.setUserInspect(tid,opts.userId,function(err,success){
+		powerMdl.setUserInspect(tid,userId,function(err,success){
 			if(err) return cb(err);
 			if(!success) return cb();
 
 			//inspect just went through. record the history. value = current stock, delta = change in stock (-1)	
 			historyMdl.recordEvent({
 				tid: tid,
-				uid: opts.userId,
+				uid: userId,
 				value: stock,
 				delta: -1,
 				eventString: 'power-inspect'

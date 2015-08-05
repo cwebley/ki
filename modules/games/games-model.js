@@ -292,4 +292,20 @@ GamesModel.updateFireWins = function(fireChars,tid,uid,cb) {
 	],cb);
 };
 
+GamesModel.getLastGameCharactacterStats = function(tid,cb) {
+	// get last game results
+	var sql = 'SELECT c.name, h.value, h.delta, h.userId FROM history h'
+			+ ' JOIN characters c ON c.id = h.characterId'
+			+ ' JOIN events e ON e.id = h.eventId'	
+			+ ' WHERE h.tournamentId = ? AND e.description = "game"'
+			+ ' ORDER BY h.id DESC'
+			+ ' LIMIT 2';
+	var params = [tid];
+
+	mysql.query('rw', sql, params, 'modules/games/games-model/getLastGameCharactacterStats', function(err,results){
+		if(err) return cb(err);
+		return cb(null, results);
+	});
+};
+
 module.exports = GamesModel;

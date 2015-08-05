@@ -12,7 +12,6 @@ var _ = require('lodash'),
 var GamesService = {};
 
 GamesService.saveGame = function(options, cb) {
-
 	GamesService.getAndValidateIds(options,function(err,validated){
 		if(err)return cb(err)
 		if(!validated) return cb() // no character value: seeding not done.
@@ -152,6 +151,7 @@ GamesService.updateData = function(options, cb) {
 GamesService.checkAndUpdateTournament = function(options, cb) {
 	gamesMdl.getTournamentScores(options.tourneyId,function(err,scores){
 		if(err)return cb(err)
+		if(!scores) return cb();
 
 		var calls = [],
 			endTournament = false;

@@ -153,4 +153,28 @@ tournamentsService.editTournament = function(options,cb){
 	});
 };
 
+tournamentsService.getLastGameCharactacterStats = function(options, cb) {
+	if(!options.prevChars || !options.prevChars.length){
+		return cb();
+	}
+	gamesMdl.getLastGameCharactacterStats(options.tid,function(err,lastGameResults){
+		if(err)return cb(err);
+		if(!lastGameResults || lastGameResults.length !== 2){
+			return cb();
+		}
+		// flip results from mysql if necessary to stay consistent with rest of data
+		if(lastGameResults[0].userId !== options.uids[0]){
+			lastGameResults.push(lastGameResults.splice(0,1)[0]);
+		}
+		// verify the characters are correct
+		var verified = true;
+		options.prevChars.forEach(function(c,i){
+			if(c !== lastGameResults[i].name){
+				verified = false
+			}
+		});
+		return cb(null, lastGameResults);
+	});
+};
+
 module.exports = tournamentsService;

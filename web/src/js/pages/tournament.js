@@ -156,21 +156,25 @@ var TournamentPage = React.createClass({
 		if(!this.state.me.next){
 			return false;
 		}
+		var myNext = this.state.me.next,
+			theirNext = this.state.them.next,
+			myPrev = this.state.me.prev,
+			theirPrev = this.state.them.prev;
 
 		var IWin = {
 			slug: this.getParams().titleSlug,
 			winningPlayer: this.state.me.name,
-			winningCharacter: this.state.me.next[0],
+			winningCharacter: myNext.name,
 			losingPlayer: this.state.them.name,
-			losingCharacter: this.state.them.next[0],
+			losingCharacter: theirNext.name,
 			supreme: this.state.supreme
 		};
 		var TheyWin = {
 			slug: this.getParams().titleSlug,
 			losingPlayer: this.state.me.name,
-			losingCharacter: this.state.me.next[0],
+			losingCharacter: myNext.name,
 			winningPlayer: this.state.them.name,
-			winningCharacter: this.state.them.next[0],
+			winningCharacter: theirNext.name,
 			supreme: this.state.supreme
 		};
 
@@ -187,11 +191,11 @@ var TournamentPage = React.createClass({
 		return(
 			<div className="matchup">
 				<div className="matchup-left">
-					<button className="btn btn-block btn-primary" onClick={this.submitGame.bind(this,IWin)}>{this.state.me.next[0]}</button>
+					<button className="btn btn-block btn-primary" onClick={this.submitGame.bind(this,IWin)}>{myNext.name} ({myNext.value})</button>
 				</div>
 				<div className="versus">VS</div>
 				<div className="matchup-right">
-					<button className="btn btn-block btn-primary" onClick={this.submitGame.bind(this,TheyWin)}>{this.state.them.next[0]}</button>
+					<button className="btn btn-block btn-primary" onClick={this.submitGame.bind(this,TheyWin)}>{theirNext.name} ({theirNext.value})</button>
 				</div>
 				<div className="checkbox">
 					<label>
@@ -206,9 +210,9 @@ var TournamentPage = React.createClass({
 					<button disabled={true} className={"btn btn-sm btn-block"}>Toggle OddsMaker</button>
 				}
 				{
-					(this.state.me.powerStock && !this.state.rematchStatus.status && this.state.me.prev)?
+					(this.state.me.powerStock && !this.state.rematchStatus.status && this.state.me.prev) ?
 					<button className={"btn btn-sm btn-block " + rematchButtonColor} onClick={this.rematchClick}>
-						Rematch {this.state.me.prev} vs {this.state.them.prev}
+						Rematch {myPrev.name} ({myPrev.value}) vs {theirPrev.name} ({theirPrev.value})
 					</button> : 
 					<button disabled={true} className={"btn btn-sm btn-block"}>Rematch</button>
 				}

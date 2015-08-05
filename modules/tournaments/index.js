@@ -7,6 +7,7 @@ var _ = require('lodash'),
 	powerMdl = require('../powerups/powerups-model'),
 	usersSvc = require('../users/users-service'),
 	usersMdl = require('../users/users-model'),
+	gamesSvc = require('../games/games-service'),
 	dto = require('../dto');
 
 var TourneyInterface = {};
@@ -105,15 +106,6 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 				var next = upcoming.getNextArray(tourneyId,players,1);
 				var prev = upcoming.lastMatchup(tourneyId,players);
 
-				// add next data for each user
-				for(var i=0;i<tournamentData.length;i++){
-					tournamentData[i].next = next[i];
-					if(prev){
-						tournamentData[i].prev = prev[i];
-					}
-				}
-
-
 				// get stats for each character
 				var calls = [];
 				var characterDataGetter = function(tourneySlug,userName){
@@ -126,35 +118,54 @@ TourneyInterface.getAllTourneyStats = function(tourneySlug,requester,cb) {
 					if(err) return cb(err)
 					for(var i=0;i<tournamentData.length;i++){
 						tournamentData[i].characters = charData[i]
+						tournamentData[i].next = charData[i].filter(function(c){
+							return c.name === next[i][0];
+						})[0];
 					}
-					powerSvc.getInspectStatus(tourneyId,function(err,inspectOwner,inspectStock){
+					tourneySvc.getLastGameCharactacterStats({
+						tid: tourneyId,
+						uids: uids,
+						prevChars: prev
+					},function(err,hydratedPrev){
 						if(err) return cb(err);
-						
-						powerMdl.getRematchStatus(tourneyId,function(err,rematchStatus){
+						if(hydratedPrev){
+							hydratedPrev.forEach(function(h,i){
+								tournamentData[i].prev = {
+									name: h.name,
+									value: h.value
+								};
+							});
+						}
+
+						powerSvc.getInspectStatus(tourneyId,function(err,inspectOwner,inspectStock){
 							if(err) return cb(err);
-
-							powerSvc.getPowerStocks(tourneyId,uids,function(err,powerStocks){
+							
+							powerMdl.getRematchStatus(tourneyId,function(err,rematchStatus){
 								if(err) return cb(err);
-								if(powerStocks.length !== tournamentData.length){
-									return cb();
-								}
 
-								powerSvc.getStreakPoints(tourneyId,uids,function(err,streakPoints){
+								powerSvc.getPowerStocks(tourneyId,uids,function(err,powerStocks){
 									if(err) return cb(err);
-									if(streakPoints.length !== tournamentData.length){
+									if(powerStocks.length !== tournamentData.length){
 										return cb();
 									}
-									var dtoOpts = {
-										data: tournamentData,
-										seeded: seeded,
-										inspectOwner: inspectOwner,
-										inspectStock: inspectStock,
-										requester: requester,
-										powerStocks: powerStocks,
-										streakPoints: streakPoints,
-										rematch: !!rematchStatus
-									}
-									return cb(err,TourneyInterface.allStatsDto(dtoOpts));
+
+									powerSvc.getStreakPoints(tourneyId,uids,function(err,streakPoints){
+										if(err) return cb(err);
+										if(streakPoints.length !== tournamentData.length){
+											return cb();
+										}
+										var dtoOpts = {
+											data: tournamentData,
+											seeded: seeded,
+											inspectOwner: inspectOwner,
+											inspectStock: inspectStock,
+											requester: requester,
+											powerStocks: powerStocks,
+											streakPoints: streakPoints,
+											rematch: !!rematchStatus
+										}
+										return cb(err,TourneyInterface.allStatsDto(dtoOpts));
+									});
 								});
 							});
 						});

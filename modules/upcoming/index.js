@@ -71,7 +71,7 @@ UpcomingInterface.lastMatchup = function(tourneyId,userArr){
 		if(!prevArr.length){
 			return false;
 		}
-		lastMatch.push(prevArr.slice(prevArr.length-1, prevArr.length));
+		lastMatch.push(prevArr.slice(prevArr.length-1, prevArr.length)[0]);
 	}
 	return lastMatch;
 }

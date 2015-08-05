@@ -339,8 +339,8 @@ HistoryModel.updateHistoryForRematch = function(tid,hids,cb){
 	mysql.query('rw', sql, params, 'modules/history/history-model/updateHistoryForRematch-delete', function(err, updateHistroyRes){
 		if(err) return cb(err);
 		
-		// set delta to 0 since the points didn't count here.
-		var sql = 'UPDATE history SET delta = 0 WHERE id IN (?,?)',
+		// set delta and value to 0 since the points didn't count here.
+		var sql = 'UPDATE history SET value = 0, delta = 0 WHERE id IN (?,?)',
 			params = hids;
 		mysql.query('rw', sql, params, 'modules/history/history-model/updateHistoryForRematch-delete', function(err, updateHistroyRes){
 			if(err) return cb(err);
