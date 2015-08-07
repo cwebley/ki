@@ -25,7 +25,9 @@ INSERT INTO characters (name, season) VALUES
 	('omen',2),
 	('aganos',2),
 	('hisako',2),
-	('aria',2);
+	('aria',2),
+	('rash',3),
+	('NA',99999);
 
 CREATE TABLE `users` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,

@@ -22,7 +22,6 @@ var InspectPage = React.createClass({
 		TournamentStore.addChangeListener(this._onChange);
 	},
 	componentDidMount: function(){
-		serverActions.getTournamentData(this.getParams().titleSlug);
 		serverActions.getInspect(this.getParams().titleSlug);
 
 		this.intervalId = setInterval(function(){
