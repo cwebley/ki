@@ -5,9 +5,8 @@ the tournament of champions.
 1v1 full cast killer instinct 3 tournament app. 
 complete work in progress. master branch generally stable.
 
-Issues 7/30:
--Seed page previous data slightly inaccurate and not showing losing streaks
--put character value in matchup buttons and rematch button
+Issues 8/6:
+--supreme victories not always incrementing powers.
 
 TODO: 
 
@@ -15,7 +14,7 @@ TODO:
 
 --username and tournament name restrictions?
 
---password protection? Make better use of JWTs?
+--password salting, make better use of JWTs?
 
 --set up dbs in VMs. docker up, add npm scripts or something.
 
@@ -43,6 +42,8 @@ user-stats/ character-stats(character curStreaks, player streaks, biggest wins, 
 user-overall-stats
 	spanning multiple tourneys, or over a given data range
 
+draft for characters. probably necessary with s3 announcement.
+
 powerups ideas:
 	reseed opponents characters
 
@@ -58,6 +59,8 @@ powerups ideas:
 		count future appearances of certain characters in next 15 games,
 		reseed opponent and dock 3 points,
 		matchMaker stuff for next 2 games?
+
+	something to manipulate draft results?
 
 achievements? milestones not unique to one tourney:
 	beat every character
