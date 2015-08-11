@@ -81,7 +81,6 @@ var TournamentPage = React.createClass({
 			me: TournamentStore.getMe(),
 			them: TournamentStore.getThem(),
 			undoStatus: TournamentStore.undoStatus(),
-			supreme: false,
 			oddsMakerStatus: TournamentStore.oddsMakerStatus(),
 			rematchStatus: TournamentStore.rematchStatus(),
 			inspect: TournamentStore.inspectOwner()
@@ -299,12 +298,14 @@ var TournamentPage = React.createClass({
 	},
 	submitGame: function(data) {
 		serverActions.submitGame(data);
+		this.state.supreme = false;
 		if(React.findDOMNode(this.refs.supreme)){
 			React.findDOMNode(this.refs.supreme).checked = false;
 		}
 	},
 	toggleSupreme: function(){
 		var supreme = !this.state.supreme;
+
 		this.setState({
 			supreme: supreme
 		});
