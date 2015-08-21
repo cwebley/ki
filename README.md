@@ -5,8 +5,8 @@ the tournament of champions.
 1v1 full cast killer instinct 3 tournament app. 
 complete work in progress. master branch generally stable.
 
-Issues 8/6:
---supreme victories not always incrementing powers.
+Issues 8/14:
+undo button inconsistencies with powers or streak points or something
 
 TODO: 
 
