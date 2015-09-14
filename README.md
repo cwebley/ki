@@ -59,6 +59,7 @@ powerups ideas:
 		count future appearances of certain characters in next 15 games,
 		reseed opponent and dock 3 points,
 		matchMaker stuff for next 2 games?
+		grab bag character
 
 	something to manipulate draft results?
 

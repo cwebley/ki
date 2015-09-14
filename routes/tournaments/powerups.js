@@ -77,4 +77,21 @@ powerupController.rematch = function(req, res){
 	});
 }
 
+powerupController.jack = function(req,res){
+	//TODO verify swap and adjustments
+	var opts = {
+		username: req.user.name,
+		userId: req.user.id,
+		tourneySlug: req.params.tourneySlug,
+		swap: req.body.swap,
+		adjustments: req.body.adjustments
+	};
+	console.log("JACK OPTS: ", JSON.stringify(opts,null,4), JSON.stringify(req.tournament,null,4))
+	powerups.jack(opts, function(err,dto){
+		if(err) return res.status(500).send({success:false,err:err});
+		if(!dto) return res.status(400).send({success:false,reason:'invalid-inputs'});
+		res.status(200).send(dto);
+	});
+}
+
 module.exports = powerupController;
