@@ -250,4 +250,9 @@ PowerInterface.rematch = function(opts,cb) {
 	});
 };
 
+PowerInterface.jack = function(opts,cb) {
+	console.log("MDL POWERUPS JACK")
+	return cb();
+};
+
 module.exports = PowerInterface;

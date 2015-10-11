@@ -166,5 +166,14 @@ app.post('/:tourneySlug/adjust-points',
 	um.userInTournament,
  	tourneyController.adjustPoints
 );
+//jack of all trades
+app.post('/:tourneySlug/pwr/jack',
+	function(req,res,next){
+		console.log("JACK ROUTE")
+		next();
+	},
+	um.userInTournament,
+	powerups.jack
+);
 
 module.exports = app;

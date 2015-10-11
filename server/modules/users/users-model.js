@@ -105,7 +105,7 @@ UsersModel.getCharacterId = function(characterName, cb) {
 
 // don't grab character NA
 UsersModel.getAllCharacterIds = function(cb) {
-	var sql = 'SELECT id FROM characters WHERE id != 99999',
+	var sql = 'SELECT id FROM characters WHERE id != 99999 AND season != 3',
 		params = [];
 
 	mysql.query('rw', sql, params, 'modules/users/users-model/getAllCharacterIds', function(err, results){
