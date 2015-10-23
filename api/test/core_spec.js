@@ -58,8 +58,11 @@ describe('core logic', () => {
 
 	describe('submitGame', () => {
 		it('doesnt change the data', () => {
-			let resp = submitGame(initialState);
-			expect(resp.nextState).to.equal(initialState)
+			// let resp = submitGame(initialState);
+			const foo = {foo:"bar", baz: {"quux": "done"}};
+			const bar = {foo:"bar", baz: {"quux": "done"}};
+
+			expect(foo.baz.quux).to.equal(bar.baz.quux)
 		});
 	});
 
