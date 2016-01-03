@@ -19,6 +19,7 @@ let userTwoXterTwoVal;
 let userTwoXterTwoStreak;
 
 let supremeTest;
+let lastGameWasForOnePoint;
 
 // getters allow each of these values to be customized succinctly in tests
 let testState = {
@@ -72,12 +73,22 @@ const testUndoGame = {
 	winner: {
 		playerId: 1,
 		characterId: 1,
-		get prevCharVal() { return userOneXterOneVal + 1 }
+		get prevCharVal() { 
+			if ( lastGameWasForOnePoint ) {
+				return 1;
+			}
+			return userOneXterOneVal + 1
+		}
 	},
 	loser: {
 		playerId: 2,
 		characterId: 2,
-		get prevCharVal() { return userTwoXterTwoVal - 1 }
+		get prevCharVal() { 
+			if ( userTwoXterTwoVal > 1 ) {
+				return userTwoXterTwoVal - 1;
+			}
+			return userTwoXterTwoVal;
+		}
 	},
 	get supreme() { return supremeTest }
 };
@@ -100,6 +111,7 @@ function resetTestState() {
 	userTwoXterTwoStreak = 0;
 
 	supremeTest = false;
+	lastGameWasForOnePoint = false;
 };
 
 describe('core logic', () => {
@@ -120,6 +132,22 @@ describe('core logic', () => {
 			const diff2 = submitGame(testState, testGame);
 			expect(diff2["1"].score).to.equal(userOneScore + userOneXterOneVal);
 			expect(diff2["2"].score).to.equal(undefined); // no change for the loser
+		});
+
+		it('handles character value changes', () => {
+			const diff = submitGame(testState, testGame);
+
+			expect(diff["1"].characters["1"].value).to.equal(userOneXterOneVal - 1);
+			expect(diff["2"].characters["2"].value).to.equal(userTwoXterTwoVal + 1);
+		});
+
+		it('handles the edge case of the winning character already having a value of 1', () => {
+
+			userOneXterOneVal = 1;
+			const diff = submitGame(testState, testGame);
+
+			expect(diff["1"].characters["1"].value).to.equal(undefined); // no change in character value for the winner
+			expect(diff["2"].characters["2"].value).to.equal(userTwoXterTwoVal + 1);
 		});
 
 		it('handles player and character streaks properly', () => {
@@ -176,18 +204,38 @@ describe('core logic', () => {
 			done();
 		});
 
-		it('decrements winning player\'s score based on the previous winning character\'s previous value', () => {
-
+		it('decrements winning player\'s score based on the winning character\'s previous value', () => {
 			// give the user some non-zero score
 			userOneScore = 50;
 
 			const diff = undoGame(testState, testUndoGame);
 
-			// one more than the current value since it was decr'd after the win
+			// one less than the current value since it was decr'd after the win
 			expect(diff["1"].score).to.equal(userOneScore - testUndoGame.winner.prevCharVal);
 			expect(diff["2"].score).to.equal(undefined); // no change for the loser
-
 		});
+
+		it('resets the character values properly', () => {
+			const diff = undoGame(testState, testUndoGame);
+
+			expect(diff["1"].characters["1"].value).to.equal(userOneXterOneVal + 1);
+			expect(diff["2"].characters["2"].value).to.equal(userTwoXterTwoVal - 1);
+		});
+
+		it('handles the edge case of the winning character value being 1 after the the last game', () => {
+
+			userOneXterOneVal = 1;
+			lastGameWasForOnePoint = true;
+
+			const diff = undoGame(testState, testUndoGame);
+
+			// winner score is one less than the current value like normal
+			expect(diff["1"].score).to.equal(userOneScore - testUndoGame.winner.prevCharVal);
+
+			expect(diff["1"].characters["1"].value).to.equal(undefined); // no change in character value for the winner
+			expect(diff["2"].characters["2"].value).to.equal(userTwoXterTwoVal - 1);
+		});
+
 
 		it('handles undoing the winning player and character streaks properly', () => {
 
