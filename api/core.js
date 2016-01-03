@@ -48,3 +48,55 @@ export function submitGame(state, gameResult) {
 	}
 	return diff;
 }
+
+export function undoGame(state, prevGame) {
+	const winnerId = prevGame.winner.playerId.toString();
+	const winningCharacterId = prevGame.winner.characterId.toString();
+	const loserId = prevGame.loser.playerId.toString();
+	const losingCharacterId = prevGame.loser.characterId.toString();
+
+	let diff = {};
+
+	// if ( state.users[winnerId].characters[winningCharacterId].streak ===  3) 
+	diff[winnerId] = {
+		score: state.users[winnerId].score - prevGame.winner.prevCharVal,
+		characters: {
+			[winningCharacterId]: {
+				value: state.users[winnerId].characters[winningCharacterId].value > 1 ?
+					state.users[winnerId].characters[winningCharacterId].value - 1 :
+					1
+			}
+		}
+	};
+
+	// without more information, we can only figure out the previous streaks for the winner if they are currently above 1
+	diff[winnerId].streak = state.users[winnerId].streak > 1 ?
+		state.users[winnerId].streak - 1 :
+		0;
+	diff[winnerId].characters[winningCharacterId].streak = state.users[winnerId].characters[winningCharacterId].streak > 1 ?
+		state.users[winnerId].characters[winningCharacterId].streak - 1 :
+		0;
+
+	diff[loserId] = {
+		characters: {
+			[losingCharacterId]: {
+				value: state.users[loserId].characters[losingCharacterId].value + 1
+			}
+		}
+	};
+	
+	// without more information, we can only figure out the previous streaks for the loser if they are currently below -1
+	diff[loserId].streak = state.users[loserId].streak < -1 ?
+		state.users[loserId].streak + 1 :
+		0
+	diff[loserId].characters[losingCharacterId].streak = state.users[loserId].characters[losingCharacterId].streak < -1 ?
+	state.users[loserId].characters[losingCharacterId].streak + 1 :
+	0
+
+	// add a power for supreme
+	if ( prevGame.supreme ) {
+		diff[winnerId].powers = state.users[winnerId].powers - 1;
+	}
+
+	return diff;
+}

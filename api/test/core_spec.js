@@ -1,22 +1,24 @@
 import { expect } from 'chai';
-import { submitGame } from '../core.js';
+import { submitGame, undoGame } from '../core.js';
 
-// initial values for the test state
-let userOneScore = 0;
-let userOneStreak = 0;
-let userOnePowers = 3;
-let userOneXterOneVal = 6;
-let userOneXterOneStreak = 0;
-let userOneXterTwoVal = 3;
-let userOneXterTwoStreak = 0;
+// these values are set manually in tests, or all at once when resetTestState() is called
+let userOneScore;
+let userOneStreak;
+let userOnePowers;
+let userOneXterOneVal;
+let userOneXterOneStreak;
+let userOneXterTwoVal;
+let userOneXterTwoStreak;
 
-let userTwoScore = 0;
-let userTwoStreak = 0;
-let userTwoPowers = 3;
-let userTwoXterOneVal = 5;
-let userTwoXterOneStreak = 0;
-let userTwoXterTwoVal = 2;
-let userTwoXterTwoStreak = 0;
+let userTwoScore;
+let userTwoStreak;
+let userTwoPowers;
+let userTwoXterOneVal;
+let userTwoXterOneStreak;
+let userTwoXterTwoVal;
+let userTwoXterTwoStreak;
+
+let supremeTest;
 
 // getters allow each of these values to be customized succinctly in tests
 let testState = {
@@ -54,22 +56,59 @@ let testState = {
 	}
 };
 
+const testGame = {
+	winner: {
+		playerId: 1,
+		characterId: 1
+	},
+	loser: {
+		playerId: 2,
+		characterId: 2
+	},
+	get supreme() { return supremeTest }
+};
+
+const testUndoGame = {
+	winner: {
+		playerId: 1,
+		characterId: 1,
+		get prevCharVal() { return userOneXterOneVal + 1 }
+	},
+	loser: {
+		playerId: 2,
+		characterId: 2,
+		get prevCharVal() { return userTwoXterTwoVal - 1 }
+	},
+	get supreme() { return supremeTest }
+};
+
+function resetTestState() {
+	userOneScore = 0;
+	userOneStreak = 0;
+	userOnePowers = 3;
+	userOneXterOneVal = 6;
+	userOneXterOneStreak = 0;
+	userOneXterTwoVal = 3;
+	userOneXterTwoStreak = 0;
+
+	userTwoScore = 0;
+	userTwoStreak = 0;
+	userTwoPowers = 3;
+	userTwoXterOneVal = 5;
+	userTwoXterOneStreak = 0;
+	userTwoXterTwoVal = 2;
+	userTwoXterTwoStreak = 0;
+
+	supremeTest = false;
+};
+
 describe('core logic', () => {
 
 	describe('submitGame', () => {
-
-		let supremeTest = false;
-		const testGame = {
-			winner: {
-				playerId: 1,
-				characterId: 1
-			},
-			loser: {
-				playerId: 2,
-				characterId: 2
-			},
-			get supreme() { return supremeTest }
-		};
+		beforeEach((done) => {
+			resetTestState();
+			done();
+		});
 
 		it('increments winning player\'s score based on the character value', () => {
 			const diff = submitGame(testState, testGame);
@@ -117,7 +156,7 @@ describe('core logic', () => {
 
 		});
 
-		it('increments the winners powers only on supreme', () => {
+		it('increments the winner\'s powers only on supreme', () => {
 			// no supreme
 			const diff = submitGame(testState, testGame);
 			expect(diff["1"].powers).to.equal(undefined); // no power change if no supreme
@@ -127,6 +166,68 @@ describe('core logic', () => {
 			supremeTest = true;
 			const diff2 = submitGame(testState, testGame);
 			expect(diff2["1"].powers).to.equal(userOnePowers + 1);
+			expect(diff2["2"].powers).to.equal(undefined); // no power change for the loser ever
+		});
+	});
+
+	describe('undoGame', () => {
+		beforeEach((done) => {
+			resetTestState();
+			done();
+		});
+
+		it('decrements winning player\'s score based on the previous winning character\'s previous value', () => {
+
+			// give the user some non-zero score
+			userOneScore = 50;
+
+			const diff = undoGame(testState, testUndoGame);
+
+			// one more than the current value since it was decr'd after the win
+			expect(diff["1"].score).to.equal(userOneScore - testUndoGame.winner.prevCharVal);
+			expect(diff["2"].score).to.equal(undefined); // no change for the loser
+
+		});
+
+		it('handles undoing the winning player and character streaks properly', () => {
+
+			userOneStreak = 5;
+			userOneXterOneStreak = 5;
+			userTwoStreak = -5;
+			userTwoXterTwoStreak = -5;
+
+			const diff = undoGame(testState, testUndoGame);
+			expect(diff["1"].streak).to.equal(4);
+			expect(diff["1"].characters["1"].streak).to.equal(4);
+
+			expect(diff["2"].streak).to.equal(-4);
+			expect(diff["2"].characters["2"].streak).to.equal(-4);
+		});
+
+		it('handles the ambigous streak case by resetting streaks to 0', () => {
+			userOneStreak = 1;
+			userOneXterOneStreak = 1;
+			userTwoStreak = -1;
+			userTwoXterTwoStreak = -1;
+
+			const diff = undoGame(testState, testUndoGame);
+			expect(diff["1"].streak).to.equal(0);
+			expect(diff["1"].characters["1"].streak).to.equal(0);
+
+			expect(diff["2"].streak).to.equal(0);
+			expect(diff["2"].characters["2"].streak).to.equal(0);
+		});
+
+		it('decrements the winner\'s when prev game was a supreme', () => {
+			// no supreme
+			const diff = undoGame(testState, testUndoGame);
+			expect(diff["1"].powers).to.equal(undefined); // no power change if no supreme
+			expect(diff["2"].powers).to.equal(undefined); // no power change for the loser ever
+
+			// supreme
+			supremeTest = true;
+			const diff2 = undoGame(testState, testUndoGame);
+			expect(diff2["1"].powers).to.equal(userOnePowers - 1);
 			expect(diff2["2"].powers).to.equal(undefined); // no power change for the loser ever
 		});
 	});
