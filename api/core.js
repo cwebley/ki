@@ -93,7 +93,7 @@ export function undoGame(state, prevGame) {
 	state.users[loserId].characters[losingCharacterId].streak + 1 :
 	0
 
-	// add a power for supreme
+	// subtract a power for supreme
 	if ( prevGame.supreme ) {
 		diff[winnerId].powers = state.users[winnerId].powers - 1;
 	}
