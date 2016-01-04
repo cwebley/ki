@@ -66,51 +66,6 @@ export function submitGame(state, gameResult) {
 	return diff;
 }
 
-export function undoGame(state, prevGame) {
-	const winnerId = prevGame.winner.playerId.toString();
-	const winningCharacterId = prevGame.winner.characterId.toString();
-	const loserId = prevGame.loser.playerId.toString();
-	const losingCharacterId = prevGame.loser.characterId.toString();
-
-	let diff = {};
-
-	diff[winnerId] = {
-		score: state.users[winnerId].score - prevGame.winner.prevCharVal,
-		characters: {}
-	};
-
-	let winningCharDiff = {};
-	if ( state.users[winnerId].characters[winningCharacterId].value !== prevGame.winner.prevCharVal ) {
-		winningCharDiff.value = prevGame.winner.prevCharVal;
-	}
-
-	diff[winnerId].streak = undoWinnerStreak(state.users[winnerId].streak);
-	winningCharDiff.streak = undoWinnerStreak(state.users[winnerId].characters[winningCharacterId].streak);
-
-	// only include the specific character in the diff if something has changed
-	if ( Object.keys(winningCharDiff).length ) {
-		diff[winnerId].characters[winningCharacterId] = winningCharDiff
-	}
-
-	diff[loserId] = {
-		characters: {
-			[losingCharacterId]: {
-				value: prevGame.loser.prevCharVal
-			}
-		}
-	};
-	
-	diff[loserId].streak = undoLoserStreak(state.users[loserId].streak);
-	diff[loserId].characters[losingCharacterId].streak = undoLoserStreak(state.users[loserId].characters[losingCharacterId].streak);
-
-	// subtract a power for supreme
-	if ( prevGame.supreme ) {
-		diff[winnerId].powers = state.users[winnerId].powers - 1;
-	}
-
-	return diff;
-}
-
 // if winning character goes on fire after this game, return the characterId
 export function fireStatus(characterId, previousStreak) {
 	if ( previousStreak === 2 ) {
@@ -157,20 +112,4 @@ export function updateStreakPoints(currentPoints, previousStreak) {
 		return currentPoints + 1;
 	}
 	return undefined;
-}
-
-// without more information, we can only figure out the previous streaks for the winner if they are currently above 1
-export function undoWinnerStreak(currentStreak) {
-	if ( currentStreak > 1 ) {
-		return currentStreak - 1;
-	}
-	return 0;
-}
-
-// without more information, we can only figure out the previous streaks for the loser if they are currently below -1
-export function undoLoserStreak(currentStreak) {
-	if ( currentStreak < -1 ) {
-		return currentStreak + 1;
-	}
-	return 0;
 }
