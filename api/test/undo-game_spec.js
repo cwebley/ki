@@ -1,9 +1,11 @@
 import { expect } from 'chai';
 import { testVals, testState, testUndoGame, resetTestState } from './helper';
 import {
-	undoGame,
 	undoLoserStreak,
-	undoWinnerStreak
+	undoWinnerStreak,
+	undoFireStatus,
+	undoStreakPoints,
+	undoGame
 } from '../core/undo-game';
 
 describe('undo-game logic', () => {
@@ -31,6 +33,31 @@ describe('undo-game logic', () => {
 			expect(undoLoserStreak(0)).to.equal(0);
 			expect(undoLoserStreak(1)).to.equal(0);
 			expect(undoLoserStreak(2)).to.equal(0);
+		});
+	});
+
+	describe('undoFireStatus', () => {
+		it('returns undefined when character streak is not 3', () => {
+			expect(undoFireStatus('1', 1)).to.equal(undefined);
+			expect(undoFireStatus('1', 2)).to.equal(undefined);
+			expect(undoFireStatus('1', 4)).to.equal(undefined);
+		});
+		it('returns the characterId string if character streak is exactly 3', () => {
+			expect(undoFireStatus('1', 3)).to.equal('1');
+			expect(undoFireStatus('5', 3)).to.equal('5');
+		});
+	});
+
+	describe('undoStreakPoints', () => {
+		it('returns undefined when player streak is anything other than 3 or >=5', () => {
+			expect(undoStreakPoints(3, 1)).to.equal(undefined);
+			expect(undoStreakPoints(3, 2)).to.equal(undefined);
+			expect(undoStreakPoints(3, 4)).to.equal(undefined);
+		});
+		it('decrements streak points if streak is 3 or >= 5', () => {
+			expect(undoStreakPoints(3, 3)).to.equal(2);
+			expect(undoStreakPoints(3, 5)).to.equal(2);
+			expect(undoStreakPoints(3, 50)).to.equal(2);
 		});
 	});
 
@@ -113,6 +140,37 @@ describe('undo-game logic', () => {
 			const diff2 = undoGame(testState, testUndoGame);
 			expect(diff2["1"].powers).to.equal(testVals.userOnePowers - 1);
 			expect(diff2["2"].powers).to.equal(undefined); // no power change for the loser ever
+		});
+
+		it('return undoFire field with characterId if character went on fire in the game we\'re undoing', () => {
+			const diff = undoGame(testState, testUndoGame);
+			expect(diff["1"].undoFire).to.equal(undefined);
+
+			testVals.userOneXterOneStreak = 3;
+			const diff2 = undoGame(testState, testUndoGame);
+			expect(diff2["1"].undoFire).to.equal('1');
+		});
+
+		it('does\'nt return streakPoints if streak is neither 3 nor >= 5', () => {
+			const diff = undoGame(testState, testUndoGame);
+			expect(diff["1"].streakPoints).to.equal(undefined);
+
+			testVals.userOneStreak = 4;
+			const diff2 = undoGame(testState, testUndoGame);
+			expect(diff2["1"].streakPoints).to.equal(undefined);
+		});
+		it('decrements streakPoints if streak is 3 or >=5', () => {
+			testVals.userOneStreak = 3;
+			const diff = undoGame(testState, testUndoGame);
+			expect(diff["1"].streakPoints).to.equal(2);
+
+			testVals.userOneStreak = 5;
+			const diff2 = undoGame(testState, testUndoGame);
+			expect(diff2["1"].streakPoints).to.equal(2);
+
+			testVals.userOneStreak = 999;
+			const diff3 = undoGame(testState, testUndoGame);
+			expect(diff3["1"].streakPoints).to.equal(2);
 		});
 	});
 });

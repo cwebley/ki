@@ -40,6 +40,18 @@ export function undoGame(state, prevGame) {
 		diff[winnerId].powers = state.users[winnerId].powers - 1;
 	}
 
+	// undo fire
+	const undoFire = undoFireStatus(winningCharacterId, state.users[winnerId].characters[winningCharacterId].streak);
+	if ( undoFire ) {
+		diff[winnerId].undoFire = undoFire;
+	}
+	// unfortunately there is not currently enough info to undoIceStatus
+
+	const streakPointsDiff = undoStreakPoints(state.users[winnerId].streakPoints, state.users[winnerId].streak);
+	if ( streakPointsDiff ) {
+		diff[winnerId].streakPoints = streakPointsDiff;
+	}
+
 	return diff;
 }
 
@@ -57,4 +69,18 @@ export function undoLoserStreak(currentStreak) {
 		return currentStreak + 1;
 	}
 	return 0;
+}
+
+export function undoFireStatus(characterId, currentStreak) {
+	if ( currentStreak !== 3 ) {
+		return undefined;
+	}
+	return characterId;
+}
+
+export function undoStreakPoints(currentPoints, currentStreak) {
+	if ( currentStreak === 3 || currentStreak >= 5) {
+		return currentPoints - 1;
+	}
+	return undefined;
 }
