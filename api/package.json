@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel/register --recursive"
+    "test": "mocha --compilers js:babel/register --recursive",
+    "createdb": "createdb ki; psql ki < persistence/pg/schema/0.sql",
+    "dropdb": "dropdb ki",
+    "clean-deploy": "npm run dropdb ; npm run createdb",
+    "postgres": "initdb tmp/pg ; postgres -D tmp/pg > tmp/pg.log  2>&1 &"
   },
   "author": "cwebley",
   "license": "Closed",
