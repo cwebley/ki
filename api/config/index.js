@@ -1,10 +1,3 @@
-//	config = require('../../../node-packages/config');
-
-// import { existsSync, readFileSync } from 'fs';
-// import { join } from 'path';
-
-// var l = path.join(__dirname, 'local.json');
-
 const defaultConfigs = {
 	"pg": {
 		"database": "ki",
@@ -18,6 +11,19 @@ const defaultConfigs = {
 	},
 };
 
+const testConfigs = {
+	"pg": {
+		"database": "test",
+		"username": "ki",
+		"password": "123456789FOOBARBAZ",
+		"server": "localhost"
+	},
+	"redis": {
+		"host": "127.0.0.1",
+		"port": 6380
+	},
+}
+
 // if(!fs.existsSync(l)) {
 // 	return module.exports = _.defaultsDeep(config, defaultConfigs);
 // }
@@ -25,4 +31,4 @@ const defaultConfigs = {
 // var localConfigs = JSON.parse(fs.readFileSync(l));
 // module.exports = _.defaultsDeep(localConfigs, config, defaultConfigs);
 
-export defaultConfigs;
+export { defaultConfigs, testConfigs };
