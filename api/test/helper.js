@@ -76,7 +76,7 @@ let testUndoGame = {
 	winner: {
 		playerId: 1,
 		characterId: 1,
-		get prevCharVal() { 
+		get prevCharVal() {
 			if ( testVals.lastGameWasForOnePoint ) {
 				return 1;
 			}
@@ -86,7 +86,7 @@ let testUndoGame = {
 	loser: {
 		playerId: 2,
 		characterId: 2,
-		get prevCharVal() { 
+		get prevCharVal() {
 			if ( testVals.userTwoXterTwoVal > 1 ) {
 				return testVals.userTwoXterTwoVal - 1;
 			}
@@ -119,4 +119,4 @@ function resetTestState() {
 	testVals.lastGameWasForOnePoint = false;
 };
 
-export { testVals, testState, testGame, testUndoGame, resetTestState};
+export { testVals, testState, testGame, testUndoGame, resetTestState };
