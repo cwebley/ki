@@ -1,4 +1,4 @@
-const env = process.env.NODE_ENV || 'development';
-import { config } from './config' + env;
+const location = './config.' + (process.env.NODE_ENV || 'global');
+const config = require(location);
 
 export { config };

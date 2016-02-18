@@ -1,4 +1,4 @@
-export var config = {
+var config = {
     "env": 'development',
 	"pg": {
 		"database": "ki",
@@ -11,3 +11,5 @@ export var config = {
 		"port": 6379
 	},
 };
+
+export default config;

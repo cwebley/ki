@@ -1,9 +1,10 @@
 import { connect } from 'pg';
 import { config } from '../../config';
 
-function query (config, sql, params, cb) {
-	const conString = 'postgres://' + config.username + ':' + config.password + '@' + config.server + '/' + config.database;
-	pg.connect(conString, (err, client, done) => {
+function query (sql, params, cb) {
+	const conString = 'postgres://' + config.pg.username + ':' + config.pg.password + '@' + config.pg.server + '/' + config.pg.database;
+	console.log("CONSTR: ", conString)
+	connect(conString, (err, client, done) => {
 		if (err) {
 			console.error('failed pg connection', {err: err});
 			return cb(err);

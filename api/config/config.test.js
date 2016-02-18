@@ -1,6 +1,6 @@
-import { config } from './config/global.js';
+import config from './config/global.js';
 
-export var config = {
+var config = {
     "env": 'test',
     "pg": {
 		"database": "test",
@@ -16,3 +16,5 @@ export var config = {
 
 config.env = "test";
 config.pg.database = "test";
+
+export default config;
