@@ -1,29 +1,3 @@
--- create table if not exists users (
--- 	uuid char(36) not null primary key,
--- 	username varchar(25) null unique,
--- 	email varchar(50) not null unique,
--- 	password varchar(100) not null,
--- 	admin boolean not null default false
--- );
--- CREATE INDEX users_email_index ON users(email);
--- CREATE INDEX users_username_index ON users(username);
-
--- create table if not exists access_tokens (
--- 	access_token varchar(48) not null primary key,
--- 	user_uuid char(36) references users (uuid),
--- 	created timestamp not null,
--- 	expires timestamp not null
--- );
-
--- create table if not exists forgot_password_tokens (
--- 	user_uuid char(36) not null,
--- 	token char(36) not null primary key,
--- 	expires timestamp not null
--- );
-
-
-
-
 CREATE TABLE IF NOT EXISTS characters (
 	id serial NOT NULL PRIMARY KEY,
 	name varchar(25) NOT NULL,
@@ -32,27 +6,29 @@ CREATE TABLE IF NOT EXISTS characters (
 
 -- -- N/A character to satisfy `history` foreign key edgecases where the character is not important
 INSERT INTO characters (name) VALUES
-	('NA');
+	('NA')
+;
 
 INSERT INTO characters (name, season) VALUES
-	('jago',1),
-	('wulf',1),
-	('orchid',1),
-	('thunder',1),
-	('spinal',1),
-	('fulgore',1),
-	('glacius',1),
-	('sadira',1),
-	('tj',2),
-	('maya',2),
-	('kanra',2),
-	('riptor',2),
-	('omen',2),
-	('aganos',2),
-	('hisako',2),
-	('aria',2),
+	('jago', 1),
+	('wulf', 1),
+	('orchid', 1),
+	('thunder', 1),
+	('spinal', 1),
+	('fulgore', 1),
+	('glacius', 1),
+	('sadira', 1),
+	('tj', 2),
+	('maya', 2),
+	('kanra', 2),
+	('riptor', 2),
+	('omen', 2),
+	('aganos', 2),
+	('hisako', 2),
+	('aria', 2),
 	('shadowjago', 1),
-	('rash',3);
+	('rash', 3)
+;
 
 CREATE TABLE IF NOT EXISTS users (
 	id serial NOT NULL PRIMARY KEY,
@@ -188,3 +164,5 @@ CREATE TABLE IF NOT EXISTS history (
 
 CREATE USER ki WITH PASSWORD '123456789FOOBARBAZ';
 GRANT ALL PRIVILEGES ON DATABASE ki TO ki;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ki;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ki;
