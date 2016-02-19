@@ -1,16 +1,24 @@
 import { query } from './persistence/pg';
 import redis from './persistence/redis';
-import Loggerr from 'loggerr';
-import cliFormatter from 'loggerr/formatters/cli';
+import chalk from 'chalk';
+import util from 'util';
+import Logtastic from 'logtastic/Logger';
+import cliFormatter from 'Loggerr/formatters/cli';
 
-var log = new Loggerr({
-    level: Loggerr.INFO,
+var log = new Logtastic({
+    level: Logtastic.DEBUG,
     formatter: cliFormatter
 });
 log.error(new Error('My error message'));
+log.warning('WARNING happened', {
+    foo: 'warning about what happened'
+});
 
-log.debug('Something happened', {
-    foo: 'info about what happened'
+log.info('INFO happened', {
+    foo: 'INFOF about what happened'
+});
+log.debug('DEBUG happened', {
+    foo: 'DEBUG about what happened'
 });
 
 const sql = 'INSERT INTO users (name, password) VALUES ($1, $2)';
