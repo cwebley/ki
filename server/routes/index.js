@@ -52,7 +52,7 @@ app.post('/login',
 	controller.login
 );
 
-app.post('/register', 
+app.post('/register',
  	controller.register
 );
 

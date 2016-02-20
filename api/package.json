@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "chalk": "^1.1.1",
+    "express": "^4.13.4",
     "loggerr": "^1.6.0",
     "logtastic": "^2.1.0",
     "pg": "^4.4.6",

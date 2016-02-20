@@ -6,3 +6,9 @@ require('babel/register')({});
 
 console.log("PROCESS STARTED");
 var server = require('./app.js');
+
+server.set('port', process.env.PORT || 3000);
+
+var server = server.listen(server.get('port'), function() {
+  console.log('Express server listening on port ' + server.address().port)
+});
