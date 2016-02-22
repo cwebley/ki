@@ -5,8 +5,8 @@ import express from 'express';
 var app = express();
 
 app.use(log.middleware({
-    //debug
-    level: 7
+    // this might change in the Logtastic beta
+    level: log.Logtastic.DEBUG
 }));
 
 app.get('/', (req, res) => {
