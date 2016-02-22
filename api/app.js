@@ -1,9 +1,13 @@
-import { query } from './persistence/pg';
 import redis from './persistence/redis';
 import log from './logger';
 import express from 'express';
 
 var app = express();
+
+app.use(log.middleware({
+    //debug
+    level: 7
+}));
 
 app.get('/', (req, res) => {
     res.status(200).send({hello: 'world'});

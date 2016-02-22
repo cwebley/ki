@@ -1,6 +1,5 @@
-import Loggerr from 'loggerr';
-import cliFormatter from 'loggerr/formatters/cli';
+import log from 'logtastic';
 
-export default new Loggerr({
-    formatter: cliFormatter
-});
+log.parseArgs();
+
+export default log;
