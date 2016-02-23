@@ -32,9 +32,9 @@ INSERT INTO characters (name, season) VALUES
 
 CREATE TABLE IF NOT EXISTS users (
 	id serial NOT NULL PRIMARY KEY,
-	name varchar(25) NOT NULL UNIQUE,
-	password varchar(100) NOT NULL,
-	email varchar(50),
+	name varchar(255) NOT NULL UNIQUE,
+	password varchar(255) NOT NULL,
+	email varchar(255),
 	tournamentWins integer NOT NULL DEFAULT 0,
 	tournamentLosses integer NOT NULL DEFAULT 0,
 	wins integer NOT NULL DEFAULT 0,

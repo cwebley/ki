@@ -1,17 +1,21 @@
 import redis from './persistence/redis';
 import log from './logger';
 import express from 'express';
+import apiRouter from './routes';
+import bodyParser from 'body-parser';
 
 var app = express();
 
 app.use(log.middleware({
-    // this might change in the Logtastic beta
-    level: log.Logtastic.DEBUG
+    level: log.Logtastic.INFO
 }));
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.status(200).send({hello: 'world'});
-});
+app.use('/api', apiRouter);
+
+// app.get('/', (req, res) => {
+//     res.status(200).send({hello: 'world'});
+// });
 
 // const sql = 'INSERT INTO users (name, password) VALUES ($1, $2)';
 // const params = ['Cameron', 'asdfasdf'];
