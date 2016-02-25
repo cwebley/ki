@@ -1,5 +1,6 @@
 import pg from 'pg';
-import { config } from '../../config';
+import log from '../../logger';
+import config from '../../config';
 
 function query (sql, params, cb) {
 	const conString = 'postgres://' + config.pg.username + ':' + config.pg.password + '@' + config.pg.server + '/' + config.pg.database;
@@ -11,7 +12,7 @@ function query (sql, params, cb) {
 
 		client.query(sql, params, (err, results) => {
 			if (err) {
-				console.error('sql query failed', {err: err, sql: sql, params: params});
+				log.error('sql query failed', {err: err, sql: sql, params: params});
 			}
 			done();
 			cb(err, results);

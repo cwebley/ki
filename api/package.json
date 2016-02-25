@@ -18,11 +18,15 @@
     "mocha": "^2.3.3"
   },
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.0",
-    "chalk": "^1.1.1",
     "express": "^4.13.4",
+    "express-jwt": "^3.3.0",
+    "jsonwebtoken": "^5.7.0",
     "logtastic": "^3.0.0-BETA1",
+    "node-uuid": "^1.4.7",
     "pg": "^4.4.6",
-    "redis": "^2.4.2"
+    "redis": "^2.4.2",
+    "slug": "^0.9.1"
   }
 }

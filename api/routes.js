@@ -1,5 +1,8 @@
 import express from 'express';
+import jwt from 'express-jwt';
 import r from './reasons';
+import config from './config';
+import { registerUser, createToken } from './auth/register-user';
 
 var router = express.Router();
 
@@ -36,8 +39,8 @@ router.post('/register', (req, res) => {
     if (opts.username.length > 15 || !isAlphaNumeric(opts.username)) {
         problems.push(r.InvalidUsername);
     }
-    if (opts.password.length > 255) {
-        problems.push(r.PasswordLength);
+    if (opts.password.length < 6 || opts.password.length > 255) {
+        problems.push(r.PasswordComplexity);
     }
     if (opts.password !== opts.confirmPassword) {
         problems.push(r.PasswordMismatch);
@@ -50,14 +53,29 @@ router.post('/register', (req, res) => {
         return res.status(400).send(r(...problems));
     }
 
-    // DO SOMETHING
-    
+    registerUser(opts, (err, user) => {
+        if (err) {
+            if (err.message.slice(0, 9) === 'duplicate') {
+                return res.status(400).send(r.duplicateUsername);
+            }
+            return res.status(400).send(r.internal);
+        }
+
+        createToken(user, (token) => {
+            return res.status(201).send({
+                token: token
+            });
+        });
+    });
+});
+
+router.get('/protected', jwt({secret: config.jwt.secret}), (req, res) => {
+    res.status(200).send({user: req.user});
 });
 
 function isAlphaNumeric (str) {
     for (let i = 0; i < str.length; i++) {
         let code = str.charCodeAt(i);
-        console.log("CODE: ", code)
         if (!(code > 47 && code < 58) && //numeric 0-9
             !(code > 64 && code < 91) && // upper alpha A-Z
             !(code > 96 && code < 123)) { // lower alpha a-z

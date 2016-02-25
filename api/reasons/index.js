@@ -16,9 +16,10 @@ r.NoPassword = 'Missing password';
 r.NoConfirmPassword = 'Missing confirmPassword';
 r.NoEmail = 'Missing email';
 r.InvalidUsername = 'Username must be between alphanumeric and less than 15 characters';
-r.PasswordLength = 'Password must be less than 256 characters';
+r.PasswordComplexity = 'Password must be between 6 and 256 characters';
 r.PasswordMismatch = 'Password mismatch';
 r.InvalidEmail = 'Invalid email';
+r.DuplicateUsername = 'Username is already taken';
 
 r.Internal = 'Internal server error';
 r.NotFound = 'Resource not found';

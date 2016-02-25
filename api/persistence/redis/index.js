@@ -1,5 +1,5 @@
 import redis from 'redis';
-import { config } from '../../config';
+import config from '../../config';
 
 var client = redis.createClient(config.redis.port, config.redis.host);
 

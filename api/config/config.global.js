@@ -10,6 +10,10 @@ var config = {
 		"host": "127.0.0.1",
 		"port": 6379
 	},
+    "jwt": {
+        "secret": "asdfasdf",
+        "expiresIn": "1 year"
+    }
 };
 
 export default config;
