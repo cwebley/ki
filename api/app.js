@@ -12,33 +12,18 @@ console.log(`Logtastic running at level ${log.level}`);
 app.use(log.middleware({
     level: log.Logtastic.INFO
 }));
-app.use(bodyParser.json());
-app.use((err, req, res, next) => {
-    log.error("express caught an error", {err: err});
 
-    if (err.name === 'UnauthorizedError') {
-        res.status(401).send(r.unauthorized);
-    }
-});
+app.use(bodyParser.json());
 
 app.use('/api', apiRouter);
 
-// app.get('/', (req, res) => {
-//     res.status(200).send({hello: 'world'});
-// });
+// error handling mw
+app.use((err, req, res, next) => {
+    log.info("express caught an error", {err: err});
 
-// const sql = 'INSERT INTO users (name, password) VALUES ($1, $2)';
-// const params = ['Cameron', 'asdfasdf'];
-
-// query(sql, params, (err, results) => {
-//     console.log("PG ERR: ", err);
-//     console.log("PG RESULTS: ", results);
-// });
-
-// redis.set('foo', 'bar', (err, results) => {
-    // console.log("REDIS ERR: ", err);
-    // console.log("REDIS RESULTS: ", results);
-    // log.info('REDIS RESULTS', {err: err, results: results});
-// });
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).send(r(r.Unauthorized, err.message));
+    }
+});
 
 export default app;
