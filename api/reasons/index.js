@@ -15,11 +15,18 @@ r.NoUsername = 'Missing username';
 r.NoPassword = 'Missing password';
 r.NoConfirmPassword = 'Missing confirmPassword';
 r.NoEmail = 'Missing email';
-r.InvalidUsername = 'Username must be between alphanumeric and less than 15 characters';
+r.InvalidUsername = 'Username must be less than 25 characters';
 r.PasswordComplexity = 'Password must be between 6 and 256 characters';
 r.PasswordMismatch = 'Password mismatch';
 r.InvalidEmail = 'Invalid email';
-r.DuplicateUsername = 'Username is already taken';
+r.DuplicateUsername = 'Username is already exists';
+
+//tournaments
+r.NoName = 'Missing name'
+r.NoGoal = 'Missing goal'
+r.InavlidName = 'Name must be less than 25 characters';
+r.InvalidGoal = 'Goal must be an integer greater than 0';
+r.DuplicateTournamentName = 'Tournament name already exists';
 
 r.Internal = 'Internal server error';
 r.InvalidCredentials = 'Invalid username or password';

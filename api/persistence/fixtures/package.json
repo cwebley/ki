@@ -9,6 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "faker": "^3.0.1"
+    "each-async": "^1.1.1",
+    "faker": "^3.0.1",
+    "lodash.range": "^3.1.2"
+  },
+  "devDependencies": {
+    "babel": "^6.5.2"
   }
 }

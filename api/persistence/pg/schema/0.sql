@@ -32,7 +32,7 @@
 
 CREATE TABLE IF NOT EXISTS users (
 	uuid char(36) NOT NULL PRIMARY KEY,
-	username varchar(255) NOT NULL UNIQUE,
+	name varchar(255) NOT NULL UNIQUE,
 	slug varchar(255) NOT NULL UNIQUE,
 	password varchar(255) NOT NULL,
 	email varchar(255),
@@ -53,8 +53,6 @@ CREATE TABLE IF NOT EXISTS tournaments (
 	slug varchar(255) NOT NULL UNIQUE,
 	goal integer NOT NULL,
 	championId char(36) REFERENCES users (uuid),
-	seeded boolean DEFAULT false,
-	active boolean DEFAULT true,
 	time timestamp DEFAULT now()
 );
 

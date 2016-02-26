@@ -1,19 +1,19 @@
-var users = require('../data/test');
+var tournaments = require('../data/test');
 var request = require('request');
 
 module.exports.up = function (next) {
 	var run = 0;
 	var errors = null;
 
-	// saving userUuids for teardown
-	this.state.tokens = [];
+	// saving tournaments for teardown
+	this.state.tournaments = [];
 
-	users.forEach(function (user, i, done) {
+	tournaments.forEach(function (tournament, i, done) {
 		request({
 			method: 'POST',
-			url: 'http://localhost:3000/api/register',
+			url: 'http://localhost:3000/api/tournament',
 			json: true,
-			body: user
+			body: tournament
 		}, function (err, resp, body) {
 			if (!err && resp.statusCode > 300) {
 				err = new Error('Non 200 response');
@@ -31,7 +31,7 @@ module.exports.up = function (next) {
 			}
 
 			run++;
-			if (run === users.length) {
+			if (run === tournaments.length) {
 				next(errors);
 			}
 		}.bind(this));
