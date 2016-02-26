@@ -22,6 +22,7 @@ r.InvalidEmail = 'Invalid email';
 r.DuplicateUsername = 'Username is already taken';
 
 r.Internal = 'Internal server error';
+r.InvalidCredentials = 'Invalid username or password';
 r.NotFound = 'Resource not found';
 r.Unauthorized = 'User unauthorized';
 r.Forbidden = 'Resource forbidden';
@@ -29,5 +30,5 @@ r.Unique = 'Resource conflict, unique';
 
 // Lowercase descriptions are single reason methods for convenience
 Object.keys(r).forEach((k) => {
-    r[k.charAt(0).toLowerCase() + k.slice(1)] = r(r[k]);
+	r[k.charAt(0).toLowerCase() + k.slice(1)] = r(r[k]);
 });
