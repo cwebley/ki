@@ -6,7 +6,7 @@ export default function createTournamentQuery (uuid, name, slug, goal, cb) {
 					INSERT INTO tournaments
 						(uuid, name, slug, goal)
 					VALUES
-						($1, $2, $3, $4, $5)
+						($1, $2, $3, $4)
 				`;
 	const params = [uuid, name, slug, goal];
 

@@ -1,7 +1,7 @@
 var faker = require('faker');
 var range = require('lodash.range');
 
-module.exports = range(0, 20).map(function () {
+module.exports = range(0, 1).map(function () {
 	var user = {};
 	var fakeUser = faker.helpers.userCard();
 

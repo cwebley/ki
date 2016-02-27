@@ -7,18 +7,18 @@ module.exports.up = function (next) {
 	var run = 0;
 	var errors = null;
 
+	var tokenFromUserFixture = this.dependencies.users.state.tokens[0];
+
 	// saving tournaments for teardown
 	this.state.tournaments = [];
 
 	tournaments.forEach(function (tournament, i, done) {
-		console.log("MOKR STATE: ", this.state)
-		var token = 'something'
 		request({
 			method: 'POST',
 			url: 'http://localhost:3000/api/tournament',
 			json: true,
 			headers: {
-				'Authorization': 'Bearer ' + token
+				'Authorization': 'Bearer ' + tokenFromUserFixture
 			},
 			body: tournament
 		}, function (err, resp, body) {
@@ -34,7 +34,7 @@ module.exports.up = function (next) {
 			}
 
 			if (!err && body) {
-				this.state.tokens.push(body.token);
+				this.state.tournaments.push(body);
 			}
 
 			run++;

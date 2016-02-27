@@ -2,7 +2,7 @@ import r from '../reasons';
 import config from '../config';
 import slug from 'slug';
 import uuid from 'node-uuid';
-import createTournamentQuery from '../lib/queries/insert-character';
+import createTournamentQuery from '../lib/queries/create-tournament';
 
 export default function createTournamentHandler (req, res) {
 	let opts = {
