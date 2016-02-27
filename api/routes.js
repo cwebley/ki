@@ -1,12 +1,13 @@
 import express from 'express';
 import jwt from 'express-jwt';
+
 import config from './config';
+
+// handlers
 import createCharacter from './handlers/create-character';
 import registerUser from './handlers/register-user';
 import loginUser from './handlers/login-user';
-
-import { registerUserCtrl, loginUserCtrl } from './auth';
-import { createTournamentCtrl } from './tournaments';
+import createTournament from './handlers/create-tournament';
 
 let router = express.Router();
 
@@ -18,6 +19,6 @@ router.post('/user/login', loginUser);
 
 router.post('/character', createCharacter);
 
-router.post('/tournament', requiresLogin, createTournamentCtrl)
+router.post('/tournament', requiresLogin, createTournament);
 
 export default router;
