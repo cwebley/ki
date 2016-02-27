@@ -1,8 +1,9 @@
--- CREATE TABLE IF NOT EXISTS characters (
--- 	id serial NOT NULL PRIMARY KEY,
--- 	name varchar(25) NOT NULL,
--- 	season serial NOT NULL
--- );
+CREATE TABLE IF NOT EXISTS characters (
+	uuid char(36) NOT NULL PRIMARY KEY,
+	name varchar(255) NOT NULL UNIQUE,
+	slug varchar(255) NOT NULL UNIQUE,
+	season integer NOT NULL
+);
 
 -- -- N/A character to satisfy `history` foreign key edgecases where the character is not important
 -- INSERT INTO characters (name) VALUES

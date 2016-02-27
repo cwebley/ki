@@ -29,10 +29,10 @@ function createTournamentCtrl (req, res) {
 		return res.status(400).send(r(...problems));
 	}
 	createTournament(opts, (err, tournament) => {
-		if (err.message.slice(0, 9) === 'duplicate') {
-			return res.status(400).send(r.duplicateTournamentName);
-		}
 		if (err) {
+			if (err.message.slice(0, 9) === 'duplicate') {
+				return res.status(409).send(r.duplicateTournamentName);
+			}
 			return res.status(500).send(r.internal);
 		}
 		return res.status(201).send(tournament);

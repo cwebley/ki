@@ -21,12 +21,15 @@ r.PasswordMismatch = 'Password mismatch';
 r.InvalidEmail = 'Invalid email';
 r.DuplicateUsername = 'Username is already exists';
 
-//tournaments
-r.NoName = 'Missing name'
-r.NoGoal = 'Missing goal'
+//tournaments and characters
+r.NoName = 'Missing name';
+r.NoGoal = 'Missing goal';
+r.NoSeason = 'Missing season';
 r.InavlidName = 'Name must be less than 25 characters';
 r.InvalidGoal = 'Goal must be an integer greater than 0';
+r.InvalidSeason = 'Season must be an integer greater than 0';
 r.DuplicateTournamentName = 'Tournament name already exists';
+r.DuplicateCharacterName = 'Character name already exists';
 
 r.Internal = 'Internal server error';
 r.InvalidCredentials = 'Invalid username or password';
