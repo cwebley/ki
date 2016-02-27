@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register --recursive",
+	"start": "node index.js --logLevel debug",
     "createdb": "createdb ki; psql ki < persistence/pg/schema/0.sql",
     "dropdb": "dropdb ki",
     "clean-deploy": "npm run dropdb ; npm run createdb",

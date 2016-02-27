@@ -1,7 +1,7 @@
 import { query } from '../../persistence/pg';
 
 // returns a character object if successful
-export default function insertCharacter (uuid, name, slug, season, cb) {
+export default function insertCharacterQuery (uuid, name, slug, season, cb) {
 	const sql = `
 					INSERT INTO characters
 						(uuid, name, slug, season)

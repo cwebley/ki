@@ -4,7 +4,7 @@ import slug from 'slug';
 import uuid from 'node-uuid';
 import insertCharacterQuery from '../lib/queries/insert-character';
 
-export default function createCharacter (req, res) {
+export default function createCharacterHandler (req, res) {
 	let opts = {
 		name: req.body.name,
 		season: parseInt(req.body.season, 10)

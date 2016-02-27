@@ -1,21 +1,20 @@
 import express from 'express';
 import jwt from 'express-jwt';
 import config from './config';
+import createCharacter from './handlers/create-character';
+import registerUser from './handlers/register-user';
+import loginUser from './handlers/login-user';
+
 import { registerUserCtrl, loginUserCtrl } from './auth';
 import { createTournamentCtrl } from './tournaments';
-import createCharacter from './handlers/create-character';
 
 let router = express.Router();
+
+// validates token and sets req.user with token data
 let requiresLogin = jwt({secret: config.jwt.secret});
 
-
-// test route for jwts
-// router.get('/protected', jwt({secret: config.jwt.secret}), (req, res) => {
-// 	res.status(200).send({user: req.user});
-// });
-
-router.post('/user/register', registerUserCtrl);
-router.post('/user/login', loginUserCtrl);
+router.post('/user/register', registerUser);
+router.post('/user/login', loginUser);
 
 router.post('/character', createCharacter);
 
