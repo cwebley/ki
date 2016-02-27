@@ -5,7 +5,7 @@ module.exports = range(0, 20).map(function () {
 	var user = {};
 	var fakeUser = faker.helpers.userCard();
 
-	user.username = fakeUser.username;
+	user.username = fakeUser.name;
 	user.email = fakeUser.email;
 	user.password = 'asdfasdf';
 	user.confirmPassword = 'asdfasdf';

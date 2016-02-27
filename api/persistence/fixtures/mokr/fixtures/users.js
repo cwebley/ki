@@ -1,4 +1,4 @@
-var users = require('../data/test');
+var users = require('../data/users');
 var request = require('request');
 
 module.exports.up = function (next) {
@@ -11,12 +11,12 @@ module.exports.up = function (next) {
 	users.forEach(function (user, i, done) {
 		request({
 			method: 'POST',
-			url: 'http://localhost:3000/api/register',
+			url: 'http://localhost:3000/api/user/register',
 			json: true,
 			body: user
 		}, function (err, resp, body) {
 			if (!err && resp.statusCode > 300) {
-				err = new Error('Non 200 response');
+				err = new Error('Non 200 response: ' + resp.statusCode);
 			}
 			if (err) {
 				if(!errors) {
