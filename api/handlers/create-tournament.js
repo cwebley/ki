@@ -47,7 +47,7 @@ export default function createTournamentHandler (req, res) {
 		const tournamentUuid = uuid.v4();
 		const tournamentSlug = slug(opts.name);
 
-		createTournamentQuery(req.db, tournamentUuid, opts.name, tournamentSlug, opts.goal, (err, tournament) => {
+		createTournamentQuery(req.db, tournamentUuid, opts.name, tournamentSlug, opts.goal, req.user.uuid, opponentData.uuid, (err, tournament) => {
 			if (err) {
 				if (err.message.slice(0, 9) === 'duplicate') {
 					return res.status(409).send(r.duplicateTournamentName);

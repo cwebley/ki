@@ -1,10 +1,10 @@
 
 export default function getUserQuery (db, field, value, cb) {
 	const sql = `
-					SELECT *
-					FROM users
-					WHERE ${field} = $1
-				`;
+		SELECT *
+		FROM users
+		WHERE ${field} = $1
+	`;
 	const params = [value];
 	db.query(sql, params, (err, results) => {
 		if (err) {

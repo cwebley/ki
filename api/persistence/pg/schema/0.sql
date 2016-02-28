@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS tournaments (
 );
 
 CREATE TABLE IF NOT EXISTS tournamentUsers (
-	uuid char(36) NOT NULL PRIMARY KEY,
 	tournamentUuid char(36) NOT NULL REFERENCES tournaments (uuid),
 	userUuid char(36) NOT NULL REFERENCES users (uuid),
 	wins integer NOT NULL DEFAULT 0,
@@ -42,7 +41,7 @@ CREATE TABLE IF NOT EXISTS tournamentUsers (
 	bestStreak integer NOT NULL DEFAULT 0,
 	score integer NOT NULL DEFAULT 0,
 	fireWins integer NOT NULL DEFAULT 0,
-	UNIQUE (tournamentUuid, userUuid)
+	primary key (tournamentUuid, userUuid)
 );
 --
 -- CREATE TABLE IF NOT EXISTS tournamentPowers (
