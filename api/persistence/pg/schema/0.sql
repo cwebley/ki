@@ -90,13 +90,13 @@ CREATE TABLE IF NOT EXISTS tournamentCharacters (
 	tournamentUuid char(36) NOT NULL REFERENCES tournaments (uuid),
 	userUuid char(36) NOT NULL REFERENCES users (uuid),
 	characterUuid char(36) NOT NULL REFERENCES characters (uuid),
-	value integer NOT NULL,
+	value integer NOT NULL DEFAULT 0,
 	wins integer NOT NULL DEFAULT 0,
 	losses integer NOT NULL DEFAULT 0,
 	streak integer NOT NULL DEFAULT 0,
 	bestStreak integer NOT NULL DEFAULT 0,
 	fireWins integer NOT NULL DEFAULT 0,
-	primary key (tournamentId, userId, characterId)
+	primary key (tournamentUuid, userUuid, characterUuid)
 );
 --
 -- CREATE TABLE IF NOT EXISTS events (

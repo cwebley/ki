@@ -1,4 +1,3 @@
-
 export default function getUserQuery (db, field, value, cb) {
 	const sql = `
 		SELECT *

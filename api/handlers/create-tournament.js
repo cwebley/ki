@@ -3,31 +3,32 @@ import slug from 'slug';
 import uuid from 'node-uuid';
 import createTournamentQuery from '../lib/queries/create-tournament';
 import getUserQuery from '../lib/queries/get-user';
+import getCharactersQuery from '../lib/queries/get-characters';
 
 export default function createTournamentHandler (req, res) {
 	let tournamentOpts = {
-		tournamentName: req.body.name,
-		tournamentGoal: parseInt(req.body.goal, 10)
+		name: req.body.name,
+		goal: parseInt(req.body.goal, 10)
 	}
 
 	let problems = [];
-	if (!tournamentOpts.tournamentName) {
+	if (!tournamentOpts.name) {
 		problems.push(r.NoName);
 	}
 	if (!req.body.opponentSlug) {
 		problems.push(r.NoOpponentSlug);
 	}
-	if (!tournamentOpts.tournamentGoal) {
+	if (!tournamentOpts.goal) {
 		problems.push(r.NoGoal);
 	}
 	if (problems.length) {
 		return res.status(400).send(r(...problems));
 	}
 
-	if (tournamentOpts.tournamentName.length > 25) {
+	if (tournamentOpts.name.length > 25) {
 		problems.push(r.InvalidName);
 	}
-	if (tournamentOpts.tournamentGoal < 1) {
+	if (tournamentOpts.goal < 1) {
 		problems.push(r.InvalidGoal);
 	}
 	if (problems.length) {
@@ -43,21 +44,34 @@ export default function createTournamentHandler (req, res) {
 			return res.status(400).send(r.InvalidOpponentSlug);
 		}
 
-		tournamentOpts.tournamentUuid = uuid.v4();
-		tournamentOpts.tournamentSlug = slug(tournamentOpts.tournamentName);
-		tournamentOpts.opponentUuid = opponentData.uuid;
-		tournamentOpts.userUuid = req.user.uuid;
+		tournamentOpts.uuid = uuid.v4();
+		tournamentOpts.slug = slug(tournamentOpts.name);
 
-		console.log("OPTS: ", tournamentOpts);
+		tournamentOpts.opponent = {};
+		tournamentOpts.user = {};
 
-		createTournamentQuery(req.db, tournamentOpts, (err, tournament) => {
+		tournamentOpts.opponent.uuid = opponentData.uuid;
+		tournamentOpts.user.uuid = req.user.uuid;
+
+		getCharactersQuery(req.db, (err, characters) => {
+			console.log("CHARS: ", err, characters);
 			if (err) {
-				if (err.message.slice(0, 9) === 'duplicate') {
-					return res.status(409).send(r.duplicateTournamentName);
-				}
 				return res.status(500).send(r.internal);
 			}
-			return res.status(201).send(tournament);
+
+			// all characters for each user. this will probably change.
+			tournamentOpts.user.characters = characters;
+			tournamentOpts.opponent.characters = characters;
+
+			createTournamentQuery(req.db, tournamentOpts, (err, tournament) => {
+				if (err) {
+					if (err.message.slice(0, 9) === 'duplicate') {
+						return res.status(409).send(r.duplicateTournamentName);
+					}
+					return res.status(500).send(r.internal);
+				}
+				return res.status(201).send(tournament);
+			});
 		});
 	});
 

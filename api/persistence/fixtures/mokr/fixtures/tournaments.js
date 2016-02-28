@@ -2,7 +2,7 @@ var request = require('request');
 var jwt = require('jsonwebtoken');
 var tournaments = require('../data/tournaments');
 
-module.exports.dependsOn = ['users'];
+module.exports.dependsOn = ['characters', 'users'];
 
 module.exports.up = function (next) {
 	var run = 0;
