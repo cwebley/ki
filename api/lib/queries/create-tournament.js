@@ -79,21 +79,21 @@ function addToTournamentCharactersTable (db, opts, cb) {
 	// this query needs to be constructed based on the characters passed in
 	let tournamentCharactersSql = `
 		INSERT INTO tournamentCharacters
-			(tournamentUuid, userUuid, characterUuid)
+			(tournamentUuid, userUuid, characterUuid, value)
 		VALUES
 	`;
 	let tournamentCharactersParams = [];
 
 	opts.user.characters.forEach((c, i) => {
-		tournamentCharactersSql += `($${3*i+1}, $${3*i+2}, $${3*i+3}),\n`;
-		tournamentCharactersParams.push(opts.uuid, opts.user.uuid, c.uuid);
+		tournamentCharactersSql += `($${4 * i + 1}, $${4 * i + 2}, $${4 * i + 3}, $${4 * i + 4}),\n`;
+		tournamentCharactersParams.push(opts.uuid, opts.user.uuid, c.uuid, 7);
 	});
 
 	const userCharLength = tournamentCharactersParams.length;
 
 	opts.opponent.characters.forEach((c, i) => {
-		tournamentCharactersSql += `($${3 * i + 1 + userCharLength}, $${3 * i + 2 + userCharLength}, $${3 * i + 3 + userCharLength}),\n`;
-		tournamentCharactersParams.push(opts.uuid, opts.opponent.uuid, c.uuid);
+		tournamentCharactersSql += `($${4 * i + 1 + userCharLength}, $${4 * i + 2 + userCharLength}, $${4 * i + 3 + userCharLength}, $${4 * i + 4 + userCharLength}),\n`;
+		tournamentCharactersParams.push(opts.uuid, opts.opponent.uuid, c.uuid, 7);
 	});
 
 	// trim off the extra new line and extra comma at the end
