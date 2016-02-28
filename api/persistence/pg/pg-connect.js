@@ -3,10 +3,10 @@ import once from 'once';
 import log from '../../logger';
 
  export default function pgc (options = {}) {
-	pgc.user = options.user || process.env.POSTGRES_USER;
-	pgc.password = options.password || process.env.POSTGRES_PASSWORD;
-	pgc.host = options.host || process.env.POSTGRES_HOST;
-	pgc.db = options.db || process.env.POSTGRES_DB;
+	pgc.user = options.user;
+	pgc.password = options.password;
+	pgc.host = options.host;
+	pgc.db = options.db;
 	pgc.connectionString = `postgres://${pgc.user}:${pgc.password}@${pgc.host}/${pgc.db}`;
 	return pgc;
 };
