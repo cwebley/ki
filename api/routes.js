@@ -26,4 +26,53 @@ router.post('/character', createCharacter);
 
 router.post('/tournament', requiresLogin, createTournament);
 
+
+function rollback (req, res) {
+	console.log("ROLL BACK CALLED")
+	req.db.query('ROLLBACK', () => {
+		console.log("ENDING BC OF ROLLBACK");
+		req.db.end();
+		res.status(500).send({success: false, rollback: 'true'})
+	});
+}
+
+import uuid from 'node-uuid';
+
+router.get('/tx-test', (req, res) => {
+	let name = 22345;
+	const pass = 'asdfasdf';
+	const sql = 'insert into users (uuid, name, slug, password) values($1, $2, $3, $4)';
+
+	req.db.query('BEGIN', (err, results) => {
+		console.log("TX BEGUN");
+
+		req.db.query(sql, [uuid.v4(), name, name, pass], (err, results) => {
+			console.log("Q1: ", err, results);
+			if (err) {
+				return rollback(req, res);
+			}
+
+			name++
+			req.db.query(sql, [uuid.v4(), name, name, pass], (err, results) => {
+				console.log("Q2: ", err, results);
+				if (err) {
+					return rollback(req, res);
+				}
+
+				name++
+				req.db.query(sql, [uuid.v4(), name, 22345, pass], (err, results) => {
+					console.log("Q3: ", err, results)
+					if (err) {
+						return rollback(req, res);
+					}
+
+					console.log("COMMITTING");
+					req.db.query('COMMIT', req.db.end.bind(req.db))
+					return res.status(200).send({done: true});
+				});
+			});
+		});
+	});
+});
+
 export default router;
