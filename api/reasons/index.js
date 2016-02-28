@@ -24,6 +24,8 @@ r.DuplicateUsername = 'Username is already exists';
 //tournaments and characters
 r.NoName = 'Missing name';
 r.NoGoal = 'Missing goal';
+r.NoOpponentSlug = 'Missing opponentSlug';
+r.InvalidOpponentSlug = 'Invalid opponentSlug. Opponent does not exist';
 r.NoSeason = 'Missing season';
 r.InavlidName = 'Name must be less than 25 characters';
 r.InvalidGoal = 'Goal must be an integer greater than 0';

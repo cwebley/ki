@@ -1,6 +1,6 @@
 import express from 'express';
 import jwt from 'express-jwt';
-
+import db from './persistence/pg';
 import config from './config';
 
 // handlers
@@ -10,6 +10,11 @@ import loginUser from './handlers/login-user';
 import createTournament from './handlers/create-tournament';
 
 let router = express.Router();
+
+// sets req.db
+router.use(db.middleware({
+	releaseIn: 30*1000 // 30 seconds
+}));
 
 // validates token and sets req.user with token data
 let requiresLogin = jwt({secret: config.jwt.secret});

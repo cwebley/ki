@@ -1,7 +1,5 @@
-import { query } from '../../persistence/pg';
-
 // returns a user object if successful
-export default function registerUserQuery (uuid, name, slug, email, hash, cb) {
+export default function registerUserQuery (db, uuid, name, slug, email, hash, cb) {
 	const sql = `
 					INSERT INTO users
 						(uuid, name, slug, email, password)
@@ -10,7 +8,7 @@ export default function registerUserQuery (uuid, name, slug, email, hash, cb) {
 				`;
 	const params = [uuid, name, slug, email, hash];
 
-	query(sql, params, (err, results) => {
+	db.query(sql, params, (err, results) => {
 		return cb(err, { uuid, name, slug });
 	});
 }

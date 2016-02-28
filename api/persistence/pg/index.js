@@ -1,23 +1,11 @@
-import pg from 'pg';
-import log from '../../logger';
 import config from '../../config';
+import pgConnect from './pg-connect';
 
-function query (sql, params, cb) {
-	const conString = 'postgres://' + config.pg.username + ':' + config.pg.password + '@' + config.pg.server + '/' + config.pg.database;
-	pg.connect(conString, (err, client, done) => {
-		if (err) {
-			console.error('failed pg connection', {err: err});
-			return cb(err);
-		}
+let db = pgConnect({
+	user: config.pg.username,
+	password: config.pg.password,
+	host: config.pg.server,
+	db: config.pg.database
+});
 
-		client.query(sql, params, (err, results) => {
-			if (err) {
-				log.error('sql query failed', {err: err, sql: sql, params: params});
-			}
-			done();
-			cb(err, results);
-		});
-	});
-}
-
-export { query };
+export default db;

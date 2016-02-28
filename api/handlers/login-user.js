@@ -21,7 +21,7 @@ export default function loginUserHandler (req, res) {
 		return res.status(400).send(r(...problems));
 	}
 
-	getUserQuery('name', opts.name, (err, user) => {
+	getUserQuery(req.db, 'name', opts.name, (err, user) => {
 		if (err) {
 			return res.status(500).send(r.internal);
 		}

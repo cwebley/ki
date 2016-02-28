@@ -1,7 +1,5 @@
-import { query } from '../../persistence/pg';
-
 // returns a user object if successful
-export default function createTournamentQuery (uuid, name, slug, goal, cb) {
+export default function createTournamentQuery (db, uuid, name, slug, goal, cb) {
 	const sql = `
 					INSERT INTO tournaments
 						(uuid, name, slug, goal)
@@ -10,7 +8,7 @@ export default function createTournamentQuery (uuid, name, slug, goal, cb) {
 				`;
 	const params = [uuid, name, slug, goal];
 
-	query(sql, params, (err, results) => {
+	db.query(sql, params, (err, results) => {
 		return cb(err, { uuid, name, slug, goal });
 	});
 }

@@ -10,27 +10,6 @@ CREATE TABLE IF NOT EXISTS characters (
 -- 	('NA')
 -- ;
 
--- INSERT INTO characters (name, season) VALUES
--- 	('jago', 1),
--- 	('wulf', 1),
--- 	('orchid', 1),
--- 	('thunder', 1),
--- 	('spinal', 1),
--- 	('fulgore', 1),
--- 	('glacius', 1),
--- 	('sadira', 1),
--- 	('tj', 2),
--- 	('maya', 2),
--- 	('kanra', 2),
--- 	('riptor', 2),
--- 	('omen', 2),
--- 	('aganos', 2),
--- 	('hisako', 2),
--- 	('aria', 2),
--- 	('shadowjago', 1),
--- 	('rash', 3)
--- ;
-
 CREATE TABLE IF NOT EXISTS users (
 	uuid char(36) NOT NULL PRIMARY KEY,
 	name varchar(255) NOT NULL UNIQUE,
@@ -44,10 +23,6 @@ CREATE TABLE IF NOT EXISTS users (
 	globalBestStreak integer NOT NULL DEFAULT 0
 );
 
--- INSERT INTO users (name,password) VALUES
--- 	('g','foo'),
--- 	('bj','foo');
-
 CREATE TABLE IF NOT EXISTS tournaments (
 	uuid char(36) NOT NULL PRIMARY KEY,
 	name varchar(255) NOT NULL UNIQUE,
@@ -57,19 +32,18 @@ CREATE TABLE IF NOT EXISTS tournaments (
 	time timestamp DEFAULT now()
 );
 
--- CREATE TABLE IF NOT EXISTS tournamentUsers (
--- 	id serial NOT NULL PRIMARY KEY,
--- 	tournamentId integer NOT NULL REFERENCES tournaments (id),
--- 	userId integer NOT NULL REFERENCES users (id),
--- 	seeded bool DEFAULT false,
--- 	wins integer NOT NULL DEFAULT 0,
--- 	losses integer NOT NULL DEFAULT 0,
--- 	curStreak integer NOT NULL DEFAULT 0,
--- 	bestStreak integer NOT NULL DEFAULT 0,
--- 	score integer NOT NULL DEFAULT 0,
--- 	fireWins integer NOT NULL DEFAULT 0,
--- 	UNIQUE (tournamentId, userId)
--- );
+CREATE TABLE IF NOT EXISTS tournamentUsers (
+	uuid char(36) NOT NULL PRIMARY KEY,
+	tournamentUuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	userUuid char(36) NOT NULL REFERENCES users (uuid),
+	wins integer NOT NULL DEFAULT 0,
+	losses integer NOT NULL DEFAULT 0,
+	curStreak integer NOT NULL DEFAULT 0,
+	bestStreak integer NOT NULL DEFAULT 0,
+	score integer NOT NULL DEFAULT 0,
+	fireWins integer NOT NULL DEFAULT 0,
+	UNIQUE (tournamentUuid, userUuid)
+);
 --
 -- CREATE TABLE IF NOT EXISTS tournamentPowers (
 -- 	id serial NOT NULL PRIMARY KEY,

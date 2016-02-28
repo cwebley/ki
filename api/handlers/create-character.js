@@ -34,7 +34,7 @@ export default function createCharacterHandler (req, res) {
 	const characterUuid = uuid.v4();
 	const characterSlug = slug(opts.name);
 
-	insertCharacterQuery(characterUuid, opts.name, characterSlug, opts.season, (err, character) => {
+	insertCharacterQuery(req.db, characterUuid, opts.name, characterSlug, opts.season, (err, character) => {
 		if (err) {
 			if (err.message.slice(0, 9) === 'duplicate') {
 				return res.status(409).send(r.duplicateCharacterName);

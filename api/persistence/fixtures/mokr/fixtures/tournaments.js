@@ -1,5 +1,6 @@
-var tournaments = require('../data/tournaments');
 var request = require('request');
+var jwt = require('jsonwebtoken');
+var tournaments = require('../data/tournaments');
 
 module.exports.dependsOn = ['users'];
 
@@ -8,11 +9,16 @@ module.exports.up = function (next) {
 	var errors = null;
 
 	var tokenFromUserFixture = this.dependencies.users.state.tokens[0];
+	var opponentToken = this.dependencies.users.state.tokens[1];
+
+	// jwt.decode doesn't actually validate the token, but it's cool
+	var opponent = jwt.decode(opponentToken);
 
 	// saving tournaments for teardown
 	this.state.tournaments = [];
 
 	tournaments.forEach(function (tournament) {
+		tournament.opponentSlug = opponent.slug;
 		request({
 			method: 'POST',
 			url: 'http://localhost:3000/api/tournament',

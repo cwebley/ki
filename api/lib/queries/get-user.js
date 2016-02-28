@@ -1,13 +1,12 @@
-import { query } from '../../persistence/pg';
 
-export default function getUserQuery (field, value, cb) {
+export default function getUserQuery (db, field, value, cb) {
 	const sql = `
 					SELECT *
 					FROM users
 					WHERE ${field} = $1
 				`;
 	const params = [value];
-	query(sql, params, (err, results) => {
+	db.query(sql, params, (err, results) => {
 		if (err) {
 			return cb(err);
 		}

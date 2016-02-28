@@ -57,7 +57,7 @@ export default function registerUserHandler (req, res) {
 			return res.status(500).send(r.internal);
 		}
 
-		registerUserQuery(userUuid, opts.username, userSlug, opts.email, hash, (err, user) => {
+		registerUserQuery(req.db, userUuid, opts.username, userSlug, opts.email, hash, (err, user) => {
 			if (err) {
 				if (err.message.slice(0, 9) === 'duplicate') {
 					// could also be a duplicate slug, but whatever
