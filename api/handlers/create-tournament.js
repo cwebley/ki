@@ -5,30 +5,29 @@ import createTournamentQuery from '../lib/queries/create-tournament';
 import getUserQuery from '../lib/queries/get-user';
 
 export default function createTournamentHandler (req, res) {
-	let opts = {
-		name: req.body.name,
-		goal: parseInt(req.body.goal, 10),
-		opponentSlug: req.body.opponentSlug
+	let tournamentOpts = {
+		tournamentName: req.body.name,
+		tournamentGoal: parseInt(req.body.goal, 10)
 	}
 
 	let problems = [];
-	if (!opts.name) {
+	if (!tournamentOpts.tournamentName) {
 		problems.push(r.NoName);
 	}
-	if (!opts.opponentSlug) {
+	if (!req.body.opponentSlug) {
 		problems.push(r.NoOpponentSlug);
 	}
-	if (!opts.goal) {
+	if (!tournamentOpts.tournamentGoal) {
 		problems.push(r.NoGoal);
 	}
 	if (problems.length) {
 		return res.status(400).send(r(...problems));
 	}
 
-	if (opts.name.length > 25) {
+	if (tournamentOpts.tournamentName.length > 25) {
 		problems.push(r.InvalidName);
 	}
-	if (opts.goal < 1) {
+	if (tournamentOpts.tournamentGoal < 1) {
 		problems.push(r.InvalidGoal);
 	}
 	if (problems.length) {
@@ -36,7 +35,7 @@ export default function createTournamentHandler (req, res) {
 	}
 
 	// fetch opponent data
-	getUserQuery(req.db, 'slug', opts.opponentSlug, (err, opponentData) => {
+	getUserQuery(req.db, 'slug', req.body.opponentSlug, (err, opponentData) => {
 		if (err) {
 			return res.status(500).send(r.internal);
 		}
@@ -44,10 +43,14 @@ export default function createTournamentHandler (req, res) {
 			return res.status(400).send(r.InvalidOpponentSlug);
 		}
 
-		const tournamentUuid = uuid.v4();
-		const tournamentSlug = slug(opts.name);
+		tournamentOpts.tournamentUuid = uuid.v4();
+		tournamentOpts.tournamentSlug = slug(tournamentOpts.tournamentName);
+		tournamentOpts.opponentUuid = opponentData.uuid;
+		tournamentOpts.userUuid = req.user.uuid;
 
-		createTournamentQuery(req.db, tournamentUuid, opts.name, tournamentSlug, opts.goal, req.user.uuid, opponentData.uuid, (err, tournament) => {
+		console.log("OPTS: ", tournamentOpts);
+
+		createTournamentQuery(req.db, tournamentOpts, (err, tournament) => {
 			if (err) {
 				if (err.message.slice(0, 9) === 'duplicate') {
 					return res.status(409).send(r.duplicateTournamentName);

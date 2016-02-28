@@ -7,6 +7,6 @@ module.exports = range(0, 5).map(function () {
 		name: faker.internet.domainName(),
 
 		// random int between 50 and 250
-		goal: Math.floor(Math.random() * (250 - 50)) + 50
+		goal: Math.floor(Math.random() * (250 - 50)) + 50,
 	}
 });

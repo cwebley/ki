@@ -1,5 +1,5 @@
 // returns a tournament object if successful
-export default function createTournamentQuery (db, uuid, name, slug, goal, userUuid, opponentUuid, cb) {
+export default function createTournamentQuery (db, opts, cb) {
 	// begin transaction
 	db.query('BEGIN', () => {
 
@@ -9,7 +9,7 @@ export default function createTournamentQuery (db, uuid, name, slug, goal, userU
 			VALUES
 				($1, $2, $3, $4)
 		`;
-		const tournamentsParams = [uuid, name, slug, goal];
+		const tournamentsParams = [opts.tournamentUuid, opts.tournamentName, opts.tournamentSlug, opts.tournamentGoal];
 
 		db.query(tournamentsSql, tournamentsParams, (err, results) => {
 			if (err) {
@@ -23,15 +23,21 @@ export default function createTournamentQuery (db, uuid, name, slug, goal, userU
 					($1, $2),
 					($3, $4)
 			`;
-			const tournamentUsersParams = [uuid, userUuid, uuid, opponentUuid];
+			const tournamentUsersParams = [opts.tournamentUuid, opts.userUuid, opts.tournamentUuid, opts.opponentUuid];
 
 			db.query(tournamentUsersSql, tournamentUsersParams, (err, results) => {
 				if (err) {
 					return rollback(db, err, cb);
 				}
+
 				db.query('COMMIT', () => {
 					// return the tournament object
-					return cb(null, { uuid, name, slug, goal });
+					return cb(null, {
+						uuid: opts.tournamentUuid,
+						name: opts.tournamentName,
+						slug: opts.tournamentSlug,
+						goal: opts.tournamentGoal
+					});
 				});
 			});
 		});
