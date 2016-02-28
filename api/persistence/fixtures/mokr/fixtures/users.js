@@ -8,7 +8,7 @@ module.exports.up = function (next) {
 	// saving userUuids for teardown
 	this.state.tokens = [];
 
-	users.forEach(function (user, i, done) {
+	users.forEach(function (user) {
 		request({
 			method: 'POST',
 			url: 'http://localhost:3000/api/user/register',
@@ -25,7 +25,6 @@ module.exports.up = function (next) {
 					errors.push(err);
 				}
 			}
-
 			if (!err && body) {
 				this.state.tokens.push(body.token);
 			}

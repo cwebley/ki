@@ -12,7 +12,7 @@ module.exports.up = function (next) {
 	// saving tournaments for teardown
 	this.state.tournaments = [];
 
-	tournaments.forEach(function (tournament, i, done) {
+	tournaments.forEach(function (tournament) {
 		request({
 			method: 'POST',
 			url: 'http://localhost:3000/api/tournament',
@@ -32,7 +32,6 @@ module.exports.up = function (next) {
 					errors.push(err);
 				}
 			}
-
 			if (!err && body) {
 				this.state.tournaments.push(body);
 			}
