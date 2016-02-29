@@ -17,15 +17,20 @@ export default function createTournamentQuery (db, opts, cb) {
 					if (err) {
 						return rollback(db, err, cb);
 					}
+					addToTournamentCoins(db, opts, (err, results) => {
+						if (err) {
+							return rollback(db, err, cb);
+						}
 
-					// end transaction
-					db.query('COMMIT', () => {
-						// return the tournament object
-						return cb(null, {
-							uuid: opts.uuid,
-							name: opts.name,
-							slug: opts.slug,
-							goal: opts.goal
+						// end transaction
+						db.query('COMMIT', () => {
+							// return the tournament object
+							return cb(null, {
+								uuid: opts.uuid,
+								name: opts.name,
+								slug: opts.slug,
+								goal: opts.goal
+							});
 						});
 					});
 				});
@@ -55,20 +60,20 @@ function addToTournamentsTable (db, opts, cb) {
 }
 
 function addToTournamentUsersTable (db, opts, cb) {
-	const tournamentUsersSql = `
-		INSERT INTO tournamentUsers
-			(tournamentUuid, userUuid)
+	const sql = `
+		INSERT INTO tournament_users
+			(tournament_uuid, user_uuid)
 		VALUES
 			($1, $2),
 			($3, $4)
 	`;
-	const tournamentUsersParams = [opts.uuid, opts.user.uuid, opts.uuid, opts.opponent.uuid];
+	const params = [opts.uuid, opts.user.uuid, opts.uuid, opts.opponent.uuid];
 
-	db.query(tournamentUsersSql, tournamentUsersParams, (err, results) => {
+	db.query(sql, params, (err, results) => {
 		if (err) {
 			log.error(err, {
-				sql: tournamentUsersSql,
-				params: tournamentUsersParams
+				sql: sql,
+				params: params
 			});
 		}
 		cb(err, results);
@@ -77,34 +82,55 @@ function addToTournamentUsersTable (db, opts, cb) {
 
 function addToTournamentCharactersTable (db, opts, cb) {
 	// this query needs to be constructed based on the characters passed in
-	let tournamentCharactersSql = `
-		INSERT INTO tournamentCharacters
-			(tournamentUuid, userUuid, characterUuid, value)
+	let sql = `
+		INSERT INTO tournament_characters
+			(tournament_uuid, user_uuid, character_uuid, value)
 		VALUES
 	`;
-	let tournamentCharactersParams = [];
+	let params = [];
 
 	opts.user.characters.forEach((c, i) => {
-		tournamentCharactersSql += `($${4 * i + 1}, $${4 * i + 2}, $${4 * i + 3}, $${4 * i + 4}),\n`;
-		tournamentCharactersParams.push(opts.uuid, opts.user.uuid, c.uuid, 7);
+		sql += `($${4 * i + 1}, $${4 * i + 2}, $${4 * i + 3}, $${4 * i + 4}),\n`;
+		params.push(opts.uuid, opts.user.uuid, c.uuid, 7);
 	});
 
-	const userCharLength = tournamentCharactersParams.length;
+	const userCharLength = params.length;
 
 	opts.opponent.characters.forEach((c, i) => {
-		tournamentCharactersSql += `($${4 * i + 1 + userCharLength}, $${4 * i + 2 + userCharLength}, $${4 * i + 3 + userCharLength}, $${4 * i + 4 + userCharLength}),\n`;
-		tournamentCharactersParams.push(opts.uuid, opts.opponent.uuid, c.uuid, 7);
+		sql += `($${4 * i + 1 + userCharLength}, $${4 * i + 2 + userCharLength}, $${4 * i + 3 + userCharLength}, $${4 * i + 4 + userCharLength}),\n`;
+		params.push(opts.uuid, opts.opponent.uuid, c.uuid, 7);
 	});
 
 	// trim off the extra new line and extra comma at the end
-	tournamentCharactersSql = tournamentCharactersSql.slice(0, -2);
+	sql = sql.slice(0, -2);
 
-	db.query(tournamentCharactersSql, tournamentCharactersParams, (err, results) => {
+	db.query(sql, params, (err, results) => {
 		// log the error but handle it in the calling func
 		if (err) {
 			log.error(err, {
-				sql: tournamentCharactersSql,
-				params: tournamentCharactersParams
+				sql: sql,
+				params: params
+			});
+		}
+		cb(err, results);
+	});
+}
+
+function addToTournamentCoins (db, opts, cb) {
+	const sql = `
+		INSERT INTO tournament_coins
+			(tournament_uuid, user_uuid, stock)
+		VALUES
+			($1, $2, $3),
+			($4, $5, $6)
+	`;
+	const params = [opts.uuid, opts.user.uuid, opts.startCoins, opts.uuid, opts.opponent.uuid, opts.startCoins];
+
+	db.query(sql, params, (err, results) => {
+		if (err) {
+			log.error(err, {
+				sql: sql,
+				params: params
 			});
 		}
 		cb(err, results);

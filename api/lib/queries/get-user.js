@@ -1,6 +1,9 @@
 export default function getUserQuery (db, field, value, cb) {
 	const sql = `
-		SELECT *
+		SELECT uuid, name, slug, password, email,
+			tournament_streak AS "tournamentStreak",
+			tournament_best_streak AS "tournamentBestStreak",
+			streak, best_streak AS "bestStreak"
 		FROM users
 		WHERE ${field} = $1
 	`;

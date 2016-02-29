@@ -13,6 +13,10 @@ var config = {
 	"jwt": {
 		"secret": "asdfasdf",
 		"expiresIn": "1 year"
+	},
+	"defaults": {
+		"startCoins": 10,
+		"goal": 100
 	}
 };
 

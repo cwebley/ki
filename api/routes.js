@@ -8,6 +8,7 @@ import createCharacter from './handlers/create-character';
 import registerUser from './handlers/register-user';
 import loginUser from './handlers/login-user';
 import createTournament from './handlers/create-tournament';
+import getTournament from './handlers/get-tournament';
 
 let router = express.Router();
 
@@ -25,5 +26,6 @@ router.post('/user/login', loginUser);
 router.post('/character', createCharacter);
 
 router.post('/tournament', requiresLogin, createTournament);
+router.get('/tournament/:tournamentSlug', getTournament);
 
 export default router;

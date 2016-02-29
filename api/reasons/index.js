@@ -24,6 +24,7 @@ r.DuplicateUsername = 'Username is already exists';
 //tournaments and characters
 r.NoName = 'Missing name';
 r.NoGoal = 'Missing goal';
+r.NoStartCoins = 'Missing startCoins';
 r.NoOpponentSlug = 'Missing opponentSlug';
 r.InvalidOpponentSlug = 'Invalid opponentSlug. Opponent does not exist';
 r.NoSeason = 'Missing season';
@@ -32,6 +33,9 @@ r.InvalidGoal = 'Goal must be an integer greater than 0';
 r.InvalidSeason = 'Season must be an integer greater than 0';
 r.DuplicateTournamentName = 'Tournament name already exists';
 r.DuplicateCharacterName = 'Character name already exists';
+
+r.NoSlugParam = 'Missing slug parameter';
+r.tournamentNotFound = 'Tournament not found';
 
 r.Internal = 'Internal server error';
 r.InvalidCredentials = 'Invalid username or password';

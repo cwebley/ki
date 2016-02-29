@@ -11,37 +11,45 @@ CREATE TABLE IF NOT EXISTS characters (
 -- ;
 
 CREATE TABLE IF NOT EXISTS users (
-	uuid char(36) NOT NULL PRIMARY KEY,
+	uuid char(36) NOT NULL,
 	name varchar(255) NOT NULL UNIQUE,
 	slug varchar(255) NOT NULL UNIQUE,
 	password varchar(255) NOT NULL,
 	email varchar(255),
-	tournamentWins integer NOT NULL DEFAULT 0,
-	tournamentLosses integer NOT NULL DEFAULT 0,
-	wins integer NOT NULL DEFAULT 0,
-	losses integer NOT NULL DEFAULT 0,
-	globalBestStreak integer NOT NULL DEFAULT 0
+	tournament_streak integer NOT NULL DEFAULT 0,
+	tournament_best_streak integer NOT NULL DEFAULT 0,
+	streak integer NOT NULL DEFAULT 0,
+	best_streak integer NOT NULL DEFAULT 0,
+	PRIMARY KEY (uuid)
 );
 
 CREATE TABLE IF NOT EXISTS tournaments (
-	uuid char(36) NOT NULL PRIMARY KEY,
+	uuid char(36) NOT NULL,
 	name varchar(255) NOT NULL UNIQUE,
 	slug varchar(255) NOT NULL UNIQUE,
 	goal integer NOT NULL,
-	championId char(36) REFERENCES users (uuid),
-	time timestamp DEFAULT now()
+	champion_uuid char(36) REFERENCES users (uuid),
+	time timestamp DEFAULT now(),
+	PRIMARY KEY (uuid)
 );
 
-CREATE TABLE IF NOT EXISTS tournamentUsers (
-	tournamentUuid char(36) NOT NULL REFERENCES tournaments (uuid),
-	userUuid char(36) NOT NULL REFERENCES users (uuid),
+CREATE TABLE IF NOT EXISTS tournament_users (
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
 	wins integer NOT NULL DEFAULT 0,
 	losses integer NOT NULL DEFAULT 0,
-	curStreak integer NOT NULL DEFAULT 0,
-	bestStreak integer NOT NULL DEFAULT 0,
+	streak integer NOT NULL DEFAULT 0,
+	best_streak integer NOT NULL DEFAULT 0,
 	score integer NOT NULL DEFAULT 0,
-	fireWins integer NOT NULL DEFAULT 0,
-	primary key (tournamentUuid, userUuid)
+	PRIMARY KEY (tournament_uuid, user_uuid)
+);
+
+CREATE TABLE IF NOT EXISTS user_characters (
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	character_uuid char(36) NOT NULL REFERENCES characters (uuid),
+	streak integer NOT NULL DEFAULT 0,
+	best_streak integer NOT NULL DEFAULT 0,
+	PRIMARY KEY (user_uuid, character_uuid)
 );
 --
 -- CREATE TABLE IF NOT EXISTS tournamentPowers (
@@ -86,17 +94,24 @@ CREATE TABLE IF NOT EXISTS tournamentUsers (
 -- 	UNIQUE (userId, characterId)
 -- );
 --
-CREATE TABLE IF NOT EXISTS tournamentCharacters (
-	tournamentUuid char(36) NOT NULL REFERENCES tournaments (uuid),
-	userUuid char(36) NOT NULL REFERENCES users (uuid),
-	characterUuid char(36) NOT NULL REFERENCES characters (uuid),
+CREATE TABLE IF NOT EXISTS tournament_characters (
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	character_uuid char(36) NOT NULL REFERENCES characters (uuid),
 	value integer NOT NULL DEFAULT 0,
 	wins integer NOT NULL DEFAULT 0,
 	losses integer NOT NULL DEFAULT 0,
 	streak integer NOT NULL DEFAULT 0,
-	bestStreak integer NOT NULL DEFAULT 0,
-	fireWins integer NOT NULL DEFAULT 0,
-	primary key (tournamentUuid, userUuid, characterUuid)
+	best_streak integer NOT NULL DEFAULT 0,
+	fire_wins integer NOT NULL DEFAULT 0,
+	PRIMARY KEY (tournament_uuid, user_uuid, character_uuid)
+);
+
+CREATE TABLE IF NOT EXISTS tournament_coins (
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	stock integer NOT NULL DEFAULT 0,
+	PRIMARY KEY (tournament_uuid, user_uuid)
 );
 --
 -- CREATE TABLE IF NOT EXISTS events (

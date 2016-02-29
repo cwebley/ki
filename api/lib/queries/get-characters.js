@@ -1,6 +1,6 @@
 export default function getCharactersQuery (db, cb) {
 	const sql = `
-		SELECT *
+		SELECT uuid, name, slug, season
 		FROM characters
 	`;
 	const params = [];

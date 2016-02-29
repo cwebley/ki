@@ -37,7 +37,7 @@ TournamentsModel.deleteTournament = function(tid,cb) {
 
 				var sql = 'DELETE FROM tournamentPowers where tournamentId = ?',
 					params = [tid];
-	
+
 				mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournamentPowers', function(err, results){
 					if(err) return cb(err);
 
@@ -55,7 +55,7 @@ TournamentsModel.deleteTournament = function(tid,cb) {
 
 							var sql = 'DELETE FROM tournaments where id = ?',
 								params = [tid];
-	
+
 							mysql.query('rw', sql, params, 'modules/tournaments/tournaments-model/deleteTournament-tournaments', function(err, results){
 								if(err) return cb(err);
 								return cb(null, results)

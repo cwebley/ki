@@ -4,11 +4,13 @@ import uuid from 'node-uuid';
 import createTournamentQuery from '../lib/queries/create-tournament';
 import getUserQuery from '../lib/queries/get-user';
 import getCharactersQuery from '../lib/queries/get-characters';
+import config from '../config';
 
 export default function createTournamentHandler (req, res) {
 	let tournamentOpts = {
 		name: req.body.name,
-		goal: parseInt(req.body.goal, 10)
+		goal: parseInt(req.body.goal, 10) || config.defaults.goal,
+		startCoins: parseInt(req.body.startingStock, 10) || config.defaults.startCoins
 	}
 
 	let problems = [];
@@ -20,6 +22,9 @@ export default function createTournamentHandler (req, res) {
 	}
 	if (!tournamentOpts.goal) {
 		problems.push(r.NoGoal);
+	}
+	if (!tournamentOpts.startCoins) {
+		problems.push(r.NoStartCoins);
 	}
 	if (problems.length) {
 		return res.status(400).send(r(...problems));
@@ -54,7 +59,6 @@ export default function createTournamentHandler (req, res) {
 		tournamentOpts.user.uuid = req.user.uuid;
 
 		getCharactersQuery(req.db, (err, characters) => {
-			console.log("CHARS: ", err, characters);
 			if (err) {
 				return res.status(500).send(r.internal);
 			}
