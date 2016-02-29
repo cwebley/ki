@@ -4,6 +4,7 @@ import uuid from 'node-uuid';
 import createTournamentQuery from '../lib/queries/create-tournament';
 import getUserQuery from '../lib/queries/get-user';
 import getCharactersQuery from '../lib/queries/get-characters';
+import getUserCharactersQuery from '../lib/queries/get-user-characters';
 import config from '../config';
 
 export default function createTournamentHandler (req, res) {
@@ -67,16 +68,42 @@ export default function createTournamentHandler (req, res) {
 			tournamentOpts.user.characters = characters;
 			tournamentOpts.opponent.characters = characters;
 
-			createTournamentQuery(req.db, tournamentOpts, (err, tournament) => {
+			// this is used to help determine what rows need to be added in user_characters
+			let characterUuids = characters.map((c) => { return c.uuid });
+
+			// fetch user_characters for the first player
+			// if any don't exist, we'll need insert these rows in create tournament
+			getUserCharactersQuery(req.db, tournamentOpts.user.uuid, characterUuids, (err, userCharacterUuids) => {
 				if (err) {
-					if (err.message.slice(0, 9) === 'duplicate') {
-						return res.status(409).send(r.duplicateTournamentName);
-					}
 					return res.status(500).send(r.internal);
 				}
-				return res.status(201).send(tournament);
+
+				// now we actually find out which user_character rows need to be added for user
+				// if the character isn't in our userCharacterUuids array, return it. it needs to be added.
+				let userCharactersToAdd = characterUuids.filter(c => userCharacterUuids.indexOf(c) === -1);
+				tournamentOpts.user.userCharactersToAdd = userCharactersToAdd;
+
+				// fetch user_characters for the second player
+				getUserCharactersQuery(req.db, tournamentOpts.opponent.uuid, characterUuids, (err, opponentCharacterUuids) => {
+					if (err) {
+						return res.status(500).send(r.internal);
+					}
+
+					// which user_character rows to add for the opponent
+					let opponentCharactersToAdd = characterUuids.filter(c => opponentCharacterUuids.indexOf(c) === -1);
+					tournamentOpts.opponent.userCharactersToAdd = opponentCharactersToAdd;
+
+					createTournamentQuery(req.db, tournamentOpts, (err, tournament) => {
+						if (err) {
+							if (err.message.slice(0, 9) === 'duplicate' && err.message.indexOf('tournaments_name_key') !== -1) {
+								return res.status(409).send(r.duplicateTournamentName);
+							}
+							return res.status(500).send(r.internal);
+						}
+						return res.status(201).send(tournament);
+					});
+				});
 			});
 		});
 	});
-
 }

@@ -101,7 +101,7 @@ var verifyCharacters = function(data,cb){
 		});
 
 		return cb(null,hydrated);
-	});	
+	});
 };
 
 
@@ -111,7 +111,7 @@ tourneyController.adjustPoints = function(req, res){
 		if(err || !hydrated){
 			res.status(400).send({success:false,reason:'malformed-data'});
 		}
-		
+
 		var opts = {
 			adjustments: req.body.adjustments,
 			user: req.user,

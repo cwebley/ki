@@ -1,7 +1,7 @@
 var faker = require('faker');
 var range = require('lodash.range');
 
-var NUMBER_OF_CHARACTERS = 27;
+var NUMBER_OF_CHARACTERS = 2;
 
 module.exports = range(0, NUMBER_OF_CHARACTERS).map(function (i) {
 	var season = 1;

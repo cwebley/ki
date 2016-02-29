@@ -9,7 +9,7 @@ export default function getTournamentUsersQuery (db, tournamentUuid, cb) {
 			u.uuid, u.streak AS "globalStreak", u.best_streak AS "globalStreak"
 		FROM tournament_users AS tu
 		JOIN users AS u ON (u.uuid = tu.user_uuid)
-		WHERE tournament_uuid = $1
+		WHERE tu.tournament_uuid = $1
 	`;
 	const params = [tournamentUuid];
 
@@ -22,7 +22,7 @@ export default function getTournamentUsersQuery (db, tournamentUuid, cb) {
 			return cb(err)
 		}
 		if (results.rows.length !== 2) {
-			err = new Error('getTournamentUsers did not find 2 results');
+			err = new Error('getTournamentUsersQuery did not find 2 results');
 			log.error(err, {
 				sql: sql,
 				params: params,

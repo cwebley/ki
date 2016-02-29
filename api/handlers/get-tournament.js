@@ -1,6 +1,7 @@
 import r from '../reasons';
 import getTournamentQuery from '../lib/queries/get-tournament';
 import getTournamentUsersQuery from '../lib/queries/get-tournament-users';
+import getTournamentCharactersQuery from '../lib/queries/get-tournament-characters';
 
 export default function getTournamentHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -20,10 +21,33 @@ export default function getTournamentHandler (req, res) {
 				return res.status(500).send(r.internal);
 			}
 			tournament.users = {};
-			tournamentUsers.forEach((u) => {
+			let users = [];
+			tournamentUsers.forEach(u => {
 				tournament.users[u.uuid] = u;
+				users.push(u.uuid);
 			});
-			return res.status(200).send(tournament);
+
+			if (users.length !== 2) {
+				err = new Error('2 users not found in tournament');
+				log.error(err, tournamentUsers);
+				return res.status(500).send(r.internal);
+			}
+
+
+			// get character data from first user
+			getTournamentCharactersQuery(req.db, tournament.uuid, users[0], (err, tournamentCharacters) => {
+				if (err) {
+					return res.status(500).send(r.internal);
+				}
+
+				// get character data from second user
+				getTournamentCharactersQuery(req.db, tournament.uuid, users[1], (err, tournamentCharacters) => {
+					if (err) {
+						return res.status(500).send(r.internal);
+					}
+					return res.status(200).send(tournament);
+				});
+			});
 		});
 	});
 }

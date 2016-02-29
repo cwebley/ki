@@ -1,7 +1,10 @@
 var faker = require('faker');
 var range = require('lodash.range');
 
-module.exports = range(0, 2).map(function () {
+// needs at least 2 users for the touranments fixture to work
+const NUMBER_OF_USERS = 2;
+
+module.exports = range(0, NUMBER_OF_USERS).map(function () {
 	var user = {};
 	var fakeUser = faker.helpers.userCard();
 
