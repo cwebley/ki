@@ -1,12 +1,11 @@
 import { expect } from 'chai';
 import { testVals, testState, testUndoGame, resetTestState } from './helper';
-import {
+import undoGame, {
 	undoLoserStreak,
 	undoWinnerStreak,
 	undoFireStatus,
-	undoStreakPoints,
-	undoGame
-} from '../core/undo-game';
+	undoStreakPoints
+} from '../lib/core/undo-game';
 
 describe('undo-game logic', () => {
 

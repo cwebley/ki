@@ -77,7 +77,7 @@ let testUndoGame = {
 		playerId: 1,
 		characterId: 1,
 		get prevCharVal() {
-			if ( testVals.lastGameWasForOnePoint ) {
+			if (testVals.lastGameWasForOnePoint) {
 				return 1;
 			}
 			return testVals.userOneXterOneVal + 1
@@ -87,7 +87,7 @@ let testUndoGame = {
 		playerId: 2,
 		characterId: 2,
 		get prevCharVal() {
-			if ( testVals.userTwoXterTwoVal > 1 ) {
+			if (testVals.userTwoXterTwoVal > 1) {
 				return testVals.userTwoXterTwoVal - 1;
 			}
 			return testVals.userTwoXterTwoVal;
@@ -96,7 +96,7 @@ let testUndoGame = {
 	get supreme() { return testVals.supremeTest }
 };
 
-function resetTestState() {
+function resetTestState () {
 	testVals.userOneScore = 0;
 	testVals.userOneStreak = 0;
 	testVals.userOnePowers = 3;

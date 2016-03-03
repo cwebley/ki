@@ -1,15 +1,14 @@
 import { expect } from 'chai';
 import { testVals, testState, testGame, resetTestState } from './helper';
-import {
-	updateLoserValue, 
-	updateWinnerValue, 
-	updateWinningStreak, 
-	updateLosingStreak, 
-	fireStatus, 
+import submitGame, {
+	updateLoserValue,
+	updateWinnerValue,
+	updateWinningStreak,
+	updateLosingStreak,
+	fireStatus,
 	iceStatus,
-	updateStreakPoints, 
-	submitGame
-} from '../core/submit-game';
+	updateStreakPoints
+} from '../lib/core/submit-game';
 
 describe('submit-game logic', () => {
 
