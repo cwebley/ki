@@ -4,7 +4,7 @@ import log from '../../logger';
 export default function getTournamentUsersQuery (db, tournamentUuid, cb) {
 	const sql = `
 		SELECT
-			tu.wins, tu.losses, tu.streak, tu.best_streak AS "bestStreak", tu.score, u.name, u.slug,
+			tu.wins, tu.losses, tu.streak, tu.coins, tu.best_streak AS "bestStreak", tu.score, u.name, u.slug,
 			u.tournament_streak AS "tournamentStreak", u.tournament_best_streak AS "tournamentBestStreak",
 			u.uuid, u.streak AS "globalStreak", u.best_streak AS "globalStreak"
 		FROM tournament_users AS tu

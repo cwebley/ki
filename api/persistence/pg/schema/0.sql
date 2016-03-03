@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS tournament_users (
 	streak integer NOT NULL DEFAULT 0,
 	best_streak integer NOT NULL DEFAULT 0,
 	score integer NOT NULL DEFAULT 0,
+	coins integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (tournament_uuid, user_uuid)
 );
 
@@ -107,12 +108,12 @@ CREATE TABLE IF NOT EXISTS tournament_characters (
 	PRIMARY KEY (tournament_uuid, user_uuid, character_uuid)
 );
 
-CREATE TABLE IF NOT EXISTS tournament_coins (
-	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
-	user_uuid char(36) NOT NULL REFERENCES users (uuid),
-	stock integer NOT NULL DEFAULT 0,
-	PRIMARY KEY (tournament_uuid, user_uuid)
-);
+-- CREATE TABLE IF NOT EXISTS tournament_coins (
+-- 	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+-- 	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+-- 	stock integer NOT NULL DEFAULT 0,
+-- 	PRIMARY KEY (tournament_uuid, user_uuid)
+-- );
 --
 -- CREATE TABLE IF NOT EXISTS events (
 -- 	id serial NOT NULL PRIMARY KEY,

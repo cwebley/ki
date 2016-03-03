@@ -45,8 +45,7 @@ export default function createUpcomingListQuery (rConn, opts, cb) {
 			}
 			log.debug('successfully added upcoming list redis for opponent', {
 				key: opponentKey,
-				value: randomOpponentCharacters,
-				results: results
+				value: randomOpponentCharacters
 			});
 			return cb(err, results);
 		});

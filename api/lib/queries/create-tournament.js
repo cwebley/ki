@@ -23,20 +23,19 @@ export default function createTournamentQuery (db, opts, cb) {
 							return rollback(db, err, cb);
 						}
 
-						addToTournamentCoins(db, opts, (err, results) => {
-							if (err) {
-								return rollback(db, err, cb);
-							}
+						// addToTournamentCoins(db, opts, (err, results) => {
+							// if (err) {
+								// return rollback(db, err, cb);
+							// }
 
-							// end transaction
-							db.query('COMMIT', () => {
-								// return the tournament object
-								return cb(null, {
-									uuid: opts.uuid,
-									name: opts.name,
-									slug: opts.slug,
-									goal: opts.goal
-								});
+						// end transaction
+						db.query('COMMIT', () => {
+							// return the tournament object
+							return cb(null, {
+								uuid: opts.uuid,
+								name: opts.name,
+								slug: opts.slug,
+								goal: opts.goal
 							});
 						});
 					});
@@ -69,12 +68,12 @@ function addToTournamentsTable (db, opts, cb) {
 function addToTournamentUsersTable (db, opts, cb) {
 	const sql = `
 		INSERT INTO tournament_users
-			(tournament_uuid, user_uuid)
+			(tournament_uuid, user_uuid, coins)
 		VALUES
-			($1, $2),
-			($3, $4)
+			($1, $2, $3),
+			($4, $5, $6)
 	`;
-	const params = [opts.uuid, opts.user.uuid, opts.uuid, opts.opponent.uuid];
+	const params = [opts.uuid, opts.user.uuid, opts.startCoins, opts.uuid, opts.opponent.uuid, opts.startCoins];
 
 	db.query(sql, params, (err, results) => {
 		if (err) {
@@ -161,27 +160,6 @@ function upsertToUserCharacters (db, opts, cb) {
 				u.character_uuid = d.character_uuid
 		)
 	`;
-
-	db.query(sql, params, (err, results) => {
-		if (err) {
-			log.error(err, {
-				sql: sql,
-				params: params
-			});
-		}
-		cb(err, results);
-	});
-}
-
-function addToTournamentCoins (db, opts, cb) {
-	const sql = `
-		INSERT INTO tournament_coins
-			(tournament_uuid, user_uuid, stock)
-		VALUES
-			($1, $2, $3),
-			($4, $5, $6)
-	`;
-	const params = [opts.uuid, opts.user.uuid, opts.startCoins, opts.uuid, opts.opponent.uuid, opts.startCoins];
 
 	db.query(sql, params, (err, results) => {
 		if (err) {
