@@ -1,13 +1,14 @@
 import { expect } from 'chai';
 import { testVals, testState, testGame, resetTestState } from './helper';
 import submitGame, {
+	COINS_FOR_SUPREME,
 	updateLoserValue,
 	updateWinnerValue,
 	updateWinningStreak,
 	updateLosingStreak,
 	fireStatus,
 	iceStatus,
-	updateStreakPoints
+	updateCoins
 } from '../lib/core/submit-game';
 
 describe('submit-game logic', () => {
@@ -59,13 +60,20 @@ describe('submit-game logic', () => {
 		});
 	});
 
-	describe('updateStreakPoints', () => {
-		it('increments streak points when new previousStreak is 2 or >= 4', () => {
-			expect(updateStreakPoints(0, 2)).to.equal(1);
-			expect(updateStreakPoints(1, 2)).to.equal(2);
-			expect(updateStreakPoints(1, 4)).to.equal(2);
-			expect(updateStreakPoints(1, 5)).to.equal(2);
-			expect(updateStreakPoints(999, 999)).to.equal(1000);
+	describe('updateCoins', () => {
+		it('increments coins when new previousStreak is 2 or >= 4', () => {
+			expect(updateCoins(0, 2)).to.equal(1);
+			expect(updateCoins(1, 2)).to.equal(2);
+			expect(updateCoins(1, 4)).to.equal(2);
+			expect(updateCoins(1, 5)).to.equal(2);
+			expect(updateCoins(999, 999)).to.equal(1000);
+		});
+		it('adds COINS_FOR_SUPREME for a supreme', () => {
+			expect(updateCoins(0, 0, true)).to.equal(3);
+		});
+		it('handles combination of streak and supreme', () => {
+			expect(updateCoins(0, 2, true)).to.equal(4);
+			expect(updateCoins(10, 12, true)).to.equal(14);
 		});
 	});
 
@@ -77,7 +85,7 @@ describe('submit-game logic', () => {
 			expect(fireStatus('1', 999)).to.equal(undefined);
 		});
 		it('returns the characterId string when previous streak is 2', () => {
-			const charIdStr = "1";
+			const charIdStr = 'user1Uuid';
 			expect(fireStatus(charIdStr, 2)).to.equal(charIdStr);
 		});
 	});
@@ -89,7 +97,7 @@ describe('submit-game logic', () => {
 			expect(iceStatus('1', 2)).to.equal(undefined);
 		});
 		it('returns the characterId string when previous streak is greater than 3', () => {
-			const charIdStr = "1";
+			const charIdStr = 'user1Uuid';
 			expect(iceStatus(charIdStr, 3)).to.equal(charIdStr);
 			expect(iceStatus(charIdStr, 4)).to.equal(charIdStr);
 			expect(iceStatus(charIdStr, 999)).to.equal(charIdStr);
@@ -104,21 +112,21 @@ describe('submit-game logic', () => {
 
 		it('increments winning player\'s score based on the character value', () => {
 			const diff = submitGame(testState, testGame);
-			expect(diff["1"].score).to.equal(testVals.userOneXterOneVal);
-			expect(diff["2"].score).to.equal(undefined); // no change for the loser
+			expect(diff.users['user1Uuid'].score).to.equal(testVals.userOneXterOneVal);
+			expect(diff.users['user2Uuid'].score).to.equal(undefined); // no change for the loser
 
 			// update the scores and run again to make sure it factors in the current score
 			testVals.userOneScore = 10;
 			const diff2 = submitGame(testState, testGame);
-			expect(diff2["1"].score).to.equal(testVals.userOneScore + testVals.userOneXterOneVal);
-			expect(diff2["2"].score).to.equal(undefined); // no change for the loser
+			expect(diff2.users['user1Uuid'].score).to.equal(testVals.userOneScore + testVals.userOneXterOneVal);
+			expect(diff2.users['user2Uuid'].score).to.equal(undefined); // no change for the loser
 		});
 
 		it('handles character value changes', () => {
 			const diff = submitGame(testState, testGame);
 
-			expect(diff["1"].characters["1"].value).to.equal(testVals.userOneXterOneVal - 1);
-			expect(diff["2"].characters["2"].value).to.equal(testVals.userTwoXterTwoVal + 1);
+			expect(diff.users['user1Uuid'].characters['xter1Uuid'].value).to.equal(testVals.userOneXterOneVal - 1);
+			expect(diff.users['user2Uuid'].characters['xter2Uuid'].value).to.equal(testVals.userTwoXterTwoVal + 1);
 		});
 
 		it('handles the edge case of the winning character already having a value of 1', () => {
@@ -126,17 +134,17 @@ describe('submit-game logic', () => {
 			testVals.userOneXterOneVal = 1;
 			const diff = submitGame(testState, testGame);
 
-			expect(diff["1"].characters["1"].value).to.equal(undefined); // no change in character value for the winner
-			expect(diff["2"].characters["2"].value).to.equal(testVals.userTwoXterTwoVal + 1);
+			expect(diff.users['user1Uuid'].characters['xter1Uuid'].value).to.equal(undefined); // no change in character value for the winner
+			expect(diff.users['user2Uuid'].characters['xter2Uuid'].value).to.equal(testVals.userTwoXterTwoVal + 1);
 		});
 
 		it('handles player and character streaks properly', () => {
 
 			const diff = submitGame(testState, testGame);
-			expect(diff["1"].streak).to.equal(1);
-			expect(diff["1"].characters["1"].streak).to.equal(1);
-			expect(diff["2"].streak).to.equal(-1);
-			expect(diff["2"].characters["2"].streak).to.equal(-1);
+			expect(diff.users['user1Uuid'].streak).to.equal(1);
+			expect(diff.users['user1Uuid'].characters['xter1Uuid'].streak).to.equal(1);
+			expect(diff.users['user2Uuid'].streak).to.equal(-1);
+			expect(diff.users['user2Uuid'].characters['xter2Uuid'].streak).to.equal(-1);
 
 			// ensure it can incr/decr properly
 			testVals.userOneStreak = 1;
@@ -145,10 +153,10 @@ describe('submit-game logic', () => {
 			testVals.userTwoXterTwoStreak = -1;
 
 			const diff2 = submitGame(testState, testGame);
-			expect(diff2["1"].streak).to.equal(2);
-			expect(diff2["1"].characters["1"].streak).to.equal(2);
-			expect(diff2["2"].streak).to.equal(-2);
-			expect(diff2["2"].characters["2"].streak).to.equal(-2);
+			expect(diff2.users['user1Uuid'].streak).to.equal(2);
+			expect(diff2.users['user1Uuid'].characters['xter1Uuid'].streak).to.equal(2);
+			expect(diff2.users['user2Uuid'].streak).to.equal(-2);
+			expect(diff2.users['user2Uuid'].characters['xter2Uuid'].streak).to.equal(-2);
 
 			// ensure it resets negative streaks to positive and vice versa
 			testVals.userOneStreak = -5;
@@ -157,60 +165,60 @@ describe('submit-game logic', () => {
 			testVals.userTwoXterTwoStreak = 5;
 
 			const diff3 = submitGame(testState, testGame);
-			expect(diff3["1"].streak).to.equal(1);
-			expect(diff3["1"].characters["1"].streak).to.equal(1);
-			expect(diff3["2"].streak).to.equal(-1);
-			expect(diff3["2"].characters["2"].streak).to.equal(-1);
+			expect(diff3.users['user1Uuid'].streak).to.equal(1);
+			expect(diff3.users['user1Uuid'].characters['xter1Uuid'].streak).to.equal(1);
+			expect(diff3.users['user2Uuid'].streak).to.equal(-1);
+			expect(diff3.users['user2Uuid'].characters['xter2Uuid'].streak).to.equal(-1);
 
 		});
 
-		it('updates streak points for the winner only when previousStreak is 2 or >= 4 streaks', () => {
+		it('updates coins for the winner only when previousStreak is 2 or >= 4 streaks', () => {
 
 			testVals.userOneStreak = 2;
 			const diff = submitGame(testState, testGame);
 
-			expect(diff["1"].streakPoints).to.equal(testVals.userOneStreakPoints + 1);
-			expect(diff["2"].streakPoints).to.equal(undefined);
+			expect(diff.users['user1Uuid'].coins).to.equal(testVals.userOneCoins + 1);
+			expect(diff.users['user2Uuid'].coins).to.equal(undefined);
 
 			testVals.userOneStreak = 4;
-			expect(submitGame(testState, testGame)["1"].streakPoints).to.equal(testVals.userOneStreakPoints + 1);
+			expect(submitGame(testState, testGame).users['user1Uuid'].coins).to.equal(testVals.userOneCoins + 1);
 			testVals.userOneStreak = 999;
-			expect(submitGame(testState, testGame)["1"].streakPoints).to.equal(testVals.userOneStreakPoints + 1);
+			expect(submitGame(testState, testGame).users['user1Uuid'].coins).to.equal(testVals.userOneCoins + 1);
 
 			// no update if current streak after this game is less than 3, or 4
 			testVals.userOneStreak = -5;
-			expect(submitGame(testState, testGame)["1"].streakPoints).to.equal(undefined);
+			expect(submitGame(testState, testGame).users['user1Uuid'].coins).to.equal(undefined);
 			testVals.userOneStreak = 0;
-			expect(submitGame(testState, testGame)["1"].streakPoints).to.equal(undefined);
+			expect(submitGame(testState, testGame).users['user1Uuid'].coins).to.equal(undefined);
 			testVals.userOneStreak = 1;
-			expect(submitGame(testState, testGame)["1"].streakPoints).to.equal(undefined);
+			expect(submitGame(testState, testGame).users['user1Uuid'].coins).to.equal(undefined);
 			testVals.userOneStreak = 3;
-			expect(submitGame(testState, testGame)["1"].streakPoints).to.equal(undefined);
+			expect(submitGame(testState, testGame).users['user1Uuid'].coins).to.equal(undefined);
 		});
 
-		it('increments the winner\'s powers only on supreme', () => {
+		it('increments the winner\'s coins on supreme', () => {
 			// no supreme
 			const diff = submitGame(testState, testGame);
-			expect(diff["1"].powers).to.equal(undefined); // no power change if no supreme
-			expect(diff["2"].powers).to.equal(undefined); // no power change for the loser ever
+			expect(diff.users['user1Uuid'].coins).to.equal(undefined); // no power change if no supreme
+			expect(diff.users['user2Uuid'].coins).to.equal(undefined); // no power change for the loser ever
 
 			// supreme
 			testVals.supremeTest = true;
 			const diff2 = submitGame(testState, testGame);
-			expect(diff2["1"].powers).to.equal(testVals.userOnePowers + 1);
-			expect(diff2["2"].powers).to.equal(undefined); // no power change for the loser ever
+			expect(diff2.users['user1Uuid'].coins).to.equal(testVals.userOneCoins + COINS_FOR_SUPREME);
+			expect(diff2.users['user2Uuid'].coins).to.equal(undefined); // no power change for the loser ever
 		});
 
 		it('returns fire character\'s id if winning character exactly on a 3 streak', () => {
 			// character on a 0 streak
 			const diff = submitGame(testState, testGame);
-			expect(diff["1"].fire).to.equal(undefined);
+			expect(diff.users['user1Uuid'].fire).to.equal(undefined);
 
 			// supreme
 			testVals.userOneXterOneStreak = 2;
 			const diff2 = submitGame(testState, testGame);
-			expect(diff2["1"].fire).to.equal('1');
+			console.log("DIFF: ", JSON.stringify(diff2,null,4));
+			expect(diff2.users['user1Uuid'].fire).to.equal('xter1Uuid');
 		});
 	});
-
 });

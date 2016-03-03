@@ -9,58 +9,55 @@
 // 	},
 //  supreme: true
 // };
+export const COINS_FOR_SUPREME = 3;
 
 export default function submitGame (state, gameResult) {
-	const winnerId = gameResult.winner.playerId.toString();
-	const winningCharacterId = gameResult.winner.characterId.toString();
-	const loserId = gameResult.loser.playerId.toString();
-	const losingCharacterId = gameResult.loser.characterId.toString();
+	const winnerUuid = gameResult.winner.uuid;
+	const winningCharacterUuid = gameResult.winner.characterUuid;
+	const loserUuid = gameResult.loser.uuid;
+	const losingCharacterUuid = gameResult.loser.characterUuid;
 
-	let diff = {
-		[winnerId]: {
-			score: state.users[winnerId].score + state.users[winnerId].characters[winningCharacterId].value,
-			streak: updateWinningStreak(state.users[winnerId].streak),
+	let diff = {};
+	diff.users = {
+		[winnerUuid]: {
+			score: state.users[winnerUuid].score + state.users[winnerUuid].characters[winningCharacterUuid].value,
+			streak: updateWinningStreak(state.users[winnerUuid].streak),
 			characters: {
-				[winningCharacterId]: {
-					streak: updateWinningStreak(state.users[winnerId].characters[winningCharacterId].streak)
+				[winningCharacterUuid]: {
+					streak: updateWinningStreak(state.users[winnerUuid].characters[winningCharacterUuid].streak)
 				}
 			}
 		},
-		[loserId]: {
-			streak: updateLosingStreak(state.users[loserId].streak),
+		[loserUuid]: {
+			streak: updateLosingStreak(state.users[loserUuid].streak),
 			characters: {
-				[losingCharacterId]: {
-					streak: updateLosingStreak(state.users[loserId].characters[losingCharacterId].streak),
-					value: updateLoserValue(state.users[loserId].characters[losingCharacterId].value)
+				[losingCharacterUuid]: {
+					streak: updateLosingStreak(state.users[loserUuid].characters[losingCharacterUuid].streak),
+					value: updateLoserValue(state.users[loserUuid].characters[losingCharacterUuid].value)
 				}
 			}
 		}
 	}
 
-	const streakPointsDiff = updateStreakPoints(state.users[winnerId].streakPoints, state.users[winnerId].streak);
-	if ( streakPointsDiff ) {
-		diff[winnerId].streakPoints = streakPointsDiff;
+	const coinsDiff = updateCoins(state.users[winnerUuid].coins, state.users[winnerUuid].streak, gameResult.supreme);
+	if (coinsDiff) {
+		diff.users[winnerUuid].coins = coinsDiff;
 	}
 
-	const winCharValDiff = updateWinnerValue(state.users[winnerId].characters[winningCharacterId].value);
+	const winCharValDiff = updateWinnerValue(state.users[winnerUuid].characters[winningCharacterUuid].value);
 	if (winCharValDiff) {
-		diff[winnerId].characters[winningCharacterId].value = winCharValDiff;
+		diff.users[winnerUuid].characters[winningCharacterUuid].value = winCharValDiff;
 	}
 
-	// add a power for supreme
-	if (gameResult.supreme) {
-		diff[winnerId].powers = state.users[winnerId].powers + 1;
-	}
 	// determine if winning character is on fire
-
-	const fire = fireStatus(winningCharacterId, state.users[winnerId].characters[winningCharacterId].streak);
+	const fire = fireStatus(winningCharacterUuid, state.users[winnerUuid].characters[winningCharacterUuid].streak);
 	if (fire) {
-		diff[winnerId].fire = fire;
+		diff.users[winnerUuid].fire = fire;
 	}
 	// determine if losing character WAS on fire
-	const ice = iceStatus(losingCharacterId, state.users[loserId].characters[losingCharacterId].streak);
+	const ice = iceStatus(losingCharacterUuid, state.users[loserUuid].characters[losingCharacterUuid].streak);
 	if (ice) {
-		diff[loserId].ice = ice;
+		diff.users[loserUuid].ice = ice;
 	}
 
 	return diff;
@@ -107,9 +104,16 @@ export function updateLoserValue (previousValue) {
 	return previousValue + 1;
 }
 
-export function updateStreakPoints (currentPoints, previousStreak) {
+export function updateCoins (currentCoins, previousStreak, supreme) {
+	let updatedCoins = currentCoins;
 	if (previousStreak === 2 || previousStreak >= 4) {
-		return currentPoints + 1;
+		updatedCoins += 1;
+	}
+	if (supreme) {
+		updatedCoins += COINS_FOR_SUPREME;
+	}
+	if (updatedCoins !== currentCoins) {
+		return updatedCoins;
 	}
 	return undefined;
 }
