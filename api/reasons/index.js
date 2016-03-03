@@ -21,7 +21,7 @@ r.PasswordMismatch = 'Password mismatch';
 r.InvalidEmail = 'Invalid email';
 r.DuplicateUsername = 'Username is already exists';
 
-//tournaments and characters
+// tournaments and characters
 r.NoName = 'Missing name';
 r.NoGoal = 'Missing goal';
 r.NoStartCoins = 'Missing startCoins';
@@ -36,6 +36,16 @@ r.DuplicateCharacterName = 'Character name already exists';
 
 r.NoSlugParam = 'Missing slug parameter';
 r.tournamentNotFound = 'Tournament not found';
+
+// submit games
+r.NoWinningUserSlug = 'Missing winningUserSlug';
+r.NoWinningCharacterSlug = 'Missing winningCharacterSlug';
+r.NoLosingUserSlug = 'Missing losingUserSlug';
+r.NoLosingCharacterSlug = 'Missing losingCharacterSlug';
+r.InvalidWinningUserSlug = 'Invalid winningUserSlug';
+r.InvalidWinningCharacterSlug = 'Invalid winningCharacterSlug';
+r.InvalidLosingUserSlug = 'Invalid losingUserSlug';
+r.InvalidLosingCharacterSlug = 'Invalid losingCharacterSlug';
 
 r.Internal = 'Internal server error';
 r.InvalidCredentials = 'Invalid username or password';

@@ -10,6 +10,7 @@ import registerUser from './handlers/register-user';
 import loginUser from './handlers/login-user';
 import createTournament from './handlers/create-tournament';
 import getTournament from './handlers/get-tournament';
+import submitGame from './handlers/submit-game';
 
 let router = express.Router();
 
@@ -32,5 +33,9 @@ router.post('/character', createCharacter);
 
 router.post('/tournament', requiresLogin, createTournament);
 router.get('/tournament/:tournamentSlug', getTournament);
+
+// TODO: require login
+// TODO: logged in user must be in the tournament
+router.post('/tournament/:tournamentSlug/game', submitGame);
 
 export default router;
