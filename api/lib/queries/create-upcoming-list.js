@@ -1,0 +1,55 @@
+import log from '../../logger';
+import redis from '../../persistence/redis';
+import { upcomingList } from '../util/redis-keys';
+import range from 'lodash.range';
+
+const UPCOMING_LENGTH = 50;
+
+// needs opts.uuid (tournamentUuid)
+// opts.user.uuid, opts.user.characters,
+// opts.opponent.uuid, opts.opponent.characters
+export default function createUpcomingListQuery (opts, cb) {
+
+	// assemble the the user data
+	const randomUserCharacters = range(0, UPCOMING_LENGTH).map(i => {
+		return opts.user.characters[Math.floor(Math.random() * opts.user.characters.length)].uuid;
+	});
+	const userKey = upcomingList(opts.uuid, opts.user.uuid);
+
+	// push the user data
+	redis.rpush(userKey, ...randomUserCharacters, (err, results) => {
+		if (err) {
+			log.error(err, {
+				key: userKey,
+				value: randomUserCharacters
+			});
+		}
+		log.debug('successfully added upcoming list redis for user', {
+			key: userKey,
+			value: randomUserCharacters,
+			results: results
+		});
+
+		// assemble the opponent data
+		const randomOpponentCharacters = range(0, UPCOMING_LENGTH).map(i => {
+			return opts.opponent.characters[Math.floor(Math.random() * opts.opponent.characters.length)].uuid;
+		});
+		const opponentKey = upcomingList(opts.uuid, opts.opponent.uuid);
+
+		// push the opponent data
+		redis.rpush(opponentKey, ...randomOpponentCharacters, (err, results) => {
+			if (err) {
+				log.error(err, {
+					key: opponentKey,
+					value: randomOpponentCharacters
+				});
+			}
+			log.debug('successfully added upcoming list redis for opponent', {
+				key: opponentKey,
+				value: randomOpponentCharacters,
+				results: results
+			});
+			return cb(err, results);
+		});
+	});
+}
