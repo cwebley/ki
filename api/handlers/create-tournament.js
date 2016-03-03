@@ -102,7 +102,7 @@ export default function createTournamentHandler (req, res) {
 							return res.status(500).send(r.internal);
 						}
 
-						createUpcomingListQuery(tournamentOpts, (err, results) => {
+						createUpcomingListQuery(req.redis, tournamentOpts, (err, results) => {
 							if (err) {
 								return res.status(500).send(r.internal);
 							}

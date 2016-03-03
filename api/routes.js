@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'express-jwt';
 import db from './persistence/pg';
+import redis from './persistence/redis';
 import config from './config';
 
 // handlers
@@ -14,6 +15,10 @@ let router = express.Router();
 
 // sets req.db
 router.use(db.middleware({
+	releaseIn: 30*1000 // 30 seconds
+}));
+
+router.use(redis.middleware({
 	releaseIn: 30*1000 // 30 seconds
 }));
 

@@ -1,5 +1,4 @@
 import log from '../../logger';
-import redis from '../../persistence/redis';
 import { upcomingList } from '../util/redis-keys';
 import range from 'lodash.range';
 
@@ -8,7 +7,7 @@ const UPCOMING_LENGTH = 50;
 // needs opts.uuid (tournamentUuid)
 // opts.user.uuid, opts.user.characters,
 // opts.opponent.uuid, opts.opponent.characters
-export default function createUpcomingListQuery (opts, cb) {
+export default function createUpcomingListQuery (rConn, opts, cb) {
 
 	// assemble the the user data
 	const randomUserCharacters = range(0, UPCOMING_LENGTH).map(i => {
@@ -17,7 +16,7 @@ export default function createUpcomingListQuery (opts, cb) {
 	const userKey = upcomingList(opts.uuid, opts.user.uuid);
 
 	// push the user data
-	redis.rpush(userKey, ...randomUserCharacters, (err, results) => {
+	rConn.rpush(userKey, ...randomUserCharacters, (err, results) => {
 		if (err) {
 			log.error(err, {
 				key: userKey,
@@ -37,7 +36,7 @@ export default function createUpcomingListQuery (opts, cb) {
 		const opponentKey = upcomingList(opts.uuid, opts.opponent.uuid);
 
 		// push the opponent data
-		redis.rpush(opponentKey, ...randomOpponentCharacters, (err, results) => {
+		rConn.rpush(opponentKey, ...randomOpponentCharacters, (err, results) => {
 			if (err) {
 				log.error(err, {
 					key: opponentKey,
