@@ -2,6 +2,7 @@ import r from '../reasons';
 import getTournamentQuery from '../lib/queries/get-tournament';
 import getTournamentUsersQuery from '../lib/queries/get-tournament-users';
 import getTournamentCharactersQuery from '../lib/queries/get-tournament-characters';
+import getUpcomingQuery from '../lib/queries/get-upcoming';
 
 export default function getTournamentHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -36,7 +37,9 @@ export default function getTournamentHandler (req, res) {
 			}
 
 
-			// get character meta data from first user
+			/**
+			** get meta data from first user
+			*/
 			getTournamentCharactersQuery(req.db, tournament.uuid, users[0], (err, tournamentCharacters) => {
 				if (err) {
 					return res.status(500).send(r.internal);
@@ -44,16 +47,39 @@ export default function getTournamentHandler (req, res) {
 				// add the first user's character data to the tourament data
 				tournament.users[users[0]].characters = tournamentCharacters;
 
-				// get character meta data from second user
-				getTournamentCharactersQuery(req.db, tournament.uuid, users[1], (err, tournamentCharacters) => {
+				getUpcomingQuery(req.redis, {
+					tournamentUuid: tournament.uuid,
+					userUuid: users[0]
+				}, (err, upcomingResults) => {
 					if (err) {
 						return res.status(500).send(r.internal);
 					}
+					tournament.users[users[0]].upcoming = upcomingResults;
 
-					// add the second user's character data to the tournament data
-					tournament.users[users[1]].characters = tournamentCharacters;
+					/**
+					** get meta data from second user
+					*/
+					getTournamentCharactersQuery(req.db, tournament.uuid, users[1], (err, tournamentCharacters) => {
+						if (err) {
+							return res.status(500).send(r.internal);
+						}
 
-					return res.status(200).send(tournament);
+						// add the second user's character data to the tournament data
+						tournament.users[users[1]].characters = tournamentCharacters;
+
+						getUpcomingQuery(req.redis, {
+							tournamentUuid: tournament.uuid,
+							userUuid: users[1]
+						}, (err, upcomingResults) => {
+							if (err) {
+								return res.status(500).send(r.internal);
+							}
+							tournament.users[users[1]].upcoming = upcomingResults;
+
+
+							return res.status(200).send(tournament);
+						});
+					});
 				});
 			});
 		});
