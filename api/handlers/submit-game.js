@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 
 import log from '../logger';
 import r from '../reasons';
+import submitGame from '../lib/core/submit-game';
 
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 
@@ -46,55 +47,71 @@ export default function submitGameHandler (req, res) {
 
 		// validate inputs
 		// this is a little difficult because we don't have the uuids, only slugs
-		let winningUserFound = false;
-		let winningCharacterFound = false;
-		let losingUserFound = false;
-		let losingCharacterFound = false;
+		let winnerUuid;
+		let winningCharacterUuid;
+		let loserUuid;
+		let losingCharacterUuid;
 
 		Object.keys(tournament.users).forEach(u => {
 			// check for winner
 			if (tournament.users[u].slug === opts.winningUserSlug) {
-				winningUserFound = true;
+				winnerUuid = tournament.users[u].uuid;
 
 				// if winner found, check for winning character
 				Object.keys(tournament.users[u].characters).forEach(c => {
 					if (tournament.users[u].characters[c].slug === opts.winningCharacterSlug) {
-						winningCharacterFound = true;
+						winningCharacterUuid = tournament.users[u].characters[c].uuid;
 					}
 				});
 			}
 
 			// check for loser
 			if (tournament.users[u].slug === opts.losingUserSlug) {
-				losingUserFound = true;
+				loserUuid = tournament.users[u].uuid;
 
 				// if loser found, check for losing character
 				Object.keys(tournament.users[u].characters).forEach(c => {
 					if (tournament.users[u].characters[c].slug === opts.losingCharacterSlug) {
-						losingCharacterFound = true;
+						losingCharacterUuid = tournament.users[u].characters[c].uuid;
 					}
 				});
 			}
 		});
 
 		let problems = [];
-		if (!winningUserFound) {
+		if (!winnerUuid) {
 			problems.push(r.InvalidWinningUserSlug);
 		}
-		if (!winningCharacterFound) {
+		if (!winningCharacterUuid) {
 			problems.push(r.InvalidWinningCharacterSlug);
 		}
-		if (!losingUserFound) {
+		if (!loserUuid) {
 			problems.push(r.InvalidLosingUserSlug);
 		}
-		if (!losingCharacterFound) {
+		if (!losingCharacterUuid) {
 			problems.push(r.InvalidLosingCharacterSlug);
 		}
 		if (problems.length) {
 			return res.status(400).send(r(...problems));
 		}
 
-		console.log("DONE VALIDATING NO PROBS")
+		log.debug('Done validating inputs, submitting game now');
+
+		//assemble game result
+		const game = {
+			winner: {
+				uuid: winnerUuid,
+				characterUuid: winningCharacterUuid
+			},
+			loser: {
+				uuid: loserUuid,
+				characterUuid: losingCharacterUuid
+			}
+		};
+
+		let diff = submitGame(tournament, game);
+
+		console.log("DIFF: ", JSON.stringify(diff, null, 4));
 		return res.status(201).send('it worked!');
 	});
 }

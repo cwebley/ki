@@ -6,7 +6,7 @@ export default function getTournamentUsersQuery (db, tournamentUuid, cb) {
 		SELECT
 			tu.wins, tu.losses, tu.streak, tu.coins, tu.best_streak AS "bestStreak", tu.score, u.name, u.slug,
 			u.tournament_streak AS "tournamentStreak", u.tournament_best_streak AS "tournamentBestStreak",
-			u.uuid, u.streak AS "globalStreak", u.best_streak AS "globalStreak"
+			u.uuid, u.streak AS "globalStreak", u.best_streak AS "globalBestStreak"
 		FROM tournament_users AS tu
 		JOIN users AS u ON (u.uuid = tu.user_uuid)
 		WHERE tu.tournament_uuid = $1

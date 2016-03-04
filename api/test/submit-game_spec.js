@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import get from 'lodash.get';
 import { testVals, testState, testGame, resetTestState } from './helper';
 import submitGame, {
 	COINS_FOR_SUPREME,
@@ -6,7 +7,9 @@ import submitGame, {
 	updateWinnerValue,
 	updateWinningStreak,
 	updateLosingStreak,
+	updateBestStreak,
 	fireStatus,
+	alreadyOnFire,
 	iceStatus,
 	updateCoins
 } from '../lib/core/submit-game';
@@ -43,6 +46,17 @@ describe('submit-game logic', () => {
 			expect(updateWinningStreak(-1)).to.equal(1);
 			expect(updateWinningStreak(-2)).to.equal(1);
 			expect(updateWinningStreak(-999)).to.equal(1);
+		});
+	});
+
+	describe('updateBestStreak', () => {
+		it('returns current streak if current streak is greater than best streak', () => {
+			expect(updateBestStreak(1, 0)).to.equal(1);
+			expect(updateBestStreak(5, 4)).to.equal(5);
+		});
+		it('returns undefined if current streak is less than best streak', () => {
+			expect(updateBestStreak(0, 5)).to.equal(undefined);
+			expect(updateBestStreak(10, 15)).to.equal(undefined);
 		});
 	});
 
@@ -87,6 +101,15 @@ describe('submit-game logic', () => {
 		it('returns the characterId string when previous streak is 2', () => {
 			const charIdStr = 'user1Uuid';
 			expect(fireStatus(charIdStr, 2)).to.equal(charIdStr);
+		});
+	});
+
+	describe('alreadyOnFire', () => {
+		it('returns true if character\'s streak is 3 or greater', () => {
+			expect(alreadyOnFire(3)).to.equal(true);
+			expect(alreadyOnFire(9)).to.equal(true);
+			expect(alreadyOnFire(0)).to.equal(false);
+			expect(alreadyOnFire(2)).to.equal(false);
 		});
 	});
 
@@ -209,16 +232,45 @@ describe('submit-game logic', () => {
 			expect(diff2.users['user2Uuid'].coins).to.equal(undefined); // no power change for the loser ever
 		});
 
-		it('returns fire character\'s id if winning character exactly on a 3 streak', () => {
+		it('returns winner\'s characters with incremented values if some character just went on fire', () => {
 			// character on a 0 streak
 			const diff = submitGame(testState, testGame);
-			expect(diff.users['user1Uuid'].fire).to.equal(undefined);
+			expect(get(diff.users['user1Uuid'].characters, 'xter2Uuid.value')).to.equal(undefined);
 
-			// supreme
 			testVals.userOneXterOneStreak = 2;
+			testVals.userOneXterTwoVal = 3;
 			const diff2 = submitGame(testState, testGame);
-			console.log("DIFF: ", JSON.stringify(diff2,null,4));
-			expect(diff2.users['user1Uuid'].fire).to.equal('xter1Uuid');
+
+			// xter1 won the game and went on fire, so xter2 goes up in value
+			expect(get(diff2.users['user1Uuid'].characters, 'xter2Uuid.value')).to.equal(testVals.userOneXterTwoVal + 1);
+		});
+
+		it('returns loser\'s characters with decremented values if some character was just iced', () => {
+			// character on a 0 streak
+			const diff = submitGame(testState, testGame);
+			expect(get(diff.users['user2Uuid'].characters, 'xter1Uuid.value')).to.equal(undefined);
+
+			// xter 2 was on fire and he will lose this game
+			testVals.userTwoXterTwoStreak = 3;
+			testVals.userTwoXterOneVal = 9;
+			const diff2 = submitGame(testState, testGame);
+			console.log("DIFF2: ", JSON.stringify(diff2, null, 4))
+
+			// xter2 lost and got iced, so xter1 goes down in value
+			expect(get(diff2.users['user2Uuid'].characters, 'xter1Uuid.value')).to.equal(testVals.userTwoXterOneVal - 1);
+		});
+
+		it('returns winner\'s characters with incr\'d fireWins if characters were previously on fire', () => {
+			// character on a 0 streak
+			const diff = submitGame(testState, testGame);
+			expect(get(diff.users['user1Uuid'].characters, 'xter2Uuid.fireWins')).to.equal(undefined);
+
+			// xter2 already on fire, xter 1 will win this game
+			testVals.userOneXterTwoStreak = 3;
+			const diff2 = submitGame(testState, testGame);
+
+			// xter1 won the game and went on fire, so xter2 goes up in value
+			expect(get(diff2.users['user1Uuid'].characters, 'xter2Uuid.fireWins')).to.equal(testVals.userOneXterTwoFireWins + 1);
 		});
 	});
 });

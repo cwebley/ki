@@ -131,45 +131,6 @@ function resetTestState () {
 	testVals.lastGameWasForOnePoint = false;
 };
 
-
-// getters allow each of these values to be customized succinctly in tests
-// let testState = {
-// 	users: {
-// 		1: {
-// 			get score() { return testVals.userOneScore },
-// 			get streak() { return testVals.userOneStreak },
-// 			get powers() { return testVals.userOnePowers },
-// 			get streakPoints() { return testVals.userOneStreakPoints },
-// 			characters: {
-// 				1: {
-// 					get value() { return testVals.userOneXterOneVal },
-// 					get streak() { return testVals.userOneXterOneStreak }
-// 				},
-// 				2: {
-// 					get value() { return testVals.userOneXterTwoVal },
-// 					get streak() { return testVals.userOneXterTwoStreak }
-// 				}
-// 			}
-// 		},
-// 		2: {
-// 			get score() { return testVals.userTwoScore },
-// 			get streak() { return testVals.userTwoStreak },
-// 			get powers() { return testVals.userTwoPowers },
-// 			get streakPoints() { return testVals.userTwoStreakPoints },
-// 			characters: {
-// 				1: {
-// 					get value() { return testVals.userTwoXterOneVal },
-// 					get streak() { return testVals.userTwoXterOneStreak }
-// 				},
-// 				2: {
-// 					get value() { return testVals.userTwoXterTwoVal },
-// 					get streak() { return testVals.userTwoXterTwoStreak }
-// 				}
-// 			}
-// 		}
-// 	}
-// };
-
 let testState = {
 	users: {
 		'user1Uuid': {
