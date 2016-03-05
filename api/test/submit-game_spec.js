@@ -3,6 +3,7 @@ import get from 'lodash.get';
 import { testVals, testState, testGame, resetTestState } from './helper';
 import submitGame, {
 	COINS_FOR_SUPREME,
+	evaluateChampion,
 	updateLoserValue,
 	updateWinnerValue,
 	updateWinningStreak,
@@ -15,6 +16,24 @@ import submitGame, {
 } from '../lib/core/submit-game';
 
 describe('submit-game logic', () => {
+
+	describe('evaluateChampion', () => {
+		const goal = 100;
+		it('returns undefined if the winner\'s previous score is below the goal', () => {
+			expect(evaluateChampion('winnerUuid', goal, 0, 0)).to.equal(undefined);
+			expect(evaluateChampion('winnerUuid', goal, 99, 0)).to.equal(undefined);
+			expect(evaluateChampion('winnerUuid', goal, 0, 99)).to.equal(undefined);
+		});
+		it('returns undefined if the winner\'s previous score is above the goal but below loser\'s score', () => {
+			expect(evaluateChampion('winnerUuid', goal, 100, 101)).to.equal(undefined);
+			expect(evaluateChampion('winnerUuid', goal, 250, 350)).to.equal(undefined);
+		});
+		it('returns winnerUuid when winner\'s previous score is above goal AND opponent\'s previous score', () => {
+			expect(evaluateChampion('winnerUuid', goal, 100, 99)).to.equal('winnerUuid');
+			expect(evaluateChampion('winnerUuid', goal, 1000, 999)).to.equal('winnerUuid');
+			expect(evaluateChampion('winnerUuid', goal, 115, 101)).to.equal('winnerUuid');
+		});
+	})
 
 	describe('updateWinnerValue', () => {
 		it('decrements value when previousValue > 1', () => {
@@ -254,7 +273,6 @@ describe('submit-game logic', () => {
 			testVals.userTwoXterTwoStreak = 3;
 			testVals.userTwoXterOneVal = 9;
 			const diff2 = submitGame(testState, testGame);
-			console.log("DIFF2: ", JSON.stringify(diff2, null, 4))
 
 			// xter2 lost and got iced, so xter1 goes down in value
 			expect(get(diff2.users['user2Uuid'].characters, 'xter1Uuid.value')).to.equal(testVals.userTwoXterOneVal - 1);
@@ -271,6 +289,19 @@ describe('submit-game logic', () => {
 
 			// xter1 won the game and went on fire, so xter2 goes up in value
 			expect(get(diff2.users['user1Uuid'].characters, 'xter2Uuid.fireWins')).to.equal(testVals.userOneXterTwoFireWins + 1);
+		});
+
+
+		it('returns championUuid if champion should be crowned', () => {
+			testVals.userOneScore = 99;
+			testVals.userTwoScore = 99;
+			const diff = submitGame(testState, testGame);
+			expect(diff.championUuid).to.equal(undefined);
+
+			testVals.userOneScore = 101;
+			testVals.userTwoScore = 99;
+			const diff2 = submitGame(testState, testGame);
+			expect(diff2.championUuid).to.equal('user1Uuid');
 		});
 	});
 });

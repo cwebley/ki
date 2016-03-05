@@ -1,6 +1,9 @@
 // these values are set manually in tests, or all at once when resetTestState() is called
 let testVals = {
 	// state values
+	goal: undefined,
+	championUuid: undefined,
+
 	userOneScore: undefined,
 	userOneWins: undefined,
 	userOneLosses: undefined,
@@ -67,6 +70,8 @@ let testVals = {
 }
 
 function resetTestState () {
+	testVals.goal = 100;
+
 	testVals.userOneScore = 0;
 	testVals.userOneWins = 0;
 	testVals.userOneLosses = 0;
@@ -132,6 +137,8 @@ function resetTestState () {
 };
 
 let testState = {
+	get goal() { return testVals.goal },
+	get championUuid() { return testVals.championUuid },
 	users: {
 		'user1Uuid': {
 			get score() { return testVals.userOneScore },

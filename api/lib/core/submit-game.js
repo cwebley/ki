@@ -17,7 +17,9 @@ export default function submitGame (state, gameResult) {
 	const loserUuid = gameResult.loser.uuid;
 	const losingCharacterUuid = gameResult.loser.characterUuid;
 
-	let diff = {};
+	let diff = {
+		championUuid: evaluateChampion(winnerUuid, state.goal, state.users[winnerUuid].score, state.users[loserUuid].score)
+	};
 	diff.users = {
 		[winnerUuid]: {
 			score: state.users[winnerUuid].score + state.users[winnerUuid].characters[winningCharacterUuid].value,
@@ -95,6 +97,18 @@ export default function submitGame (state, gameResult) {
 	}
 
 	return diff;
+}
+
+// champion must reach the goal score AND be ahead of his opponent, THEN win again
+// basically there is always a comeback opportunity
+export function evaluateChampion (winnerUuid, goal, winnerPrevScore, loserPrevScore) {
+	if (winnerPrevScore < goal) {
+		return undefined;
+	}
+	if (winnerPrevScore < loserPrevScore) {
+		return undefined;
+	}
+	return winnerUuid;
 }
 
 export function alreadyOnFire (streak) {

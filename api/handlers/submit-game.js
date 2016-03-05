@@ -112,6 +112,8 @@ export default function submitGameHandler (req, res) {
 		let diff = submitGame(tournament, game);
 
 		console.log("DIFF: ", JSON.stringify(diff, null, 4));
+
+		
 		return res.status(201).send('it worked!');
 	});
 }
