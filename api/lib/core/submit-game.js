@@ -26,24 +26,32 @@ export default function submitGame (state, gameResult) {
 			wins: state.users[winnerUuid].wins + 1,
 			streak: updateWinningStreak(state.users[winnerUuid].streak),
 			bestStreak: updateBestStreak(state.users[winnerUuid].streak, state.users[winnerUuid].bestStreak),
-			globalStreak: updateWinningStreak(state.users[winnerUuid].streak),
+			globalStreak: updateWinningStreak(state.users[winnerUuid].globalStreak),
 			globalBestStreak: updateBestStreak(state.users[winnerUuid].streak, state.users[winnerUuid].bestStreak),
+			tournamentStreak: updateTournamentStreak(state.users[winnerUuid].tournamentStreak, winnerUuid === diff.championUuid),
+			tournamentBestStreak: updateBestStreak(state.users[winnerUuid].tournamentBestStreak),
 			characters: {
 				[winningCharacterUuid]: {
 					wins: state.users[winnerUuid].characters[winningCharacterUuid].wins + 1,
 					streak: updateWinningStreak(state.users[winnerUuid].characters[winningCharacterUuid].streak),
 					bestStreak: updateBestStreak(state.users[winnerUuid].characters[winningCharacterUuid].streak,
-						state.users[winnerUuid].characters[winningCharacterUuid].bestStreak)
+						state.users[winnerUuid].characters[winningCharacterUuid].bestStreak),
+					globalStreak: updateWinningStreak(state.users[winnerUuid].characters[winningCharacterUuid].globalStreak),
+					globalBestStreak: updateBestStreak(state.users[winnerUuid].characters[winningCharacterUuid].globalStreak,
+						state.users[winnerUuid].characters[winningCharacterUuid].globalBestStreak)
 				}
 			}
 		},
 		[loserUuid]: {
 			streak: updateLosingStreak(state.users[loserUuid].streak),
+			globalStreak: updateLosingStreak(state.users[loserUuid].streak),
+			tournamentStreak: updateTournamentLosingStreak(state.users[loserUuid].tournamentStreak, !!diff.championUuid),
 			losses: state.users[loserUuid].losses + 1,
 			characters: {
 				[losingCharacterUuid]: {
 					losses: state.users[winnerUuid].characters[winningCharacterUuid].losses + 1,
 					streak: updateLosingStreak(state.users[loserUuid].characters[losingCharacterUuid].streak),
+					globalStreak: updateLosingStreak(state.users[loserUuid].characters[losingCharacterUuid].globalStreak),
 					value: updateLoserValue(state.users[loserUuid].characters[losingCharacterUuid].value)
 				}
 			}
@@ -70,7 +78,7 @@ export default function submitGame (state, gameResult) {
 	Object.keys(state.users[winnerUuid].characters).forEach(cUuid => {
 		if (alreadyOnFire(state.users[winnerUuid].characters[cUuid].streak)) {
 			// incr the fireWins for this character that is already on fire
-			if (!diff.users[winnerUuid].characters[cUuid]) {
+				if (!diff.users[winnerUuid].characters[cUuid]) {
 				diff.users[winnerUuid].characters[cUuid] = {};
 			}
 			diff.users[winnerUuid].characters[cUuid].fireWins = state.users[winnerUuid].characters[cUuid].fireWins + 1;
@@ -111,6 +119,20 @@ export function evaluateChampion (winnerUuid, goal, winnerPrevScore, loserPrevSc
 	return winnerUuid;
 }
 
+export function updateTournamentStreak (prevStreak, isChampion) {
+	if (!isChampion) {
+		return undefined;
+	}
+	return updateWinningStreak(prevStreak);
+}
+
+export function updateTournamentLosingStreak(prevStreak, champExists) {
+	if (!champExists) {
+		return undefined;
+	}
+	return updateLosingStreak(prevStreak);
+}
+
 export function alreadyOnFire (streak) {
 	if (streak >= 3) {
 		return true;
@@ -141,7 +163,8 @@ export function updateWinningStreak (previousStreak) {
 	return previousStreak + 1;
 }
 
-export function updateBestStreak (currentStreak, bestStreak) {
+export function updateBestStreak (prevStreak, bestStreak) {
+	const currentStreak = prevStreak + 1;
 	if (currentStreak > bestStreak) {
 		return currentStreak;
 	}

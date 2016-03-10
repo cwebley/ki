@@ -7,6 +7,7 @@ import r from '../reasons';
 import submitGame from '../lib/core/submit-game';
 
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
+import submitGameQuery from '../lib/queries/submit-game';
 
 export default function submitGameHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -113,7 +114,11 @@ export default function submitGameHandler (req, res) {
 
 		console.log("DIFF: ", JSON.stringify(diff, null, 4));
 
-		
-		return res.status(201).send('it worked!');
+		submitGameQuery(req.db, tournament.uuid, diff, (err, results) => {
+			if (err) {
+				return res.status(500).send(r.internal);
+			}
+			return res.status(201).send('it worked!');
+		});
 	});
 }

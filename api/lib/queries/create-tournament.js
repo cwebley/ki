@@ -23,11 +23,6 @@ export default function createTournamentQuery (db, opts, cb) {
 							return rollback(db, err, cb);
 						}
 
-						// addToTournamentCoins(db, opts, (err, results) => {
-							// if (err) {
-								// return rollback(db, err, cb);
-							// }
-
 						// end transaction
 						db.query('COMMIT', () => {
 							// return the tournament object

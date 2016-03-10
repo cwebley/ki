@@ -69,9 +69,9 @@ describe('submit-game logic', () => {
 	});
 
 	describe('updateBestStreak', () => {
-		it('returns current streak if current streak is greater than best streak', () => {
-			expect(updateBestStreak(1, 0)).to.equal(1);
-			expect(updateBestStreak(5, 4)).to.equal(5);
+		it('returns prevStreak+1 if prev streak+1 is greater than best streak', () => {
+			expect(updateBestStreak(0, 0)).to.equal(1);
+			expect(updateBestStreak(4, 4)).to.equal(5);
 		});
 		it('returns undefined if current streak is less than best streak', () => {
 			expect(updateBestStreak(0, 5)).to.equal(undefined);
