@@ -18,7 +18,8 @@ export default function submitGameHandler (req, res) {
 		winningUserSlug: req.body.winningUserSlug,
 		winningCharacterSlug: req.body.winningCharacterSlug,
 		losingUserSlug: req.body.losingUserSlug,
-		losingCharacterSlug: req.body.losingCharacterSlug
+		losingCharacterSlug: req.body.losingCharacterSlug,
+		supreme: !!req.body.supreme
 	};
 
 	let problems = [];
@@ -107,7 +108,8 @@ export default function submitGameHandler (req, res) {
 			loser: {
 				uuid: loserUuid,
 				characterUuid: losingCharacterUuid
-			}
+			},
+			supreme: opts.supreme
 		};
 
 		let diff = submitGame(tournament, game);
@@ -116,9 +118,6 @@ export default function submitGameHandler (req, res) {
 			if (err) {
 				return res.status(500).send(r.internal);
 			}
-
-			console.log("STATE: ", JSON.stringify(tournament, null, 4));
-			console.log("DIFF: ", JSON.stringify(diff, null, 4));
 
 			// merge old state and diff
 			Object.keys(diff).forEach(tournamentKey => {
