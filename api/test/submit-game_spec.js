@@ -287,10 +287,16 @@ describe('submit-game logic', () => {
 			testVals.userOneXterTwoStreak = 3;
 			const diff2 = submitGame(testState, testGame);
 
-			// xter1 won the game and went on fire, so xter2 goes up in value
+			// xter1 won the game and went on fire, so xter2 goes up in fireWins
 			expect(get(diff2.users['user1Uuid'].characters, 'xter2Uuid.fireWins')).to.equal(testVals.userOneXterTwoFireWins + 1);
 		});
 
+		it('doesn\'t incr fireWins for the character that just won', () => {
+			// character is already on fire and won again
+			testVals.userOneXterOneStreak = 3;
+			const diff = submitGame(testState, testGame);
+			expect(get(diff.users['user1Uuid'].characters, 'xter1Uuid.fireWins')).to.equal(undefined);
+		});
 
 		it('returns championUuid if champion should be crowned', () => {
 			testVals.userOneScore = 99;

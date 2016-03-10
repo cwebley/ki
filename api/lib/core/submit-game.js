@@ -76,7 +76,7 @@ export default function submitGame (state, gameResult) {
 
 	// iterate through each of winner's characters and incr fireWins for characters already on fire
 	Object.keys(state.users[winnerUuid].characters).forEach(cUuid => {
-		if (alreadyOnFire(state.users[winnerUuid].characters[cUuid].streak)) {
+		if (alreadyOnFire(state.users[winnerUuid].characters[cUuid].streak) && winningCharacterUuid !== cUuid) {
 			// incr the fireWins for this character that is already on fire
 				if (!diff.users[winnerUuid].characters[cUuid]) {
 				diff.users[winnerUuid].characters[cUuid] = {};

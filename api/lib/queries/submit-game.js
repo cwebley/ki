@@ -3,9 +3,8 @@ import async from 'neo-async';
 import snake from 'lodash.snakecase';
 
 export default function submitGameQuery (db, tournamentUuid, diff, cb) {
-
 	const tournamentsFields = ['championUuid'];
-	const tournamentUsersFields = ['wins', 'losses', 'streak', 'bestStreak', 'coins'];
+	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'bestStreak', 'coins'];
 	const tournamentCharactersFields = ['value', 'wins', 'losses', 'streak', 'bestStreak', 'fireWins'];
 	const usersFields = ['globalStreak', 'globalBestStreak'];
 	const userCharactersFields = ['globalStreak', 'globalBestStreak'];
@@ -13,9 +12,6 @@ export default function submitGameQuery (db, tournamentUuid, diff, cb) {
 	let tournamentsMap = new Map();
 	let tournamentUsersMap = new Map();
 	let tournamentCharactersMap = new Map();
-
-	// these ones are a little bit unique since the fields
-	// are aggregates and the diff fields don't match exactly
 	let usersMap = new Map();
 	let userCharactersMap = new Map();
 
