@@ -112,13 +112,36 @@ export default function submitGameHandler (req, res) {
 
 		let diff = submitGame(tournament, game);
 
-		console.log("DIFF: ", JSON.stringify(diff, null, 4));
-
 		submitGameQuery(req.db, tournament.uuid, diff, (err, results) => {
 			if (err) {
 				return res.status(500).send(r.internal);
 			}
-			return res.status(201).send('it worked!');
+
+			console.log("STATE: ", JSON.stringify(tournament, null, 4));
+			console.log("DIFF: ", JSON.stringify(diff, null, 4));
+
+			// merge old state and diff
+			Object.keys(diff).forEach(tournamentKey => {
+				if (tournamentKey === "users") {
+					Object.keys(diff[tournamentKey]).forEach(userUuid => {
+						Object.keys(diff[tournamentKey][userUuid]).forEach(userKey => {
+							if (userKey === "characters") {
+								Object.keys(diff[tournamentKey][userUuid][userKey]).forEach(cUuid => {
+									Object.keys(diff[tournamentKey][userUuid][userKey][cUuid]).forEach(characterKey => {
+										tournament[tournamentKey][userUuid][userKey][cUuid][characterKey] = diff[tournamentKey][userUuid][userKey][cUuid][characterKey];
+									});
+								});
+								return;
+							}
+							tournament[tournamentKey][userUuid][userKey] = diff[tournamentKey][userUuid][userKey];
+						});
+					});
+					return;
+				}
+				tournament[tournamentKey] = diff[tournamentKey];
+			});
+
+			return res.status(201).send(tournament);
 		});
 	});
 }

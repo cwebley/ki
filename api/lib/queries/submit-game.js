@@ -98,32 +98,6 @@ export default function submitGameQuery (db, tournamentUuid, diff, cb) {
 		}
 	});
 
-	console.log("MAPS: ")
-	console.log("TOURNAMENTS: ")
-	tournamentsMap.forEach((v, k) => {
-		console.log("K: ", k);
-		console.log("V: ", v);
-	});
-	console.log("TOURNAMENTUSERS:")
-	tournamentUsersMap.forEach((v, k) => {
-		console.log("K: ", k);
-		console.log("V: ", v);
-	});
-	console.log("USERS:" );
-	usersMap.forEach((v, k) => {
-		console.log("K: ", k);
-		console.log("V: ", v);
-	});
-	console.log("USERCharacters:" );
-	userCharactersMap.forEach((v, k) => {
-		console.log("K: ", k);
-		console.log("V: ", v);
-	});
-	console.log("TOURNNAMENT CHARACTERS:" );
-	tournamentCharactersMap.forEach((v, k) => {
-		console.log("K: ", k);
-		console.log("V: ", v);
-	});
 	// begin transaction
 	db.query('BEGIN', () => {
 
@@ -194,9 +168,6 @@ function updateTable (db, tableName, updateMap, cb) {
 				${sets.join(', ')} WHERE ${wheres.join(' AND ')}
 		`
 		updates.push(done => {
-			log.info(tableName, {
-				sql, params
-			});
 			db.query(sql, params, (err, results) => {
 				if (err) {
 					log.error(err, { sql, params });
