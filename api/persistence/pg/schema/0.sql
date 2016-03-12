@@ -52,27 +52,21 @@ CREATE TABLE IF NOT EXISTS user_characters (
 	best_streak integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (user_uuid, character_uuid)
 );
---
--- CREATE TABLE IF NOT EXISTS tournamentPowers (
--- 	id serial NOT NULL PRIMARY KEY,
--- 	tournamentId integer NOT NULL REFERENCES tournaments (id),
--- 	userId integer NOT NULL REFERENCES users (id),
--- 	stock integer NOT NULL DEFAULT 0,
--- 	active integer NOT NULL DEFAULT 0,
--- 	UNIQUE (tournamentId, userId)
--- );
---
--- CREATE TABLE IF NOT EXISTS games (
--- 	id serial NOT NULL PRIMARY KEY,
--- 	winningPlayerId integer NOT NULL REFERENCES users (id),
--- 	winningCharacterId integer NOT NULL REFERENCES characters (id),
--- 	losingPlayerId integer NOT NULL REFERENCES users (id),
--- 	losingCharacterId integer NOT NULL REFERENCES characters (id),
--- 	value integer DEFAULT 0,
--- 	tournamentId integer NOT NULL REFERENCES tournaments (id),
--- 	supreme boolean DEFAULT false,
--- 	time timestamp DEFAULT now()
--- );
+
+CREATE TABLE IF NOT EXISTS games (
+	id serial NOT NULL PRIMARY KEY,
+	winning_player_uuid integer NOT NULL REFERENCES users (id),
+	winning_character_uuid integer NOT NULL REFERENCES characters (id),
+	losing_player_uuid integer NOT NULL REFERENCES users (id),
+	losing_character_uuid integer NOT NULL REFERENCES characters (id),
+	value integer DEFAULT 0,
+	-- submitting a game wipes a winning streak to -1, need to keep these streaks around for undos and stuff
+	losing_player_previous_streak integer NOT NULL DEFAULT 0,
+	losing_character_previous_streak integer NOT NULL DEFAULT 0,
+	tournament_uuid integer NOT NULL REFERENCES tournaments (id),
+	supreme boolean DEFAULT false,
+	time timestamp DEFAULT now()
+);
 --
 -- CREATE TABLE IF NOT EXISTS seeds (
 -- 	id serial NOT NULL PRIMARY KEY,

@@ -2,7 +2,7 @@ import log from '../../logger';
 import async from 'neo-async';
 import snake from 'lodash.snakecase';
 
-export default function submitGameQuery (db, tournamentUuid, diff, cb) {
+export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 	const tournamentsFields = ['championUuid'];
 	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'bestStreak', 'coins'];
 	const tournamentCharactersFields = ['value', 'wins', 'losses', 'streak', 'bestStreak', 'fireWins'];
@@ -100,30 +100,34 @@ export default function submitGameQuery (db, tournamentUuid, diff, cb) {
 
 	// begin transaction
 	db.query('BEGIN', () => {
-
-		updateTable(db, 'tournaments', tournamentsMap, (err, results) => {
+		insertGame(db, game, (err, results) => {
 			if (err) {
 				return rollback(db, err, cb);
 			}
-			updateTable(db, 'tournament_users', tournamentUsersMap, (err, results) => {
+			updateTable(db, 'tournaments', tournamentsMap, (err, results) => {
 				if (err) {
 					return rollback(db, err, cb);
 				}
-				updateTable(db, 'users', usersMap, (err, results) => {
+				updateTable(db, 'tournament_users', tournamentUsersMap, (err, results) => {
 					if (err) {
 						return rollback(db, err, cb);
 					}
-					updateTable(db, 'tournament_characters', tournamentCharactersMap, (err, results) => {
+					updateTable(db, 'users', usersMap, (err, results) => {
 						if (err) {
 							return rollback(db, err, cb);
 						}
-						updateTable(db, 'user_characters', userCharactersMap, (err, results) => {
+						updateTable(db, 'tournament_characters', tournamentCharactersMap, (err, results) => {
 							if (err) {
 								return rollback(db, err, cb);
 							}
+							updateTable(db, 'user_characters', userCharactersMap, (err, results) => {
+								if (err) {
+									return rollback(db, err, cb);
+								}
 
-							// end transaction
-							db.query('COMMIT', cb);
+								// end transaction
+								db.query('COMMIT', cb);
+							});
 						});
 					});
 				});
@@ -178,6 +182,23 @@ function updateTable (db, tableName, updateMap, cb) {
 		});
 	});
 	async.parallel(updates, cb);
+}
+
+function insertGame (db, game, cb) {
+	const sql = `
+		INSERT INTO
+		games
+			(winning_player_uuid, winning_character_uuid, losing_player_uuid, losing_character_uuid, value, losing_player_previous_streak, losing_character_previous_streak)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+	`;
+	const params = [game.winner.uuid, game.winner.characterUuid, game.loser.uuid, game.loser.characterUuid, game.winner.prevCharVal, game.loser.prevStreak, game.loser.prevCharStreak];
+
+	db.query(sql, params, (err, results) => {
+		if (err) {
+			log.error(err, { sql, params });
+		}
+		return cb(err, results);
+	});
 }
 
 function rollback (db, err, cb) {

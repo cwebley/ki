@@ -1,7 +1,3 @@
-import uuid from 'node-uuid';
-import slug from 'slug';
-import bcrypt from 'bcryptjs';
-
 import log from '../logger';
 import r from '../reasons';
 import submitGame from '../lib/core/submit-game';
@@ -114,7 +110,10 @@ export default function submitGameHandler (req, res) {
 
 		let diff = submitGame(tournament, game);
 
-		submitGameQuery(req.db, tournament.uuid, diff, (err, results) => {
+		game.loser.prevStreak = tournament.users[game.loser.uuid].streak;
+		game.loser.prevCharStreak = tournament.users[game.loser.uuid].characters[game.loser.characterUuid].streak;
+
+		submitGameQuery(req.db, tournament.uuid, game, diff, (err, results) => {
 			if (err) {
 				return res.status(500).send(r.internal);
 			}
