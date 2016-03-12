@@ -84,7 +84,7 @@ export default function submitGame (state, gameResult) {
 			diff.users[winnerUuid].characters[cUuid].fireWins = state.users[winnerUuid].characters[cUuid].fireWins + 1;
 		}
 		if (newFireUuid && (cUuid !== newFireUuid)) {
-			// some character just went on fire, its not this one, so bump up their value
+			// some character just went on fire, it's not this one, so bump up their value
 			if (!diff.users[winnerUuid].characters[cUuid]) {
 				diff.users[winnerUuid].characters[cUuid] = {};
 			}

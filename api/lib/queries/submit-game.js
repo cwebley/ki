@@ -140,6 +140,7 @@ function translateKey (key) {
 	if (translations[key]) {
 		return translations[key];
 	}
+	// convert camelCase to snake_case for postgres
 	return snake(key);
 }
 

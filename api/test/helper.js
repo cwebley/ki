@@ -178,41 +178,41 @@ let testState = {
 			}
 		},
 		'user2Uuid': {
-			get score() { return testVals.userTwoScore },
-			get wins() { return testVals.userTwoWins },
-			get losses() { return testVals.userTwoLosses },
-			get streak() { return testVals.userTwoStreak },
-			get bestStreak() { return testVals.userTwoBestStreak },
-			get coins() { return testVals.userTwoCoins },
-			get globalStreak() { return testVals.userTwoGlobalStreak },
-			get globalBestStreak() { return testVals.userTwoGlobalBestStreak },
-			get upcoming() { return testVals.userTwoUpcoming },
-			get tournamentStreak() { return testVals.userTwoTournamentStreak },
-			get tournamentBestStreak() { return testVals.userTwoTournamentBestStreak },
+			get score () { return testVals.userTwoScore },
+			get wins () { return testVals.userTwoWins },
+			get losses () { return testVals.userTwoLosses },
+			get streak () { return testVals.userTwoStreak },
+			get bestStreak () { return testVals.userTwoBestStreak },
+			get coins () { return testVals.userTwoCoins },
+			get globalStreak () { return testVals.userTwoGlobalStreak },
+			get globalBestStreak () { return testVals.userTwoGlobalBestStreak },
+			get upcoming () { return testVals.userTwoUpcoming },
+			get tournamentStreak () { return testVals.userTwoTournamentStreak },
+			get tournamentBestStreak () { return testVals.userTwoTournamentBestStreak },
 
 
 			characters: {
 				'xter1Uuid': {
-					get value() { return testVals.userTwoXterOneVal },
-					get streak() { return testVals.userTwoXterOneStreak },
-					get bestStreak() { return testVals.userTwoXterOneBestStreak },
-					get wins() { return testVals.userTwoXterOneWins },
-					get losses() { return testVals.userTwoXterOneLosses },
-					get fireWins() { return testVals.userTwoXterOneFireWins },
-					get globalStreak() { return testVals.userTwoXterOneGlobalStreak },
-					get globalBestStreak() { return testVals.userTwoXterOneGlobalBestStreak },
+					get value () { return testVals.userTwoXterOneVal },
+					get streak () { return testVals.userTwoXterOneStreak },
+					get bestStreak () { return testVals.userTwoXterOneBestStreak },
+					get wins () { return testVals.userTwoXterOneWins },
+					get losses () { return testVals.userTwoXterOneLosses },
+					get fireWins () { return testVals.userTwoXterOneFireWins },
+					get globalStreak () { return testVals.userTwoXterOneGlobalStreak },
+					get globalBestStreak () { return testVals.userTwoXterOneGlobalBestStreak },
 
 
 				},
 				'xter2Uuid': {
-					get value() { return testVals.userTwoXterTwoVal },
-					get streak() { return testVals.userTwoXterTwoStreak },
-					get bestStreak() { return testVals.userTwoXterTwoBestStreak },
-					get wins() { return testVals.userTwoXterTwoWins },
-					get losses() { return testVals.userTwoXterTwoLosses },
-					get fireWins() { return testVals.userTwoXterTwoFireWins },
-					get globalStreak() { return testVals.userTwoXterTwoGlobalStreak },
-					get globalBestStreak() { return testVals.userTwoXterTwoGlobalBestStreak },
+					get value () { return testVals.userTwoXterTwoVal },
+					get streak () { return testVals.userTwoXterTwoStreak },
+					get bestStreak () { return testVals.userTwoXterTwoBestStreak },
+					get wins () { return testVals.userTwoXterTwoWins },
+					get losses () { return testVals.userTwoXterTwoLosses },
+					get fireWins () { return testVals.userTwoXterTwoFireWins },
+					get globalStreak () { return testVals.userTwoXterTwoGlobalStreak },
+					get globalBestStreak () { return testVals.userTwoXterTwoGlobalBestStreak },
 				}
 			}
 		}
@@ -228,31 +228,31 @@ let testGame = {
 		uuid: 'user2Uuid',
 		characterUuid: 'xter2Uuid'
 	},
-	get supreme() { return testVals.supremeTest }
+	get supreme () { return testVals.supremeTest }
 };
 
 let testUndoGame = {
 	winner: {
-		playerId: 'user1Uuid',
-		characterId: 'xter1Uuid',
-		get prevCharVal() {
+		uuid: 'user1Uuid',
+		characterUuid: 'xter1Uuid',
+		get prevCharVal () {
 			if (testVals.lastGameWasForOnePoint) {
 				return 1;
 			}
-			return testVals.userOneXterOneVal + 1
+			return testVals.userOneXterOneVal + 1;
 		}
 	},
 	loser: {
-		playerId: 'user2Uuid',
-		characterId: 'xter2Uuid',
-		get prevCharVal() {
+		uuid: 'user2Uuid',
+		characterUuid: 'xter2Uuid',
+		get prevCharVal () {
 			if (testVals.userTwoXterTwoVal > 1) {
 				return testVals.userTwoXterTwoVal - 1;
 			}
 			return testVals.userTwoXterTwoVal;
 		}
 	},
-	get supreme() { return testVals.supremeTest }
+	get supreme () { return testVals.supremeTest }
 };
 
 export { testVals, testState, testGame, testUndoGame, resetTestState };

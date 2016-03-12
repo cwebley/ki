@@ -1,59 +1,107 @@
+/*
+{
+	winner: {
+		uuid: 1,
+		characterUuid: 1,
+		prevCharVal: 1 // this needs to come from an outside source, since state isn't sufficient to tell us this in some cases
+	},
+	loser: {
+		uuid: 2,
+		characterUuid: 2,
+		prevCharVal = 2 // this needs to come from an outside source, since state isn't sufficient to tell us this in some cases
+	},
+ 	supreme: true
+};
+*/
+const COINS_FOR_SUPREME = 3;
+
 export default function undoGame (state, prevGame) {
-	const winnerId = prevGame.winner.playerId.toString();
-	const winningCharacterId = prevGame.winner.characterId.toString();
-	const loserId = prevGame.loser.playerId.toString();
-	const losingCharacterId = prevGame.loser.characterId.toString();
+	const winnerUuid = prevGame.winner.uuid;
+	const winningCharacterUuid = prevGame.winner.characterUuid;
+	const loserUuid = prevGame.loser.uuid;
+	const losingCharacterUuid = prevGame.loser.characterUuid;
+	const winningCharPrevValue = prevGame.winner.prevCharVal;
 
-	let diff = {};
+	let diff = {
+		users: {},
+		// removing something like championUuid should go in here
+		_remove: {}
+	};
 
-	diff[winnerId] = {
-		score: state.users[winnerId].score - prevGame.winner.prevCharVal,
+	diff._remove.championUuid = unEvaluateChampion(winnerUuid, state.goal, state.users[winnerUuid].score, state.users[loserUuid].score, winningCharPrevValue);
+
+	diff.users[winnerUuid] = {
+		score: state.users[winnerUuid].score - winningCharPrevValue,
 		characters: {}
 	};
 
 	let winningCharDiff = {};
-	if (state.users[winnerId].characters[winningCharacterId].value !== prevGame.winner.prevCharVal) {
-		winningCharDiff.value = prevGame.winner.prevCharVal;
+	if (state.users[winnerUuid].characters[winningCharacterUuid].value !== winningCharPrevValue) {
+		winningCharDiff.value = winningCharPrevValue;
 	}
 
-	diff[winnerId].streak = undoWinnerStreak(state.users[winnerId].streak);
-	winningCharDiff.streak = undoWinnerStreak(state.users[winnerId].characters[winningCharacterId].streak);
+	diff.users[winnerUuid].streak = undoWinnerStreak(state.users[winnerUuid].streak);
+	winningCharDiff.streak = undoWinnerStreak(state.users[winnerUuid].characters[winningCharacterUuid].streak);
 
 	// only include the specific character in the diff if something has changed
 	if (Object.keys(winningCharDiff).length) {
-		diff[winnerId].characters[winningCharacterId] = winningCharDiff
+		diff.users[winnerUuid].characters[winningCharacterUuid] = winningCharDiff
 	}
 
-	diff[loserId] = {
+	diff.users[loserUuid] = {
 		characters: {
-			[losingCharacterId]: {
+			[losingCharacterUuid]: {
 				value: prevGame.loser.prevCharVal
 			}
 		}
 	};
 
-	diff[loserId].streak = undoLoserStreak(state.users[loserId].streak);
-	diff[loserId].characters[losingCharacterId].streak = undoLoserStreak(state.users[loserId].characters[losingCharacterId].streak);
-
-	// subtract a power for supreme
-	if (prevGame.supreme) {
-		diff[winnerId].powers = state.users[winnerId].powers - 1;
-	}
+	diff.users[loserUuid].streak = undoLoserStreak(state.users[loserUuid].streak);
+	diff.users[loserUuid].characters[losingCharacterUuid].streak = undoLoserStreak(state.users[loserUuid].characters[losingCharacterUuid].streak);
 
 	// undo fire
-	const undoFire = undoFireStatus(winningCharacterId, state.users[winnerId].characters[winningCharacterId].streak);
-	if (undoFire) {
-		diff[winnerId].undoFire = undoFire;
-	}
+	const undoFireUuid = undoFireStatus(winningCharacterUuid, state.users[winnerUuid].characters[winningCharacterUuid].streak);
+
+	// iterate through each of winner's characters and incr fireWins for characters already on fire
+	Object.keys(state.users[winnerUuid].characters).forEach(cUuid => {
+		if (alreadyOnFire(state.users[winnerUuid].characters[cUuid].streak) && winningCharacterUuid !== cUuid) {
+			// decr the fireWins for this character that is already on fire
+				if (!diff.users[winnerUuid].characters[cUuid]) {
+				diff.users[winnerUuid].characters[cUuid] = {};
+			}
+			diff.users[winnerUuid].characters[cUuid].fireWins = state.users[winnerUuid].characters[cUuid].fireWins - 1;
+		}
+		if (undoFireUuid && (cUuid !== undoFireUuid)) {
+			// character went on fire, it's not this one, decr value for all other characters
+			if (!diff.users[winnerUuid].characters[cUuid]) {
+				diff.users[winnerUuid].characters[cUuid] = {};
+			}
+			diff.users[winnerUuid].characters[cUuid].value = state.users[winnerUuid].characters[cUuid].value - 1;
+		}
+	});
+
 	// unfortunately there is not currently enough info to undoIceStatus
 
-	const streakPointsDiff = undoStreakPoints(state.users[winnerId].streakPoints, state.users[winnerId].streak);
-	if (streakPointsDiff) {
-		diff[winnerId].streakPoints = streakPointsDiff;
+	const coinsDiff = undoCoins(state.users[winnerUuid].coins, state.users[winnerUuid].streak, prevGame.supreme);
+	if (coinsDiff) {
+		diff.users[winnerUuid].coins = coinsDiff;
 	}
 
 	return diff;
 }
+
+export function unEvaluateChampion (winnerUuid, goal, winnerScore, loserScore, prevValue) {
+	if (winnerScore - prevValue < goal) {
+		// champion wasn't crowned, nothing to undo
+		return undefined;
+	}
+	if (winnerScore - prevValue < loserScore) {
+		// champion wasn't crowned, nothing to undo
+		return undefined;
+	}
+	return winnerUuid;
+}
+
 
 // without more information, we can only figure out the previous streaks for the winner if they are currently above 1
 export function undoWinnerStreak (currentStreak) {
@@ -71,6 +119,14 @@ export function undoLoserStreak (currentStreak) {
 	return 0;
 }
 
+
+export function alreadyOnFire (streak) {
+	if (streak >= 3) {
+		return true;
+	}
+	return false;
+}
+
 export function undoFireStatus (characterId, currentStreak) {
 	if (currentStreak !== 3) {
 		return undefined;
@@ -78,9 +134,17 @@ export function undoFireStatus (characterId, currentStreak) {
 	return characterId;
 }
 
-export function undoStreakPoints (currentPoints, currentStreak) {
+export function undoCoins (currentCoins, currentStreak, supreme) {
+	let newCoins = currentCoins;
+
 	if (currentStreak === 3 || currentStreak >= 5) {
-		return currentPoints - 1;
+		newCoins--;
+	}
+	if (supreme) {
+		newCoins -= COINS_FOR_SUPREME;
+	}
+	if (newCoins !== currentCoins) {
+		return newCoins;
 	}
 	return undefined;
 }
