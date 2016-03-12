@@ -100,7 +100,7 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 
 	// begin transaction
 	db.query('BEGIN', () => {
-		insertGame(db, game, (err, results) => {
+		insertGame(db, tournamentUuid, game, (err, results) => {
 			if (err) {
 				return rollback(db, err, cb);
 			}
@@ -184,14 +184,14 @@ function updateTable (db, tableName, updateMap, cb) {
 	async.parallel(updates, cb);
 }
 
-function insertGame (db, game, cb) {
+function insertGame (db, tournamentUuid, game, cb) {
 	const sql = `
 		INSERT INTO
 		games
-			(winning_player_uuid, winning_character_uuid, losing_player_uuid, losing_character_uuid, value, losing_player_previous_streak, losing_character_previous_streak)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+			(tournament_uuid, winning_player_uuid, winning_character_uuid, losing_player_uuid, losing_character_uuid, value, losing_player_previous_streak, losing_character_previous_streak)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	`;
-	const params = [game.winner.uuid, game.winner.characterUuid, game.loser.uuid, game.loser.characterUuid, game.winner.prevCharVal, game.loser.prevStreak, game.loser.prevCharStreak];
+	const params = [tournamentUuid, game.winner.uuid, game.winner.characterUuid, game.loser.uuid, game.loser.characterUuid, game.winner.value, game.loser.prevStreak, game.loser.prevCharStreak];
 
 	db.query(sql, params, (err, results) => {
 		if (err) {

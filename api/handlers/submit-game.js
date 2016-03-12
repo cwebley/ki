@@ -40,7 +40,7 @@ export default function submitGameHandler (req, res) {
 			return res.status(500).send(r.internal);
 		}
 		if (!tournament) {
-			return res.status(500).send(r.tournamentNotFound);
+			return res.status(404).send(r.tournamentNotFound);
 		}
 
 		// validate inputs
@@ -112,7 +112,8 @@ export default function submitGameHandler (req, res) {
 
 		game.loser.prevStreak = tournament.users[game.loser.uuid].streak;
 		game.loser.prevCharStreak = tournament.users[game.loser.uuid].characters[game.loser.characterUuid].streak;
-
+		game.winner.value = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].value;
+		
 		submitGameQuery(req.db, tournament.uuid, game, diff, (err, results) => {
 			if (err) {
 				return res.status(500).send(r.internal);
