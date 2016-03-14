@@ -148,11 +148,16 @@ export default function submitGameHandler (req, res) {
 					});
 					return;
 				}
+				if (tournamentKey === "upcoming") {
+					tournament[tournamentKey].upcoming.splice(0, 1);
+				}
 				tournament[tournamentKey] = diff[tournamentKey];
 			});
 
 			fillUpcomingListQuery(req.redis, tournament, (err, results) => {
-				//TODO
+				if (err) {
+					return res.status(500).send(r.internal);
+				}
 				return res.status(201).send(tournament);
 			});
 		});

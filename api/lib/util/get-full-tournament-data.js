@@ -4,7 +4,12 @@ import getTournamentUsersQuery from '../queries/get-tournament-users';
 import getTournamentCharactersQuery from '../queries/get-tournament-characters';
 import getUpcomingQuery from '../queries/get-upcoming';
 
-export default function getFullTournamentData (db, rConn, tournamentSlug, cb) {
+export default function getFullTournamentData (db, rConn, tournamentSlug, upcomingAmount, cb) {
+	if (typeof upcomingAmount === 'function') {
+		cb = upcomingAmount;
+		upcomingAmount = 1;
+	}
+
 	// fetch the tournament meta data
 	getTournamentQuery(db, 'slug', tournamentSlug, (err, tournament) => {
 		if (err) {
@@ -49,7 +54,8 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, cb) {
 
 				getUpcomingQuery(rConn, {
 					tournamentUuid: tournament.uuid,
-					userUuid: users[0]
+					userUuid: users[0],
+					amount: upcomingAmount
 				}, (err, upcomingResults) => {
 					if (err) {
 						return cb(err);

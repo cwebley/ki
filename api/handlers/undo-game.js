@@ -5,6 +5,7 @@ import selectMostRecentGame from '../lib/queries/select-most-recent-game';
 import undoGame from '../lib/core/undo-game';
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import undoGameQuery from '../lib/queries/undo-game';
+import undoUpcomingQuery from '../lib/queries/undo-upcoming';
 
 export default function undoGameHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -57,7 +58,13 @@ export default function undoGameHandler (req, res) {
 					}
 				});
 				delete tournament._remove;
-				return res.status(201).send(tournament);
+
+				undoUpcomingQuery(req.redis, tournament, (err, results) => {
+					if (err) {
+						return res.status(500).send(r.internal);
+					}
+					return res.status(201).send(tournament);
+				});
 			});
 		});
 	});
