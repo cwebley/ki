@@ -113,7 +113,9 @@ export default function submitGameHandler (req, res) {
 		game.loser.prevStreak = tournament.users[game.loser.uuid].streak;
 		game.loser.prevCharStreak = tournament.users[game.loser.uuid].characters[game.loser.characterUuid].streak;
 		game.winner.value = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].value;
-		
+		game.winner.prevStreak = tournament.users[game.winner.uuid].streak;
+		game.winner.prevCharStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].streak;
+
 		submitGameQuery(req.db, tournament.uuid, game, diff, (err, results) => {
 			if (err) {
 				return res.status(500).send(r.internal);

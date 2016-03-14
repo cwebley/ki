@@ -3,7 +3,16 @@ import log from '../../logger';
 export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 	const sql = `
 		SELECT
-			winning_player_uuid, winning_character_uuid, losing_player_uuid, losing_character_uuid, value, losing_player_previous_streak, losing_character_previous_streak, supreme
+			value,
+			winning_player_uuid,
+			winning_character_uuid,
+			winning_player_previous_streak,
+			winning_character_previous_streak,
+			losing_player_uuid,
+			losing_character_uuid,
+			losing_player_previous_streak,
+			losing_character_previous_streak,
+			supreme
 		FROM
 			games
 		WHERE
@@ -22,12 +31,13 @@ export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 			return cb();
 		}
 		// return a game object
-		console.log(" GAME REZ: ", JSON.stringify(results, null, 4))
-		return cb({
+		return cb(null, {
 			winner: {
 				uuid: results.rows[0].winning_player_uuid,
 				characterUuid: results.rows[0].winning_character_uuid,
-				value: results.rows[0].value
+				value: results.rows[0].value,
+				streak: results.rows[0].winning_player_previous_streak,
+				characterStreak: results.rows[0].winning_character_previous_streak
 			},
 			loser: {
 				uuid: results.rows[0].losing_player_uuid,

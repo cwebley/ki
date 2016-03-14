@@ -188,10 +188,32 @@ function insertGame (db, tournamentUuid, game, cb) {
 	const sql = `
 		INSERT INTO
 		games
-			(tournament_uuid, winning_player_uuid, winning_character_uuid, losing_player_uuid, losing_character_uuid, value, losing_player_previous_streak, losing_character_previous_streak)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+			(
+				tournament_uuid,
+				winning_player_uuid,
+				winning_character_uuid,
+				losing_player_uuid,
+				losing_character_uuid,
+				value,
+				winning_player_previous_streak,
+				winning_character_previous_streak,
+				losing_player_previous_streak,
+				losing_character_previous_streak
+			)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 	`;
-	const params = [tournamentUuid, game.winner.uuid, game.winner.characterUuid, game.loser.uuid, game.loser.characterUuid, game.winner.value, game.loser.prevStreak, game.loser.prevCharStreak];
+	const params = [
+		tournamentUuid,
+		game.winner.uuid,
+		game.winner.characterUuid,
+		game.loser.uuid,
+		game.loser.characterUuid,
+		game.winner.value,
+		game.winner.prevStreak,
+		game.winner.prevCharStreak,
+		game.loser.prevStreak,
+		game.loser.prevCharStreak
+	];
 
 	db.query(sql, params, (err, results) => {
 		if (err) {

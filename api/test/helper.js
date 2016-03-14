@@ -235,7 +235,9 @@ let testUndoGame = {
 	winner: {
 		uuid: 'user1Uuid',
 		characterUuid: 'xter1Uuid',
-		get prevCharVal () {
+		get streak () { return testVals.userOneStreak - 1 },
+		get characterStreak () { return testVals.userOneXterOneStreak - 1 },
+		get value () {
 			if (testVals.lastGameWasForOnePoint) {
 				return 1;
 			}
@@ -245,7 +247,9 @@ let testUndoGame = {
 	loser: {
 		uuid: 'user2Uuid',
 		characterUuid: 'xter2Uuid',
-		get prevCharVal () {
+		get streak () { return testVals.userTwoStreak + 1 },
+		get characterStreak () { return testVals.userTwoXterTwoStreak + 1 },
+		get value () {
 			if (testVals.userTwoXterTwoVal > 1) {
 				return testVals.userTwoXterTwoVal - 1;
 			}

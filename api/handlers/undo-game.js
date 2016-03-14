@@ -21,15 +21,14 @@ export default function undoGameHandler (req, res) {
 		if (!tournament) {
 			return res.status(404).send(r.tournamentNotFound);
 		}
-		console.log("TOURNAMENT RES: ", tournament)
 
-		selectMostRecentGame(req.db, tournament.uuid, (err, results) => {
-			console.log("SELECT MOST RECENT GAME RES: ", err, results);
+		selectMostRecentGame(req.db, tournament.uuid, (err, game) => {
 			if (err) {
 				return res.status(500).send(r.internal);
 			}
-
-
+			if (!game) {
+				return res.status(400).send(r.gameNotFound);
+			}
 
 		let diff = undoGame(tournament, game);
 

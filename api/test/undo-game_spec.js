@@ -9,32 +9,6 @@ import undoGame, {
 
 describe('undo-game logic', () => {
 
-	describe('undoWinnerStreak', () => {
-		it('decrements streak when streak is above 1', () => {
-			expect(undoWinnerStreak(2)).to.equal(1);
-			expect(undoWinnerStreak(3)).to.equal(2);
-			expect(undoWinnerStreak(1000)).to.equal(999);
-		});
-		it('returns 0 when there is not enough information to determine previous streak', () => {
-			expect(undoWinnerStreak(0)).to.equal(0);
-			expect(undoWinnerStreak(-1)).to.equal(0);
-			expect(undoWinnerStreak(-2)).to.equal(0);
-		});
-	});
-
-	describe('undoLoserStreak', () => {
-		it('increments streak when streak is below -1', () => {
-			expect(undoLoserStreak(-2)).to.equal(-1);
-			expect(undoLoserStreak(-3)).to.equal(-2);
-			expect(undoLoserStreak(-1000)).to.equal(-999);
-		});
-		it('returns 0 when there is not enough information to determine previous streak', () => {
-			expect(undoLoserStreak(0)).to.equal(0);
-			expect(undoLoserStreak(1)).to.equal(0);
-			expect(undoLoserStreak(2)).to.equal(0);
-		});
-	});
-
 	describe('undoFireStatus', () => {
 		it('returns undefined when character streak is not 3', () => {
 			expect(undoFireStatus('1', 1)).to.equal(undefined);
@@ -79,8 +53,7 @@ describe('undo-game logic', () => {
 			testVals.userOneScore = 50;
 
 			const diff = undoGame(testState, testUndoGame);
-
-			expect(diff.users["user1Uuid"].score).to.equal(testVals.userOneScore - testUndoGame.winner.prevCharVal);
+			expect(diff.users["user1Uuid"].score).to.equal(testVals.userOneScore - testUndoGame.winner.value);
 			expect(diff.users["user2Uuid"].score).to.equal(undefined); // no change for the loser
 		});
 
@@ -99,12 +72,11 @@ describe('undo-game logic', () => {
 			const diff = undoGame(testState, testUndoGame);
 
 			// winner score is one less than the current value like normal
-			expect(diff.users["user1Uuid"].score).to.equal(testVals.userOneScore - testUndoGame.winner.prevCharVal);
+			expect(diff.users["user1Uuid"].score).to.equal(testVals.userOneScore - testUndoGame.winner.value);
 
 			expect(diff.users["user1Uuid"].characters["xter1Uuid"].value).to.equal(undefined); // no change in character value for the winner
 			expect(diff.users["user2Uuid"].characters["xter2Uuid"].value).to.equal(testVals.userTwoXterTwoVal - 1);
 		});
-
 
 		it('handles undoing the winning player and character streaks properly', () => {
 
@@ -119,6 +91,17 @@ describe('undo-game logic', () => {
 
 			expect(diff.users["user2Uuid"].streak).to.equal(-4);
 			expect(diff.users["user2Uuid"].characters["xter2Uuid"].streak).to.equal(-4);
+		});
+
+		it('always subtracts 1 point for losing character\'s value', () => {
+
+			testVals.userTwoXterTwoVal = 7;
+			const diff = undoGame(testState, testUndoGame);
+			expect(diff.users['user2Uuid'].characters['xter2Uuid'].value).to.equal(6);
+
+			testVals.userTwoXterTwoVal = 2;
+			const diff2 = undoGame(testState, testUndoGame);
+			expect(diff2.users['user2Uuid'].characters['xter2Uuid'].value).to.equal(1);
 		});
 
 		it('handles the ambigous streak case by resetting streaks to 0', () => {
@@ -144,7 +127,7 @@ describe('undo-game logic', () => {
 			expect(diff2.users["user1Uuid"].characters["xter2Uuid"].value).to.equal(testVals.userOneXterTwoVal - 1);
 		});
 
-		it('does\'nt return streakPoints if streak is neither 3 nor >= 5', () => {
+		it('doesn\'t return streakPoints if streak is neither 3 nor >= 5', () => {
 			const diff = undoGame(testState, testUndoGame);
 			expect(diff.users["user1Uuid"].streakPoints).to.equal(undefined);
 

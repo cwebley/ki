@@ -35,7 +35,8 @@ r.DuplicateTournamentName = 'Tournament name already exists';
 r.DuplicateCharacterName = 'Character name already exists';
 
 r.NoSlugParam = 'Missing slug parameter';
-r.tournamentNotFound = 'Tournament not found';
+r.TournamentNotFound = 'Tournament not found';
+r.GameNotFound = 'Game not found';
 
 // submit games
 r.NoWinningUserSlug = 'Missing winningUserSlug';
