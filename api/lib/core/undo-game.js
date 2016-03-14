@@ -34,27 +34,26 @@ export default function undoGame (state, game) {
 
 	diff.users[winnerUuid] = {
 		score: state.users[winnerUuid].score - winningCharPrevValue,
-		characters: {}
+		streak: game.winner.streak,
+		wins: state.users[winnerUuid].wins - 1,
+		characters: {
+			[winningCharacterUuid]: {
+				wins: state.users[winnerUuid].characters[winningCharacterUuid].wins - 1,
+				streak: game.winner.characterStreak
+			}
+		}
 	};
-
-	let winningCharDiff = {};
 	if (state.users[winnerUuid].characters[winningCharacterUuid].value !== winningCharPrevValue) {
-		winningCharDiff.value = winningCharPrevValue;
-	}
-
-	diff.users[winnerUuid].streak = game.winner.streak;
-	winningCharDiff.streak = game.winner.characterStreak;
-
-	// only include the specific character in the diff if something has changed
-	if (Object.keys(winningCharDiff).length) {
-		diff.users[winnerUuid].characters[winningCharacterUuid] = winningCharDiff;
+		diff.users[winnerUuid].characters[winningCharacterUuid].value = winningCharPrevValue;
 	}
 
 	diff.users[loserUuid] = {
 		streak: game.loser.streak,
+		losses: state.users[loserUuid].losses - 1,
 		characters: {
 			[losingCharacterUuid]: {
 				value: state.users[loserUuid].characters[losingCharacterUuid].value - 1,
+				losses: state.users[loserUuid].characters[losingCharacterUuid].losses - 1,
 				streak: game.loser.characterStreak
 			}
 		}
@@ -81,7 +80,7 @@ export default function undoGame (state, game) {
 		}
 	});
 
-	// unfortunately there is not currently enough info to undoIceStatus
+	// TODO ICE STATUS
 
 	const coinsDiff = undoCoins(state.users[winnerUuid].coins, state.users[winnerUuid].streak, game.supreme);
 	if (coinsDiff) {
