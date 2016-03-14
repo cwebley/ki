@@ -1,4 +1,5 @@
 import log from '../logger';
+import uuid from 'node-uuid';
 import r from '../reasons';
 import submitGame from '../lib/core/submit-game';
 
@@ -80,13 +81,15 @@ export default function submitGameHandler (req, res) {
 		if (!winnerUuid) {
 			problems.push(r.InvalidWinningUserSlug);
 		}
-		if (!winningCharacterUuid) {
+		// if winnerUuid doesnt exist, then the characters won't either. not really a unique reason.
+		if (!winningCharacterUuid && !!winnerUuid) {
 			problems.push(r.InvalidWinningCharacterSlug);
 		}
 		if (!loserUuid) {
 			problems.push(r.InvalidLosingUserSlug);
 		}
-		if (!losingCharacterUuid) {
+		// if loserUuid doesnt exist, then the characters won't either. not really a unique reason.
+		if (!losingCharacterUuid && !!loserUuid) {
 			problems.push(r.InvalidLosingCharacterSlug);
 		}
 		if (problems.length) {
@@ -110,11 +113,16 @@ export default function submitGameHandler (req, res) {
 
 		let diff = submitGame(tournament, game);
 
+		game.uuid = uuid.v4();
 		game.loser.prevStreak = tournament.users[game.loser.uuid].streak;
+		game.loser.prevGlobalStreak = tournament.users[game.loser.uuid].globalStreak;
 		game.loser.prevCharStreak = tournament.users[game.loser.uuid].characters[game.loser.characterUuid].streak;
+		game.loser.prevCharGlobalStreak = tournament.users[game.loser.uuid].characters[game.loser.characterUuid].globalStreak;
 		game.winner.value = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].value;
 		game.winner.prevStreak = tournament.users[game.winner.uuid].streak;
+		game.winner.prevGlobalStreak = tournament.users[game.winner.uuid].globalStreak;
 		game.winner.prevCharStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].streak;
+		game.winner.prevCharGlobalStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].globalStreak;
 
 		submitGameQuery(req.db, tournament.uuid, game, diff, (err, results) => {
 			if (err) {

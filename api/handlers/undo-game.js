@@ -4,7 +4,7 @@ import r from '../reasons';
 import selectMostRecentGame from '../lib/queries/select-most-recent-game';
 import undoGame from '../lib/core/undo-game';
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
-// import submitGameQuery from '../lib/queries/submit-game';
+import undoGameQuery from '../lib/queries/undo-game';
 
 export default function undoGameHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -34,11 +34,11 @@ export default function undoGameHandler (req, res) {
 
 		console.log("UNDO GAME DIFF: ", JSON.stringify(diff, null, 4));
 
-		// submitGameQuery(req.db, tournament.uuid, diff, (err, results) => {
-		// 	if (err) {
-		// 		return res.status(500).send(r.internal);
-		// 	}
-		//
+		undoGameQuery(req.db, tournament.uuid, game.uuid, diff, (err, results) => {
+			if (err) {
+				return res.status(500).send(r.internal);
+			}
+
 		// 	// merge old state and diff
 		// 	Object.keys(diff).forEach(tournamentKey => {
 		// 		if (tournamentKey === "users") {
@@ -58,10 +58,8 @@ export default function undoGameHandler (req, res) {
 		// 			return;
 		// 		}
 		// 		tournament[tournamentKey] = diff[tournamentKey];
-		// 	});
-
-
-			return res.status(201).send(tournament);
+				return res.status(201).send(tournament);
+			});
 		});
 	});
 }

@@ -3,6 +3,7 @@ import log from '../../logger';
 export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 	const sql = `
 		SELECT
+			uuid,
 			value,
 			winning_player_uuid,
 			winning_character_uuid,
@@ -32,18 +33,23 @@ export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 		}
 		// return a game object
 		return cb(null, {
+			uuid: results.rows[0].uuid,
 			winner: {
 				uuid: results.rows[0].winning_player_uuid,
 				characterUuid: results.rows[0].winning_character_uuid,
 				value: results.rows[0].value,
 				streak: results.rows[0].winning_player_previous_streak,
-				characterStreak: results.rows[0].winning_character_previous_streak
+				characterStreak: results.rows[0].winning_character_previous_streak,
+				globalStreak: results.rows[0].winning_player_previous_global_streak,
+				characterGlobalStreak: results.rows[0].winning_character_previous_global_streak,
 			},
 			loser: {
 				uuid: results.rows[0].losing_player_uuid,
 				characterUuid: results.rows[0].losing_character_uuid,
 				streak: results.rows[0].losing_player_previous_streak,
-				characterStreak: results.rows[0].losing_character_previous_streak
+				characterStreak: results.rows[0].losing_character_previous_streak,
+				globalStreak: results.rows[0].losing_player_previous_global_streak,
+				characterGlobalStreak: results.rows[0].losing_character_previous_global_streak,
 			},
 			supreme: results.rows[0].supreme
 		});

@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS user_characters (
 );
 
 CREATE TABLE IF NOT EXISTS games (
-	id serial NOT NULL PRIMARY KEY,
+	uuid char(36) NOT NULL,
 	winning_player_uuid char(36) NOT NULL REFERENCES users (uuid),
 	winning_character_uuid char(36) NOT NULL REFERENCES characters (uuid),
 	losing_player_uuid char(36) NOT NULL REFERENCES users (uuid),
@@ -63,11 +63,16 @@ CREATE TABLE IF NOT EXISTS games (
 	-- submitting a game wipes a winning streak to -1, need to keep these streaks around for undos and stuff
 	losing_player_previous_streak integer NOT NULL DEFAULT 0,
 	winning_player_previous_streak integer NOT NULL DEFAULT 0,
+	losing_player_previous_global_streak integer NOT NULL DEFAULT 0,
+	winning_player_previous_global_streak integer NOT NULL DEFAULT 0,
 	losing_character_previous_streak integer NOT NULL DEFAULT 0,
 	winning_character_previous_streak integer NOT NULL DEFAULT 0,
+	losing_character_previous_global_streak integer NOT NULL DEFAULT 0,
+	winning_character_previous_global_streak integer NOT NULL DEFAULT 0,
 	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
 	supreme boolean DEFAULT false,
-	time timestamp DEFAULT now()
+	time timestamp DEFAULT now(),
+	PRIMARY KEY (uuid)
 );
 --
 -- CREATE TABLE IF NOT EXISTS seeds (

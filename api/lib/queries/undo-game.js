@@ -1,12 +1,13 @@
 import log from '../../logger';
 import async from 'neo-async';
 import snake from 'lodash.snakecase';
+import get from 'lodash.get';
 
-export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
-	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'bestStreak', 'coins'];
-	const tournamentCharactersFields = ['value', 'wins', 'losses', 'streak', 'bestStreak', 'fireWins'];
-	const usersFields = ['globalStreak', 'globalBestStreak'];
-	const userCharactersFields = ['globalStreak', 'globalBestStreak'];
+export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
+	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'coins'];
+	const tournamentCharactersFields = ['value', 'wins', 'losses', 'streak', 'fireWins'];
+	const usersFields = ['globalStreak'];
+	const userCharactersFields = ['globalStreak'];
 
 	let tournamentsMap = new Map();
 	let tournamentUsersMap = new Map();
@@ -18,8 +19,9 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 		uuid: tournamentUuid
 	};
 	let tournamentsUpdates = {};
-	if (diff.championUuid) {
-		tournamentsUpdates.championUuid = diff.championUuid;
+	if (get(diff._remove.championUuid)) {
+		// set the champion_uuid to the null value
+		tournamentsUpdates.championUuid = null;
 	}
 
 	Object.keys(diff.users).forEach(userUuid => {
@@ -99,7 +101,7 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 
 	// begin transaction
 	db.query('BEGIN', () => {
-		insertGame(db, tournamentUuid, game, (err, results) => {
+		deleteGame(db, gameUuid, (err, results) => {
 			if (err) {
 				return rollback(db, err, cb);
 			}
@@ -137,8 +139,7 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 
 function translateKey (key) {
 	const translations = {
-		globalStreak: 'streak',
-		globalBestStreak: 'best_streak'
+		globalStreak: 'streak'
 	};
 	if (translations[key]) {
 		return translations[key];
@@ -183,45 +184,14 @@ function updateTable (db, tableName, updateMap, cb) {
 	async.parallel(updates, cb);
 }
 
-function insertGame (db, tournamentUuid, game, cb) {
+function deleteGame (db, gameUuid, cb) {
 	const sql = `
-		INSERT INTO
-		games
-			(
-				uuid,
-				tournament_uuid,
-				winning_player_uuid,
-				winning_character_uuid,
-				losing_player_uuid,
-				losing_character_uuid,
-				value,
-				winning_player_previous_streak,
-				winning_player_previous_global_streak,
-				winning_character_previous_streak,
-				winning_character_previous_global_streak,
-				losing_player_previous_streak,
-				losing_player_previous_global_streak,
-				losing_character_previous_global_streak,
-				losing_character_previous_streak
-			)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+		DELETE FROM
+			games
+		WHERE uuid = $1
 	`;
 	const params = [
-		game.uuid,
-		tournamentUuid,
-		game.winner.uuid,
-		game.winner.characterUuid,
-		game.loser.uuid,
-		game.loser.characterUuid,
-		game.winner.value,
-		game.winner.prevStreak,
-		game.winner.prevGlobalStreak,
-		game.winner.prevCharStreak,
-		game.winner.prevCharGlobalStreak,
-		game.loser.prevStreak,
-		game.loser.prevGlobalStreak,
-		game.loser.prevCharStreak,
-		game.loser.prevCharGlobalStreak
+		gameUuid
 	];
 
 	db.query(sql, params, (err, results) => {
