@@ -124,6 +124,8 @@ export default function submitGameHandler (req, res) {
 		game.winner.prevCharStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].streak;
 		game.winner.prevCharGlobalStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].globalStreak;
 
+
+		console.log("DIFF: ", JSON.stringify(diff, null, 4));
 		submitGameQuery(req.db, tournament.uuid, game, diff, (err, results) => {
 			if (err) {
 				return res.status(500).send(r.internal);

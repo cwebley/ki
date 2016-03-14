@@ -29,34 +29,36 @@ export default function undoGameHandler (req, res) {
 
 		let diff = undoGame(tournament, game);
 
-		console.log("UNDO GAME DIFF: ", JSON.stringify(diff, null, 4));
+			console.log("UNDO GAME DIFF: ", JSON.stringify(diff, null, 4));
 
-		undoGameQuery(req.db, tournament.uuid, game.uuid, diff, (err, results) => {
-			if (err) {
-				return res.status(500).send(r.internal);
-			}
+			undoGameQuery(req.db, tournament.uuid, game.uuid, diff, (err, results) => {
+				if (err) {
+					return res.status(500).send(r.internal);
+				}
 
-			// merge old state and diff
-			Object.keys(diff).forEach(tournamentKey => {
-				if (tournamentKey === 'users') {
-					Object.keys(diff[tournamentKey]).forEach(userUuid => {
-						Object.keys(diff[tournamentKey][userUuid]).forEach(userKey => {
-							if (userKey === 'characters') {
-								Object.keys(diff[tournamentKey][userUuid][userKey]).forEach(cUuid => {
-									Object.keys(diff[tournamentKey][userUuid][userKey][cUuid]).forEach(characterKey => {
-										tournament[tournamentKey][userUuid][userKey][cUuid][characterKey] = diff[tournamentKey][userUuid][userKey][cUuid][characterKey];
+				// merge old state and diff
+				Object.keys(diff).forEach(tournamentKey => {
+					if (tournamentKey === 'users') {
+						Object.keys(diff[tournamentKey]).forEach(userUuid => {
+							Object.keys(diff[tournamentKey][userUuid]).forEach(userKey => {
+								if (userKey === 'characters') {
+									Object.keys(diff[tournamentKey][userUuid][userKey]).forEach(cUuid => {
+										Object.keys(diff[tournamentKey][userUuid][userKey][cUuid]).forEach(characterKey => {
+											tournament[tournamentKey][userUuid][userKey][cUuid][characterKey] = diff[tournamentKey][userUuid][userKey][cUuid][characterKey];
+										});
 									});
-								});
-								return;
-							}
-							tournament[tournamentKey][userUuid][userKey] = diff[tournamentKey][userUuid][userKey];
+									return;
+								}
+								tournament[tournamentKey][userUuid][userKey] = diff[tournamentKey][userUuid][userKey];
+							});
 						});
-					});
-					return;
-				}
-				if (tournamentKey === '_remove') {
-					tournament[tournamentKey].championUuid = null;
-				}
+						return;
+					}
+					if (tournamentKey === '_remove') {
+						tournament.championUuid = null;
+					}
+				});
+				delete tournament._remove;
 				return res.status(201).send(tournament);
 			});
 		});

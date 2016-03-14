@@ -25,20 +25,13 @@ export default function submitGame (state, gameResult) {
 			score: state.users[winnerUuid].score + state.users[winnerUuid].characters[winningCharacterUuid].value,
 			wins: state.users[winnerUuid].wins + 1,
 			streak: updateWinningStreak(state.users[winnerUuid].streak),
-			bestStreak: updateBestStreak(state.users[winnerUuid].streak, state.users[winnerUuid].bestStreak),
 			globalStreak: updateWinningStreak(state.users[winnerUuid].globalStreak),
-			globalBestStreak: updateBestStreak(state.users[winnerUuid].streak, state.users[winnerUuid].bestStreak),
 			tournamentStreak: updateTournamentStreak(state.users[winnerUuid].tournamentStreak, winnerUuid === diff.championUuid),
-			tournamentBestStreak: updateBestStreak(state.users[winnerUuid].tournamentBestStreak),
 			characters: {
 				[winningCharacterUuid]: {
 					wins: state.users[winnerUuid].characters[winningCharacterUuid].wins + 1,
 					streak: updateWinningStreak(state.users[winnerUuid].characters[winningCharacterUuid].streak),
-					bestStreak: updateBestStreak(state.users[winnerUuid].characters[winningCharacterUuid].streak,
-						state.users[winnerUuid].characters[winningCharacterUuid].bestStreak),
-					globalStreak: updateWinningStreak(state.users[winnerUuid].characters[winningCharacterUuid].globalStreak),
-					globalBestStreak: updateBestStreak(state.users[winnerUuid].characters[winningCharacterUuid].globalStreak,
-						state.users[winnerUuid].characters[winningCharacterUuid].globalBestStreak)
+					globalStreak: updateWinningStreak(state.users[winnerUuid].characters[winningCharacterUuid].globalStreak)
 				}
 			}
 		},
@@ -56,6 +49,24 @@ export default function submitGame (state, gameResult) {
 				}
 			}
 		}
+	}
+
+	const winnerBestStreakDiff = updateBestStreak(state.users[winnerUuid].streak, state.users[winnerUuid].bestStreak);
+	if (winnerBestStreakDiff) {
+		diff.users[winnerUuid].bestStreak = winnerBestStreakDiff;
+	}
+	const winnerGlobalBestStreakDiff = updateBestStreak(state.users[winnerUuid].streak, state.users[winnerUuid].bestStreak);
+	if (winnerGlobalBestStreakDiff) {
+		diff.users[winnerUuid].globalBestStreak = winnerGlobalBestStreakDiff;
+	}
+	const winningCharacterGlobalBestStreakDiff = updateBestStreak(state.users[winnerUuid].characters[winningCharacterUuid].globalStreak,
+		state.users[winnerUuid].characters[winningCharacterUuid].globalBestStreak);
+	if (winningCharacterGlobalBestStreakDiff) {
+		diff.users[winnerUuid].characters[winningCharacterUuid].globalBestStreak = winningCharacterGlobalBestStreakDiff;
+	}
+	const winnerTournamentBestStreakDiff =  updateBestStreak(state.users[winnerUuid].tournamentBestStreak);
+	if (winnerTournamentBestStreakDiff) {
+		diff.users[winnerUuid].tournamentBestStreak = winnerTournamentBestStreakDiff;
 	}
 
 	const coinsDiff = updateCoins(state.users[winnerUuid].coins, state.users[winnerUuid].streak, gameResult.supreme);

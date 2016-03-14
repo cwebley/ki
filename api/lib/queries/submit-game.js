@@ -36,7 +36,6 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 
 		// all keys on each user object
 		Object.keys(diff.users[userUuid]).forEach(userKey => {
-
 			if (tournamentUsersFields.indexOf(userKey) !== -1) {
 				tournamentUsersUpdates[userKey] = diff.users[userUuid][userKey];
 				return;
@@ -151,6 +150,8 @@ function updateTable (db, tableName, updateMap, cb) {
 	if (!updateMap.size) {
 		log.debug(`No updates for ${tableName}`);
 		return cb();
+	}
+	if (tableName === 'tournament_users') {
 	}
 	let updates = [];
 	updateMap.forEach((v, k) => {
