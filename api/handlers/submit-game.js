@@ -5,6 +5,7 @@ import submitGame from '../lib/core/submit-game';
 
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import submitGameQuery from '../lib/queries/submit-game';
+import fillUpcomingListQuery from '../lib/queries/fill-upcoming-list';
 
 export default function submitGameHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -124,8 +125,6 @@ export default function submitGameHandler (req, res) {
 		game.winner.prevCharStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].streak;
 		game.winner.prevCharGlobalStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].globalStreak;
 
-
-		console.log("DIFF: ", JSON.stringify(diff, null, 4));
 		submitGameQuery(req.db, tournament.uuid, game, diff, (err, results) => {
 			if (err) {
 				return res.status(500).send(r.internal);
@@ -152,7 +151,10 @@ export default function submitGameHandler (req, res) {
 				tournament[tournamentKey] = diff[tournamentKey];
 			});
 
-			return res.status(201).send(tournament);
+			fillUpcomingListQuery(req.redis, tournament, (err, results) => {
+				//TODO
+				return res.status(201).send(tournament);
+			});
 		});
 	});
 }

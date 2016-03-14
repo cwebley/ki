@@ -1,16 +1,15 @@
 import log from '../../logger';
+import config from '../../config';
 import { upcomingList } from '../util/redis-keys';
 import range from 'lodash.range';
 
-const UPCOMING_LENGTH = 50;
-
 // needs opts.uuid (tournamentUuid)
-// opts.user.uuid, opts.user.characters,
-// opts.opponent.uuid, opts.opponent.characters
+// opts.user.uuid, opts.user.characters (array),
+// opts.opponent.uuid, opts.opponent.characters (array)
 export default function createUpcomingListQuery (rConn, opts, cb) {
 
 	// assemble the the user data
-	const randomUserCharacters = range(0, UPCOMING_LENGTH).map(i => {
+	const randomUserCharacters = range(0, config.defaults.upcomingListLength).map(() => {
 		return opts.user.characters[Math.floor(Math.random() * opts.user.characters.length)].uuid;
 	});
 	const userKey = upcomingList(opts.uuid, opts.user.uuid);
@@ -30,7 +29,7 @@ export default function createUpcomingListQuery (rConn, opts, cb) {
 		});
 
 		// assemble the opponent data
-		const randomOpponentCharacters = range(0, UPCOMING_LENGTH).map(i => {
+		const randomOpponentCharacters = range(0, config.defaults.upcomingListLength).map(() => {
 			return opts.opponent.characters[Math.floor(Math.random() * opts.opponent.characters.length)].uuid;
 		});
 		const opponentKey = upcomingList(opts.uuid, opts.opponent.uuid);

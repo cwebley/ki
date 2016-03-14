@@ -16,7 +16,8 @@ var config = {
 	},
 	"defaults": {
 		"startCoins": 10,
-		"goal": 100
+		"goal": 100,
+		"upcomingListLength": 50
 	}
 };
 

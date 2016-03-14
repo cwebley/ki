@@ -29,8 +29,6 @@ export default function undoGameHandler (req, res) {
 
 		let diff = undoGame(tournament, game);
 
-			console.log("UNDO GAME DIFF: ", JSON.stringify(diff, null, 4));
-
 			undoGameQuery(req.db, tournament.uuid, game.uuid, diff, (err, results) => {
 				if (err) {
 					return res.status(500).send(r.internal);
