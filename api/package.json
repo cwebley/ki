@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel/register --recursive",
+    "test": "mocha --compilers js:babel-register --recursive",
     "start": "node index.js --logLevel debug",
     "createdb": "createdb ki; psql ki < persistence/pg/schema/0.sql",
     "dropdb": "dropdb ki",
@@ -14,7 +14,7 @@
   "author": "cwebley",
   "license": "Closed",
   "devDependencies": {
-    "babel": "^5.8.23",
+    "babel-register": "^6.7.2",
     "chai": "^3.3.0",
     "mocha": "^2.3.3"
   },
