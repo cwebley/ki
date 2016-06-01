@@ -20,3 +20,7 @@ body {
   font-size: 15px;
   line-height: 24px;
 }
+
+.active-route {
+	color: red;
+}

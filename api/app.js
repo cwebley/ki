@@ -4,6 +4,7 @@ import apiRouter from './routes';
 import log from './logger';
 import r from './reasons';
 import redis from './persistence/redis';
+import cors from 'cors';
 
 var app = express();
 
@@ -14,6 +15,7 @@ app.use(log.middleware({
 }));
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use('/api', apiRouter);
 

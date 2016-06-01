@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import HomeIcon from 'material-ui/lib/svg-icons/action/home';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
+
 import { deepOrange500 } from 'material-ui/lib/styles/colors';
+import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 
-import AppBar from 'material-ui/lib/app-bar';
-
-// import RaisedButton from 'materi/al-ui/lib/raised-button';
+import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/lib/toolbar';
+import IconButton from 'material-ui/lib/icon-button';
+import RaisedButton from 'material-ui/lib/raised-button';
 import FlatButton from 'material-ui/lib/flat-button';
 
 const muiTheme = getMuiTheme({
@@ -37,12 +39,35 @@ const MainLayout = React.createClass({
 			<MuiThemeProvider muiTheme={muiTheme}>
 				<div className="app">
 					<header className="primary-header">
-						<AppBar
-							title=""
-							iconElementRight={<FlatButton label="Register" />}
-							style={styles.appBar}
-							showMenuIconButton={false}
-						/>
+						<Toolbar>
+							<ToolbarGroup
+								float="left"
+							>
+								<FlatButton
+									containerElement={<Link to="/" activeClassName="active-route" />}
+									linkButton={true}
+									label="Home"
+									icon={<HomeIcon />}
+								/>
+							</ToolbarGroup>
+							<ToolbarGroup
+								float="right"
+							>
+								<ToolbarSeparator />
+								<RaisedButton label="Create Tournament" primary={true} />
+								<ToolbarSeparator />
+								<FlatButton
+									containerElement={<Link to="/sign-in" activeClassName="active-route" />}
+									linkButton={true}
+									label="Sign In"
+								/>
+								<FlatButton
+									containerElement={<Link to="/register" activeClassName="active-route" />}
+									linkButton={true}
+									label="Register"
+								/>
+							</ToolbarGroup>
+						</Toolbar>
 					</header>
 					<main>
 						{ this.props.children }
@@ -52,73 +77,5 @@ const MainLayout = React.createClass({
 		);
 	}
 });
-
-// <aside className="primary-aside">
-// 	<ul>
-// 		<li><Link to="/" activeClassName="active">Home</Link></li>
-// 		<li><Link to="/something-else" activeClassName="active">Something Else</Link></li>
-// 	</ul>
-// </aside>
-
-// const MainLayout = React.createClass({
-//
-// 	getInitialState: function () {
-// 		return {
-// 			open: false
-// 		};
-// 	},
-//
-// 	handleTouchTap: function () {
-// 		this.setState({
-// 			open: true
-// 		});
-// 	},
-//
-// 	handleRequestClose: function () {
-// 		this.setState({
-// 			open: false
-// 		});
-// 	},
-//
-// 	render: function () {
-// 		const standardActions = (
-// 			<FlatButton
-// 				label="Okey"
-// 				secondary={true}
-// 				onTouchTap={this.handleRequestClose}
-// 			/>
-// 		);
-//
-// 		return (
-// 			<MuiThemeProvider muiTheme={muiTheme}>
-// 				<div className="app">
-// 					<header className="primary-header"></header>
-// 					<Dialog
-// 						open={this.state.open}
-// 						title="Super Secret Password"
-// 						actions={standardActions}
-// 						onRequestClose={this.handleRequestClose}
-// 					>
-// 					1-2-3-4-5
-// 					</Dialog>
-// 					<aside className="primary-aside">
-// 						<ul>
-// 							<li><Link to="/" activeClassName="active">Home</Link></li>
-// 							<li><Link to="/something-else" activeClassName="active">Something Else</Link></li>
-// 						</ul>
-// 					</aside>
-// 					<RaisedButton
-// 						label="Super Secret Password"
-// 						primary={true}
-// 						onTouchTap={this.handleTouchTap}
-// 					/>
-// 					<main>
-// 						{ this.props.children }
-// 					</main>
-// 				</div>
-// 			</MuiThemeProvider>
-// 		);
-// 	}
-// });
 
 export default MainLayout;
