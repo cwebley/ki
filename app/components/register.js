@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import TextField from 'material-ui/lib/text-field';
-import RaisedButton from 'material-ui/lib/raised-button';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 import Form from './form';
 import Text from './text';
 import SubmitButton from './submit-button';

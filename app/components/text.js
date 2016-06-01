@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import TextField from 'material-ui/lib/text-field';
+import TextField from 'material-ui/TextField';
 import * as validators from '../validators/forms';
 
 export default React.createClass({
