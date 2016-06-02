@@ -15,8 +15,6 @@ const fieldStyles = {
 
 class Register extends React.Component {
 	render () {
-		console.log("THIK>SPROSP: ", this.props)
-
 		return (
 			<div className="page">
 				<Form onSubmit={(data) => this.onSubmit(data)}>
@@ -51,7 +49,6 @@ class Register extends React.Component {
 	}
 
 	onSubmit (data) {
-		console.log("SUBMITTING FORM: ", data);
 		this.props.registerUser(data);
 	}
 }

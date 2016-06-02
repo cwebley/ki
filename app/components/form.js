@@ -64,7 +64,6 @@ const Form = React.createClass({
 	},
 
 	render () {
-		console.log("FORM PROPS: ", this.props	)
 		return (
 			<form>
 				{this.props.children}
