@@ -4,20 +4,26 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Form from './form';
 import Text from './text';
 import SubmitButton from './submit-button';
+import get from 'lodash.get';
 
 import * as actions from '../actions/forms';
 
 import { connect } from 'react-redux';
 
-const fieldStyles = {
-	display: 'block'
-}
+const formName = 'register';
 
 class Register extends React.Component {
 	render () {
 		return (
 			<div className="page">
-				<Form onSubmit={(data) => this.onSubmit(data)}>
+				<h1>Register</h1>
+				<Form
+					values={this.props.values}
+					formName={formName}
+					update={this.props.update}
+					reset={this.props.reset}
+					onSubmit={(data) => this.onSubmit(data)}
+				>
 					<Text
 						name="username"
 						validate={['required']}
@@ -32,13 +38,13 @@ class Register extends React.Component {
 					/>
 					<Text
 						name="password"
-						validate={['required']}
+						validate={['required', 'passwordLength']}
 						type="password"
 						label="Password"
 					/>
 					<Text
 						name="confirmPassword"
-						validate={['required']}
+						validate={['required', 'passwordLength']}
 						type="password"
 						label="Confirm Password"
 					/>
@@ -54,7 +60,14 @@ class Register extends React.Component {
 }
 
 Register.propTypes = {
-	registerUser: PropTypes.func.isRequired
+	registerUser: PropTypes.func.isRequired,
+	values: PropTypes.object,
 };
 
-export default connect(state => state, actions)(Register);
+Register.displayName = formName;
+
+export default connect(state => {
+	return {
+		values: get(state.forms, formName, {})
+	};
+}, actions)(Register);

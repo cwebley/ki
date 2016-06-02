@@ -10,6 +10,7 @@
   "dependencies": {
     "email-validator": "^1.0.4",
     "jwt-decode": "^2.0.1",
+    "lodash.get": "^4.3.0",
     "material-ui": "^0.15.0",
     "nets": "^3.2.0",
     "react": "^15.1.0",

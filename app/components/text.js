@@ -14,6 +14,7 @@ export default React.createClass({
 	},
 
 	contextTypes: {
+		formName: PropTypes.string.isRequired,
 		update: PropTypes.func.isRequired,
 		values: PropTypes.object.isRequired,
 		registerValidation: PropTypes.func.isRequired
@@ -44,7 +45,7 @@ export default React.createClass({
 	},
 
 	updateValue (value) {
-		this.context.update(this.props.name, value);
+		this.context.update(this.context.formName, this.props.name, value);
 
 		// if this field is currently displaying errors, validate on each change
 		// so that the error disappears immediately if the value is changed to something valid
@@ -83,7 +84,7 @@ export default React.createClass({
 				<TextField
 					hintText={this.props.placeholder}
 					floatingLabelText={this.props.label}
-					value={this.context.values[this.props.name]}
+					value={this.context.values[this.props.name] || ''}
 					type={this.props.type}
 					onChange={this.onChange}
 					onBlur={this.onBlur}

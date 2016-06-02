@@ -14,12 +14,6 @@ import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-
 import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-//
-// const muiTheme = getMuiTheme({
-// 	palette: {
-// 		accent1Color: deepOrange500,
-// 	},
-// });
 
 class MainLayout extends Component {
 

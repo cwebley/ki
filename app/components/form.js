@@ -1,21 +1,28 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions/forms';
+import get from 'lodash.get';
 
-const noop = () => undefined;
-
-const Form = React.createClass({
+export default React.createClass({
 	displayName: 'Form',
 
 	propTypes: {
+		formName: PropTypes.string.isRequired,
 		children: PropTypes.node,
-		values: PropTypes.object,
-		update: PropTypes.func,
-		reset: PropTypes.func,
+		values: PropTypes.object.isRequired,
+		update: PropTypes.func.isRequired,
+		reset: PropTypes.func.isRequired,
 		onSubmit: PropTypes.func
 	},
 
+	getDefaultProps () {
+		return {
+			values: {}
+		}
+	},
+
 	childContextTypes: {
+		formName: PropTypes.string,
 		update: PropTypes.func,
 		reset: PropTypes.func,
 		submit: PropTypes.func,
@@ -48,12 +55,13 @@ const Form = React.createClass({
 	submit () {
 		if (this.isFormValid(true)) {
 			this.props.onSubmit(Object.assign({}, this.props.values));
-			this.props.reset();
+			this.props.reset(this.props.formName);
 		}
 	},
 
 	getChildContext () {
 		return {
+			formName: this.props.formName,
 			update: this.props.update,
 			reset: this.props.reset,
 			submit: this.submit,
@@ -71,10 +79,3 @@ const Form = React.createClass({
 		);
 	}
 });
-
-const mapStateToProps = (state) => {
-	return {
-		values: state.values
-	};
-}
-export default connect(mapStateToProps, actions)(Form)
