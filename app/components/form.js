@@ -55,7 +55,6 @@ export default React.createClass({
 	submit () {
 		if (this.isFormValid(true)) {
 			this.props.onSubmit(Object.assign({}, this.props.values));
-			this.props.reset(this.props.formName);
 		}
 	},
 

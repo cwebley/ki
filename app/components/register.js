@@ -55,7 +55,7 @@ class Register extends React.Component {
 	}
 
 	onSubmit (data) {
-		this.props.registerUser(data);
+		this.props.registerUser(data, formName);
 	}
 }
 
@@ -66,8 +66,8 @@ Register.propTypes = {
 
 Register.displayName = formName;
 
-export default connect(state => {
-	return {
-		values: get(state.forms, formName, {})
-	};
-}, actions)(Register);
+const mapStateToProps = (state) => ({
+	values: get(state.forms, formName + '.values', {})
+});
+
+export default connect(mapStateToProps, actions)(Register);

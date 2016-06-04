@@ -1,3 +1,7 @@
+export const GENERIC_ERROR = {
+	msg: 'Something went wrong',
+	id: 'generic-error'
+}
 export const TEXT_REQUIRED = {
 	msg: 'You still have to fill this out',
 	id: 'text-required'

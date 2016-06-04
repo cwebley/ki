@@ -2,6 +2,9 @@ import nets from 'nets';
 import decodeToken from './decodeToken';
 import * as c from '../constants';
 import * as config from '../config';
+import * as errors from '../errors';
+import jwtDecode from 'jwt-decode';
+import { saveToken } from '../local-storage';
 
 export function update (formName, name, value) {
 	return {
@@ -19,7 +22,7 @@ export function reset (formName) {
 	});
 }
 
-export function registerUser (data) {
+export function registerUser (data, formName) {
 	return dispatch => {
 		nets({
 			method: 'POST',
@@ -32,27 +35,28 @@ export function registerUser (data) {
 					data = body && body.reasons;
 				}
 				else {
-					data = ['An error ocurred'];
+					data = [errors.GENERIC_ERROR];
 				}
 				return dispatch({
-					type: c.REGISTER_USER_FAILURE,
-					data: data
+					type: c.DISPLAY_FORM_ERROR,
+					formName: formName,
+					reasons: data
 				});
 			}
 
 			var token = body && body.token;
 
-			// save token to the store
 			dispatch({
 				type: c.REGISTER_USER_SUCCESS,
-				data: token
+				token: token,
+				me: jwtDecode(token)
 			});
 
 			// save token to localStorage for future page visits
-			localStorage.setItem('kiToken', token);
+			saveToken(token);
 
-			// decode the token and save the user data to the store
-			return dispatch(decodeToken(token));
+			// reset the form after the succesful api hit
+			return dispatch(reset(formName));
 		});
 	}
 }
