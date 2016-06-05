@@ -4,8 +4,8 @@ const Home = React.createClass({
 	render: function () {
 		return (
 			<div className="page">
-				<h1>The app has react router</h1>
-				<p>Here\'s a paragraph</p>
+				<h1>Killer Instinct</h1>
+				<p>The Tournament Of Champions</p>
 			</div>
 		);
 	}
