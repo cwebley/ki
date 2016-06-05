@@ -11,7 +11,7 @@ export default class TournamentCreator extends Component {
 	render () {
 		return (
 			<div className="page">
-				<h1>TournamentCreator</h1>
+				<h1>Create a Tournament</h1>
 				<ReasonsList reasons={this.props.reasons} />
 			</div>
 		);

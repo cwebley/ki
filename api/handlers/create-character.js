@@ -1,5 +1,4 @@
 import r from '../reasons';
-import config from '../config';
 import slug from 'slug';
 import uuid from 'node-uuid';
 import insertCharacterQuery from '../lib/queries/insert-character';

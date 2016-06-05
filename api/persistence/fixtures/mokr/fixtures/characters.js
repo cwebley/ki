@@ -11,7 +11,7 @@ module.exports.up = function (next) {
 	data.forEach(function (character) {
 		request({
 			method: 'POST',
-			url: 'http://localhost:3000/api/character',
+			url: 'http://localhost:3000/api/characters',
 			json: true,
 			body: character
 		}, function (err, resp, body) {

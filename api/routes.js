@@ -5,6 +5,7 @@ import redis from './persistence/redis';
 import config from './config';
 
 // handlers
+import getCharacters from './handlers/get-characters';
 import createCharacter from './handlers/create-character';
 import registerUser from './handlers/register-user';
 import loginUser from './handlers/login-user';
@@ -30,7 +31,8 @@ let requiresLogin = jwt({secret: config.jwt.secret});
 router.post('/user/register', registerUser);
 router.post('/user/login', loginUser);
 
-router.post('/character', createCharacter);
+router.post('/characters', createCharacter);
+router.get('/characters', getCharacters);
 
 router.post('/tournament', requiresLogin, createTournament);
 router.get('/tournament/:tournamentSlug', getTournament);
