@@ -87,4 +87,4 @@ const mapStateToProps = (state) => ({
 	me: state.me || {}
 });
 
-export default connect(mapStateToProps, { logout: logout })(Header);
+export default connect(mapStateToProps, { logout })(Header);
