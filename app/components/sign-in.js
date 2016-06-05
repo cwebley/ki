@@ -66,6 +66,7 @@ export default class SignIn extends Component {
 
 
 const mapStateToProps = (state) => ({
+	reasons: get(state.forms, formName + '.reasons'),
 	values: get(state.forms, formName + '.values', {})
 });
 
