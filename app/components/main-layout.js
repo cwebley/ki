@@ -19,10 +19,6 @@ class MainLayout extends Component {
 		width: PropTypes.number.isRequired
 	}
 
-	static contextTypes = {
-		router: PropTypes.object.isRequired
-	}
-
 	static childContextTypes = {
 		muiTheme: PropTypes.object,
 	}

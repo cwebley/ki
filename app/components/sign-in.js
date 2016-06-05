@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import Form from './form';
 import Text from './text';
 import SubmitButton from './submit-button';
@@ -9,6 +10,17 @@ import get from 'lodash.get';
 const formName = "signin";
 
 export default class SignIn extends Component {
+	static displayName = formName
+
+	static propTypes = {
+		signInUser: PropTypes.func.isRequired,
+		values: PropTypes.object,
+	}
+
+	static contextTypes = {
+		router: PropTypes.object.isRequired
+	}
+
 	render () {
 		return (
 			<div className="page">
@@ -34,21 +46,24 @@ export default class SignIn extends Component {
 					/>
 					<SubmitButton />
 				</Form>
+				<Link to="/register" activeClassName="active-route">New user? Register here.</Link>
 			</div>
 		);
 	}
 
 	onSubmit (data) {
-		this.props.signInUser(data, formName);
+		this.props.signInUser(data, formName)
+			// redirect to the home page if login was successful
+			.then(
+				action => {
+					if (action.token) {
+						this.context.router.push('/')
+					}
+				}
+			);
 	}
 }
 
-SignIn.propTypes = {
-	signInUser: PropTypes.func.isRequired,
-	values: PropTypes.object,
-};
-
-SignIn.displayName = formName;
 
 const mapStateToProps = (state) => ({
 	values: get(state.forms, formName + '.values', {})

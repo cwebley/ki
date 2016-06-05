@@ -12,6 +12,17 @@ import logout from '../actions/logout';
 
 
 class Header extends Component {
+	static displayName = "header"
+
+	static propTypes = {
+		me: PropTypes.object,
+		logout: PropTypes.func.isRequired
+	}
+
+	static contextTypes = {
+		router: PropTypes.object.isRequired
+	}
+
 	render () {
 		return (
 			<Toolbar>
@@ -31,8 +42,6 @@ class Header extends Component {
 	}
 
 	renderHeaderActions () {
-		console.log("ME? ", this.props)
-
 		if (this.props.me && this.props.me.name) {
 			return (
 				<ToolbarGroup
@@ -52,18 +61,15 @@ class Header extends Component {
 			<ToolbarGroup
 				float="right"
 			>
-				<ToolbarSeparator />
-				<RaisedButton label="Create Tournament" primary={true} />
-				<ToolbarSeparator />
-				<FlatButton
-					containerElement={<Link to="/sign-in" activeClassName="active-route" />}
-					linkButton={true}
-					label="Sign In"
-				/>
 				<FlatButton
 					containerElement={<Link to="/register" activeClassName="active-route" />}
 					linkButton={true}
 					label="Register"
+				/>
+				<FlatButton
+					containerElement={<Link to="/sign-in" activeClassName="active-route" />}
+					linkButton={true}
+					label="Sign In"
 				/>
 			</ToolbarGroup>
 		);
@@ -71,6 +77,9 @@ class Header extends Component {
 
 	onLogoutClick () {
 		this.props.logout();
+
+		// redirect to the sign-in page
+		this.context.router.push('/sign-in');
 	}
 }
 

@@ -46,23 +46,23 @@ const loginOrRegisterSuccess = (dispatch, formName) => (body) => {
 	const token = body && body.token;
 	const decoded = jwtDecode(token);
 
-	dispatch({
-		type: c.LOGIN_USER_SUCCESS,
-		token: token,
-		me: decoded
-	});
-
 	// save user data in localStorage future page visits
 	const me = constructMe(token, decoded);
 	saveState({ me });
 
 	// reset the form after the succesful api hit
-	return dispatch(reset(formName));
+	dispatch(reset(formName));
+
+	return dispatch({
+		type: c.LOGIN_USER_SUCCESS,
+		token: token,
+		me: decoded
+	});
 }
 
-// common helper onReject function for api login/regsiter calls 
+// common helper onReject function for api login/regsiter calls
 const loginOrRegisterFailure = (dispatch, formName) => (error) => {
-	dispatch({
+	return dispatch({
 		type: c.DISPLAY_FORM_ERROR,
 		formName: formName,
 		reasons: (error && error.reasons) || [errors.GENERIC_ERROR]

@@ -9,10 +9,22 @@ import get from 'lodash.get';
 import * as actions from '../actions/forms';
 
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 const formName = 'register';
 
 class Register extends React.Component {
+	static displayName = formName
+
+	static propTypes = {
+		registerUser: PropTypes.func.isRequired,
+		values: PropTypes.object,
+	}
+
+	static contextTypes = {
+		router: PropTypes.object.isRequired
+	}
+
 	render () {
 		return (
 			<div className="page">
@@ -50,21 +62,23 @@ class Register extends React.Component {
 					/>
 					<SubmitButton />
 				</Form>
+				<Link to="/sign-in" activeClassName="active-route">Already registered? Log in here.</Link>
 			</div>
 		);
 	}
 
 	onSubmit (data) {
-		this.props.registerUser(data, formName);
+		this.props.registerUser(data, formName)
+			// redirect to the home page if registration was successful
+			.then(
+				action => {
+					if (action.token) {
+						this.context.router.push('/')
+					}
+				}
+			);
 	}
 }
-
-Register.propTypes = {
-	registerUser: PropTypes.func.isRequired,
-	values: PropTypes.object,
-};
-
-Register.displayName = formName;
 
 const mapStateToProps = (state) => ({
 	values: get(state.forms, formName + '.values', {})
