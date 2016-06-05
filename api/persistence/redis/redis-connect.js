@@ -24,7 +24,7 @@ rc.middleware = function (options = {}) {
 		let _to = setTimeout(function() {
 			log.warning('Redis connection ended after timeout');
 			req.redis = null;
-			client.end();
+			client.quit();
 		}, options.releaseIn);
 
 		// Release on close
@@ -33,7 +33,7 @@ rc.middleware = function (options = {}) {
 				log.debug('Ending redis client connection on finish');
 				clearTimeout(_to);
 				req.redis = null;
-				client.end();
+				client.quit();
 			});
 		}
 
