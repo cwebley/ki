@@ -1,20 +1,15 @@
 import React, { PropTypes, Component } from 'react';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
-import HomeIcon from 'material-ui/svg-icons/action/home';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { deepOrange500 } from 'material-ui/styles/colors';
 import spacing from 'material-ui/styles/spacing';
-
 import withWidth, {MEDIUM, LARGE} from 'material-ui/utils/withWidth';
 
-import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+import Header from './header';
+
 
 class MainLayout extends Component {
 
@@ -67,19 +62,7 @@ class MainLayout extends Component {
 			<MuiThemeProvider muiTheme={this.state.muiTheme}>
 				<div className="app">
 					<header className="primary-header">
-						<Toolbar>
-							<ToolbarGroup
-								float="left"
-							>
-								<FlatButton
-									containerElement={<Link to="/" activeClassName="active-route" />}
-									linkButton={true}
-									label="Home"
-									icon={<HomeIcon />}
-								/>
-							</ToolbarGroup>
-							{ this.renderHeaderActions() }
-						</Toolbar>
+						<Header />
 					</header>
 					<main style={preparedStyles.content}>
 						{ this.props.children }
@@ -88,32 +71,6 @@ class MainLayout extends Component {
 			</MuiThemeProvider>
 		);
 	}
-
-	renderHeaderActions () {
-		return (
-			<ToolbarGroup
-				float="right"
-			>
-				<ToolbarSeparator />
-				<RaisedButton label="Create Tournament" primary={true} />
-				<ToolbarSeparator />
-				<FlatButton
-					containerElement={<Link to="/sign-in" activeClassName="active-route" />}
-					linkButton={true}
-					label="Sign In"
-				/>
-				<FlatButton
-					containerElement={<Link to="/register" activeClassName="active-route" />}
-					linkButton={true}
-					label="Register"
-				/>
-			</ToolbarGroup>
-		);
-	}
 }
 
-const mapStateToProps = (state) => ({
-	me: state.me || {}
-});
-
-export default withWidth()(connect(mapStateToProps)(MainLayout));
+export default withWidth()(MainLayout);
