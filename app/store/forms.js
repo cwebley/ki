@@ -24,9 +24,6 @@ export default (state = {}, action) => {
 		};
 	case c.FORM_RESET:
 		return {
-			// Object.assign({}, state, {
-			// 	[action.formName]: {}
-			// })
 			...state,
 			[action.formName]: {
 				...state[action.formName],

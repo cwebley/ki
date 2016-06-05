@@ -6,4 +6,4 @@ export const DISPLAY_FORM_ERROR = 'DISPLAY_FORM_ERROR';
 export const DECODE_TOKEN = 'DECODE_TOKEN';
 
 // localStorage property for the auth token
-export const TOKEN_PROPERTY = 'ki-token';
+export const LOCAL_STORAGE_PROPERTY = 'ki-state';

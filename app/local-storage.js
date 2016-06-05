@@ -1,20 +1,24 @@
 import * as c from './constants';
 
-export const getToken = () => {
+export const loadState = () => {
 	try {
-		const token = localStorage.getItem(c.TOKEN_PROPERTY);
-		return token;
+		const serializedState = localStorage.getItem(c.LOCAL_STORAGE_PROPERTY);
+		if (serializedState === null) {
+			return undefined;
+		}
+		return JSON.parse(serializedState);
 	}
 	catch (err) {
 		return undefined;
 	}
 };
 
-export const saveToken = (token) => {
+export const saveState = (state) => {
 	try {
-		return localStorage.setItem(c.TOKEN_PROPERTY, token);
+		const serializedState = JSON.stringify(state);
+		return localStorage.setItem(c.LOCAL_STORAGE_PROPERTY, serializedState);
 	}
 	catch (err) {
-		return;
+		return undefined;
 	}
 };

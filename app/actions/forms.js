@@ -1,5 +1,4 @@
 import nets from 'nets';
-import decodeToken from './decodeToken';
 import * as c from '../constants';
 import * as config from '../config';
 import * as errors from '../errors';
