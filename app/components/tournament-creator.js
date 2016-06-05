@@ -4,16 +4,24 @@ import ReasonsList from './reasons-list';
 
 /*
 	Example form data for /api/tournaments
+	// tournament rules
 	{ name: 'sibyl.org', goal: 231, opponentSlug: 'Orlo-Johnston', startCoins: 10 }
 
-	// more stuff
-	{ opponentCharacters: ['kan-ra', 'orchid', 'jago'], myCharacters: ['aganos', 'gargos', 'arbiter'] }
+	// character settings
+	{ opponentCharacters: ['kan-ra', 'aganos', 'jago'], myCharacters: ['aganos', 'gargos', 'arbiter'] }
+		** OPTIONAL and these can be repeats between users**
 	{ characterCountPerUser: 8 }
-	{ highestValueStart: 16 } **(characters in this case will start at be 2, 4, 6, 8, 10, 12, 14, 16 points)**
-	{ draftCharacters: ['spinal', fulgore', 'tj-combo', 'maya', 'hisako', 'glacius', 'tusk'] } **OPTIONAL**
+		**Minimum number is the user with the most characters above**
+		**Maximum number allCharacters.length
+	{ highestValueStart: 16 }
+		**(characters in this case will start at be 2, 4, 6, 8, 10, 12, 14, 16 points)**
+	{ draftCharacters: ['spinal', fulgore', 'tj-combo', 'maya', 'hisako', 'glacius', 'tusk', 'riptor', 'thunder', 'mira'] }
+		**REQUIRED unless user characters exist and their lengths are the same
+		**xters here cant be in the user-characters lists**
+		** must have enough characters to satisfy the character count per user
 */
 
-export default class TournamentCreator extends Component {
+class TournamentCreator extends Component {
 	static displayName = 'tournamentCreator'
 
 	static propTypes = {

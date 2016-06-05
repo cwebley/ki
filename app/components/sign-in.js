@@ -10,7 +10,7 @@ import get from 'lodash.get';
 
 const formName = "signin";
 
-export default class SignIn extends Component {
+class SignIn extends Component {
 	static displayName = formName
 
 	static propTypes = {
