@@ -1,5 +1,6 @@
-import React, {PropTypes, Component} from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 import HomeIcon from 'material-ui/svg-icons/action/home';
 
@@ -77,23 +78,7 @@ class MainLayout extends Component {
 									icon={<HomeIcon />}
 								/>
 							</ToolbarGroup>
-							<ToolbarGroup
-								float="right"
-							>
-								<ToolbarSeparator />
-								<RaisedButton label="Create Tournament" primary={true} />
-								<ToolbarSeparator />
-								<FlatButton
-									containerElement={<Link to="/sign-in" activeClassName="active-route" />}
-									linkButton={true}
-									label="Sign In"
-								/>
-								<FlatButton
-									containerElement={<Link to="/register" activeClassName="active-route" />}
-									linkButton={true}
-									label="Register"
-								/>
-							</ToolbarGroup>
+							{ this.renderHeaderActions() }
 						</Toolbar>
 					</header>
 					<main style={preparedStyles.content}>
@@ -103,6 +88,32 @@ class MainLayout extends Component {
 			</MuiThemeProvider>
 		);
 	}
+
+	renderHeaderActions () {
+		return (
+			<ToolbarGroup
+				float="right"
+			>
+				<ToolbarSeparator />
+				<RaisedButton label="Create Tournament" primary={true} />
+				<ToolbarSeparator />
+				<FlatButton
+					containerElement={<Link to="/sign-in" activeClassName="active-route" />}
+					linkButton={true}
+					label="Sign In"
+				/>
+				<FlatButton
+					containerElement={<Link to="/register" activeClassName="active-route" />}
+					linkButton={true}
+					label="Register"
+				/>
+			</ToolbarGroup>
+		);
+	}
 }
 
-export default withWidth()(MainLayout);
+const mapStateToProps = (state) => ({
+	me: state.me || {}
+});
+
+export default withWidth()(connect(mapStateToProps)(MainLayout));
