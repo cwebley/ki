@@ -4,12 +4,13 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Form from './form';
 import Text from './text';
 import SubmitButton from './submit-button';
-import get from 'lodash.get';
+import ReasonsList from './reasons-list';
 
 import * as actions from '../actions/forms';
 
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import get from 'lodash.get';
 
 const formName = 'register';
 
@@ -29,6 +30,7 @@ class Register extends React.Component {
 		return (
 			<div className="page">
 				<h1>Register</h1>
+				<ReasonsList reasons={this.props.reasons} />
 				<Form
 					values={this.props.values}
 					formName={formName}
@@ -81,6 +83,7 @@ class Register extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+	reasons: get(state.forms, formName + '.reasons'),
 	values: get(state.forms, formName + '.values', {})
 });
 

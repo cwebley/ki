@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import Form from './form';
 import Text from './text';
 import SubmitButton from './submit-button';
+import ReasonsList from './reasons-list';
 import * as actions from '../actions/forms';
 import get from 'lodash.get';
 
@@ -25,6 +26,7 @@ export default class SignIn extends Component {
 		return (
 			<div className="page">
 				<h1>Sign In</h1>
+				<ReasonsList reasons={this.props.reasons} />
 				<Form
 					values={this.props.values}
 					formName={formName}
