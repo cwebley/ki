@@ -8,6 +8,8 @@ import HomeIcon from 'material-ui/svg-icons/action/home';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
+import logout from '../actions/logout';
+
 
 class Header extends Component {
 	render () {
@@ -40,7 +42,7 @@ class Header extends Component {
 					<RaisedButton label="Create Tournament" primary={true} />
 					<ToolbarSeparator />
 					<FlatButton
-						onTouchTap={this.logout}
+						onTouchTap={() => this.onLogoutClick()}
 						label="Logout"
 					/>
 				</ToolbarGroup>
@@ -67,8 +69,8 @@ class Header extends Component {
 		);
 	}
 
-	logout () {
-		console.log('logout');
+	onLogoutClick () {
+		this.props.logout();
 	}
 }
 
@@ -76,4 +78,4 @@ const mapStateToProps = (state) => ({
 	me: state.me || {}
 });
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, { logout: logout })(Header);

@@ -15,7 +15,8 @@ export const loadState = () => {
 
 export const saveState = (state) => {
 	try {
-		const serializedState = JSON.stringify(state);
+		// don't stringify null or undefined
+		const serializedState = !!state ? JSON.stringify(state) : state;
 		return localStorage.setItem(c.LOCAL_STORAGE_PROPERTY, serializedState);
 	}
 	catch (err) {
