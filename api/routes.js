@@ -34,7 +34,7 @@ router.post('/user/login', loginUser);
 router.post('/characters', createCharacter);
 router.get('/characters', getCharacters);
 
-router.post('/tournament', requiresLogin, createTournament);
+router.post('/tournaments', requiresLogin, createTournament);
 router.get('/tournament/:tournamentSlug', getTournament);
 
 // TODO: require login

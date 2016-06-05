@@ -11,7 +11,7 @@ module.exports.up = function (next) {
 	var tokenFromUserFixture = this.dependencies.users.state.tokens[0];
 	var opponentToken = this.dependencies.users.state.tokens[1];
 
-	// jwt.decode doesn't actually validate the token, but it's cool
+	// jwt.decode doesn't actually validate the token, just parses the embedded user data
 	var opponent = jwt.decode(opponentToken);
 
 	// saving tournaments for teardown
@@ -21,7 +21,7 @@ module.exports.up = function (next) {
 		tournament.opponentSlug = opponent.slug;
 		request({
 			method: 'POST',
-			url: 'http://localhost:3000/api/tournament',
+			url: 'http://localhost:3000/api/tournaments',
 			json: true,
 			headers: {
 				'Authorization': 'Bearer ' + tokenFromUserFixture
