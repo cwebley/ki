@@ -48,7 +48,11 @@ class Header extends Component {
 					float="right"
 				>
 					<ToolbarTitle text={this.props.me.name} />
-					<RaisedButton label="Create Tournament" primary={true} />
+					<RaisedButton
+						label="Create Tournament" primary={true}
+						linkButton={true}
+						containerElement={<Link to="/create" activeClassName="active-route" />}
+					/>
 					<ToolbarSeparator />
 					<FlatButton
 						onTouchTap={() => this.onLogoutClick()}
