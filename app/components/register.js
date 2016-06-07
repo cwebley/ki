@@ -10,6 +10,8 @@ import * as actions from '../actions/forms';
 
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+
+import { getFormState } from '../store';
 import get from 'lodash.get';
 
 const formName = 'register';
@@ -30,9 +32,9 @@ class Register extends React.Component {
 		return (
 			<div className="page">
 				<h1>Register</h1>
-				<ReasonsList reasons={this.props.reasons} />
+				<ReasonsList reasons={this.props.formState.reasons} />
 				<Form
-					values={this.props.values}
+					values={this.props.formState.values}
 					formName={formName}
 					update={this.props.update}
 					reset={this.props.reset}
@@ -83,8 +85,7 @@ class Register extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-	reasons: get(state.forms, formName + '.reasons'),
-	values: get(state.forms, formName + '.values', {})
+	formState: getFormState(state, formName)
 });
 
 export default connect(mapStateToProps, actions)(Register);

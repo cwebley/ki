@@ -6,6 +6,8 @@ import Text from './text';
 import SubmitButton from './submit-button';
 import ReasonsList from './reasons-list';
 import * as actions from '../actions/forms';
+
+import { getFormState } from '../store';
 import get from 'lodash.get';
 
 const formName = "signin";
@@ -26,9 +28,9 @@ class SignIn extends Component {
 		return (
 			<div className="page">
 				<h1>Sign In</h1>
-				<ReasonsList reasons={this.props.reasons} />
+				<ReasonsList reasons={this.props.formState.reasons} />
 				<Form
-					values={this.props.values}
+					values={this.props.formState.values}
 					formName={formName}
 					update={this.props.update}
 					reset={this.props.reset}
@@ -68,8 +70,7 @@ class SignIn extends Component {
 
 
 const mapStateToProps = (state) => ({
-	reasons: get(state.forms, formName + '.reasons'),
-	values: get(state.forms, formName + '.values', {})
+	formState: getFormState(state, formName)
 });
 
 export default connect(mapStateToProps, actions)(SignIn);

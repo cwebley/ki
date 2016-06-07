@@ -15,6 +15,8 @@ import FormList from './form-list';
 import Text from './text';
 import Check from './check';
 
+import { getMe, getCharactersFromState, getFormState } from '../store';
+
 /*
 	Example form data for /api/tournaments
 	// tournament rules
@@ -48,8 +50,8 @@ class TournamentCreator extends Component {
 	static displayName = 'tournamentCreator';
 
 	static propTypes = {
-		reasons: PropTypes.array,
-		characters: PropTypes.array.isRequired
+		characters: PropTypes.array.isRequired,
+		formState: PropTypes.object.isRequired
 	};
 
 	static defaultProps = {
@@ -212,7 +214,7 @@ class TournamentCreator extends Component {
 		return (
 			<div className="page">
 				<h1>Create a Tournament</h1>
-				<ReasonsList reasons={this.props.reasons} />
+				<ReasonsList reasons={this.props.formState.reasons} />
 
 				<div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
 					<Stepper activeStep={this.state.stepIndex}>
@@ -235,10 +237,9 @@ class TournamentCreator extends Component {
 
 
 const mapStateToProps = (state) => ({
-	characters: state.characters,
-	me: state.me,
-	formState: get(state.forms, formName),
-	reasons: []
+	characters: getCharactersFromState(state),
+	me: getMe(state),
+	formState: getFormState(state, formName)
 });
 
 export default connect(mapStateToProps, {...formActions, fetchCharacters})(TournamentCreator);

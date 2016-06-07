@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import * as c from '../constants';
+import * as c from '../../constants';
 
 const formReducer = (state = {}, action) => {
 	if (!action || !action.formName) {
@@ -77,4 +77,8 @@ const listNameReducer = (state = {}, action) => {
 	default:
 		return state;
 	}
+}
+
+export const getFormState = (state, formName) => {
+	return state[formName] || {};
 }
