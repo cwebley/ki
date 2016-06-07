@@ -11,6 +11,7 @@ import FlatButton from 'material-ui/FlatButton';
 import * as formActions from '../actions/forms';
 import fetchCharacters from '../actions/fetch-characters';
 import Form from './form';
+import FormList from './form-list';
 import Text from './text';
 import Check from './check';
 
@@ -51,10 +52,15 @@ class TournamentCreator extends Component {
 		characters: PropTypes.array.isRequired
 	};
 
+	static defaultProps = {
+		formState: {}
+	};
+
 	state = {
 		finished: false,
 		stepIndex: 0,
 	};
+
 
 	componentWillMount () {
 		this.props.fetchCharacters();
@@ -97,7 +103,7 @@ class TournamentCreator extends Component {
 		}
 		return (
 			<Form
-				values={this.props.values}
+				values={this.props.formState.values}
 				formName={formName}
 				update={this.props.update}
 				reset={this.props.reset}
@@ -143,21 +149,33 @@ class TournamentCreator extends Component {
 		return (
 			<div>
 				<h2>{this.props.me.name}</h2>
-				{this.props.characters.map(c =>
-					<Check
-						key={c.uuid}
-						name={c.slug}
-						label={c.name}
-					/>
-				)}
-				<h2>{this.props.values.opponentSlug || 'Opponent'}</h2>
-				{this.props.characters.map(c =>
-					<Check
-						key={c.uuid}
-						name={c.slug}
-						label={c.name}
-					/>
-				)}
+				<FormList
+					listName="myCharacters"
+					formState={this.props.formState}
+					updateList={this.props.updateList}
+				>
+					{this.props.characters.map(c =>
+						<Check
+							key={c.uuid}
+							name={c.slug}
+							label={c.name}
+						/>
+					)}
+				</FormList>
+				<h2>{get(this.props.formState, 'values.opponentSlug', 'Opponent')}</h2>
+				<FormList
+					listName="opponentCharacters"
+					formState={this.props.formState}
+					updateList={this.props.updateList}
+				>
+					{this.props.characters.map(c =>
+						<Check
+							key={c.uuid}
+							name={c.slug}
+							label={c.name}
+						/>
+					)}
+				</FormList>
 			</div>
 		);
 	}
@@ -219,7 +237,7 @@ class TournamentCreator extends Component {
 const mapStateToProps = (state) => ({
 	characters: state.characters,
 	me: state.me,
-	values: get(state.forms, formName + '.values', {}),
+	formState: get(state.forms, formName),
 	reasons: []
 });
 

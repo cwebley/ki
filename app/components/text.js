@@ -45,7 +45,11 @@ export default React.createClass({
 	},
 
 	updateValue (value) {
-		this.context.update(this.context.formName, this.props.name, value);
+		this.context.update({
+			formName: this.context.formName,
+			name: this.props.name,
+			value
+		});
 
 		// if this field is currently displaying errors, validate on each change
 		// so that the error disappears immediately if the value is changed to something valid

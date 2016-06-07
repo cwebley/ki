@@ -14,6 +14,17 @@ export default (state = {}, action) => {
 				}
 			}
 		};
+	case c.FORM_UPDATE_LIST:
+		return {
+			...state,
+			[action.formName]: {
+				...state[action.formName],
+				[action.listName]: {
+					...get(state[action.formName], action.listName, {}),
+					[action.name]: action.value
+				}
+			}
+		};
 	case c.DISPLAY_FORM_ERROR:
 		return {
 			...state,

@@ -13,7 +13,10 @@ export default React.createClass({
 	contextTypes: {
 		formName: PropTypes.string.isRequired,
 		update: PropTypes.func.isRequired,
-		values: PropTypes.object.isRequired
+		values: PropTypes.object.isRequired,
+
+		// if this is a child of FormList, we need this data to update
+		listName: PropTypes.string
 	},
 
 	componentWillMount () {
@@ -25,7 +28,12 @@ export default React.createClass({
 	},
 
 	updateValue (value) {
-		this.context.update(this.context.formName, this.props.name, value);
+		this.context.update({
+			formName: this.context.formName,
+			name: this.props.name,
+			listName: this.context.listName,
+			value
+		});
 	},
 
 	onCheck (e) {

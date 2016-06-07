@@ -7,7 +7,8 @@ import { saveState } from '../local-storage';
 import { constructMe } from '../store/me';
 import * as api from '../api';
 
-export function update (formName, name, value) {
+export function update (data) {
+	const { formName, name, value } = data;
 	return {
 		type: c.FORM_UPDATE_VALUE,
 		formName,
@@ -22,6 +23,18 @@ export function reset (formName) {
 		formName
 	});
 }
+
+export function updateList (data) {
+	const { formName, listName, name, value } = data;
+	return {
+		type: c.FORM_UPDATE_LIST,
+		formName,
+		listName,
+		name,
+		value
+	};
+}
+
 
 export function registerUser (data, formName) {
 	return dispatch =>
