@@ -10,6 +10,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import logout from '../actions/logout';
 
+import { getMe } from '../store';
 
 class Header extends Component {
 	static displayName = "header"
@@ -88,7 +89,7 @@ class Header extends Component {
 }
 
 const mapStateToProps = (state) => ({
-	me: state.me || {}
+	me: getMe(state)
 });
 
 export default connect(mapStateToProps, { logout })(Header);

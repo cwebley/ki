@@ -9,8 +9,8 @@ export default combineReducers({
 	characters,
 });
 
-export const getCharactersFromState = (state) => state.characters;
+export const getCharactersFromState = (state) => state.characters || [];
 
-export const getMe = (state) => state.me;
+export const getMe = (state) => state.me || {};
 
 export const getFormState = (state, formName) => fromForms.getFormState(state.forms, formName);

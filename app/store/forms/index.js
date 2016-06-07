@@ -79,6 +79,6 @@ const listNameReducer = (state = {}, action) => {
 	}
 }
 
-export const getFormState = (state, formName) => {
+export const getFormState = (state = {}, formName) => {
 	return state[formName] || {};
 }
