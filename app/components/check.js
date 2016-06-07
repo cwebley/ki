@@ -36,7 +36,7 @@ export default React.createClass({
 		return (
 			<div>
 				<Checkbox
-					label="Character"
+					label={this.props.label}
 					checked={this.context.values[this.props.name] || false}
 					onCheck={this.onCheck}
 				/>

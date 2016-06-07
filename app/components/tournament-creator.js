@@ -8,7 +8,8 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
-import * as actions from '../actions/forms';
+import * as formActions from '../actions/forms';
+import fetchCharacters from '../actions/fetch-characters';
 import Form from './form';
 import Text from './text';
 import Check from './check';
@@ -47,13 +48,17 @@ class TournamentCreator extends Component {
 
 	static propTypes = {
 		reasons: PropTypes.array,
-		characters: PropTypes.array
+		characters: PropTypes.array.isRequired
 	};
 
 	state = {
 		finished: false,
 		stepIndex: 0,
 	};
+
+	componentWillMount () {
+		this.props.fetchCharacters();
+	}
 
 	nextStep () {
 		const { stepIndex } = this.state;
@@ -73,35 +78,22 @@ class TournamentCreator extends Component {
 	}
 
 	renderForm (stepIndex) {
-		let formPart;
+		let formSection;
 		switch (stepIndex) {
 			case 0:
-				formPart = (
-					<Text
-						name="name"
-						validate={['required']}
-						label="Tournament Name"
-						placeholder="Like a Rock: Behind The Ruin"
-					/>
-				)
+				formSection = this.renderRulesForm();
 				break;
 			case 1:
-				formPart = (
-					<Check
-						name="character-test"
-						label="Character"
-						defaultChecked
-					/>
-				);
+				formSection = this.renderCharactersForm();
 				break;
 			case 2:
-				formPart = 'Draft rules';
+				formSection = this.renderDraftForm();
 				break;
 			case 3:
-				formPart = 'Render finished content'
+				formSection = 'Render finished content'
 				break;
 			default:
-				formPart = 'You shouldn\'t be here...'
+				formSection = 'You shouldn\'t be here...'
 		}
 		return (
 			<Form
@@ -111,8 +103,68 @@ class TournamentCreator extends Component {
 				reset={this.props.reset}
 				onSubmit={(data) => this.onSubmit(data)}
 			>
-				{formPart}
+				{formSection}
 			</Form>
+		);
+	}
+
+	renderRulesForm () {
+		return (
+			<div>
+				<Text
+					name="name"
+					validate={['required']}
+					label="Tournament Name"
+					placeholder="Like a Rock: Behind The Ruin"
+				/>
+				<Text
+					name="goal"
+					validate={['required']}
+					label="Goal"
+					placeholder="100"
+				/>
+				<Text
+					name="opponentSlug"
+					validate={['required']}
+					label="Opponent"
+					placeholder="rico"
+				/>
+				<Text
+					name="startCoins"
+					validate={['required']}
+					label="Starting coins"
+					placeholder="10"
+				/>
+			</div>
+		);
+	}
+
+	renderCharactersForm () {
+		return (
+			<div>
+				<h2>{this.props.me.name}</h2>
+				{this.props.characters.map(c =>
+					<Check
+						key={c.uuid}
+						name={c.slug}
+						label={c.name}
+					/>
+				)}
+				<h2>{this.props.values.opponentSlug || 'Opponent'}</h2>
+				{this.props.characters.map(c =>
+					<Check
+						key={c.uuid}
+						name={c.slug}
+						label={c.name}
+					/>
+				)}
+			</div>
+		);
+	}
+
+	renderDraftForm () {
+		return (
+			'Draft stuff here...'
 		);
 	}
 
@@ -165,8 +217,10 @@ class TournamentCreator extends Component {
 
 
 const mapStateToProps = (state) => ({
+	characters: state.characters,
+	me: state.me,
 	values: get(state.forms, formName + '.values', {}),
 	reasons: []
 });
 
-export default connect(mapStateToProps, actions)(TournamentCreator);
+export default connect(mapStateToProps, {...formActions, fetchCharacters})(TournamentCreator);

@@ -28,3 +28,16 @@ export const register = (formData) =>
 			resolve(body);
 		});
 	});
+
+export const fetchCharacters = () =>
+	new Promise((resolve, reject) => {
+		nets({
+			url: config.apiBase + config.charactersPath,
+			json: true
+		}, (err, resp, body) => {
+			if (err || resp.statusCode >= 400) {
+				return reject(body);
+			}
+			resolve(body);
+		});
+	});
