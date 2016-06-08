@@ -26,6 +26,12 @@ const formNameReducer = (state = {}, action) => {
 			values: valuesReducer(state.values, action),
 			[action.listName]: listNameReducer(state[action.listName], action)
 		};
+	case c.TOGGLE_LIST_ITEMS:
+		return {
+			...state,
+			values: valuesReducer(state.values, action),
+			[action.listName]: listNameReducer(state[action.listName], action)
+		};
 	case c.DISPLAY_FORM_ERROR:
 		return {
 			...state,
@@ -53,6 +59,11 @@ const valuesReducer = (state = {}, action) => {
 			...state,
 			[action.listName]: valuesListReducer(state[action.listName], action)
 		};
+	case c.TOGGLE_LIST_ITEMS:
+		return {
+			...state,
+			[action.listName]: action.on ? action.items : []
+		}
 	default:
 		return state;
 	}
@@ -74,6 +85,12 @@ const listNameReducer = (state = {}, action) => {
 			...state,
 			[action.name]: action.value
 		};
+	case c.TOGGLE_LIST_ITEMS:
+		let state = {};
+		action.items.forEach(item => {
+			state[item] = !!action.on
+		});
+		return state;
 	default:
 		return state;
 	}

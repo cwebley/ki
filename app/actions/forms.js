@@ -35,6 +35,15 @@ export function updateList (data) {
 	};
 }
 
+export function toggleListItems (data) {
+	return {
+		type: c.TOGGLE_LIST_ITEMS,
+		formName: data.formName,
+		listName: data.listName,
+		items: data.items,
+		on: data.on
+	};
+}
 
 export function registerUser (data, formName) {
 	return dispatch =>

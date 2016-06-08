@@ -16,6 +16,7 @@ import FormList from './form-list';
 import Text from './text';
 import Check from './check';
 import Select from './select';
+import FormListToggle from './form-list-toggle';
 
 import { getMe, getCharactersFromState, getFormState } from '../store';
 import { getFormValue, getListValues } from '../store/forms';
@@ -154,7 +155,9 @@ class TournamentCreator extends Component {
 					listName="myCharacters"
 					formState={formState}
 					updateList={this.props.updateList}
+					toggleListItems={this.props.toggleListItems}
 				>
+				<FormListToggle />
 					{this.props.characters.map(c =>
 						<Check
 							key={c.uuid}
@@ -172,7 +175,9 @@ class TournamentCreator extends Component {
 					listName="opponentCharacters"
 					formState={formState}
 					updateList={this.props.updateList}
+					toggleListItems={this.props.toggleListItems}
 				>
+				<FormListToggle />
 					{this.props.characters.map(c =>
 						<Check
 							key={c.uuid}
@@ -223,7 +228,9 @@ class TournamentCreator extends Component {
 				listName="draftCharacters"
 				formState={this.props.formState}
 				updateList={this.props.updateList}
+				toggleListItems={this.props.toggleListItems}
 			>
+				<FormListToggle />
 				{this.props.characters.map(c =>
 					<Check
 						key={c.uuid}

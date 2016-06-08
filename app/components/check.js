@@ -16,8 +16,9 @@ export default React.createClass({
 		update: PropTypes.func.isRequired,
 		values: PropTypes.object.isRequired,
 
-		// if this is a child of FormList, we need this data to update
-		listName: PropTypes.string
+		// if this is a child of FormList, we need this data register with its parent and to update
+		listName: PropTypes.string,
+		registerWithList: PropTypes.func
 	},
 
 	componentWillMount () {
@@ -26,6 +27,13 @@ export default React.createClass({
 		if (this.props.defaultChecked && this.context.values[this.props.name] === undefined) {
 			this.updateValue(this.props.defaultChecked);
 		}
+	},
+	componentWillMount () {
+		this.unregisterWithList = this.context.registerWithList(this.props.name);
+	},
+
+	componentWillUnmount () {
+		this.unregisterWithList();
 	},
 
 	updateValue (value) {
@@ -46,7 +54,7 @@ export default React.createClass({
 			<div>
 				<Checkbox
 					label={this.props.label}
-					checked={this.context.values[this.props.name] || false}
+					checked={!!this.context.values[this.props.name]}
 					onCheck={this.onCheck}
 					disabled={this.props.disabled}
 				/>
