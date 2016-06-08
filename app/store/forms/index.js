@@ -85,3 +85,5 @@ export const getFormState = (state = {}, formName) => state[formName] || {};
 export const getFormValue = (state = {}, fieldName) => {
 	return (state.values && state.values[fieldName])
 }
+
+export const getListValues = (state = {}, fieldName) => state[fieldName] || {};

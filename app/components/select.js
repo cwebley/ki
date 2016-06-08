@@ -53,8 +53,7 @@ export default React.createClass({
 					value={
 						this.context.values[this.props.name] ||
 						this.props.defaultValue ||
-						defaultItem && defaultItem.value ||
-						''
+						defaultItem && defaultItem.value
 					}
 					onChange={this.onChange}
 					maxHeight={this.props.maxHeight || 300}

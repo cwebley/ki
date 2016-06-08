@@ -7,7 +7,8 @@ export default React.createClass({
 	propTypes: {
 		name: PropTypes.string.isRequired,
 		label: PropTypes.string.isRequired,
-		defaultChecked: PropTypes.bool
+		defaultChecked: PropTypes.bool,
+		disabled: PropTypes.bool
 	},
 
 	contextTypes: {
@@ -47,6 +48,7 @@ export default React.createClass({
 					label={this.props.label}
 					checked={this.context.values[this.props.name] || false}
 					onCheck={this.onCheck}
+					disabled={this.props.disabled}
 				/>
 			</div>
 		);

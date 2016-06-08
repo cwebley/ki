@@ -18,7 +18,7 @@ import Check from './check';
 import Select from './select';
 
 import { getMe, getCharactersFromState, getFormState } from '../store';
-import { getFormValue } from '../store/forms';
+import { getFormValue, getListValues } from '../store/forms';
 
 /*
 	Example form data for /api/tournaments
@@ -135,7 +135,7 @@ class TournamentCreator extends Component {
 				<Select
 					name="startCoins"
 					label="Starting coins"
-					items={config.coinValues}
+					items={config.oneToTwentyFive}
 					defaultValue={10}
 				/>
 			</div>
@@ -143,12 +143,16 @@ class TournamentCreator extends Component {
 	}
 
 	renderCharactersForm () {
+		const { formState } = this.props;
+		const draftCharacters = getListValues(formState, 'draftCharacters');
+		const opponentSlug = getFormValue(formState, opponentSlug) || 'Opponent';
+
 		return (
 			<div>
 				<h2>{this.props.me.name}</h2>
 				<FormList
 					listName="myCharacters"
-					formState={this.props.formState}
+					formState={formState}
 					updateList={this.props.updateList}
 				>
 					{this.props.characters.map(c =>
@@ -156,13 +160,17 @@ class TournamentCreator extends Component {
 							key={c.uuid}
 							name={c.slug}
 							label={c.name}
+							disabled={
+								//can't select this character if they're in the draft
+								!!draftCharacters[c.slug]
+							}
 						/>
 					)}
 				</FormList>
-				<h2>{get(this.props.formState, 'values.opponentSlug', 'Opponent')}</h2>
+				<h2>{opponentSlug}</h2>
 				<FormList
 					listName="opponentCharacters"
-					formState={this.props.formState}
+					formState={formState}
 					updateList={this.props.updateList}
 				>
 					{this.props.characters.map(c =>
@@ -170,6 +178,10 @@ class TournamentCreator extends Component {
 							key={c.uuid}
 							name={c.slug}
 							label={c.name}
+							disabled={
+								//can't select this character if they're in the draft
+								!!draftCharacters[c.slug]
+							}
 						/>
 					)}
 				</FormList>
@@ -179,24 +191,61 @@ class TournamentCreator extends Component {
 
 	renderDraftForm () {
 		const { formState } = this.props;
-		const myCharacters = getFormValue(formState, 'myCharacters');
-		const opponentCharacters = getFormValue(formState, 'opponentCharacters');
-		const minimumCharacters = Math.max(
-			myCharacters && myCharacters.length || 0,
-			opponentCharacters && opponentCharacters.length || 0
-		);
+		const myCharacters = getFormValue(formState, 'myCharacters') || [];
+		const opponentCharacters = getFormValue(formState, 'opponentCharacters') || [];
+		const draftCharacters = getFormValue(formState, 'draftCharacters') || [];
 
-		const charactersPerUserValues = this.props.characters
-			.map((character, i) => i + 1)
-			.filter(item => item >= minimumCharacters);
+		const charDifference = Math.abs(myCharacters.length - opponentCharacters.length);
+		const minimumCharacters = Math.max(myCharacters.length, opponentCharacters.length);
+		const maximumCharacters = Math.floor((draftCharacters.length - charDifference) / 2) + charDifference;
+
+		const charactersPerUserValues =
+			this.props.characters.map((character, i) => i + 1)
+			// .filter(item => item >= minimumCharacters && item <= maximumCharacters);
+			.filter(number =>
+				// enough eligible characters to make up the difference in character numbers
+				draftCharacters.length - charDifference >= 0 &&
+
+				// if users already have assigned characters, we have to play with at least the bigger of those lists
+				number >= minimumCharacters &&
+
+				// at the end of the draft, users need to have the same number of characters
+				number <= maximumCharacters
+			);
+
+		const myCharactersList = getListValues(formState, 'myCharacters');
+		const opponentCharactersList = getListValues(formState, 'opponentCharacters');
+
 		return (
 			<div>
-				<Select
-					name="charactersPerUser"
-					label="Characters per player"
-					items={charactersPerUserValues}
-					defaultValue={this.props.characters.length}
-				/>
+			<h3>Draft Characters</h3>
+			<FormList
+				listName="draftCharacters"
+				formState={this.props.formState}
+				updateList={this.props.updateList}
+			>
+				{this.props.characters.map(c =>
+					<Check
+						key={c.uuid}
+						name={c.slug}
+						label={c.name}
+						disabled={myCharactersList[c.slug] || opponentCharactersList[c.slug]}
+					/>
+				)}
+			</FormList>
+			<Select
+				name="charactersPerUser"
+				label="Characters per player"
+				items={charactersPerUserValues}
+				defaultValue={maximumCharacters}
+			/>
+			<Select
+				name="maxStartingValue"
+				label="Max starting value"
+				items={config.oneToTwentyFive}
+				defaultValue={this.props.characters.length}
+			/>
+
 			</div>
 		);
 	}
