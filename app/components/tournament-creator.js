@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import get from 'lodash.get';
+import * as config from '../config';
 
 import ReasonsList from './reasons-list';
 
@@ -14,6 +15,7 @@ import Form from './form';
 import FormList from './form-list';
 import Text from './text';
 import Check from './check';
+import Select from './select';
 
 import { getMe, getCharactersFromState, getFormState } from '../store';
 
@@ -38,13 +40,6 @@ import { getMe, getCharactersFromState, getFormState } from '../store';
 		** must have enough characters to satisfy the character count per user
 */
 const formName = 'tournamentCreator';
-
-const styles = {
-	block: {
-	},
-	checkbox: {
-	}
-};
 
 class TournamentCreator extends Component {
 	static displayName = 'tournamentCreator';
@@ -125,11 +120,11 @@ class TournamentCreator extends Component {
 					label="Tournament Name"
 					placeholder="Like a Rock: Behind The Ruin"
 				/>
-				<Text
+				<Select
 					name="goal"
-					validate={['required']}
 					label="Goal"
-					placeholder="100"
+					items={config.goalValues}
+					defaultValue={100}
 				/>
 				<Text
 					name="opponentSlug"
@@ -137,11 +132,11 @@ class TournamentCreator extends Component {
 					label="Opponent"
 					placeholder="rico"
 				/>
-				<Text
+				<Select
 					name="startCoins"
-					validate={['required']}
 					label="Starting coins"
-					placeholder="10"
+					items={config.coinValues}
+					defaultValue={10}
 				/>
 			</div>
 		);
