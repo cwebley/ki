@@ -18,6 +18,7 @@ import Check from './check';
 import Select from './select';
 
 import { getMe, getCharactersFromState, getFormState } from '../store';
+import { getFormValue } from '../store/forms';
 
 /*
 	Example form data for /api/tournaments
@@ -45,19 +46,18 @@ class TournamentCreator extends Component {
 	static displayName = 'tournamentCreator';
 
 	static propTypes = {
-		characters: PropTypes.array.isRequired,
-		formState: PropTypes.object.isRequired
+		characters: PropTypes.array,
+		formState: PropTypes.object
 	};
 
 	static defaultProps = {
-		formState: {}
+		characters: []
 	};
 
 	state = {
 		finished: false,
 		stepIndex: 0,
 	};
-
 
 	componentWillMount () {
 		this.props.fetchCharacters();
@@ -178,8 +178,26 @@ class TournamentCreator extends Component {
 	}
 
 	renderDraftForm () {
+		const { formState } = this.props;
+		const myCharacters = getFormValue(formState, 'myCharacters');
+		const opponentCharacters = getFormValue(formState, 'opponentCharacters');
+		const minimumCharacters = Math.max(
+			myCharacters && myCharacters.length || 0,
+			opponentCharacters && opponentCharacters.length || 0
+		);
+
+		const charactersPerUserValues = this.props.characters
+			.map((character, i) => i + 1)
+			.filter(item => item >= minimumCharacters);
 		return (
-			'Draft stuff here...'
+			<div>
+				<Select
+					name="charactersPerUser"
+					label="Characters per player"
+					items={charactersPerUserValues}
+					defaultValue={this.props.characters.length}
+				/>
+			</div>
 		);
 	}
 

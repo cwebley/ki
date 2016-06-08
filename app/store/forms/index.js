@@ -79,6 +79,9 @@ const listNameReducer = (state = {}, action) => {
 	}
 }
 
-export const getFormState = (state = {}, formName) => {
-	return state[formName] || {};
+export const getFormState = (state = {}, formName) => state[formName] || {};
+
+// careful, this can return undefined
+export const getFormValue = (state = {}, fieldName) => {
+	return (state.values && state.values[fieldName])
 }
