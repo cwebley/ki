@@ -26,6 +26,7 @@ export default React.createClass({
 		// add a listName context prop for the child's dispatch data
 		listName: PropTypes.string,
 		registerWithList: PropTypes.func,
+		registerToggle: PropTypes.func,
 		toggleListItems: PropTypes.func
 	},
 
@@ -37,6 +38,7 @@ export default React.createClass({
 			values: this.props.formState[this.props.listName] || {},
 			listName: this.props.listName,
 			registerWithList: this.registerItem,
+			registerToggle: this.registerToggle,
 			toggleListItems: this.toggleListItems
 		};
 	},
@@ -47,13 +49,19 @@ export default React.createClass({
 		return this.unregisterItem.bind(null, itemName);
 	},
 
+
 	unregisterItem (nameForRemoval) {
 		this.items = this.items.filter(n => n !== nameForRemoval);
+	},
+
+	registerToggle (toggleName) {
+		this.toggleName = toggleName;
 	},
 
 	toggleListItems (on) {
 		this.props.toggleListItems({
 			formName: this.context.formName,
+			toggleName: this.toggleName,
 			listName: this.props.listName,
 			items: [...this.items],
 			on

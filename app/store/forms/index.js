@@ -90,6 +90,7 @@ const listNameReducer = (state = {}, action) => {
 		action.items.forEach(item => {
 			state[item] = !!action.on
 		});
+		state[action.toggleName] = action.on
 		return state;
 	default:
 		return state;

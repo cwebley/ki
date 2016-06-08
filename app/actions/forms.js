@@ -39,6 +39,7 @@ export function toggleListItems (data) {
 	return {
 		type: c.TOGGLE_LIST_ITEMS,
 		formName: data.formName,
+		toggleName: data.toggleName,
 		listName: data.listName,
 		items: data.items,
 		on: data.on
