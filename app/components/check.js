@@ -22,18 +22,33 @@ export default React.createClass({
 	},
 
 	componentWillMount () {
+		if (this.context.registerWithList && !this.props.disabled) {
+			this.unregisterWithList = this.context.registerWithList(this.props.name);
+		}
+
 		// check its state from the store. if nothing is found it means that
 		// this is the first time this checkbox has rendered and we can respect the defaultChecked prop
 		if (this.props.defaultChecked && this.context.values[this.props.name] === undefined) {
 			this.updateValue(this.props.defaultChecked);
 		}
 	},
-	componentWillMount () {
-		this.unregisterWithList = this.context.registerWithList(this.props.name);
-	},
 
 	componentWillUnmount () {
-		this.unregisterWithList();
+		// not really a problem if this gets called an extra time
+		if (this.unregisterWithList) {
+			this.unregisterWithList();
+		}
+	},
+
+	componentWillReceiveProps (newProps) {
+		if (this.unregisterWithList && !this.props.disabled && newProps.disabled) {
+			// newly disabled, unregister from toggleAll method
+			return this.unregisterWithList()
+		}
+		if (this.context.registerWithList && this.props.disabled && !newProps.disabled) {
+			// no longer disabled, register it
+			return this.context.registerWithList(this.props.name);
+		}
 	},
 
 	updateValue (value) {
