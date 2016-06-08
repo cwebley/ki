@@ -202,7 +202,7 @@ class TournamentCreator extends Component {
 
 		const charDifference = Math.abs(myCharacters.length - opponentCharacters.length);
 		const minimumCharacters = Math.max(myCharacters.length, opponentCharacters.length);
-		const maximumCharacters = Math.floor((draftCharacters.length - charDifference) / 2) + charDifference;
+		const maximumCharacters = Math.floor((draftCharacters.length - charDifference) / 2) + minimumCharacters;
 
 		const charactersPerUserValues =
 			this.props.characters.map((character, i) => i + 1)
