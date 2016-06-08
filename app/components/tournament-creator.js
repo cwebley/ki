@@ -146,7 +146,7 @@ class TournamentCreator extends Component {
 	renderCharactersForm () {
 		const { formState } = this.props;
 		const draftCharacters = getListValues(formState, 'draftCharacters');
-		const opponentSlug = getFormValue(formState, opponentSlug) || 'Opponent';
+		const opponentSlug = getFormValue(formState, 'opponentSlug') || 'Opponent';
 
 		return (
 			<div>
