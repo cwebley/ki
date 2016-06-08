@@ -41,3 +41,20 @@ export const fetchCharacters = () =>
 			resolve(body);
 		});
 	});
+
+export const createTournament = (formData, token) =>
+	new Promise((resolve, reject) => {
+		nets({
+			method: 'POST',
+			url: config.apiBase + config.tournamentsPath,
+			json: formData,
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		}, (err, resp, body) => {
+			if (err || resp.statusCode >= 400) {
+				return reject(body);
+			}
+			resolve(body);
+		});
+	});

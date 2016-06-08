@@ -1,7 +1,7 @@
 import * as c from '../constants';
 import * as api from '../api';
 
-const signInUser = () => {
+const fetchCharacters = () => {
 	return dispatch =>
 		api.fetchCharacters()
 			.then(
@@ -12,4 +12,4 @@ const signInUser = () => {
 			)
 }
 
-export default signInUser;
+export default fetchCharacters;

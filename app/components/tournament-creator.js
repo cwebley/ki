@@ -11,12 +11,14 @@ import FlatButton from 'material-ui/FlatButton';
 
 import * as formActions from '../actions/forms';
 import fetchCharacters from '../actions/fetch-characters';
+import createTournament from '../actions/create-tournament';
 import Form from './form';
 import FormList from './form-list';
 import Text from './text';
 import Check from './check';
 import Select from './select';
 import FormListToggle from './form-list-toggle';
+import SubmitButton from './submit-button';
 
 import { getMe, getCharactersFromState, getFormState } from '../store';
 import { getFormValue, getListValues } from '../store/forms';
@@ -108,6 +110,7 @@ class TournamentCreator extends Component {
 				onSubmit={(data) => this.onSubmit(data)}
 			>
 				{formSection}
+			<SubmitButton />
 			</Form>
 		);
 	}
@@ -302,6 +305,21 @@ class TournamentCreator extends Component {
 			</div>
 		);
 	}
+
+	onSubmit (data) {
+		this.props.createTournament(data, this.props.me.token, formName)
+		// redirect to the home page if registration was successful
+
+
+
+		// .then(
+		// 	action => {
+		// 		if (action.data) {
+		// 			this.context.router.push('/')
+		// 		}
+		// 	}
+		// );
+	}
 }
 
 
@@ -311,4 +329,4 @@ const mapStateToProps = (state) => ({
 	formState: getFormState(state, formName)
 });
 
-export default connect(mapStateToProps, {...formActions, fetchCharacters})(TournamentCreator);
+export default connect(mapStateToProps, {...formActions, fetchCharacters, createTournament})(TournamentCreator);
