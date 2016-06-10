@@ -10,7 +10,7 @@ export default function createUpcomingListQuery (rConn, opts, cb) {
 
 	// assemble the the user data
 	const randomUserCharacters = range(0, config.defaults.upcomingListLength).map(() => {
-		return opts.user.characters[Math.floor(Math.random() * opts.user.characters.length)].uuid;
+		return opts.user.characters[Math.floor(Math.random() * opts.user.characters.length)];
 	});
 	const userKey = upcomingList(opts.uuid, opts.user.uuid);
 
@@ -30,7 +30,7 @@ export default function createUpcomingListQuery (rConn, opts, cb) {
 
 		// assemble the opponent data
 		const randomOpponentCharacters = range(0, config.defaults.upcomingListLength).map(() => {
-			return opts.opponent.characters[Math.floor(Math.random() * opts.opponent.characters.length)].uuid;
+			return opts.opponent.characters[Math.floor(Math.random() * opts.opponent.characters.length)];
 		});
 		const opponentKey = upcomingList(opts.uuid, opts.opponent.uuid);
 

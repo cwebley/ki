@@ -86,16 +86,16 @@ function addToTournamentCharactersTable (db, opts, cb) {
 	let values = [];
 	let params = [];
 
-	opts.user.characters.forEach((c, i) => {
+	opts.user.characters.forEach((cUuid, i) => {
 		values.push(`($${4 * i + 1}, $${4 * i + 2}, $${4 * i + 3}, $${4 * i + 4})`)
-		params.push(opts.uuid, opts.user.uuid, c.uuid, 7);
+		params.push(opts.uuid, opts.user.uuid, cUuid, 7);
 	});
 
 	const user1Vals = params.length;
 
-	opts.opponent.characters.forEach((c, i) => {
+	opts.opponent.characters.forEach((cUuid, i) => {
 		values.push(`($${4 * i + 1 + user1Vals}, $${4 * i + 2 + user1Vals}, $${4 * i + 3 + user1Vals}, $${4 * i + 4 + user1Vals})`);
-		params.push(opts.uuid, opts.opponent.uuid, c.uuid, 7);
+		params.push(opts.uuid, opts.opponent.uuid, cUuid, 7);
 	});
 
 	const sql = `
