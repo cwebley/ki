@@ -87,20 +87,20 @@ function addToTournamentCharactersTable (db, opts, cb) {
 	let params = [];
 
 	opts.user.characters.forEach((cUuid, i) => {
-		values.push(`($${4 * i + 1}, $${4 * i + 2}, $${4 * i + 3}, $${4 * i + 4})`)
-		params.push(opts.uuid, opts.user.uuid, cUuid, 7);
+		values.push(`($${3 * i + 1}, $${3 * i + 2}, $${3 * i + 3})`)
+		params.push(opts.uuid, opts.user.uuid, cUuid		);
 	});
 
 	const user1Vals = params.length;
 
 	opts.opponent.characters.forEach((cUuid, i) => {
-		values.push(`($${4 * i + 1 + user1Vals}, $${4 * i + 2 + user1Vals}, $${4 * i + 3 + user1Vals}, $${4 * i + 4 + user1Vals})`);
-		params.push(opts.uuid, opts.opponent.uuid, cUuid, 7);
+		values.push(`($${3 * i + 1 + user1Vals}, $${3 * i + 2 + user1Vals}, $${3 * i + 3 + user1Vals})`);
+		params.push(opts.uuid, opts.opponent.uuid, cUuid);
 	});
 
 	const sql = `
 		INSERT INTO tournament_characters
-			(tournament_uuid, user_uuid, character_uuid, value)
+			(tournament_uuid, user_uuid, character_uuid)
 		VALUES ${values.join(', ')}
 	`;
 
