@@ -14,6 +14,16 @@ export default function getTournamentHandler (req, res) {
 		if (!tournament) {
 			return res.status(404).send(r.tournamentNotFound);
 		}
+		// if user is logged in and in the tournament, make sure they are the first user returned
+		console.log("REQUSER: ", req.user)
+		if (req.user && req.user.uuid) {
+			const userIndex = tournament.users.result.indexOf(req.user.uuid);
+			console.log("USER INDEx: ", userIndex)
+			if (userIndex === 1) {
+				// logged in user in the second position, reverse the order
+				tournament.users.result.reverse();
+			}
+		}
 		return res.status(200).send(tournament);
 	});
 }

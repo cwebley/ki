@@ -24,10 +24,12 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 			if (err) {
 				return cb(err);
 			}
+			// results are normalized. result = array of userUuids, ids has the data in a map
 			tournament.users = {};
+			tournament.users.ids = {};
 			let users = [];
 			tournamentUsers.forEach(u => {
-				tournament.users[u.uuid] = u;
+				tournament.users.ids[u.uuid] = u;
 				users.push(u.uuid);
 			});
 
@@ -36,6 +38,7 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 				log.error(err, tournamentUsers);
 				return cb(err);
 			}
+			tournament.users.result = users;
 
 			/**
 			** get meta data from first user
@@ -46,11 +49,15 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 				}
 				// normalize characters by uuid
 				let characters = {};
+				let characterIds = [];
 				tournamentCharacters.forEach(c => {
 					characters[c.uuid] = c;
+					characterIds.push(c.uuid);
 				});
 				// add the first user's character data to the tourament data
-				tournament.users[users[0]].characters = characters;
+				tournament.users.ids[users[0]].characters = {}
+				tournament.users.ids[users[0]].characters.ids = characters;
+				tournament.users.ids[users[0]].characters.result = characterIds;
 
 				getUpcomingQuery(rConn, {
 					tournamentUuid: tournament.uuid,
@@ -60,7 +67,7 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 					if (err) {
 						return cb(err);
 					}
-					tournament.users[users[0]].upcoming = upcomingResults;
+					tournament.users.ids[users[0]].upcoming = upcomingResults;
 
 					/**
 					** get meta data from second user
@@ -71,11 +78,16 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 						}
 						// normalize characters by uuid
 						let characters = {};
+						let characterIds = [];
 						tournamentCharacters.forEach(c => {
 							characters[c.uuid] = c;
+							characterIds.push(c.uuid);
 						});
 						// add the first user's character data to the tourament data
-						tournament.users[users[1]].characters = characters;
+						// results are normalized. result is an array of uuids, ids is a map.
+						tournament.users.ids[users[1]].characters = {}
+						tournament.users.ids[users[1]].characters.ids = characters;
+						tournament.users.ids[users[1]].characters.result = characterIds;
 
 						getUpcomingQuery(rConn, {
 							tournamentUuid: tournament.uuid,
@@ -84,7 +96,7 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 							if (err) {
 								return cb(err);
 							}
-							tournament.users[users[1]].upcoming = upcomingResults;
+							tournament.users.ids[users[1]].upcoming = upcomingResults;
 
 
 							return cb(null, tournament);

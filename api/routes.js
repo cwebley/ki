@@ -1,5 +1,6 @@
 import express from 'express';
 import jwt from 'express-jwt';
+import jwtDecode from 'jwt-decode';
 import db from './persistence/pg';
 import redis from './persistence/redis';
 import config from './config';
@@ -26,7 +27,18 @@ router.use(redis.middleware({
 }));
 
 // validates token and sets req.user with token data
-let requiresLogin = jwt({secret: config.jwt.secret});
+const requiresLogin = jwt({secret: config.jwt.secret});
+
+// looks for a jwt token with user data, but doesn't require it
+const acceptUser = (req, res, next) => {
+	if (!req.headers.authorization || !req.headers.authorization.split(' ')[0] === 'Bearer') {
+		return next();
+	}
+	const token = req.headers.authorization.split(' ')[1];
+	req.user = jwtDecode(token);
+	return next();
+};
+
 
 router.post('/user/register', registerUser);
 router.post('/user/login', loginUser);
@@ -35,11 +47,11 @@ router.post('/characters', createCharacter);
 router.get('/characters', getCharacters);
 
 router.post('/tournaments', requiresLogin, createTournament);
-router.get('/tournament/:tournamentSlug', getTournament);
+router.get('/tournament/:tournamentSlug', acceptUser, getTournament);
 
 // TODO: require login
 // TODO: logged in user must be in the tournament
-router.post('/tournament/:tournamentSlug/game', submitGame);
-router.put('/tournament/:tournamentSlug/game', undoGame);
+router.post('/tournament/:tournamentSlug/game', requiresLogin, submitGame);
+router.put('/tournament/:tournamentSlug/game', requiresLogin, undoGame);
 
 export default router;

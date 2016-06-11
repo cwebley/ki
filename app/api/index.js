@@ -58,3 +58,19 @@ export const createTournament = (formData, token) =>
 			resolve(body);
 		});
 	});
+
+export const fetchTournament = (tournamentSlug, token) =>
+	new Promise((resolve, reject) => {
+		nets({
+			url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug,
+			json: true,
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		}, (err, resp, body) => {
+			if (err || resp.statusCode >= 400) {
+				return reject(body);
+			}
+			resolve(body);
+		});
+	});

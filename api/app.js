@@ -24,7 +24,7 @@ app.use((err, req, res, next) => {
     log.info("express caught an error", {err: err});
 
     if (err.name === 'UnauthorizedError') {
-        res.status(401).send(r(r.Unauthorized, err.message));
+        res.status(401).send(r(r.Unauthorized));
     }
 });
 

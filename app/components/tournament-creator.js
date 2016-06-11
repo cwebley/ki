@@ -62,7 +62,7 @@ class TournamentCreator extends Component {
 		stepIndex: 0,
 	};
 
-	componentWillMount () {
+	componentDidMount () {
 		this.props.fetchCharacters();
 	}
 
@@ -96,7 +96,7 @@ class TournamentCreator extends Component {
 				formSection = this.renderDraftForm();
 				break;
 			case 3:
-				formSection = 'Render finished content'
+				formSection = this.renderReview();
 				break;
 			default:
 				formSection = 'You shouldn\'t be here...'
@@ -225,36 +225,43 @@ class TournamentCreator extends Component {
 
 		return (
 			<div>
-			<h3>Draft Characters</h3>
-			<FormList
-				listName="draftCharacters"
-				formState={this.props.formState}
-				updateList={this.props.updateList}
-				toggleListItems={this.props.toggleListItems}
-			>
-				<FormListToggle />
-				{this.props.characters.map(c =>
-					<Check
-						key={c.uuid}
-						name={c.slug}
-						label={c.name}
-						disabled={myCharactersList[c.slug] || opponentCharactersList[c.slug]}
-					/>
-				)}
-			</FormList>
-			<Select
-				name="charactersPerUser"
-				label="Characters per player"
-				items={charactersPerUserValues}
-				defaultValue={maximumCharacters}
-			/>
-			<Select
-				name="maxStartingValue"
-				label="Max starting value"
-				items={config.oneToTwentyFive}
-				defaultValue={this.props.characters.length}
-			/>
+				<h3>Draft Characters</h3>
+				<FormList
+					listName="draftCharacters"
+					formState={this.props.formState}
+					updateList={this.props.updateList}
+					toggleListItems={this.props.toggleListItems}
+				>
+					<FormListToggle />
+					{this.props.characters.map(c =>
+						<Check
+							key={c.uuid}
+							name={c.slug}
+							label={c.name}
+							disabled={myCharactersList[c.slug] || opponentCharactersList[c.slug]}
+						/>
+					)}
+				</FormList>
+				<Select
+					name="charactersPerUser"
+					label="Characters per player"
+					items={charactersPerUserValues}
+					defaultValue={maximumCharacters}
+				/>
+				<Select
+					name="maxStartingValue"
+					label="Max starting value"
+					items={config.oneToTwentyFive}
+					defaultValue={this.props.characters.length}
+				/>
+			</div>
+		);
+	}
 
+	renderReview () {
+		return (
+			<div>
+				<SubmitButton label="Submit"/>
 			</div>
 		);
 	}
@@ -275,6 +282,7 @@ class TournamentCreator extends Component {
 						label={stepIndex === 2 ? 'Review' : 'Next'}
 						primary={true}
 						onTouchTap={() => this.nextStep()}
+						disabled={stepIndex > 2}
 					/>
 				</div>
 			</div>
