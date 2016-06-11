@@ -30,7 +30,9 @@ export default function createTournamentQuery (db, opts, cb) {
 								uuid: opts.uuid,
 								name: opts.name,
 								slug: opts.slug,
-								goal: opts.goal
+								goal: opts.goal,
+								charactersPerUser: opts.charactersPerUser,
+								maxStartingValue: opts.maxStartingValue
 							});
 						});
 					});
@@ -43,11 +45,11 @@ export default function createTournamentQuery (db, opts, cb) {
 function addToTournamentsTable (db, opts, cb) {
 	const sql = `
 		INSERT INTO tournaments
-			(uuid, name, slug, goal)
+			(uuid, name, slug, goal, characters_per_user, max_starting_value)
 		VALUES
-			($1, $2, $3, $4)
+			($1, $2, $3, $4, $5, $6)
 	`;
-	const params = [opts.uuid, opts.name, opts.slug, opts.goal];
+	const params = [opts.uuid, opts.name, opts.slug, opts.goal, opts.charactersPerUser, opts.maxStartingValue];
 
 	db.query(sql, params, (err, results) => {
 		if (err) {

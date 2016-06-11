@@ -94,7 +94,13 @@ r.NoCharactersPerUser = {
 	field: 'charactersPerUser',
 	level: 'error',
 	id: 'noCharactersPerUser'
-}
+};
+r.NoMaxStartingValue = {
+	message: 'Missing maxStartingValue',
+	field: 'maxStartingValue',
+	level: 'error',
+	id: 'noMaxStartingValue'
+};
 r.InvalidOpponentSlug = {
 	message: 'Invalid opponentSlug. Opponent does not exist',
 	field: 'opponentSlug',

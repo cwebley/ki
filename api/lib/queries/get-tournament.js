@@ -4,6 +4,7 @@ import log from '../../logger';
 export default function getTournamentQuery (db, field, value, cb) {
 	const sql = `
 		SELECT uuid, name, slug, goal, champion_uuid AS "championUuid", time
+		, characters_per_user AS "charactersPerUser", max_starting_value AS maxStartingValue
 		FROM tournaments
 		WHERE ${field} = $1
 	`;

@@ -30,6 +30,12 @@ export default React.createClass({
 		};
 	},
 
+	componentWillMount () {
+		if (this.props.defaultValue || defaultItem && defaultItem.value) {
+			this.updateValue(this.props.defaultValue || defaultItem && defaultItem.value);
+		}
+	},
+
 	updateValue (value) {
 		this.context.update({
 			formName: this.context.formName,

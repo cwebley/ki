@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS tournaments (
 	name varchar(255) NOT NULL UNIQUE,
 	slug varchar(255) NOT NULL UNIQUE,
 	goal integer NOT NULL,
+	characters_per_user integer NOT NULL,
+	max_starting_value integer NOT NULL,
 	champion_uuid char(36) REFERENCES users (uuid),
 	time timestamp DEFAULT now(),
 	PRIMARY KEY (uuid)

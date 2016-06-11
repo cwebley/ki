@@ -13,9 +13,8 @@ export default function createTournamentHandler (req, res) {
 		name: req.body.name,
 		goal: parseInt(req.body.goal, 10) || config.defaults.goal,
 		startCoins: parseInt(req.body.startingStock, 10) || config.defaults.startCoins,
-
-		// charactersPerUser: req.body.charactersPerUser,
-		// maxStartingValue: req.body.maxStartingValue
+		charactersPerUser: req.body.charactersPerUser,
+		maxStartingValue: req.body.maxStartingValue
 	};
 
 	req.body.myCharacters = req.body.myCharacters || [];
@@ -37,6 +36,9 @@ export default function createTournamentHandler (req, res) {
 	}
 	if (!req.body.charactersPerUser) {
 		problems.push(r.NoCharactersPerUser);
+	}
+	if (!req.body.maxStartingValue) {
+		problems.push(r.NoMaxStartingValue);
 	}
 	if (problems.length) {
 		return res.status(400).send(r(...problems));
