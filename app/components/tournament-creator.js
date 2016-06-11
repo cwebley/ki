@@ -110,7 +110,6 @@ class TournamentCreator extends Component {
 				onSubmit={(data) => this.onSubmit(data)}
 			>
 				{formSection}
-			<SubmitButton />
 			</Form>
 		);
 	}

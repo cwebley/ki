@@ -31,9 +31,15 @@ export default React.createClass({
 	},
 
 	componentWillMount () {
-		if (this.props.defaultValue || defaultItem && defaultItem.value) {
-			this.updateValue(this.props.defaultValue || defaultItem && defaultItem.value);
+		if (this.props.defaultValue) {
+			this.updateValue(this.props.defaultValue);
+			return;
 		}
+		const defaultItem = this.props.items.filter(item => item.default)[0];
+		if (defaultItem) {
+			this.updateValue(defaultItem.value);
+		}
+
 	},
 
 	updateValue (value) {
