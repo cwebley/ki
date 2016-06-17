@@ -5,11 +5,6 @@ CREATE TABLE IF NOT EXISTS characters (
 	season integer NOT NULL
 );
 
--- -- N/A character to satisfy `history` foreign key edgecases where the character is not important
--- INSERT INTO characters (name) VALUES
--- 	('NA')
--- ;
-
 CREATE TABLE IF NOT EXISTS users (
 	uuid char(36) NOT NULL,
 	name varchar(255) NOT NULL UNIQUE,
@@ -55,6 +50,29 @@ CREATE TABLE IF NOT EXISTS user_characters (
 	PRIMARY KEY (user_uuid, character_uuid)
 );
 
+CREATE TABLE IF NOT EXISTS draft_characters (
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	character_uuid char(36) NOT NULL REFERENCES characters (uuid),
+	PRIMARY KEY (tournament_uuid, character_uuid)
+);
+
+CREATE TABLE IF NOT EXISTS drafts (
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	character_uuid char(36) NOT NULL REFERENCES characters (uuid),
+	pick integer NOT NULL,
+	PRIMARY KEY (tournament_uuid, character_uuid)
+);
+
+CREATE TABLE IF NOT EXISTS seeds (
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	opponent_uuid char(36) NOT NULL REFERENCES users (uuid),
+	character_uuid char(36) NOT NULL REFERENCES characters (uuid),
+ 	relative_value integer NOT NULL,
+	PRIMARY KEY (tournament_uuid, character_uuid)
+);
+
 CREATE TABLE IF NOT EXISTS games (
 	uuid char(36) NOT NULL,
 	winning_player_uuid char(36) NOT NULL REFERENCES users (uuid),
@@ -76,28 +94,16 @@ CREATE TABLE IF NOT EXISTS games (
 	time timestamp DEFAULT now(),
 	PRIMARY KEY (uuid)
 );
---
--- CREATE TABLE IF NOT EXISTS seeds (
--- 	id serial NOT NULL PRIMARY KEY,
--- 	tournamentId integer NOT NULL REFERENCES tournaments (id),
--- 	userId integer NOT NULL REFERENCES users (id),
--- 	characterId integer NOT NULL REFERENCES characters (id),
--- 	value integer NOT NULL DEFAULT 0,
--- 	UNIQUE (tournamentId, userId, characterId)
--- );
---
---
--- CREATE TABLE IF NOT EXISTS charactersData (
--- 	id serial NOT NULL PRIMARY KEY,
--- 	userId integer NOT NULL REFERENCES users (id),
--- 	characterId integer NOT NULL REFERENCES characters (id),
--- 	wins integer NOT NULL DEFAULT 0,
--- 	losses integer NOT NULL DEFAULT 0,
--- 	globalBestStreak integer NOT NULL DEFAULT 0,
--- 	fireWins integer NOT NULL DEFAULT 0,
--- 	UNIQUE (userId, characterId)
--- );
---
+
+CREATE TABLE IF NOT EXISTS tournament_seeds (
+	uuid char(36) NOT NULL,
+	tournamentId integer NOT NULL REFERENCES tournaments (uuid),
+	user_uuid integer NOT NULL REFERENCES users (uuid),
+	character_uuid integer NOT NULL REFERENCES characters (uuid),
+	value integer,
+	PRIMARY KEY (uuid, user_uuid, character_uuid)
+);
+
 CREATE TABLE IF NOT EXISTS tournament_characters (
 	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
 	user_uuid char(36) NOT NULL REFERENCES users (uuid),

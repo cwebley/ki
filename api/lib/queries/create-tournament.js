@@ -17,22 +17,26 @@ export default function createTournamentQuery (db, opts, cb) {
 					if (err) {
 						return rollback(db, err, cb);
 					}
-
-					upsertToUserCharacters(db, opts, (err, results) => {
+					addToDraftCharactersTable(db, opts, (err, results) => {
 						if (err) {
 							return rollback(db, err, cb);
 						}
+						upsertToUserCharacters(db, opts, (err, results) => {
+							if (err) {
+								return rollback(db, err, cb);
+							}
 
-						// end transaction
-						db.query('COMMIT', () => {
-							// return the tournament object
-							return cb(null, {
-								uuid: opts.uuid,
-								name: opts.name,
-								slug: opts.slug,
-								goal: opts.goal,
-								charactersPerUser: opts.charactersPerUser,
-								maxStartingValue: opts.maxStartingValue
+							// end transaction
+							db.query('COMMIT', () => {
+								// return the tournament object
+								return cb(null, {
+									uuid: opts.uuid,
+									name: opts.name,
+									slug: opts.slug,
+									goal: opts.goal,
+									charactersPerUser: opts.charactersPerUser,
+									maxStartingValue: opts.maxStartingValue
+								});
 							});
 						});
 					});
@@ -84,13 +88,16 @@ function addToTournamentUsersTable (db, opts, cb) {
 }
 
 function addToTournamentCharactersTable (db, opts, cb) {
+	if (!opts.user.characters.length || !opts.opponent.characters.length) {
+		return cb();
+	}
 	// this query needs to be constructed based on the characters passed in
 	let values = [];
 	let params = [];
 
 	opts.user.characters.forEach((cUuid, i) => {
 		values.push(`($${3 * i + 1}, $${3 * i + 2}, $${3 * i + 3})`)
-		params.push(opts.uuid, opts.user.uuid, cUuid		);
+		params.push(opts.uuid, opts.user.uuid, cUuid);
 	});
 
 	const user1Vals = params.length;
@@ -103,6 +110,37 @@ function addToTournamentCharactersTable (db, opts, cb) {
 	const sql = `
 		INSERT INTO tournament_characters
 			(tournament_uuid, user_uuid, character_uuid)
+		VALUES ${values.join(', ')}
+	`;
+
+	db.query(sql, params, (err, results) => {
+		// log the error but handle it in the calling func
+		if (err) {
+			log.error(err, {
+				sql: sql,
+				params: params
+			});
+		}
+		cb(err, results);
+	});
+}
+
+function addToDraftCharactersTable (db, opts, cb) {
+	if (!opts.draft.characters.length) {
+		return cb();
+	}
+	// this query needs to be constructed based on the characters passed in
+	let values = [];
+	let params = [];
+
+	opts.draft.characters.forEach((cUuid, i) => {
+		values.push(`($${2 * i + 1}, $${2 * i + 2})`);
+		params.push(opts.uuid, cUuid);
+	});
+
+	const sql = `
+		INSERT INTO draft_characters
+			(tournament_uuid, character_uuid)
 		VALUES ${values.join(', ')}
 	`;
 

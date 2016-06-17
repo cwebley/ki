@@ -2,6 +2,7 @@ import log from '../../logger';
 import getTournamentQuery from '../queries/get-tournament';
 import getTournamentUsersQuery from '../queries/get-tournament-users';
 import getTournamentCharactersQuery from '../queries/get-tournament-characters';
+import getDraftCharactersQuery from '../queries/get-draft-characters';
 import getUpcomingQuery from '../queries/get-upcoming';
 
 export default function getFullTournamentData (db, rConn, tournamentSlug, upcomingAmount, cb) {
@@ -89,17 +90,24 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 						tournament.users.ids[users[1]].characters.ids = characters;
 						tournament.users.ids[users[1]].characters.result = characterIds;
 
-						getUpcomingQuery(rConn, {
-							tournamentUuid: tournament.uuid,
-							userUuid: users[1]
-						}, (err, upcomingResults) => {
+						getDraftCharactersQuery(db, tournament.uuid, users, (err, draftCharacters) => {
 							if (err) {
 								return cb(err);
 							}
-							tournament.users.ids[users[1]].upcoming = upcomingResults;
+							tournament.draft = {
+								characters: draftCharacters
+							};
 
-
-							return cb(null, tournament);
+							getUpcomingQuery(rConn, {
+								tournamentUuid: tournament.uuid,
+								userUuid: users[1]
+							}, (err, upcomingResults) => {
+								if (err) {
+									return cb(err);
+								}
+								tournament.users.ids[users[1]].upcoming = upcomingResults;
+								return cb(null, tournament);
+							});
 						});
 					});
 				});
