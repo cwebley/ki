@@ -43,7 +43,7 @@ class TournamentLanding extends Component {
 				<div style={styles.pageStyle}>
 					CHARACTERS AND STUFF
 					{this.renderLeftUser(hydratedUsers[0])}
-					{this.renderRightUser(hydratedUsers[1])}
+					{this.renderRightUser(hydratedUsers[1], this.props.tournament.draft)}
 					<div>
 						{ this.props.children }
 					</div>
@@ -101,8 +101,11 @@ class TournamentLanding extends Component {
 	// 	return styles;
 	// }
 
-	renderRightUser (user) {
-		console.log("R*GHT USER : ", user)
+	renderRightUser (user, draftCharacters) {
+		console.log("R*GHT USER : ", user, draftCharacters);
+		if (!user.seeded) {
+			return this.renderDraggableSeeds(user, draftCharacters)
+		}
 		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
 		return (
 			<div style={styles.rightUserStyle}>
@@ -112,6 +115,12 @@ class TournamentLanding extends Component {
 					{characters.map(c => this.renderCharacter(c))}
 				</ol>
 			</div>
+		);
+	}
+
+	renderDraggableSeeds (user, draftCharacters) {
+		return (
+			<div>draggablestuff</div>
 		);
 	}
 

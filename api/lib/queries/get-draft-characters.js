@@ -26,7 +26,6 @@ export default function getDraftCharactersQuery (db, tournamentUuid, userUuids, 
 				}
 			}
 		});
-		console.log("1DC: ", draftCharacterData)
 
 		getDraftCharactersForUserQuery(db, tournamentUuid, userUuids[1], (err, results) => {
 			if (err) {
