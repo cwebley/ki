@@ -95,7 +95,8 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 								return cb(err);
 							}
 							tournament.draft = {
-								characters: draftCharacters
+								ids: draftCharacters,
+								result: Object.keys(draftCharacters)
 							};
 
 							getUpcomingQuery(rConn, {

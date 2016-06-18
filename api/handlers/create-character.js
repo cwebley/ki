@@ -19,7 +19,6 @@ export default function createCharacterHandler (req, res) {
 	if (problems.length) {
 		return res.status(400).send(r(...problems));
 	}
-
 	if (opts.name.length > 25) {
 		problems.push(r.InvalidName);
 	}

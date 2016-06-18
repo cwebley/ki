@@ -119,6 +119,10 @@ class TournamentLanding extends Component {
 	}
 
 	renderDraggableSeeds (user, draftCharacters) {
+		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
+		const draft = draftCharacters.result.map(uuid => draftCharacters.ids[uuid]);
+		const allDraft = [...characters, ...draft];
+		console.log("ALL DRAFT: ", allDraft)
 		return (
 			<div>draggablestuff</div>
 		);
