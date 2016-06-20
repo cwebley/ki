@@ -22,7 +22,7 @@ var DragCardContainer = React.createClass({
 	},
 
 	componentWillReceiveProps: function(newProps){
-		// While we're dragging, don't re-render unless polling picked up a significant change 
+		// While we're dragging, don't re-render unless polling picked up a significant change
 		if(this.state.dragActive && this.state.cards.length === newProps.cards.length){
 			return;
 		}

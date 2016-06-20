@@ -8,6 +8,8 @@ import get from 'lodash.get';
 
 import Paper from 'material-ui/Paper';
 
+import SeedContainer from './seed-container';
+
 const styles = {
 	pageStyle: {
 		textAlign: 'center'
@@ -52,7 +54,7 @@ class TournamentLanding extends Component {
 	}
 
 	renderLeftUser (user) {
-		console.log("LEFT USER : ", user)
+		console.log("LEFT USER : ", user);
 		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
 		return (
 			<div style={styles.leftUserStyle}>
@@ -92,15 +94,6 @@ class TournamentLanding extends Component {
 
 	}
 
-	// getStyles () {
-	//
-	//
-	// 	if (this.props.width === MEDIUM || this.props.width === LARGE) {
-	// 		styles.content = Object.assign(styles.content, styles.contentWhenMedium);
-	// 	}
-	// 	return styles;
-	// }
-
 	renderRightUser (user, draftCharacters) {
 		console.log("R*GHT USER : ", user, draftCharacters);
 		if (!user.seeded) {
@@ -122,9 +115,14 @@ class TournamentLanding extends Component {
 		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
 		const draft = draftCharacters.result.map(uuid => draftCharacters.ids[uuid]);
 		const allDraft = [...characters, ...draft];
-		console.log("ALL DRAFT: ", allDraft)
 		return (
-			<div>draggablestuff</div>
+			<div style={styles.rightUserStyle}>
+				RIGHT USER
+				<div>{user.name}</div>
+				<SeedContainer
+					characters={allDraft}
+				/>
+			</div>
 		);
 	}
 

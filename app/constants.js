@@ -15,3 +15,8 @@ export const CREATE_TOURNAMENT_FAILURE = 'CREATE_TOURNAMENT_FAILURE';
 
 // localStorage property for the auth token
 export const LOCAL_STORAGE_PROPERTY = 'ki-state';
+
+
+export const ItemTypes = {
+	DRAG_CHARACTER: 'draggableCharacter'
+};
