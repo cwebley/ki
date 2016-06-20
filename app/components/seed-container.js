@@ -8,53 +8,46 @@ class SeedContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.moveCharacter = this.moveCharacter.bind(this);
-
-		this.state = {
-			characters: this.props.characters,
-			dragActive: false
-		}
 	}
 
 	static propTypes = {
-		characters: React.PropTypes.arrayOf(
-			React.PropTypes.object.isRequired
-		).isRequired
+		characters: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+		maxStartingValue: PropTypes.number.isRequired,
+		updateSeeds: PropTypes.func.isRequired
 	};
 
 	render () {
 		return (
 			<div>
 			{
-				this.state.characters.map(function(character){
+				this.props.characters.map((character, i, thisArray) => {
 					return (
 						<DraggableCharacter
 							key={character.uuid}
 							id={character.uuid}
 							name={character.name}
-							value={character.value}
+							draftCharacter={!!character.users}
+							value={Math.floor((i * this.props.maxStartingValue) / thisArray.length) + 1}
 							moveCharacter={this.moveCharacter}
 						/>
 					);
-				}.bind(this))
+				})
 			}
 			</div>
 		);
 	}
 
 	moveCharacter (id, hoverId) {
-		const { characters } = this.state;
+		const { characters } = this.props;
 		const character = characters.filter(c => c.uuid === id)[0];
 		const hoverCharacter = characters.filter(c => c.uuid === hoverId)[0];
 		const characterIndex = characters.indexOf(character);
 		const hoverIndex = characters.indexOf(hoverCharacter);
 
-		const stateWithCharacterSpliced = [...this.state.characters.slice(0, characterIndex), ...this.state.characters.slice(characterIndex + 1)];
+		const stateWithCharacterSpliced = [...this.props.characters.slice(0, characterIndex), ...this.props.characters.slice(characterIndex + 1)];
 		const stateWithCharacterMoved = [...stateWithCharacterSpliced.slice(0, hoverIndex), character, ...stateWithCharacterSpliced.slice(hoverIndex)];
 
-		this.setState({
-			characters: stateWithCharacterMoved,
-			dragActive: true
-		});
+		this.props.updateSeeds(stateWithCharacterMoved);
 	}
 }
 

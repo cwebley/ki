@@ -5,11 +5,6 @@ import flow from 'lodash.flow';
 
 import Paper from 'material-ui/Paper';
 
-const styles = {
-	border: '1px dashed gray',
-	cursor: 'move'
-};
-
 class DraggableCharacter extends Component {
 	constructor(props) {
 		super(props);
@@ -23,6 +18,7 @@ class DraggableCharacter extends Component {
 
 	static propTypes = {
 		name: PropTypes.string.isRequired,
+		draftCharacter: PropTypes.bool,
 		moveCharacter: PropTypes.func.isRequired,
 		connectDragSource: React.PropTypes.func.isRequired,
 		connectDropTarget: React.PropTypes.func.isRequired,
@@ -30,11 +26,12 @@ class DraggableCharacter extends Component {
 	};
 
 	render () {
-		const opacity = this.props.isDragging ? 0 : 1;
-
+		const backgroundStyle = this.props.draftCharacter ? '#ddd' : "#fff";
 		return this.props.connectDragSource(this.props.connectDropTarget(
-			<div style={{...styles, opacity}}>
-				<Paper>
+			<div style={this.getStyles()}>
+				<Paper
+					style={{background: backgroundStyle}}
+				>
 					<div>
 						{this.props.value || '?'}
 					</div>
@@ -47,6 +44,18 @@ class DraggableCharacter extends Component {
 		));
 	}
 
+	getStyles () {
+		const styles = {
+			border: '1px dashed gray',
+			cursor: 'move'
+		};
+
+		if (this.props.isDragging) {
+			styles.opacity = 0;
+		}
+		return styles;
+	}
+
 	moveCharacter (id, hoverId) {
 		const { characters } = this.state;
 
@@ -55,7 +64,7 @@ class DraggableCharacter extends Component {
 		const characterIndex = characters.indexOf(character);
 		const hoverIndex = characters.indexOf(hoverCharacter);
 
-		const stateWithCharacterSpliced = [...this.state.characters.slice(0, characterIndex), ...cs.slice(characterIndex + 1)];
+		const stateWithCharacterSpliced = [...this.state.characters.slice(0, characterIndex), ...this.state.characters.slice(characterIndex + 1)];
 		const stateWithCharacterMoved = [...stateWithCharacterSpliced.slice(0, hoverIndex), character, ...stateWithCharacterSpliced.slice(hoverIndex)];
 
 		this.setState({

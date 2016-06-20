@@ -19,6 +19,12 @@ const tournamentReducer = (state = {}, action) => {
 		return {
 			...action.data
 		};
+	case c.UPDATE_SEEDS:
+		return {
+			...state,
+			seedCharacters: action.data,
+			seedValues: action.data.map(c => c.slug)
+		};
 	default:
 		return state;
 	}

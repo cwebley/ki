@@ -14,5 +14,3 @@ const fetchTournament = (tournamentSlug, token) => {
 }
 
 export default fetchTournament;
-
-export const getTournamentFromState = (tournamentSlug) => state.tournaments[tournamentSlug] || {};

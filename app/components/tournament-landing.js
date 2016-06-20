@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
 import fetchTournament from '../actions/fetch-tournament';
+import updateSeeds from '../actions/update-seeds';
 
 import { getTournamentFromState, getMe } from '../store';
 import get from 'lodash.get';
@@ -30,11 +31,24 @@ const styles = {
 }
 
 class TournamentLanding extends Component {
+	constructor(props) {
+		super(props);
+		this.updateSeeds = this.updateSeeds.bind(this);
+	}
+
+	static propTypes = {
+		me: PropTypes.object,
+		tournament: PropTypes.object.isRequired,
+		fetchTournament:PropTypes.func.isRequired,
+		updateSeeds:PropTypes.func.isRequired
+	};
+
 	componentDidMount () {
 		this.props.fetchTournament(this.props.params.tournamentSlug, this.props.me.token);
 	}
 
 	render () {
+		console.log("T: ", this.props.tournament)
 		if (!this.props.tournament.users) {
 			return (
 				<div>Tournament loading...</div>
@@ -65,33 +79,6 @@ class TournamentLanding extends Component {
 				</ol>
 			</div>
 		);
-
-		/*
-			<div className={topClass.join(' ')}>
-			  <div className="card-left-column">
-
-				<div className="value-wrapper">
-				  <button className={upArrowClass}></button>
-				  <div className="value">
-					<span className="value-text">{this.props.value}</span>
-				  </div>
-				  <button className={downArrowClass} onClick={this._downArrowClick}></button>
-				</div>
-				<div className="character-info">
-				  <h3 className="character-name">{this.props.name}</h3>
-				  <div className="record">{this.props.wins} - {this.props.losses}</div>
-				</div>
-
-			  </div>
-			  <div className="card-right-column">
-			  <span className="streak">{streakText}</span>
-			  </div>
-			  <div className="card-center-column">
-				<button className={btnClass} onClick={this._onClick}>Choose</button>
-			  </div>
-			</div>
-		*/
-
 	}
 
 	renderRightUser (user, draftCharacters) {
@@ -112,15 +99,25 @@ class TournamentLanding extends Component {
 	}
 
 	renderDraggableSeeds (user, draftCharacters) {
-		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
-		const draft = draftCharacters.result.map(uuid => draftCharacters.ids[uuid]);
-		const allDraft = [...characters, ...draft];
+		let characters;
+		let draft;
+		let seedCharacters;
+		if (!this.props.tournament.seedCharacters) {
+			characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
+			draft = draftCharacters.result.map(uuid => draftCharacters.ids[uuid]);
+			seedCharacters = [...characters, ...draft];
+		}
+		else {
+			seedCharacters = this.props.tournament.seedCharacters
+		}
 		return (
 			<div style={styles.rightUserStyle}>
 				RIGHT USER
 				<div>{user.name}</div>
 				<SeedContainer
-					characters={allDraft}
+					characters={seedCharacters}
+					maxStartingValue={this.props.tournament.maxStartingValue}
+					updateSeeds={this.updateSeeds}
 				/>
 			</div>
 		);
@@ -163,6 +160,10 @@ class TournamentLanding extends Component {
 			</li>
 		);
 	}
+
+	updateSeeds(data) {
+		this.props.updateSeeds(this.props.tournament.slug, data)
+	}
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -172,4 +173,4 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-export default connect(mapStateToProps, { fetchTournament })(TournamentLanding);
+export default connect(mapStateToProps, { fetchTournament, updateSeeds })(TournamentLanding);
