@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS tournaments (
 	name varchar(255) NOT NULL UNIQUE,
 	slug varchar(255) NOT NULL UNIQUE,
 	goal integer NOT NULL,
+	active boolean NOT NULL DEFAULT false,
 	characters_per_user integer NOT NULL,
 	max_starting_value integer NOT NULL,
 	champion_uuid char(36) REFERENCES users (uuid),
@@ -33,6 +34,8 @@ CREATE TABLE IF NOT EXISTS tournaments (
 CREATE TABLE IF NOT EXISTS tournament_users (
 	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
 	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	seeded boolean NOT NULL DEFAULT false,
+	drafting boolean NOT NULL DEFAULT false,
 	wins integer NOT NULL DEFAULT 0,
 	losses integer NOT NULL DEFAULT 0,
 	streak integer NOT NULL DEFAULT 0,

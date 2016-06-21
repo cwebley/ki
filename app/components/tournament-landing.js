@@ -115,6 +115,7 @@ class TournamentLanding extends Component {
 	}
 
 	renderCenter (stillSeeding) {
+		// this.props.tournament.users.ids[this.props.tournament.users.result[1]]
 		return (
 			<div style={styles.centerColStyle}>
 				CHARACTERS AND STUFF
@@ -129,19 +130,17 @@ class TournamentLanding extends Component {
 
 	renderRightUser (user, draftCharacters) {
 		console.log("R*GHT USER : ", user, draftCharacters);
-		if (!user.seeded) {
-			return this.renderDraggableSeeds(user, draftCharacters)
-		}
-		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
-		return (
-			<div style={styles.rightUserStyle}>
-				RIGHT USER
-				<div>{user.name}</div>
-				<ol style={styles.characterListStyle}>
-					{characters.map(c => this.renderCharacter(c))}
-				</ol>
-			</div>
-		);
+		return this.renderDraggableSeeds(user, draftCharacters)
+		// const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
+		// return (
+		// 	<div style={styles.rightUserStyle}>
+		// 		RIGHT USER
+		// 		<div>{user.name}</div>
+		// 		<ol style={styles.characterListStyle}>
+		// 			{characters.map(c => this.renderCharacter(c))}
+		// 		</ol>
+		// 	</div>
+		// );
 	}
 
 	renderDraggableSeeds (user, draftCharacters) {
@@ -212,7 +211,6 @@ class TournamentLanding extends Component {
 	}
 
 	submitSeeds() {
-		console.log("SS: ", this.props.tournament)
 		this.props.submitSeeds(this.props.tournament.slug, this.props.tournament.seedValues, this.props.me.token);
 	}
 }

@@ -56,7 +56,27 @@ export default function submitSeedsQuery (db, opts, cb) {
 			return rollback(db, err, cb);
 		}
 
-		async.parallel(tcUpdateQueries, cb);
+		async.parallel(tcUpdateQueries, (err, results) => {
+			if (err) {
+				return rollback(db, err, cb);
+			}
+
+			// update the `seeded` field of tournament_users
+			const tuSql = `
+				UPDATE tournament_users
+					SET seeded = $1
+					WHERE tournament_uuid = $2
+					AND user_uuid = $3
+			`;
+			const tuParams = [true, opts.tournamentUuid, opts.userUuid];
+
+			db.query(tuSql, tuParams, (err, results) => {
+				if (err) {
+					return rollback(db, err, cb);
+				}
+				return cb(null, results);
+			});
+		});
 	});
 }
 

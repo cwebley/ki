@@ -84,6 +84,7 @@ export default function submitGameHandler (req, res) {
 				tournamentSlug: req.params.tournamentSlug,
 				userUuid: req.user.uuid
 			}, (err, updatedTournament) => {
+				console.log("UPDATED TOURNAMENT: ", JSON.stringify(updatedTournament, null, 4))
 				if (err) {
 					return res.status(500).send(r.internal);
 				}

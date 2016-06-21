@@ -8,12 +8,14 @@ const submitSeeds = (tournamentSlug, seedValues, token) => dispatch => {
 				body => {
 					return dispatch({
 						type: c.SUBMIT_SEEDS_SUCCESS,
+						tournamentSlug,
 						data: body
 					})
 				},
 				error => {
 					return dispatch({
 						type: c.SUBMIT_SEEDS_FAILURE,
+						tournamentSlug,
 						data: seedValues,
 						reasons: (error && error.reasons) || [GENERIC_ERROR]
 					})
