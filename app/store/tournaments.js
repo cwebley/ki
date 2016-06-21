@@ -18,6 +18,7 @@ const tournamentReducer = (state = {}, action) => {
 	case c.FETCH_TOURNAMENT_SUCCESS:
 	case c.SUBMIT_SEEDS_SUCCESS:
 		return {
+			...state,
 			...action.data
 		};
 	case c.UPDATE_SEEDS:

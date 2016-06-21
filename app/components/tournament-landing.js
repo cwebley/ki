@@ -56,13 +56,13 @@ class TournamentLanding extends Component {
 				if (!this.props.tournament.users) {
 					return;
 				}
-				let stillSeeding = false;
+				let seedingInProgress = false;
 				this.props.tournament.users.result.forEach(uuid => {
 					if (!this.props.tournament.users.ids[uuid].seeded) {
-						stillSeeding = true;
+						seedingInProgress = true;
 					}
 				});
-				if (!stillSeeding) {
+				if (!seedingInProgress) {
 					return;
 				}
 				const opponent = this.props.tournament.users.ids[this.props.tournament.users.result[1]];
@@ -81,18 +81,22 @@ class TournamentLanding extends Component {
 		}
 
 		const hydratedUsers = this.props.tournament.users.result.map(uuid => this.props.tournament.users.ids[uuid]);
-		let stillSeeding = false;
+		let seedingInProgress = false;
+		let draftInProgress = false;
 		hydratedUsers.forEach(u => {
 			if (!u.seeded) {
-				stillSeeding = true;
+				seedingInProgress = true;
+			}
+			if (u.draftInProgress) {
+				draftInProgress = true;
 			}
 		});
 
 		return (
 				<div style={styles.pageStyle}>
 					{this.renderLeftUser(hydratedUsers[0])}
-					{this.renderCenter(stillSeeding)}
-					{this.renderRightUser(hydratedUsers[1], this.props.tournament.draft)}
+					{this.renderCenter(seedingInProgress, draftInProgress)}
+					{this.renderRightUser(seedingInProgress)}
 					<div>
 						{ this.props.children }
 					</div>
@@ -114,57 +118,45 @@ class TournamentLanding extends Component {
 		);
 	}
 
-	renderCenter (stillSeeding) {
-		// this.props.tournament.users.ids[this.props.tournament.users.result[1]]
+	renderCenter (seedingInProgress, draftInProgress) {
 		return (
 			<div style={styles.centerColStyle}>
 				CHARACTERS AND STUFF
-				{stillSeeding && <RaisedButton
+				{seedingInProgress && <RaisedButton
 					label="Submit Seeds"
 					primary={true}
+					disabled={this.props.tournament.users.ids[this.props.tournament.users.result[0]].seeded}
 					onTouchTap={() => this.submitSeeds()}
 				/>}
+				{draftInProgress && this.renderDraft()}
 			</div>
 		);
 	}
 
-	renderRightUser (user, draftCharacters) {
-		console.log("R*GHT USER : ", user, draftCharacters);
-		return this.renderDraggableSeeds(user, draftCharacters)
-		// const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
-		// return (
-		// 	<div style={styles.rightUserStyle}>
-		// 		RIGHT USER
-		// 		<div>{user.name}</div>
-		// 		<ol style={styles.characterListStyle}>
-		// 			{characters.map(c => this.renderCharacter(c))}
-		// 		</ol>
-		// 	</div>
-		// );
-	}
-
-	renderDraggableSeeds (user, draftCharacters) {
-		let characters;
-		let draft;
-		let seedCharacters;
-		if (!this.props.tournament.seedCharacters) {
-			characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
-			draft = draftCharacters.result.map(uuid => draftCharacters.ids[uuid]);
-			seedCharacters = [...characters, ...draft];
-		}
-		else {
-			seedCharacters = this.props.tournament.seedCharacters
-		}
+	renderRightUser (seedingInProgress) {
+		const { tournament } = this.props;
+		const user = tournament.users.ids[tournament.users.result[1]];
+		const userCharacters = user.characters.result.map(uuid => user.characters.ids[uuid]);
+		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
 		return (
 			<div style={styles.rightUserStyle}>
 				RIGHT USER
 				<div>{user.name}</div>
-				<SeedContainer
-					characters={seedCharacters}
-					maxStartingValue={this.props.tournament.maxStartingValue}
+				{seedingInProgress && <SeedContainer
+					characters={tournament.seedCharacters || []}
+					maxStartingValue={tournament.maxStartingValue}
 					updateSeeds={this.updateSeeds}
-				/>
+				/>}
+				{!seedingInProgress && <ol style={styles.characterListStyle}>
+					{characters.map(c => this.renderCharacter(c))}
+				</ol>}
 			</div>
+		);
+	}
+
+	renderDraft () {
+		return (
+			<div>Draft it up</div>
 		);
 	}
 
@@ -177,7 +169,7 @@ class TournamentLanding extends Component {
 
 
 	// RIGHT COL USER INFO AND CHARS // not draggable
-		// maybe seeding for your opponent? //draggable
+		// maybe seedingInProgress for your opponent? //draggable
 
 
 	renderCharacter (character) {

@@ -85,7 +85,7 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 						});
 						// add the first user's character data to the tourament data
 						// results are normalized. result is an array of uuids, ids is a map.
-						tournament.users.ids[users[1]].characters = {}
+						tournament.users.ids[users[1]].characters = {};
 						tournament.users.ids[users[1]].characters.ids = characters;
 						tournament.users.ids[users[1]].characters.result = characterIds;
 

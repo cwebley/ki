@@ -3,6 +3,7 @@ import r from '../reasons';
 
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import submitSeedsQuery from '../lib/queries/submit-seeds';
+import assignFirstDraftPick from '../lib/queries/assign-first-draft-pick';
 
 export default function submitGameHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -84,11 +85,47 @@ export default function submitGameHandler (req, res) {
 				tournamentSlug: req.params.tournamentSlug,
 				userUuid: req.user.uuid
 			}, (err, updatedTournament) => {
-				console.log("UPDATED TOURNAMENT: ", JSON.stringify(updatedTournament, null, 4))
 				if (err) {
 					return res.status(500).send(r.internal);
 				}
-				return res.status(200).send(updatedTournament);
+
+				// if the other user still needs to seed, don't assign a first pick. return the tournament
+				if (!updatedTournament.users.ids[updatedTournament.users.result[1]].seeded) {
+					return res.status(200).send(updatedTournament);
+				}
+
+				const user1CharLen = updatedTournament.users.ids[updatedTournament.users.result[0]].characters.result.length;
+				const user2CharLen = updatedTournament.users.ids[updatedTournament.users.result[1]].characters.result.length;
+
+				// if there is no draft, no need to assign first pick. return the updatedTournament
+				if (user1CharLen === updatedTournament.charactersPerUser && user2CharLen === updatedTournament.charactersPerUser) {
+					return res.status(200).send(updatedTournament);
+				}
+
+				let firstPickUuid;
+
+				// user 1 gets first pick if they have less characters
+				if (user1CharLen < user2CharLen) {
+					firstPickUuid = updatedTournament.users.result[0];
+				}
+				// user 2 gets first pick if they have less characters
+				else if (user2CharLen < user1CharLen) {
+					firstPickUuid = updatedTournament.users.result[1];
+				}
+				// if they have the same amount of characters, assign the first pick randomly
+				else {
+					firstPickUuid = updatedTournament.users.result[Math.floor(Math.random() * 2)];
+				}
+
+				assignFirstDraftPick(req.db, updatedTournament.uuid, firstPickUuid, (err, results) => {
+					if (err) {
+						return res.status(500).send(r.internal);
+					}
+
+					// update the drafting field from the tournament data without refetching everything
+					updatedTournament.users.ids[firstPickUuid].drafting = true;
+					return res.status(200).send(updatedTournament);
+				});
 			})
 		});
 	});
