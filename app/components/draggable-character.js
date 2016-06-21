@@ -37,7 +37,6 @@ class DraggableCharacter extends Component {
 					</div>
 					<div>
 						<h4>{this.props.name}</h4>
-						<div>{this.props.wins || 0} - {this.props.losses || 0}</div>
 					</div>
 				</Paper>
 			</div>
@@ -58,7 +57,6 @@ class DraggableCharacter extends Component {
 
 	moveCharacter (id, hoverId) {
 		const { characters } = this.state;
-
 		const character = characters.filter(c => c.id === id)[0];
 		const hoverCharacter = characters.filter(c => c.id === hoverId)[0];
 		const characterIndex = characters.indexOf(character);

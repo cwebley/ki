@@ -74,3 +74,21 @@ export const fetchTournament = (tournamentSlug, token) =>
 			resolve(body);
 		});
 	});
+
+export const submitSeeds = (tournamentSlug, seedValues, token) =>
+	new Promise((resolve, reject) => {
+		console.log("SEED VALS: ", seedValues)
+		nets({
+			url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/seed',
+			json: seedValues,
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		}, (err, resp, body) => {
+			if (err || resp.statusCode >= 400) {
+				return reject(body);
+			}
+			resolve(body);
+		});
+	});

@@ -236,6 +236,32 @@ r.InvalidCharactersPerUser = {
 	level: 'error',
 	id: 'invalidCharactersPerUser'
 };
+r.NoSeeds = {
+	message: 'Missing seed array',
+	level: 'error',
+	id: 'noSeeds'
+};
+r.DuplicateSeed = {
+	message: 'Duplicate seed for character found',
+	level: 'error',
+	id: 'duplicateSeed'
+};
+r.missingCharacterSeeds = {
+	message: 'Seeding data incomplete, please seed all eligible characters',
+	level: 'error',
+	id: 'missingCharacterSeeds'
+};
+r.SeedsAlreadySubmitted = {
+	message: 'Seeds already submitted for this tournament',
+	level: 'error',
+	id: 'seedsAlreadySubmitted'
+};
+r.InvalidSeeds = (invalidCharacters) => ({
+	message: 'seed data contains one or more invalid characters',
+	invalidCharacters: invalidCharacters,
+	level: 'error',
+	id: 'invalidSeeds'
+});
 r.MyCharacterNotFound = (invalidCharacters) => ({
 	message: 'myCharacters contains one or more invalid characters',
 	field: 'myCharacters',

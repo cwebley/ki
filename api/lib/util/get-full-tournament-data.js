@@ -5,14 +5,13 @@ import getTournamentCharactersQuery from '../queries/get-tournament-characters';
 import getDraftCharactersQuery from '../queries/get-draft-characters';
 import getUpcomingQuery from '../queries/get-upcoming';
 
-export default function getFullTournamentData (db, rConn, tournamentSlug, upcomingAmount, cb) {
-	if (typeof upcomingAmount === 'function') {
-		cb = upcomingAmount;
-		upcomingAmount = 1;
+export default function getFullTournamentData (db, rConn, opts, cb) {
+	if (!opts.upcomingAmount) {
+		opts.upcomingAmount = 1;
 	}
 
 	// fetch the tournament meta data
-	getTournamentQuery(db, 'slug', tournamentSlug, (err, tournament) => {
+	getTournamentQuery(db, 'slug', opts.tournamentSlug, (err, tournament) => {
 		if (err) {
 			return cb(err);
 		}
@@ -63,7 +62,7 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 				getUpcomingQuery(rConn, {
 					tournamentUuid: tournament.uuid,
 					userUuid: users[0],
-					amount: upcomingAmount
+					amount: opts.upcomingAmount
 				}, (err, upcomingResults) => {
 					if (err) {
 						return cb(err);
@@ -90,23 +89,33 @@ export default function getFullTournamentData (db, rConn, tournamentSlug, upcomi
 						tournament.users.ids[users[1]].characters.ids = characters;
 						tournament.users.ids[users[1]].characters.result = characterIds;
 
-						getDraftCharactersQuery(db, tournament.uuid, users, (err, draftCharacters) => {
+						getUpcomingQuery(rConn, {
+							tournamentUuid: tournament.uuid,
+							userUuid: users[1]
+						}, (err, upcomingResults) => {
 							if (err) {
 								return cb(err);
 							}
-							tournament.draft = {
-								ids: draftCharacters,
-								result: Object.keys(draftCharacters)
-							};
+							tournament.users.ids[users[1]].upcoming = upcomingResults;
 
-							getUpcomingQuery(rConn, {
-								tournamentUuid: tournament.uuid,
-								userUuid: users[1]
-							}, (err, upcomingResults) => {
+							getDraftCharactersQuery(db, tournament.uuid, users, (err, draftCharacters) => {
 								if (err) {
 									return cb(err);
 								}
-								tournament.users.ids[users[1]].upcoming = upcomingResults;
+								tournament.draft = {
+									ids: draftCharacters,
+									result: Object.keys(draftCharacters)
+								};
+
+								// if user is logged in and in the tournament, make sure they are the first user returned
+								if (opts.userUuid) {
+									const userIndex = tournament.users.result.indexOf(opts.userUuid);
+									if (userIndex === 1) {
+										// logged in user in the second position, reverse the order
+										tournament.users.result.reverse();
+									}
+								}
+
 								return cb(null, tournament);
 							});
 						});

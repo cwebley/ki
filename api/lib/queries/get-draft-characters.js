@@ -53,15 +53,17 @@ const getDraftCharactersForUserQuery = (db, tournamentUuid, userUuid, cb) => {
 		SELECT
 			dc.character_uuid AS "uuid",
 			c.name, c.season, c.slug,
-			tc.wins, tc.losses, tc.streak, tc.best_streak AS "bestStreak", tc.value, tc.fire_wins AS "fireWins",
+			s.value,
 			uc.streak AS "globalStreak", uc.best_streak AS "globalBestStreak"
 		FROM draft_characters AS dc
 			JOIN characters AS c
 				ON c.uuid = dc.character_uuid
-			LEFT JOIN tournament_characters AS tc
-				ON tc.character_uuid = dc.character_uuid
 			LEFT JOIN user_characters AS uc
 				ON uc.character_uuid = dc.character_uuid
+			LEFT JOIN seeds AS s
+				ON s.character_uuid = dc.character_uuid
+				AND s.tournament_uuid = dc.tournament_uuid
+				AND s.user_uuid = uc.user_uuid
 		WHERE dc.tournament_uuid = $1
 			AND uc.user_uuid = $2
 	`;

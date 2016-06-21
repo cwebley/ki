@@ -37,7 +37,10 @@ export default function submitGameHandler (req, res) {
 		return res.status(400).send(r(...problems));
 	}
 
-	getFullTournamentData(req.db, req.redis, req.params.tournamentSlug, (err, tournament) => {
+	getFullTournamentData(req.db, req.redis, {
+		tournamentSlug: req.params.tournamentSlug,
+		userUuid: req.user.uuid
+	}, (err, tournament) => {
 		if (err) {
 			return res.status(500).send(r.internal);
 		}

@@ -12,6 +12,7 @@ import registerUser from './handlers/register-user';
 import loginUser from './handlers/login-user';
 import createTournament from './handlers/create-tournament';
 import getTournament from './handlers/get-tournament';
+import submitSeeds from './handlers/submit-seeds';
 import submitGame from './handlers/submit-game';
 import undoGame from './handlers/undo-game';
 
@@ -51,6 +52,7 @@ router.get('/tournament/:tournamentSlug', acceptUser, getTournament);
 
 // TODO: require login
 // TODO: logged in user must be in the tournament
+router.post('/tournament/:tournamentSlug/seed', requiresLogin, submitSeeds);
 router.post('/tournament/:tournamentSlug/game', requiresLogin, submitGame);
 router.put('/tournament/:tournamentSlug/game', requiresLogin, undoGame);
 

@@ -13,6 +13,9 @@ export const UPDATE_SEEDS = 'UPDATE_SEEDS';
 export const CREATE_TOURNAMENT_SUCCESS = 'CREATE_TOURNAMENT_SUCCESS';
 export const CREATE_TOURNAMENT_FAILURE = 'CREATE_TOURNAMENT_FAILURE';
 
+export const SUBMIT_SEEDS_SUCCESS = 'SUBMIT_SEEDS_SUCCESS';
+export const SUBMIT_SEEDS_FAILURE = 'SUBMIT_SEEDS_FAILURE';
+
 
 // localStorage property for the auth token
 export const LOCAL_STORAGE_PROPERTY = 'ki-state';

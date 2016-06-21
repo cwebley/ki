@@ -69,8 +69,8 @@ CREATE TABLE IF NOT EXISTS seeds (
 	user_uuid char(36) NOT NULL REFERENCES users (uuid),
 	opponent_uuid char(36) NOT NULL REFERENCES users (uuid),
 	character_uuid char(36) NOT NULL REFERENCES characters (uuid),
- 	relative_value integer NOT NULL,
-	PRIMARY KEY (tournament_uuid, character_uuid)
+ 	value integer NOT NULL,
+	PRIMARY KEY (tournament_uuid, user_uuid, character_uuid)
 );
 
 CREATE TABLE IF NOT EXISTS games (
@@ -93,15 +93,6 @@ CREATE TABLE IF NOT EXISTS games (
 	supreme boolean DEFAULT false,
 	time timestamp DEFAULT now(),
 	PRIMARY KEY (uuid)
-);
-
-CREATE TABLE IF NOT EXISTS tournament_seeds (
-	uuid char(36) NOT NULL,
-	tournamentId integer NOT NULL REFERENCES tournaments (uuid),
-	user_uuid integer NOT NULL REFERENCES users (uuid),
-	character_uuid integer NOT NULL REFERENCES characters (uuid),
-	value integer,
-	PRIMARY KEY (uuid, user_uuid, character_uuid)
 );
 
 CREATE TABLE IF NOT EXISTS tournament_characters (
