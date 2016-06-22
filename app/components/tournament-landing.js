@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import fetchTournament from '../actions/fetch-tournament';
 import updateSeeds from '../actions/update-seeds';
 import submitSeeds from '../actions/submit-seeds';
+import draftCharacter from '../actions/draft-character';
 
 import { getTournamentFromState, getMe } from '../store';
 import get from 'lodash.get';
@@ -13,6 +14,11 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import SeedContainer from './seed-container';
 
+import IconButton from 'material-ui/IconButton';
+import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
+import { cyan500 } from 'material-ui/styles/colors';
+
+
 const styles = {
 	pageStyle: {
 		textAlign: 'center'
@@ -21,6 +27,11 @@ const styles = {
 		margin: 0,
 		padding: 0,
 		listStyleType: 'none',
+	},
+	draftCharacters: {
+		margin: 0,
+		padding: '1em',
+		listStyleType: 'none'
 	},
 	leftUserStyle: {
 		float: 'left',
@@ -87,7 +98,7 @@ class TournamentLanding extends Component {
 			if (!u.seeded) {
 				seedingInProgress = true;
 			}
-			if (u.draftInProgress) {
+			if (u.drafting) {
 				draftInProgress = true;
 			}
 		});
@@ -155,8 +166,45 @@ class TournamentLanding extends Component {
 	}
 
 	renderDraft () {
+		const { tournament } = this.props;
+		const draftCharacters = tournament.draft.result.map(cUuid => tournament.draft.ids[cUuid]);
 		return (
-			<div>Draft it up</div>
+			<div>
+				Draft it up
+				<ol style={styles.draftCharacters}>
+					{draftCharacters.map(c => this.renderDraftCharacter(c))}
+				</ol>
+			</div>
+		);
+	}
+
+	renderDraftCharacter (character) {
+		const valueStyles = {
+			fontSize: '2em',
+			fontWeight: 600,
+			padding: '0 .4em'
+		}
+
+		return (
+			<li
+				key={character.uuid}
+			>
+				<Paper style={{marginBottom: '0.25em'}}>
+					<h4>{character.name}</h4>
+					<IconButton
+						disabled={!this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
+						onTouchTap={() => this.draftCharacter(character)}
+					>
+						<AddCircleOutline color={cyan500}/>
+					</IconButton>
+					<div style={{...valueStyles, float: 'left'}}>
+						{character.users[this.props.tournament.users.result[0]].value}
+					</div>
+					<div style={{...valueStyles, float: 'right'}}>
+						{character.users[this.props.tournament.users.result[1]].value}
+					</div>
+				</Paper>
+			</li>
 		);
 	}
 
@@ -198,11 +246,16 @@ class TournamentLanding extends Component {
 		);
 	}
 
-	updateSeeds(data) {
+	updateSeeds (data) {
 		this.props.updateSeeds(this.props.tournament.slug, data)
 	}
 
-	submitSeeds() {
+	draftCharacter (character) {
+		console.log("DRAFTING CHARACTER : ", character);
+		this.props.draftCharacter(this.props.tournament.slug, character.slug, this.props.me.token);
+	}
+
+	submitSeeds () {
 		this.props.submitSeeds(this.props.tournament.slug, this.props.tournament.seedValues, this.props.me.token);
 	}
 }
@@ -214,4 +267,4 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-export default connect(mapStateToProps, { fetchTournament, updateSeeds, submitSeeds })(TournamentLanding);
+export default connect(mapStateToProps, { fetchTournament, updateSeeds, submitSeeds, draftCharacter })(TournamentLanding);
