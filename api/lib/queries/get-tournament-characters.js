@@ -23,7 +23,7 @@ export default function getTournamentCharactersQuery (db, tournamentUuid, userUu
 				sql: sql,
 				params: params
 			});
-			return cb(err)
+			return cb(err);
 		}
 		return cb(null, results.rows);
 	});

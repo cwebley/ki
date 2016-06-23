@@ -24,7 +24,6 @@ export default function submitGameHandler (req, res) {
 		if (!tournament) {
 			return res.status(404).send(r.tournamentNotFound);
 		}
-		console.log("T: ", JSON.stringify(tournament, null, 4));
 
 		// dedup seed data and make sure nothing changed
 		let seededSlugMap = {};

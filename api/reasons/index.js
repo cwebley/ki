@@ -156,6 +156,11 @@ r.TournamentNotFound = {
 	level: 'error',
 	id: 'tournamentNotFound'
 };
+r.TournamentUserNotFound = {
+	message: 'User not part of this tournament',
+	level: 'error',
+	id: 'tournamentUserNotFound'
+};
 r.GameNotFound = {
 	message: 'Game not found',
 	field: 'game',
@@ -256,30 +261,46 @@ r.SeedsAlreadySubmitted = {
 	level: 'error',
 	id: 'seedsAlreadySubmitted'
 };
+r.NoPick = {
+	message: 'Missing pick field',
+	level: 'error',
+	id: 'noPick'
+};
+r.NotDrafting = {
+	message: 'It\'s not your turn to draft',
+	level: 'error',
+	id: 'notDrafting'
+};
+r.InvalidPick = (invalidCharacter) => ({
+	message: 'Invalid character slug in pick field',
+	invalidCharacter,
+	level: 'error',
+	id: 'invalidPick'
+});
 r.InvalidSeeds = (invalidCharacters) => ({
 	message: 'seed data contains one or more invalid characters',
-	invalidCharacters: invalidCharacters,
+	invalidCharacters,
 	level: 'error',
 	id: 'invalidSeeds'
 });
 r.MyCharacterNotFound = (invalidCharacters) => ({
 	message: 'myCharacters contains one or more invalid characters',
 	field: 'myCharacters',
-	invalidCharacters: invalidCharacters,
+	invalidCharacters,
 	level: 'error',
 	id: 'myCharacterNotFound'
 });
 r.OpponentCharacterNotFound = (invalidCharacters) => ({
 	message: 'opponentCharacters contains one or more invalid characters',
 	field: 'opponentCharacters',
-	invalidCharacters: invalidCharacters,
+	invalidCharacters,
 	level: 'error',
 	id: 'opponentCharacterNotFound'
 });
 r.DraftCharacterNotFound = (invalidCharacters) => ({
 	message: 'draftCharacters contains one or more invalid characters',
 	field: 'draftCharacters',
-	invalidCharacters: invalidCharacters,
+	invalidCharacters,
 	level: 'error',
 	id: 'draftCharacterNotFound'
 });

@@ -251,7 +251,6 @@ class TournamentLanding extends Component {
 	}
 
 	draftCharacter (character) {
-		console.log("DRAFTING CHARACTER : ", character);
 		this.props.draftCharacter(this.props.tournament.slug, character.slug, this.props.me.token);
 	}
 

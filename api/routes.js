@@ -14,6 +14,7 @@ import createTournament from './handlers/create-tournament';
 import getTournament from './handlers/get-tournament';
 import submitSeeds from './handlers/submit-seeds';
 import submitGame from './handlers/submit-game';
+import draftCharacter from './handlers/draft-character';
 import undoGame from './handlers/undo-game';
 
 let router = express.Router();
@@ -54,6 +55,7 @@ router.get('/tournament/:tournamentSlug', acceptUser, getTournament);
 // TODO: logged in user must be in the tournament
 router.post('/tournament/:tournamentSlug/seed', requiresLogin, submitSeeds);
 router.post('/tournament/:tournamentSlug/game', requiresLogin, submitGame);
+router.post('/tournament/:tournamentSlug/draft', requiresLogin, draftCharacter);
 router.put('/tournament/:tournamentSlug/game', requiresLogin, undoGame);
 
 export default router;
