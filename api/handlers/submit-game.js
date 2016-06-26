@@ -55,27 +55,27 @@ export default function submitGameHandler (req, res) {
 		let loserUuid;
 		let losingCharacterUuid;
 
-		Object.keys(tournament.users).forEach(u => {
+		tournament.users.result.forEach(uUuid => {
 			// check for winner
-			if (tournament.users[u].slug === opts.winningUserSlug) {
-				winnerUuid = tournament.users[u].uuid;
+			if (tournament.users.ids[uUuid].slug === opts.winningUserSlug) {
+				winnerUuid = uUuid;
 
 				// if winner found, check for winning character
-				Object.keys(tournament.users[u].characters).forEach(c => {
-					if (tournament.users[u].characters[c].slug === opts.winningCharacterSlug) {
-						winningCharacterUuid = tournament.users[u].characters[c].uuid;
+				tournament.users.ids[uUuid].characters.result.forEach(cUuid => {
+					if (tournament.users.ids[uUuid].characters.ids[cUuid].slug === opts.winningCharacterSlug) {
+						winningCharacterUuid = cUuid;
 					}
 				});
 			}
 
 			// check for loser
-			if (tournament.users[u].slug === opts.losingUserSlug) {
-				loserUuid = tournament.users[u].uuid;
+			if (tournament.users.ids[uUuid].slug === opts.losingUserSlug) {
+				loserUuid = uUuid;
 
 				// if loser found, check for losing character
-				Object.keys(tournament.users[u].characters).forEach(c => {
-					if (tournament.users[u].characters[c].slug === opts.losingCharacterSlug) {
-						losingCharacterUuid = tournament.users[u].characters[c].uuid;
+				tournament.users.ids[uUuid].characters.result.forEach(cUuid => {
+					if (tournament.users.ids[uUuid].characters.ids[cUuid].slug === opts.losingCharacterSlug) {
+						losingCharacterUuid = cUuid;
 					}
 				});
 			}
@@ -118,15 +118,15 @@ export default function submitGameHandler (req, res) {
 		let diff = submitGame(tournament, game);
 
 		game.uuid = uuid.v4();
-		game.loser.prevStreak = tournament.users[game.loser.uuid].streak;
-		game.loser.prevGlobalStreak = tournament.users[game.loser.uuid].globalStreak;
-		game.loser.prevCharStreak = tournament.users[game.loser.uuid].characters[game.loser.characterUuid].streak;
-		game.loser.prevCharGlobalStreak = tournament.users[game.loser.uuid].characters[game.loser.characterUuid].globalStreak;
-		game.winner.value = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].value;
-		game.winner.prevStreak = tournament.users[game.winner.uuid].streak;
-		game.winner.prevGlobalStreak = tournament.users[game.winner.uuid].globalStreak;
-		game.winner.prevCharStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].streak;
-		game.winner.prevCharGlobalStreak = tournament.users[game.winner.uuid].characters[game.winner.characterUuid].globalStreak;
+		game.loser.prevStreak = tournament.users.ids[game.loser.uuid].streak;
+		game.loser.prevGlobalStreak = tournament.users.ids[game.loser.uuid].globalStreak;
+		game.loser.prevCharStreak = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].streak;
+		game.loser.prevCharGlobalStreak = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].globalStreak;
+		game.winner.value = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].value;
+		game.winner.prevStreak = tournament.users.ids[game.winner.uuid].streak;
+		game.winner.prevGlobalStreak = tournament.users.ids[game.winner.uuid].globalStreak;
+		game.winner.prevCharStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].streak;
+		game.winner.prevCharGlobalStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].globalStreak;
 
 		submitGameQuery(req.db, tournament.uuid, game, diff, (err, results) => {
 			if (err) {
@@ -136,22 +136,23 @@ export default function submitGameHandler (req, res) {
 			// merge old state and diff
 			Object.keys(diff).forEach(tournamentKey => {
 				if (tournamentKey === "users") {
-					Object.keys(diff[tournamentKey]).forEach(userUuid => {
-						Object.keys(diff[tournamentKey][userUuid]).forEach(userKey => {
+					diff[tournamentKey].result.forEach(uUuid => {
+						Object.keys(diff[tournamentKey].ids[uUuid]).forEach(userKey => {
 							if (userKey === "characters") {
-								Object.keys(diff[tournamentKey][userUuid][userKey]).forEach(cUuid => {
-									Object.keys(diff[tournamentKey][userUuid][userKey][cUuid]).forEach(characterKey => {
-										tournament[tournamentKey][userUuid][userKey][cUuid][characterKey] = diff[tournamentKey][userUuid][userKey][cUuid][characterKey];
+								diff[tournamentKey].ids[uUuid][userKey].result.forEach(cUuid => {
+									Object.keys(diff[tournamentKey].ids[uUuid][userKey].ids[cUuid]).forEach(characterKey => {
+										tournament[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey] = diff[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey];
 									});
 								});
 								return;
 							}
-							tournament[tournamentKey][userUuid][userKey] = diff[tournamentKey][userUuid][userKey];
+							tournament[tournamentKey].ids[uUuid][userKey] = diff[tournamentKey].ids[uUuid][userKey];
 						});
 					});
 					return;
 				}
 				if (tournamentKey === "upcoming") {
+					debugger;
 					tournament[tournamentKey].upcoming.splice(0, 1);
 				}
 				tournament[tournamentKey] = diff[tournamentKey];

@@ -19,6 +19,9 @@ export const SUBMIT_SEEDS_FAILURE = 'SUBMIT_SEEDS_FAILURE';
 export const DRAFT_CHARACTER_SUCCESS = 'DRAFT_CHARACTER_SUCCESS';
 export const DRAFT_CHARACTER_FAILURE = 'DRAFT_CHARACTER_FAILURE';
 
+export const SUBMIT_GAME_SUCCESS = 'SUBMIT_GAME_SUCCESS';
+export const SUBMIT_GAME_FAILURE = 'SUBMIT_GAME_FAILURE';
+
 
 // localStorage property for the auth token
 export const LOCAL_STORAGE_PROPERTY = 'ki-state';

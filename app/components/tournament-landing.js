@@ -5,6 +5,7 @@ import fetchTournament from '../actions/fetch-tournament';
 import updateSeeds from '../actions/update-seeds';
 import submitSeeds from '../actions/submit-seeds';
 import draftCharacter from '../actions/draft-character';
+import submitGame from '../actions/submit-game';
 
 import { getTournamentFromState, getMe } from '../store';
 import get from 'lodash.get';
@@ -62,7 +63,6 @@ class TournamentLanding extends Component {
 
 	componentDidMount () {
 		this.props.fetchTournament(this.props.params.tournamentSlug, this.props.me.token)
-			// if f
 			.then(() => {
 				if (!this.props.tournament.users) {
 					return;
@@ -84,7 +84,6 @@ class TournamentLanding extends Component {
 	}
 
 	render () {
-		console.log("T: ", this.props.tournament)
 		if (!this.props.tournament.users) {
 			return (
 				<div>Tournament loading...</div>
@@ -116,7 +115,6 @@ class TournamentLanding extends Component {
 	}
 
 	renderLeftUser (user) {
-		console.log("LEFT USER : ", user);
 		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
 		return (
 			<div style={styles.leftUserStyle}>
@@ -132,7 +130,6 @@ class TournamentLanding extends Component {
 	renderCenter (seedingInProgress, draftInProgress) {
 		return (
 			<div style={styles.centerColStyle}>
-				CHARACTERS AND STUFF
 				{seedingInProgress && <RaisedButton
 					label="Submit Seeds"
 					primary={true}
@@ -140,6 +137,7 @@ class TournamentLanding extends Component {
 					onTouchTap={() => this.submitSeeds()}
 				/>}
 				{draftInProgress && this.renderDraft()}
+				{!seedingInProgress && !draftInProgress && this.renderTournamentActions()}
 			</div>
 		);
 	}
@@ -161,6 +159,46 @@ class TournamentLanding extends Component {
 				{!seedingInProgress && <ol style={styles.characterListStyle}>
 					{characters.map(c => this.renderCharacter(c))}
 				</ol>}
+			</div>
+		);
+	}
+
+	renderTournamentActions () {
+		const { tournament } = this.props;
+		const leftUser = tournament.users.ids[tournament.users.result[0]];
+		const rightUser = tournament.users.ids[tournament.users.result[1]];
+		const leftCharacter = leftUser.characters.ids[leftUser.upcoming[0]];
+		const rightCharacter = rightUser.characters.ids[rightUser.upcoming[0]];
+		return (
+			<div>
+				Tournament Actions
+				<div>
+					<h3>Matchup</h3>
+					<div style={{
+						width: '50%',
+						float: 'left',
+						padding: '.5rem .25rem .5rem .5rem'
+					}}>
+						<RaisedButton
+							style={{width: '100%'}}
+							label={leftCharacter.name}
+							primary={true}
+							onTouchTap={() => this.submitGame(leftUser, leftCharacter, rightUser, rightCharacter)}
+						/>
+					</div>
+					<div style={{
+						width: '50%',
+						float: 'right',
+						padding: '.5rem .5rem .5rem .25rem'
+					}}>
+						<RaisedButton
+							style={{width: '100%'}}
+							label={rightCharacter.name}
+							primary={true}
+							onTouchTap={() => this.submitGame(rightUser, rightCharacter, leftUser, leftCharacter)}
+						/>
+					</div>
+				</div>
 			</div>
 		);
 	}
@@ -257,6 +295,17 @@ class TournamentLanding extends Component {
 	submitSeeds () {
 		this.props.submitSeeds(this.props.tournament.slug, this.props.tournament.seedValues, this.props.me.token);
 	}
+
+	submitGame (winningUser, winningCharacter, losingUser, losingCharacter) {
+		this.props.submitGame({
+			tournamentSlug: this.props.tournament.slug,
+			winningUserSlug: winningUser.slug,
+			winningCharacterSlug: winningCharacter.slug,
+			losingUserSlug: losingUser.slug,
+			losingCharacterSlug: losingCharacter.slug,
+			token: this.props.me.token
+		});
+	}
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -266,4 +315,6 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-export default connect(mapStateToProps, { fetchTournament, updateSeeds, submitSeeds, draftCharacter })(TournamentLanding);
+export default connect(mapStateToProps, {
+	fetchTournament, updateSeeds, submitSeeds, draftCharacter, submitGame
+})(TournamentLanding);

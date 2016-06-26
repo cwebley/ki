@@ -113,3 +113,22 @@ export const draftCharacter = (tournamentSlug, characterSlug, token) =>
 			resolve(body);
 		});
 	});
+
+export const submitGame = opts => {
+	const { token, tournamentSlug, ...gameData } = opts;
+	return new Promise((resolve, reject) => {
+		nets({
+			url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/game',
+			json: gameData,
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		}, (err, resp, body) => {
+			if (err || resp.statusCode >= 400) {
+				return reject(body);
+			}
+			resolve(body);
+		});
+	});
+};
