@@ -217,6 +217,11 @@ r.InvalidLosingCharacterSlug = {
 	level: 'error',
 	id: 'invalidLosingCharacterSlug'
 };
+r.InvalidGame = {
+	message: 'Invalid game submission. Double check which characters are in the current matchup',
+	level: 'error',
+	id: 'invalidGame'
+};
 r.InvalidMyCharacters = {
 	message: 'myCharacters must be an array',
 	field: 'myCharacters',

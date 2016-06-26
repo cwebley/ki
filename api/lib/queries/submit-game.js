@@ -1,6 +1,7 @@
 import log from '../../logger';
 import async from 'neo-async';
 import snake from 'lodash.snakecase';
+import getTournamentCharacterUuidsByStreak from './get-tournament-character-uuids-by-streak';
 
 export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'bestStreak', 'coins'];
@@ -122,9 +123,27 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 								if (err) {
 									return rollback(db, err, cb);
 								}
-
-								// end transaction
-								db.query('COMMIT', cb);
+								getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.winner.uuid, (err, winningUserCharacterStreaks) => {
+									if (err) {
+										return rollback(db, err, cb);
+									}
+									getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.loser.uuid, (err, losingUserCharacterStreaks) => {
+										if (err) {
+											return rollback(db, err, cb);
+										}
+										// end transaction
+										db.query('COMMIT', (err, result) => {
+											if (err) {
+												return rollback(db, err, cb);
+											}
+											// return the updated character streaks
+											return cb(null, {
+												[game.winner.uuid]: winningUserCharacterStreaks,
+												[game.loser.uuid]: losingUserCharacterStreaks
+											});
+										});
+									});
+								});
 							});
 						});
 					});

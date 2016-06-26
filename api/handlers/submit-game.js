@@ -39,7 +39,9 @@ export default function submitGameHandler (req, res) {
 
 	getFullTournamentData(req.db, req.redis, {
 		tournamentSlug: req.params.tournamentSlug,
-		userUuid: req.user.uuid
+		userUuid: req.user.uuid,
+		// we're going to need the next matchup too
+		upcomingAmount: 2
 	}, (err, tournament) => {
 		if (err) {
 			return res.status(500).send(r.internal);
@@ -100,9 +102,14 @@ export default function submitGameHandler (req, res) {
 			return res.status(400).send(r(...problems));
 		}
 
+		// check that the submitted characters are actually in the current matchup
+		if (tournament.users.ids[winnerUuid].upcoming[0] !== winningCharacterUuid) {
+			problems.push(r.invalidGame);
+		}
+
 		log.debug('Done validating inputs, submitting game now');
 
-		//assemble game result
+		// assemble game result
 		const game = {
 			winner: {
 				uuid: winnerUuid,
@@ -128,7 +135,7 @@ export default function submitGameHandler (req, res) {
 		game.winner.prevCharStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].streak;
 		game.winner.prevCharGlobalStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].globalStreak;
 
-		submitGameQuery(req.db, tournament.uuid, game, diff, (err, results) => {
+		submitGameQuery(req.db, tournament.uuid, game, diff, (err, updatedCharacterStreaks) => {
 			if (err) {
 				return res.status(500).send(r.internal);
 			}
@@ -144,6 +151,8 @@ export default function submitGameHandler (req, res) {
 										tournament[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey] = diff[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey];
 									});
 								});
+								// characters.result is an array of cUuids ordered by streak. that data was returned from submitGameQuery
+								tournament[tournamentKey].ids[uUuid][userKey].result = updatedCharacterStreaks[uUuid];
 								return;
 							}
 							tournament[tournamentKey].ids[uUuid][userKey] = diff[tournamentKey].ids[uUuid][userKey];
@@ -151,10 +160,7 @@ export default function submitGameHandler (req, res) {
 					});
 					return;
 				}
-				if (tournamentKey === "upcoming") {
-					debugger;
-					tournament[tournamentKey].upcoming.splice(0, 1);
-				}
+
 				tournament[tournamentKey] = diff[tournamentKey];
 			});
 

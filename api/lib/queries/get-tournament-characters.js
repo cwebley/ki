@@ -14,6 +14,7 @@ export default function getTournamentCharactersQuery (db, tournamentUuid, userUu
 				AND uc.character_uuid = c.uuid
 		WHERE tc.tournament_uuid = $1
 			AND tc.user_uuid = $2
+			ORDER BY tc.streak DESC
 	`;
 	const params = [tournamentUuid, userUuid];
 

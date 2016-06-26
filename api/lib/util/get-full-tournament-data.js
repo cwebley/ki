@@ -91,7 +91,8 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 
 						getUpcomingQuery(rConn, {
 							tournamentUuid: tournament.uuid,
-							userUuid: users[1]
+							userUuid: users[1],
+							amount: opts.upcomingAmount
 						}, (err, upcomingResults) => {
 							if (err) {
 								return cb(err);
