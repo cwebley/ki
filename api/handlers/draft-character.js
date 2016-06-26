@@ -4,6 +4,7 @@ import r from '../reasons';
 import getTournament from '../lib/queries/get-tournament';
 import getTournamentUser from '../lib/queries/get-tournament-user';
 import getCharacter from '../lib/queries/get-character';
+import getTournamentCharacterCount from '../lib/queries/get-tournament-character-count';
 import draftCharacterQuery from '../lib/queries/draft-character';
 import updateDraftStatus from '../lib/queries/update-draft-status';
 
@@ -44,20 +45,29 @@ export default function draftCharacterHandler (req, res) {
 					return res.status(400).send(r.draftPickNotFound);
 				}
 
-				draftCharacterQuery(req.db, tournament.uuid, character, req.user.uuid, (err, results) => {
+				getTournamentCharacterCount(req.db, tournament.uuid, req.user.uuid, (err, characterCount) => {
 					if (err) {
 						return res.status(500).send(r.internal);
 					}
+					if (characterCount >= tournament.charactersPerUser) {
+						return res.status(400).send(r.draftInactive);
+					}
 
-					updateDraftStatus(req.db, tournament.uuid, (err, draftStatus) => {
+					draftCharacterQuery(req.db, tournament.uuid, character, req.user.uuid, (err, results) => {
 						if (err) {
 							return res.status(500).send(r.internal);
 						}
-						return res.status(200).send({
-							...draftStatus,
-							pick: {
-								...character
+
+						updateDraftStatus(req.db, tournament.uuid, (err, draftStatus) => {
+							if (err) {
+								return res.status(500).send(r.internal);
 							}
+							return res.status(200).send({
+								...draftStatus,
+								pick: {
+									...character
+								}
+							});
 						});
 					});
 				});

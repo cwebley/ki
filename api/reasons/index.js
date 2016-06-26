@@ -271,6 +271,11 @@ r.NotDrafting = {
 	level: 'error',
 	id: 'notDrafting'
 };
+r.DraftInactive = {
+	message: 'The draft is not active',
+	level: 'error',
+	id: 'draftInactive'
+};
 r.InvalidPick = (invalidCharacter) => ({
 	message: 'Invalid character slug in pick field',
 	invalidCharacter,
