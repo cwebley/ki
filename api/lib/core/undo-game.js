@@ -25,66 +25,80 @@ export default function undoGame (state, game) {
 	const winningCharPrevValue = game.winner.value;
 
 	let diff = {
-		users: {},
+		users: {
+			ids: {},
+			result: []
+		},
 		// removing something like championUuid should go in here
 		_remove: {}
 	};
 
-	diff._remove.championUuid = unEvaluateChampion(winnerUuid, state.goal, state.users[winnerUuid].score, state.users[loserUuid].score, winningCharPrevValue);
+	diff._remove.championUuid = unEvaluateChampion(winnerUuid, state.goal, state.users.ids[winnerUuid].score, state.users.ids[loserUuid].score, winningCharPrevValue);
 
-	diff.users[winnerUuid] = {
-		score: state.users[winnerUuid].score - winningCharPrevValue,
+	diff.users.ids[winnerUuid] = {
+		score: state.users.ids[winnerUuid].score - winningCharPrevValue,
 		streak: game.winner.streak,
-		wins: state.users[winnerUuid].wins - 1,
+		wins: state.users.ids[winnerUuid].wins - 1,
 		characters: {
-			[winningCharacterUuid]: {
-				wins: state.users[winnerUuid].characters[winningCharacterUuid].wins - 1,
-				streak: game.winner.characterStreak
-			}
+			ids: {
+				[winningCharacterUuid]: {
+					wins: state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].wins - 1,
+					streak: game.winner.characterStreak
+				}
+			},
+			result: [winningCharacterUuid]
 		}
 	};
-	if (state.users[winnerUuid].characters[winningCharacterUuid].value !== winningCharPrevValue) {
-		diff.users[winnerUuid].characters[winningCharacterUuid].value = winningCharPrevValue;
+	diff.users.result.push(winnerUuid);
+
+	if (state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].value !== winningCharPrevValue) {
+		diff.users.ids[winnerUuid].characters.ids[winningCharacterUuid].value = winningCharPrevValue;
 	}
 
-	diff.users[loserUuid] = {
+	diff.users.ids[loserUuid] = {
 		streak: game.loser.streak,
-		losses: state.users[loserUuid].losses - 1,
+		losses: state.users.ids[loserUuid].losses - 1,
 		characters: {
-			[losingCharacterUuid]: {
-				value: state.users[loserUuid].characters[losingCharacterUuid].value - 1,
-				losses: state.users[loserUuid].characters[losingCharacterUuid].losses - 1,
-				streak: game.loser.characterStreak
-			}
+			ids: {
+				[losingCharacterUuid]: {
+					value: state.users.ids[loserUuid].characters.ids[losingCharacterUuid].value - 1,
+					losses: state.users.ids[loserUuid].characters.ids[losingCharacterUuid].losses - 1,
+					streak: game.loser.characterStreak
+				}
+			},
+			result: [losingCharacterUuid]
 		}
 	};
+	diff.users.result.push(loserUuid);
 
 	// undo fire
-	const undoFireUuid = undoFireStatus(winningCharacterUuid, state.users[winnerUuid].characters[winningCharacterUuid].streak);
+	const undoFireUuid = undoFireStatus(winningCharacterUuid, state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].streak);
 
 	// iterate through each of winner's characters and incr fireWins for characters already on fire
-	Object.keys(state.users[winnerUuid].characters).forEach(cUuid => {
-		if (alreadyOnFire(state.users[winnerUuid].characters[cUuid].streak) && winningCharacterUuid !== cUuid) {
+	state.users.ids[winnerUuid].characters.result.forEach(cUuid => {
+		if (alreadyOnFire(state.users.ids[winnerUuid].characters.ids[cUuid].streak) && winningCharacterUuid !== cUuid) {
 			// decr the fireWins for this character that is already on fire
-				if (!diff.users[winnerUuid].characters[cUuid]) {
-				diff.users[winnerUuid].characters[cUuid] = {};
+			if (!diff.users.ids[winnerUuid].characters.ids[cUuid]) {
+				diff.users.ids[winnerUuid].characters.ids[cUuid] = {};
+				diff.users.ids[winnerUuid].characters.result.push(cUuid);
 			}
-			diff.users[winnerUuid].characters[cUuid].fireWins = state.users[winnerUuid].characters[cUuid].fireWins - 1;
+			diff.users.ids[winnerUuid].characters.ids[cUuid].fireWins = state.users.ids[winnerUuid].characters.ids[cUuid].fireWins - 1;
 		}
 		if (undoFireUuid && (cUuid !== undoFireUuid)) {
 			// character went on fire, it's not this one, decr value for all other characters
-			if (!diff.users[winnerUuid].characters[cUuid]) {
-				diff.users[winnerUuid].characters[cUuid] = {};
+			if (!diff.users.ids[winnerUuid].characters.ids[cUuid]) {
+				diff.users.ids[winnerUuid].characters.ids[cUuid] = {};
+				diff.users.ids[winnerUuid].characters.result.push(cUuid);
 			}
-			diff.users[winnerUuid].characters[cUuid].value = state.users[winnerUuid].characters[cUuid].value - 1;
+			diff.users.ids[winnerUuid].characters.ids[cUuid].value = state.users.ids[winnerUuid].characters.ids[cUuid].value - 1;
 		}
 	});
 
 	// TODO ICE STATUS
 
-	const coinsDiff = undoCoins(state.users[winnerUuid].coins, state.users[winnerUuid].streak, game.supreme);
+	const coinsDiff = undoCoins(state.users.ids[winnerUuid].coins, state.users.ids[winnerUuid].streak, game.supreme);
 	if (coinsDiff) {
-		diff.users[winnerUuid].coins = coinsDiff;
+		diff.users.ids[winnerUuid].coins = coinsDiff;
 	}
 
 	return diff;

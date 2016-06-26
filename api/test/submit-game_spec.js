@@ -153,9 +153,7 @@ describe('submit-game logic', () => {
 		});
 
 		it('increments winning player\'s score based on the character value', () => {
-			debugger;
 			const diff = submitGame(testState, testGame);
-
 			expect(diff.users.ids['user1Uuid'].score).to.equal(testVals.userOneXterOneVal);
 			expect(diff.users.ids['user2Uuid'].score).to.equal(undefined); // no change for the loser
 
@@ -263,7 +261,7 @@ describe('submit-game logic', () => {
 			const diff2 = submitGame(testState, testGame);
 
 			// xter1 won the game and went on fire, so xter2 goes up in value
-			expect(get(diff2.users.ids['user1Uuid'].characters.idss, 'xter2Uuid.value')).to.equal(testVals.userOneXterTwoVal + 1);
+			expect(get(diff2.users.ids['user1Uuid'].characters.ids, 'xter2Uuid.value')).to.equal(testVals.userOneXterTwoVal + 1);
 		});
 
 		it('returns loser\'s characters with decremented values if some character was just iced', () => {
