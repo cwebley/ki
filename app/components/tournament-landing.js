@@ -246,25 +246,13 @@ class TournamentLanding extends Component {
 		);
 	}
 
-	// LEFT COL USER INFO AND CHARS
-
-	// MIDDLE:
-		// Powerup buttons and stuff
-		// draft characters // just a click button
-		// little inspect cards with streaks and values // draggable obvs
-
-
-	// RIGHT COL USER INFO AND CHARS // not draggable
-		// maybe seedingInProgress for your opponent? //draggable
-
-
 	renderCharacter (character) {
 		let streakText = '';
 		if (character.streak > 0) {
-			streakText = this.props.streak + 'W';
+			streakText = character.streak + 'W';
 		}
 		if (character.streak < 0) {
-			streakText = -1 * this.props.streak + 'L';
+			streakText = -1 * character.streak + 'L';
 		}
 		return (
 			<li key={character.uuid}>

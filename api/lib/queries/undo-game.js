@@ -24,7 +24,7 @@ export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
 		tournamentsUpdates.championUuid = null;
 	}
 
-	Object.keys(diff.users).forEach(userUuid => {
+	diff.users.result.forEach(userUuid => {
 		const tournamentUsersWhere = {
 			tournamentUuid: tournamentUuid,
 			userUuid: userUuid
@@ -37,21 +37,21 @@ export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
 		let usersUpdates = {};
 
 		// all keys on each user object
-		Object.keys(diff.users[userUuid]).forEach(userKey => {
+		Object.keys(diff.users.ids[userUuid]).forEach(userKey => {
 
 			if (tournamentUsersFields.indexOf(userKey) !== -1) {
-				tournamentUsersUpdates[userKey] = diff.users[userUuid][userKey];
+				tournamentUsersUpdates[userKey] = diff.users.ids[userUuid][userKey];
 				return;
 			}
 
 			if (usersFields.indexOf(userKey) !== -1) {
-				usersUpdates[userKey] = diff.users[userUuid][userKey];
+				usersUpdates[userKey] = diff.users.ids[userUuid][userKey];
 				return;
 			}
 
 			if (userKey === 'characters') {
 				// iterate over character
-				Object.keys(diff.users[userUuid].characters).forEach(cUuid => {
+				diff.users.ids[userUuid].characters.result.forEach(cUuid => {
 					const tournamentCharactersWhere = {
 						tournamentUuid: tournamentUuid,
 						userUuid: userUuid,
@@ -66,15 +66,15 @@ export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
 					let userCharactersUpdates = {};
 
 					// iterate over each key for the character
-					Object.keys(diff.users[userUuid].characters[cUuid]).forEach(charKey => {
+					Object.keys(diff.users.ids[userUuid].characters.ids[cUuid]).forEach(charKey => {
 
 						if (tournamentCharactersFields.indexOf(charKey) !== -1) {
-							tournamentCharactersUpdates[charKey] = diff.users[userUuid].characters[cUuid][charKey];
+							tournamentCharactersUpdates[charKey] = diff.users.ids[userUuid].characters.ids[cUuid][charKey];
 							return;
 						}
 
 						if (userCharactersFields.indexOf(charKey) !== -1) {
-							userCharactersUpdates[charKey] = diff.users[userUuid].characters[cUuid][charKey]
+							userCharactersUpdates[charKey] = diff.users.ids[userUuid].characters.ids[cUuid][charKey]
 							return;
 						}
 					});
