@@ -183,7 +183,7 @@ class TournamentLanding extends Component {
 			fontSize: '2em',
 			fontWeight: 600,
 			padding: '0 .4em'
-		}
+		};
 
 		return (
 			<li
@@ -193,7 +193,7 @@ class TournamentLanding extends Component {
 					<h4>{character.name}</h4>
 					<IconButton
 						disabled={!this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
-						onTouchTap={() => this.draftCharacter(character)}
+						onTouchTap={() => this.draftCharacter(character, this.props.me.uuid)}
 					>
 						<AddCircleOutline color={cyan500}/>
 					</IconButton>
@@ -250,8 +250,8 @@ class TournamentLanding extends Component {
 		this.props.updateSeeds(this.props.tournament.slug, data)
 	}
 
-	draftCharacter (character) {
-		this.props.draftCharacter(this.props.tournament.slug, character.slug, this.props.me.token);
+	draftCharacter (character, myUuid) {
+		this.props.draftCharacter(this.props.tournament.slug, character, myUuid, this.props.me.token);
 	}
 
 	submitSeeds () {

@@ -79,6 +79,7 @@ export default function submitGameHandler (req, res) {
 				}
 				return res.status(500).send(r.internal);
 			}
+
 			// seeding successful, return the up-to-date tournament data
 			getFullTournamentData(req.db, req.redis, {
 				tournamentSlug: req.params.tournamentSlug,
@@ -115,6 +116,7 @@ export default function submitGameHandler (req, res) {
 				else {
 					firstPickUuid = updatedTournament.users.result[Math.floor(Math.random() * 2)];
 				}
+
 
 				assignFirstDraftPick(req.db, updatedTournament.uuid, firstPickUuid, (err, results) => {
 					if (err) {

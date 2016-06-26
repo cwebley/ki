@@ -5,6 +5,7 @@ import getTournament from '../lib/queries/get-tournament';
 import getTournamentUser from '../lib/queries/get-tournament-user';
 import getCharacter from '../lib/queries/get-character';
 import draftCharacterQuery from '../lib/queries/draft-character';
+import updateDraftStatus from '../lib/queries/update-draft-status';
 
 export default function draftCharacterHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -36,18 +37,29 @@ export default function draftCharacterHandler (req, res) {
 			}
 
 			getCharacter(req.db, 'slug', req.body.pick, (err, character) => {
-				console.log("CHARACTER: ", character)
 				if (err) {
 					return res.status(500).send(r.internal);
 				}
+				if (!character) {
+					return res.status(400).send(r.draftPickNotFound);
+				}
 
-				draftCharacterQuery(req.db, tournament.uuid, character.uuid, req.user.uuid, (err, results) => {
+				draftCharacterQuery(req.db, tournament.uuid, character, req.user.uuid, (err, results) => {
 					if (err) {
 						return res.status(500).send(r.internal);
 					}
-					console.log("RESULTS: ", results);
-					return res.status(200).send(user);
 
+					updateDraftStatus(req.db, tournament.uuid, (err, draftStatus) => {
+						if (err) {
+							return res.status(500).send(r.internal);
+						}
+						return res.status(200).send({
+							...draftStatus,
+							pick: {
+								...character
+							}
+						});
+					});
 				});
 			});
 

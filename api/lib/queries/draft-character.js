@@ -1,10 +1,10 @@
 import log from '../../logger';
 
-export default function draftCharacterQuery (db, tournamentUuid, characterUuid, userUuid, cb) {
+export default function draftCharacterQuery (db, tournamentUuid, character, userUuid, cb) {
 	// begin transaction
 	db.query('BEGIN', () => {
 
-		const sql = `
+		const tcSql = `
 			INSERT INTO tournament_characters
 				(tournament_uuid, character_uuid, user_uuid, value)
 			VALUES ($1, $2, $3,
@@ -14,18 +14,28 @@ export default function draftCharacterQuery (db, tournamentUuid, characterUuid, 
 					AND character_uuid = $6)
 			)
 		`;
-		const params = [tournamentUuid, characterUuid, userUuid, tournamentUuid, characterUuid, userUuid];
-		db.query(sql, params, (err, results) => {
-			console.log("ERR, ", err, " RES: ", results);
+		const tcParams = [tournamentUuid, character.uuid, userUuid, tournamentUuid, userUuid, character.uuid];
+		db.query(tcSql, tcParams, (err, results) => {
 			if (err) {
-				log.error(err, { sql, params });
+				log.error(err, { tcSql, tcParams });
 				return rollback(db, err, cb);
 			}
-			// return rollback(db, err, cb);
-			// TODO delete row from draft characters and stuff
-			// db.query('COMMIT', () => {
-			// 	return cb(null, results);
-			// });
+
+			const dcSql = `
+				DELETE FROM draft_characters
+				WHERE tournament_uuid = $1
+					AND character_uuid = $2
+			`;
+			const dcParams = [tournamentUuid, character.uuid];
+			db.query(dcSql, dcParams, (err, results) => {
+				if (err) {
+					log.error(err, {dcSql, dcParams});
+					return rollback(db, err, cb);
+				}
+				db.query('COMMIT', () => {
+					return cb(null, results);
+				});
+			});
 		});
 	});
 }

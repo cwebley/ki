@@ -59,14 +59,16 @@ export const createTournament = (formData, token) =>
 		});
 	});
 
-export const fetchTournament = (tournamentSlug, token) =>
-	new Promise((resolve, reject) => {
+export const fetchTournament = (tournamentSlug, token) => {
+	let headers = {};
+	if (token) {
+		headers['Authorization']  = 'Bearer ' + token;
+	}
+	return new Promise((resolve, reject) => {
 		nets({
 			url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug,
 			json: true,
-			headers: {
-				Authorization: 'Bearer ' + token
-			}
+			headers
 		}, (err, resp, body) => {
 			if (err || resp.statusCode >= 400) {
 				return reject(body);
@@ -74,6 +76,7 @@ export const fetchTournament = (tournamentSlug, token) =>
 			resolve(body);
 		});
 	});
+}
 
 export const submitSeeds = (tournamentSlug, seedValues, token) =>
 	new Promise((resolve, reject) => {

@@ -2,13 +2,15 @@ import * as api from '../api';
 import * as c from '../constants';
 import { GENERIC_ERROR } from '../errors';
 
-const draftCharacter = (tournamentSlug, characterSlug, token) => dispatch => {
-		api.draftCharacter(tournamentSlug, characterSlug, token)
+const draftCharacter = (tournamentSlug, character, userUuid, token) => dispatch => {
+		api.draftCharacter(tournamentSlug, character.slug, token)
 			.then(
 				body => {
 					return dispatch({
 						type: c.DRAFT_CHARACTER_SUCCESS,
-						characterSlug,
+						tournamentSlug,
+						character,
+						userUuid,
 						data: body
 					})
 				},
@@ -16,7 +18,8 @@ const draftCharacter = (tournamentSlug, characterSlug, token) => dispatch => {
 					return dispatch({
 						type: c.DRAFT_CHARACTER_FAILURE,
 						tournamentSlug,
-						characterSlug,
+						character,
+						userUuid,
 						reasons: (error && error.reasons) || [GENERIC_ERROR]
 					})
 				}

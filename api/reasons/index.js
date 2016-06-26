@@ -304,6 +304,13 @@ r.DraftCharacterNotFound = (invalidCharacters) => ({
 	level: 'error',
 	id: 'draftCharacterNotFound'
 });
+r.DraftPickNotFound = (character) => ({
+	message: 'Invalid draft pick. Character not found.',
+	field: 'pick',
+	character,
+	level: 'error',
+	id: 'draftPickNotFound'
+});
 
 r.Internal = {
 	message: 'Internal server error',
