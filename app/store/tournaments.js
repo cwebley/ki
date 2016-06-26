@@ -78,10 +78,10 @@ const userCharactersReducer = (state = {}, action) => {
 				...state,
 				// add character data
 				ids: Object.assign({}, state.ids, {
-					[action.data.uuid]: userCharacterReducer(state[action.data.uuid], action)
+					[action.character.uuid]: userCharacterReducer(state.ids[action.character.uuid], action)
 				}),
 				// add character uuid to the result array
-				result: [...state.result, action.data.uuid]
+				result: [...state.result, action.character.uuid]
 			};
 		default:
 			return state;
@@ -92,7 +92,7 @@ const userCharacterReducer = (state = {}, action) => {
 	switch (action.type) {
 		case c.DRAFT_CHARACTER_SUCCESS:
 			return {
-				...action.data,
+				...action.data.pick,
 				wins: 0,
 				losses: 0,
 				streak: 0,
