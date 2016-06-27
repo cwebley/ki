@@ -111,6 +111,34 @@ CREATE TABLE IF NOT EXISTS tournament_characters (
 	PRIMARY KEY (tournament_uuid, user_uuid, character_uuid)
 );
 
+CREATE TABLE IF NOT EXISTS rematch_games (
+	game_uuid char(36) NOT NULL REFERENCES games (uuid),
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	user_character_uuid char(36) NOT NULL REFERENCES characters(uuid),
+	opponent_uuid char(36) NOT NULL REFERENCES users (uuid),
+	opponent_character_uuid char(36) NOT NULL REFERENCES characters(uuid),
+	success boolean,
+	time timestamp DEFAULT now(),
+	PRIMARY KEY (game_uuid)
+);
+
+CREATE TABLE IF NOT EXISTS oddsmaker (
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	user_character_uuid char(36) NOT NULL REFERENCES characters(uuid),
+	opponent_uuid char(36) NOT NULL REFERENCES users (uuid),
+	time timestamp DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS inspect_games (
+	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	opponent_uuid char(36) NOT NULL REFERENCES users (uuid),
+	game_uuid char(36) NOT NULL REFERENCES games (uuid),
+	time timestamp DEFAULT now(),
+	PRIMARY KEY (game_uuid)
+);
 -- CREATE TABLE IF NOT EXISTS tournament_coins (
 -- 	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
 -- 	user_uuid char(36) NOT NULL REFERENCES users (uuid),

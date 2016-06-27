@@ -7,6 +7,8 @@ complete work in progress. master branch generally stable.
 
 TODO:
 
+--m-ui determinate progress bar for scores
+
 --Bosses. Calculate rivals on tourney start?
 
 --dominant matchups? blowout differential in recent history 7-0, 6-1, 5-2?

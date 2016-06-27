@@ -3,19 +3,21 @@ import log from '../../logger';
 export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 	const sql = `
 		SELECT
-			uuid,
-			value,
-			winning_player_uuid,
-			winning_character_uuid,
-			winning_player_previous_streak,
-			winning_character_previous_streak,
-			losing_player_uuid,
-			losing_character_uuid,
-			losing_player_previous_streak,
-			losing_character_previous_streak,
-			supreme
+			g.uuid,
+			g.value,
+			g.winning_player_uuid,
+			g.winning_character_uuid,
+			g.winning_player_previous_streak,
+			g.winning_character_previous_streak,
+			g.losing_player_uuid,
+			g.losing_character_uuid,
+			g.losing_player_previous_streak,
+			g.losing_character_previous_streak,
+			g.supreme,
+			rg.user_uuid AS "rematched"
 		FROM
-			games
+			games g
+		LEFT JOIN rematch_games rg ON g.uuid = rg.game_uuid
 		WHERE
 			tournament_uuid = $1
 		ORDER BY time DESC
@@ -51,7 +53,8 @@ export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 				globalStreak: results.rows[0].losing_player_previous_global_streak,
 				characterGlobalStreak: results.rows[0].losing_character_previous_global_streak,
 			},
-			supreme: results.rows[0].supreme
+			supreme: results.rows[0].supreme,
+			rematched: results.rows[0].rematched
 		});
 	});
 }

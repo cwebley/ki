@@ -18,6 +18,11 @@ var config = {
 		startCoins: 10,
 		goal: 100,
 		upcomingListLength: 50
+	},
+	cost: {
+		rematch: 3,
+		oddsmaker: 3,
+		inspect: 3
 	}
 };
 

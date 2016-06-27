@@ -322,6 +322,18 @@ r.DraftPickNotFound = (character) => ({
 	id: 'draftPickNotFound'
 });
 
+// powers
+r.RematchAlreadyUsed = {
+	message: 'Previous game was already rematched',
+	level: 'error',
+	id: 'rematchAlreadyUsed'
+};
+r.NotEnoughCoins = {
+	message: 'Not enough coins to purchase this',
+	level: 'error',
+	id: 'notEnoughCoins'
+};
+
 r.Internal = {
 	message: 'Internal server error',
 	level: 'error',

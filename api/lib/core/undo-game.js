@@ -1,23 +1,24 @@
 /*
-{
-	winner: {
-		uuid: 1,
-		characterUuid: 1,
-		// these need to come from an outside source, since state isn't sufficient to tell us this in some cases
-		value: 1,
-		streak: 3,
-		characterStreak: 3
-	},
-	loser: {
-		uuid: 2,
-		characterUuid: 2,
-	},
- 	supreme: true
-};
+	{
+		winner: {
+			uuid: 1,
+			characterUuid: 1,
+			// these need to come from an outside source, since state isn't sufficient to tell us this in some cases
+			value: 1,
+			streak: 3,
+			characterStreak: 3
+		},
+		loser: {
+			uuid: 2,
+			characterUuid: 2,
+		},
+	 	supreme: true
+	}
 */
 const COINS_FOR_SUPREME = 3;
 
-export default function undoGame (state, game) {
+// rematch is an optional bool parameter that uses a rematch power which is essentially a soft undo
+export default function undoGame (state, game, rematch) {
 	const winnerUuid = game.winner.uuid;
 	const winningCharacterUuid = game.winner.characterUuid;
 	const loserUuid = game.loser.uuid;
@@ -38,17 +39,20 @@ export default function undoGame (state, game) {
 	diff.users.ids[winnerUuid] = {
 		score: state.users.ids[winnerUuid].score - winningCharPrevValue,
 		streak: game.winner.streak,
-		wins: state.users.ids[winnerUuid].wins - 1,
 		characters: {
 			ids: {
 				[winningCharacterUuid]: {
-					wins: state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].wins - 1,
 					streak: game.winner.characterStreak
 				}
 			},
 			result: [winningCharacterUuid]
 		}
 	};
+	// rematches don't reset the wins, only the streaks
+	if (!rematch) {
+		diff.users.ids[winnerUuid].wins = state.users.ids[winnerUuid].wins - 1;
+		diff.users.ids[winnerUuid].characters.ids[winningCharacterUuid].wins = state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].wins - 1;
+	}
 	diff.users.result.push(winnerUuid);
 
 	if (state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].value !== winningCharPrevValue) {
@@ -57,18 +61,21 @@ export default function undoGame (state, game) {
 
 	diff.users.ids[loserUuid] = {
 		streak: game.loser.streak,
-		losses: state.users.ids[loserUuid].losses - 1,
 		characters: {
 			ids: {
 				[losingCharacterUuid]: {
 					value: state.users.ids[loserUuid].characters.ids[losingCharacterUuid].value - 1,
-					losses: state.users.ids[loserUuid].characters.ids[losingCharacterUuid].losses - 1,
 					streak: game.loser.characterStreak
 				}
 			},
 			result: [losingCharacterUuid]
 		}
 	};
+	// rematches don't reset the losses, only the streaks
+	if (!rematch) {
+		diff.users.ids[loserUuid].losses = state.users.ids[loserUuid].losses - 1;
+		diff.users.ids[loserUuid].characters.ids[losingCharacterUuid].losses = state.users.ids[loserUuid].characters.ids[losingCharacterUuid].losses - 1;
+	}
 	diff.users.result.push(loserUuid);
 
 	// undo fire
@@ -94,7 +101,18 @@ export default function undoGame (state, game) {
 		}
 	});
 
-	// TODO ICE STATUS
+	//undo ice
+	const undoIceUuid = undoIceStatus(losingCharacterUuid, game.loser.characterStreak);
+	state.users.ids[loserUuid].characters.result.forEach(cUuid => {
+		if (undoIceUuid && (cUuid !== undoIceUuid)) {
+			// we're undoing a character being iced, it's not this one, so incr value for all other characters that previously went down
+			if (!diff.users.ids[loserUuid].characters.ids[cUuid]) {
+				diff.users.ids[loserUuid].characters.ids[cUuid] = {};
+				diff.users.ids[loserUuid].characters.result.push(cUuid);
+			}
+			diff.users.ids[loserUuid].characters.ids[cUuid].value = state.users.ids[loserUuid].characters.ids[cUuid].value + 1;
+		}
+	});
 
 	const coinsDiff = undoCoins(state.users.ids[winnerUuid].coins, state.users.ids[winnerUuid].streak, game.supreme);
 	if (coinsDiff) {
@@ -125,6 +143,13 @@ export function alreadyOnFire (streak) {
 
 export function undoFireStatus (characterId, currentStreak) {
 	if (currentStreak !== 3) {
+		return undefined;
+	}
+	return characterId;
+}
+
+export function undoIceStatus (characterId, currentStreak) {
+	if (currentStreak < 3) {
 		return undefined;
 	}
 	return characterId;

@@ -16,6 +16,7 @@ import submitSeeds from './handlers/submit-seeds';
 import submitGame from './handlers/submit-game';
 import draftCharacter from './handlers/draft-character';
 import undoGame from './handlers/undo-game';
+import rematch from './handlers/rematch';
 
 let router = express.Router();
 
@@ -51,11 +52,12 @@ router.get('/characters', getCharacters);
 router.post('/tournaments', requiresLogin, createTournament);
 router.get('/tournament/:tournamentSlug', acceptUser, getTournament);
 
-// TODO: require login
 // TODO: logged in user must be in the tournament
 router.post('/tournament/:tournamentSlug/seed', requiresLogin, submitSeeds);
 router.post('/tournament/:tournamentSlug/game', requiresLogin, submitGame);
+router.delete('/tournament/:tournamentSlug/game', requiresLogin, undoGame);
 router.post('/tournament/:tournamentSlug/draft', requiresLogin, draftCharacter);
-router.put('/tournament/:tournamentSlug/game', requiresLogin, undoGame);
+
+router.post('/tournament/:tournamentSlug/power/rematch', requiresLogin, rematch);
 
 export default router;
