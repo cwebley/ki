@@ -42,6 +42,12 @@ const styles = {
 		padding: 0,
 		listStyleType: 'none',
 	},
+	powerBlock: {
+		paddingTop: '2em'
+	},
+	power: {
+		padding: '0 25%',
+	},
 	draftCharacters: {
 		margin: 0,
 		padding: '1em',
@@ -117,7 +123,7 @@ class TournamentLanding extends Component {
 
 		return (
 				<div style={styles.pageStyle}>
-					{this.renderLeftUser(seedingInProgress)}
+					{this.renderLeftUser()}
 					{this.renderCenter(seedingInProgress, draftInProgress)}
 					{this.renderRightUser(seedingInProgress)}
 					<div>
@@ -127,7 +133,7 @@ class TournamentLanding extends Component {
 		);
 	}
 
-	renderLeftUser (seedingInProgress) {
+	renderLeftUser () {
 		const { tournament } = this.props;
 		const user = tournament.users.ids[tournament.users.result[0]];
 		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
@@ -135,7 +141,7 @@ class TournamentLanding extends Component {
 		return (
 			<div style={styles.leftUserStyle}>
 				<h2 style={styles.userHeaderStyle}>{user.name}</h2>
-					{!seedingInProgress && this.renderUserStats(user)}
+					{tournament.active && this.renderUserStats(user)}
 				<ol style={styles.resetListStyle}>
 					{characters.map(c => this.renderCharacter(c))}
 				</ol>
@@ -144,16 +150,17 @@ class TournamentLanding extends Component {
 	}
 
 	renderCenter (seedingInProgress, draftInProgress) {
+		const { tournament } = this.props;
 		return (
 			<div style={styles.centerColStyle}>
 				{seedingInProgress && <RaisedButton
 					label="Submit Seeds"
-					primary={true}
-					disabled={this.props.tournament.users.ids[this.props.tournament.users.result[0]].seeded}
+					primary
+					disabled={tournament.users.ids[tournament.users.result[0]].seeded}
 					onTouchTap={() => this.submitSeeds()}
 				/>}
 				{draftInProgress && this.renderDraft()}
-				{!seedingInProgress && !draftInProgress && this.renderTournamentActions()}
+				{tournament.active && this.renderTournamentActions()}
 			</div>
 		);
 	}
@@ -220,30 +227,30 @@ class TournamentLanding extends Component {
 		const rightCharacter = rightUser.characters.ids[rightUser.upcoming[0]];
 		return (
 			<div>
-				Tournament Actions
+				{ tournament.name }
 				<div>
 					<h3>Matchup</h3>
 					<div style={{
 						width: '50%',
 						float: 'left',
-						padding: '.5rem .25rem .5rem .5rem'
+						padding: '2% 1% 2% 2%'
 					}}>
 						<RaisedButton
 							style={{width: '100%'}}
 							label={leftCharacter.name}
-							primary={true}
+							primary
 							onTouchTap={() => this.submitGame(leftUser, leftCharacter, rightUser, rightCharacter)}
 						/>
 					</div>
 					<div style={{
 						width: '50%',
 						float: 'right',
-						padding: '.5rem .5rem .5rem .25rem'
+						padding: '2% 2% 2% 1%'
 					}}>
 						<RaisedButton
 							style={{width: '100%'}}
 							label={rightCharacter.name}
-							primary={true}
+							primary
 							onTouchTap={() => this.submitGame(rightUser, rightCharacter, leftUser, leftCharacter)}
 						/>
 					</div>
@@ -261,6 +268,32 @@ class TournamentLanding extends Component {
 								label="Supreme"
 							/>
 						</Form>
+					</div>
+				</div>
+				<div style={styles.powerBlock}>
+					<div style={styles.power}>
+						<RaisedButton
+							style={{width: '100%'}}
+							label="Rematch"
+							secondary
+							onTouchTap={() => {}}
+						/>
+					</div>
+					<div style={styles.power}>
+						<RaisedButton
+							style={{width: '100%'}}
+							label="Oddsmaker"
+							secondary
+							onTouchTap={() => {}}
+						/>
+					</div>
+					<div style={styles.power}>
+						<RaisedButton
+							style={{width: '100%'}}
+							label="Inspect"
+							secondary
+							onTouchTap={() => {}}
+						/>
 					</div>
 				</div>
 			</div>
@@ -359,7 +392,7 @@ class TournamentLanding extends Component {
 			token: this.props.me.token
 		})
 		// uncheck the supreme box
-		this.props.reset('matchup');
+		.then(this.props.reset('matchup'));
 	}
 }
 
