@@ -53,7 +53,6 @@ describe('undo-game logic', () => {
 			testVals.userOneScore = 50;
 
 			const diff = undoGame(testState, testUndoGame);
-			debugger;
 			expect(diff.users.ids['user1Uuid'].score).to.equal(testVals.userOneScore - testUndoGame.winner.value);
 			expect(diff.users.ids['user2Uuid'].score).to.equal(undefined); // no change for the loser
 		});

@@ -142,10 +142,10 @@ export default function submitGameHandler (req, res) {
 
 			// merge old state and diff
 			Object.keys(diff).forEach(tournamentKey => {
-				if (tournamentKey === "users") {
+				if (tournamentKey === 'users') {
 					diff[tournamentKey].result.forEach(uUuid => {
 						Object.keys(diff[tournamentKey].ids[uUuid]).forEach(userKey => {
-							if (userKey === "characters") {
+							if (userKey === 'characters') {
 								diff[tournamentKey].ids[uUuid][userKey].result.forEach(cUuid => {
 									Object.keys(diff[tournamentKey].ids[uUuid][userKey].ids[cUuid]).forEach(characterKey => {
 										tournament[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey] = diff[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey];
@@ -160,8 +160,12 @@ export default function submitGameHandler (req, res) {
 					});
 					return;
 				}
-
 				tournament[tournamentKey] = diff[tournamentKey];
+			});
+
+			// the first matchup was this one. return the next matchup.
+			tournament.users.result.forEach(uUuid => {
+				tournament.users.ids[uUuid].upcoming = tournament.users.ids[uUuid].upcoming.slice(1, 2);
 			});
 
 			fillUpcomingListQuery(req.redis, tournament, (err, results) => {
