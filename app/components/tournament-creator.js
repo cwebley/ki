@@ -315,17 +315,6 @@ class TournamentCreator extends Component {
 
 	onSubmit (data) {
 		this.props.createTournament(data, this.props.me.token, formName)
-		// redirect to the home page if registration was successful
-
-
-
-		// .then(
-		// 	action => {
-		// 		if (action.data) {
-		// 			this.context.router.push('/')
-		// 		}
-		// 	}
-		// );
 	}
 }
 

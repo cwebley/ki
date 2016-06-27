@@ -7,7 +7,12 @@ import submitSeeds from '../actions/submit-seeds';
 import draftCharacter from '../actions/draft-character';
 import submitGame from '../actions/submit-game';
 
-import { getTournamentFromState, getMe } from '../store';
+import { getTournamentFromState, getMe, getFormState } from '../store';
+import * as formActions from '../actions/forms';
+import Form from './form';
+import Check from './check';
+import { getFormValue } from '../store/forms';
+
 import get from 'lodash.get';
 
 import Paper from 'material-ui/Paper';
@@ -17,14 +22,22 @@ import SeedContainer from './seed-container';
 
 import IconButton from 'material-ui/IconButton';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
-import { cyan500 } from 'material-ui/styles/colors';
+import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
+
 
 
 const styles = {
 	pageStyle: {
 		textAlign: 'center'
 	},
-	characterListStyle: {
+	userHeaderStyle: {
+		paddingBottom: '0.5em'
+	},
+	statItemStyle: {
+		display: 'inline-block',
+		width: '50%'
+	},
+	resetListStyle: {
 		margin: 0,
 		padding: 0,
 		listStyleType: 'none',
@@ -104,7 +117,7 @@ class TournamentLanding extends Component {
 
 		return (
 				<div style={styles.pageStyle}>
-					{this.renderLeftUser(hydratedUsers[0])}
+					{this.renderLeftUser(seedingInProgress)}
 					{this.renderCenter(seedingInProgress, draftInProgress)}
 					{this.renderRightUser(seedingInProgress)}
 					<div>
@@ -114,13 +127,16 @@ class TournamentLanding extends Component {
 		);
 	}
 
-	renderLeftUser (user) {
+	renderLeftUser (seedingInProgress) {
+		const { tournament } = this.props;
+		const user = tournament.users.ids[tournament.users.result[0]];
 		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
+
 		return (
 			<div style={styles.leftUserStyle}>
-				LEFT USER
-				<div>{user.name}</div>
-				<ol style={styles.characterListStyle}>
+				<h2 style={styles.userHeaderStyle}>{user.name}</h2>
+					{!seedingInProgress && this.renderUserStats(user)}
+				<ol style={styles.resetListStyle}>
 					{characters.map(c => this.renderCharacter(c))}
 				</ol>
 			</div>
@@ -147,18 +163,51 @@ class TournamentLanding extends Component {
 		const user = tournament.users.ids[tournament.users.result[1]];
 		const userCharacters = user.characters.result.map(uuid => user.characters.ids[uuid]);
 		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
+
 		return (
 			<div style={styles.rightUserStyle}>
-				RIGHT USER
-				<div>{user.name}</div>
+				<h2 style={styles.userHeaderStyle}>{user.name}</h2>
 				{seedingInProgress && <SeedContainer
 					characters={tournament.seedCharacters || []}
 					maxStartingValue={tournament.maxStartingValue}
 					updateSeeds={this.updateSeeds}
 				/>}
-				{!seedingInProgress && <ol style={styles.characterListStyle}>
+				{!seedingInProgress && this.renderUserStats(user)}
+				{!seedingInProgress && <ol style={styles.resetListStyle}>
 					{characters.map(c => this.renderCharacter(c))}
 				</ol>}
+			</div>
+		);
+	}
+
+	renderUserStats (user) {
+		let streakText = '';
+		let streakStyle = {};
+		if (user.streak > 0) {
+			streakText = user.streak + 'W';
+			streakStyle.color = green500;
+			if (user.streak === 2 || user.streak > 3) {
+				streakStyle.fontWeight = 600;
+			}
+		}
+		if (user.streak < 0) {
+			streakText = -1 * user.streak + 'L';
+			streakStyle.color = red500;
+		}
+
+		return (
+			<div>
+				<div style={{fontSize: 'larger'}}>{user.score}</div>
+				<div>{`${user.wins} - ${user.losses}`}</div>
+				<div style={{
+					...streakStyle,
+					...styles.statItemStyle
+				}}>{streakText}</div>
+				<div style={{
+					...styles.statItemStyle,
+					color: amber500,
+					fontWeight: 600
+				}}>{`${user.coins} coins`}</div>
 			</div>
 		);
 	}
@@ -197,6 +246,21 @@ class TournamentLanding extends Component {
 							primary={true}
 							onTouchTap={() => this.submitGame(rightUser, rightCharacter, leftUser, leftCharacter)}
 						/>
+					</div>
+					<div style={{
+						padding: '0 33%'
+					}}>
+						<Form
+							values={this.props.matchupForm.values}
+							formName="matchup"
+							update={this.props.update}
+							reset={this.props.reset}
+						>
+							<Check
+								name="supreme"
+								label="Supreme"
+							/>
+						</Form>
 					</div>
 				</div>
 			</div>
@@ -291,8 +355,11 @@ class TournamentLanding extends Component {
 			winningCharacterSlug: winningCharacter.slug,
 			losingUserSlug: losingUser.slug,
 			losingCharacterSlug: losingCharacter.slug,
+			supreme: getFormValue(this.props.matchupForm, 'supreme'),
 			token: this.props.me.token
-		});
+		})
+		// uncheck the supreme box
+		this.props.reset('matchup');
 	}
 }
 
@@ -300,9 +367,10 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		tournament: getTournamentFromState(state, ownProps.params.tournamentSlug),
 		me: getMe(state),
+		matchupForm: getFormState(state, 'matchup')
 	}
 }
 
 export default connect(mapStateToProps, {
-	fetchTournament, updateSeeds, submitSeeds, draftCharacter, submitGame
+	fetchTournament, updateSeeds, submitSeeds, draftCharacter, submitGame, ...formActions
 })(TournamentLanding);
