@@ -14,7 +14,8 @@ export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 			g.losing_player_previous_streak,
 			g.losing_character_previous_streak,
 			g.supreme,
-			rg.user_uuid AS "rematched"
+			rg.user_uuid AS "rematched",
+			rg.success AS "rematchSuccess"
 		FROM
 			games g
 		LEFT JOIN rematch_games rg ON g.uuid = rg.game_uuid
@@ -54,7 +55,8 @@ export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 				characterGlobalStreak: results.rows[0].losing_character_previous_global_streak,
 			},
 			supreme: results.rows[0].supreme,
-			rematched: results.rows[0].rematched
+			rematched: results.rows[0].rematched,
+			rematchSuccess: results.rows[0].rematchSuccess
 		});
 	});
 }

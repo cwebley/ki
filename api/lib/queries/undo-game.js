@@ -3,7 +3,7 @@ import async from 'neo-async';
 import snake from 'lodash.snakecase';
 import get from 'lodash.get';
 
-export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
+export default function undoGameQuery (db, opts, diff, cb) {
 	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'coins'];
 	const tournamentCharactersFields = ['value', 'wins', 'losses', 'streak', 'fireWins'];
 	const usersFields = ['globalStreak'];
@@ -16,7 +16,7 @@ export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
 	let userCharactersMap = new Map();
 
 	const tournamentsWhere = {
-		uuid: tournamentUuid
+		uuid: opts.tournamentUuid
 	};
 	let tournamentsUpdates = {};
 	if (get(diff._remove.championUuid)) {
@@ -26,7 +26,7 @@ export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
 
 	diff.users.result.forEach(userUuid => {
 		const tournamentUsersWhere = {
-			tournamentUuid: tournamentUuid,
+			tournamentUuid: opts.tournamentUuid,
 			userUuid: userUuid
 		};
 		let tournamentUsersUpdates = {};
@@ -53,7 +53,7 @@ export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
 				// iterate over character
 				diff.users.ids[userUuid].characters.result.forEach(cUuid => {
 					const tournamentCharactersWhere = {
-						tournamentUuid: tournamentUuid,
+						tournamentUuid: opts.tournamentUuid,
 						userUuid: userUuid,
 						characterUuid: cUuid
 					};
@@ -101,7 +101,7 @@ export default function undoGameQuery (db, tournamentUuid, gameUuid, diff, cb) {
 
 	// begin transaction
 	db.query('BEGIN', () => {
-		deleteGame(db, gameUuid, (err, results) => {
+		deleteGame(db, opts.gameUuid, opts.rematch, (err, results) => {
 			if (err) {
 				return rollback(db, err, cb);
 			}
@@ -184,14 +184,18 @@ function updateTable (db, tableName, updateMap, cb) {
 	async.parallel(updates, cb);
 }
 
-function deleteGame (db, gameUuid, cb) {
+function deleteGame (db, gameUuid, rematch, cb) {
+	if (rematch) {
+		return cb();
+	}
+
 	const sql = `
 		DELETE FROM
 			games
 		WHERE uuid = $1
 	`;
 	const params = [
-		gameUuid
+		opts.gameUuid
 	];
 
 	db.query(sql, params, (err, results) => {

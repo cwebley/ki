@@ -97,49 +97,63 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 		}
 	});
 
+	const rematchGamesMap = new Map();
+	const rematchGamesWhere = {
+		gameUuid: game.uuid,
+	};
+	const rematchGamesUpdates = {
+		success: game.rematchSuccess
+	};
+	rematchGamesMap.set(rematchGamesWhere, rematchGamesUpdates);
+
 	// begin transaction
 	db.query('BEGIN', () => {
 		insertGame(db, tournamentUuid, game, (err, results) => {
 			if (err) {
 				return rollback(db, err, cb);
 			}
-			updateTable(db, 'tournaments', tournamentsMap, (err, results) => {
+			updateTable(db, 'rematch_games', rematchGamesMap, (err, results) => {
 				if (err) {
 					return rollback(db, err, cb);
 				}
-				updateTable(db, 'tournament_users', tournamentUsersMap, (err, results) => {
+				updateTable(db, 'tournaments', tournamentsMap, (err, results) => {
 					if (err) {
 						return rollback(db, err, cb);
 					}
-					updateTable(db, 'users', usersMap, (err, results) => {
+					updateTable(db, 'tournament_users', tournamentUsersMap, (err, results) => {
 						if (err) {
 							return rollback(db, err, cb);
 						}
-						updateTable(db, 'tournament_characters', tournamentCharactersMap, (err, results) => {
+						updateTable(db, 'users', usersMap, (err, results) => {
 							if (err) {
 								return rollback(db, err, cb);
 							}
-							updateTable(db, 'user_characters', userCharactersMap, (err, results) => {
+							updateTable(db, 'tournament_characters', tournamentCharactersMap, (err, results) => {
 								if (err) {
 									return rollback(db, err, cb);
 								}
-								getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.winner.uuid, (err, winningUserCharacterStreaks) => {
+								updateTable(db, 'user_characters', userCharactersMap, (err, results) => {
 									if (err) {
 										return rollback(db, err, cb);
 									}
-									getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.loser.uuid, (err, losingUserCharacterStreaks) => {
+									getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.winner.uuid, (err, winningUserCharacterStreaks) => {
 										if (err) {
 											return rollback(db, err, cb);
 										}
-										// end transaction
-										db.query('COMMIT', (err, result) => {
+										getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.loser.uuid, (err, losingUserCharacterStreaks) => {
 											if (err) {
 												return rollback(db, err, cb);
 											}
-											// return the updated character streaks
-											return cb(null, {
-												[game.winner.uuid]: winningUserCharacterStreaks,
-												[game.loser.uuid]: losingUserCharacterStreaks
+											// end transaction
+											db.query('COMMIT', (err, result) => {
+												if (err) {
+													return rollback(db, err, cb);
+												}
+												// return the updated character streaks
+												return cb(null, {
+													[game.winner.uuid]: winningUserCharacterStreaks,
+													[game.loser.uuid]: losingUserCharacterStreaks
+												});
 											});
 										});
 									});
@@ -156,7 +170,8 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 function translateKey (key) {
 	const translations = {
 		globalStreak: 'streak',
-		globalBestStreak: 'best_streak'
+		globalBestStreak: 'best_streak',
+		rematchSuccess: 'success'
 	};
 	if (translations[key]) {
 		return translations[key];
@@ -170,8 +185,7 @@ function updateTable (db, tableName, updateMap, cb) {
 		log.debug(`No updates for ${tableName}`);
 		return cb();
 	}
-	if (tableName === 'tournament_users') {
-	}
+
 	let updates = [];
 	updateMap.forEach((v, k) => {
 		let params = [];
