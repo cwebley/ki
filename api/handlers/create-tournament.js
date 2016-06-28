@@ -5,7 +5,6 @@ import createTournamentQuery from '../lib/queries/create-tournament';
 import getUserQuery from '../lib/queries/get-user';
 import getCharactersQuery from '../lib/queries/get-characters';
 import getUserCharactersQuery from '../lib/queries/get-user-characters';
-import createUpcomingListQuery from '../lib/queries/create-upcoming-list';
 import config from '../config';
 
 export default function createTournamentHandler (req, res) {
@@ -185,13 +184,7 @@ export default function createTournamentHandler (req, res) {
 							}
 							return res.status(500).send(r.internal);
 						}
-
-						createUpcomingListQuery(req.redis, tournamentOpts, (err, results) => {
-							if (err) {
-								return res.status(500).send(r.internal);
-							}
-							return res.status(201).send(tournament);
-						});
+						return res.status(201).send(tournament);
 					});
 				});
 			});

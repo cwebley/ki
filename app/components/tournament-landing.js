@@ -6,6 +6,7 @@ import updateSeeds from '../actions/update-seeds';
 import submitSeeds from '../actions/submit-seeds';
 import draftCharacter from '../actions/draft-character';
 import submitGame from '../actions/submit-game';
+import rematch from '../actions/rematch';
 
 import { getTournamentFromState, getMe, getFormState } from '../store';
 import * as formActions from '../actions/forms';
@@ -179,7 +180,7 @@ class TournamentLanding extends Component {
 					maxStartingValue={tournament.maxStartingValue}
 					updateSeeds={this.updateSeeds}
 				/>}
-				{!seedingInProgress && this.renderUserStats(user)}
+				{tournament.active && this.renderUserStats(user)}
 				{!seedingInProgress && <ol style={styles.resetListStyle}>
 					{characters.map(c => this.renderCharacter(c))}
 				</ol>}
@@ -276,7 +277,7 @@ class TournamentLanding extends Component {
 							style={{width: '100%'}}
 							label="Rematch"
 							secondary
-							onTouchTap={() => {}}
+							onTouchTap={() => this.useRematch()}
 						/>
 					</div>
 					<div style={styles.power}>
@@ -394,6 +395,10 @@ class TournamentLanding extends Component {
 		// uncheck the supreme box
 		.then(this.props.reset('matchup'));
 	}
+
+	useRematch () {
+		this.props.rematch(this.props.tournament.slug, this.props.me.token);
+	}
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -405,5 +410,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 export default connect(mapStateToProps, {
-	fetchTournament, updateSeeds, submitSeeds, draftCharacter, submitGame, ...formActions
+	fetchTournament, updateSeeds, submitSeeds,
+	draftCharacter, submitGame, ...formActions,
+	rematch
 })(TournamentLanding);

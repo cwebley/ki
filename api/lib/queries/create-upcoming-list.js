@@ -46,7 +46,10 @@ export default function createUpcomingListQuery (rConn, opts, cb) {
 				key: opponentKey,
 				value: randomOpponentCharacters
 			});
-			return cb(err, results);
+			return cb(err, {
+				[opts.user.uuid]: randomUserCharacters,
+				[opts.opponent.uuid]: randomOpponentCharacters
+			});
 		});
 	});
 }

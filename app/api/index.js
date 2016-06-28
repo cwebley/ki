@@ -132,3 +132,19 @@ export const submitGame = opts => {
 		});
 	});
 };
+
+export const rematch = (tournamentSlug, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/power/rematch',
+		method: 'POST',
+		json: {},
+		headers: {
+			Authorization: 'Bearer ' + token
+		}
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});

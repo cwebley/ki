@@ -4,6 +4,7 @@ import getTournamentUsers from './get-tournament-users';
 import getTournamentCharacterCount from './get-tournament-character-count';
 import updateTournamentUsersDrafting from './update-tournament-users-drafting';
 import updateTournamentActive from './update-tournament-active';
+import createUpcomingList from './create-upcoming-list';
 
 export default function updateDraftStatus (db, tournamentUuid, cb) {
 	getTournament(db, 'uuid', tournamentUuid, (err, tournament) => {
@@ -44,7 +45,7 @@ export default function updateDraftStatus (db, tournamentUuid, cb) {
 						draftingUpdates.user1Drafting = !tournamentUsers[0].drafting;
 						draftingUpdates.user2Drafting = !tournamentUsers[1].drafting;
 					}
-					
+
 					updateTournamentUsersDrafting(db, draftingUpdates, (err, results) => {
 						if (err) {
 							return cb(err);
@@ -64,14 +65,44 @@ export default function updateDraftStatus (db, tournamentUuid, cb) {
 							});
 						}
 
-						// if the draft is over, update the active status of the tournament to true
-						log.debug('Draft is over. Updating active status of tournament to true', { tournamentUuid });
-						updateTournamentActive(db, true, tournamentUuid, (err, results) => {
+						log.debug('Draft is over. Creating upcoming list and updating active status of tournament to true', { tournamentUuid });
+						getTournamentCharactersQuery(db, tournament.uuid, tournamentUsers[0].uuid, (err, userCharacters) => {
 							if (err) {
 								return cb(err);
 							}
-							return cb(null, {
-								tournamentActive: true,
+							const userCharacterUuids = userCharacters.forEach(c => c.uuid);
+
+							getTournamentCharactersQuery(db, tournament.uuid, tournamentUsers[1].uuid, (err, opponentCharacters) => {
+								if (err) {
+									return cb(err);
+								}
+								const opponentCharacterUuids = opponentCharacters.forEach(c => c.uuid);
+
+								createUpcomingListQuery(req.redis, {
+									uuid: tournamentUuid,
+									user: {
+										uuid: tournamentUsers[0].uuid,
+										characters: userCharacterUuids
+									},
+									opponent: {
+										uuid: tournamentUsers[1].uuid,
+										characters: opponentCharacterUuids
+									}
+								}, (err, upcomingData) => {
+									if (err) {
+										return cb(err);
+									}
+
+									updateTournamentActive(db, true, tournamentUuid, (err, results) => {
+										if (err) {
+											return cb(err);
+										}
+										return cb(null, {
+											tournamentActive: true,
+											upcoming: upcomingData
+										});
+									});
+								});
 							});
 						});
 					});

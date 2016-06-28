@@ -4,6 +4,8 @@ import r from '../reasons';
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import submitSeedsQuery from '../lib/queries/submit-seeds';
 import assignFirstDraftPick from '../lib/queries/assign-first-draft-pick';
+import createUpcomingListQuery from '../lib/queries/create-upcoming-list';
+import updateTournamentActive from '../lib/queries/update-tournament-active';
 
 export default function submitGameHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -97,9 +99,9 @@ export default function submitGameHandler (req, res) {
 				const user1CharLen = updatedTournament.users.ids[updatedTournament.users.result[0]].characters.result.length;
 				const user2CharLen = updatedTournament.users.ids[updatedTournament.users.result[1]].characters.result.length;
 
-				// if there is no draft, no need to assign first pick. return the updatedTournament
+				// if there is no draft, no need to assign first pick.
 				if (user1CharLen === updatedTournament.charactersPerUser && user2CharLen === updatedTournament.charactersPerUser) {
-					return res.status(200).send(updatedTournament);
+					return kickStartTournament(req, res, updatedTournament);
 				}
 
 				let firstPickUuid;
@@ -128,6 +130,35 @@ export default function submitGameHandler (req, res) {
 					return res.status(200).send(updatedTournament);
 				});
 			})
+		});
+	});
+}
+
+// there won't be a draft. load the upcoming matches then set the tournament to active and return the updatedTournament
+const kickStartTournament = (req, res, updatedTournament) => {
+	createUpcomingListQuery(req.redis, {
+		uuid: updatedTournament.uuid,
+		user: {
+			uuid: updatedTournament.users.result[0],
+			characters: updatedTournament.users.ids[updatedTournament.users.result[0]].characters.result
+		},
+		opponent: {
+			uuid: updatedTournament.users.result[1],
+			characters: updatedTournament.users.ids[updatedTournament.users.result[1]].characters.result
+		}
+	}, (err, upcomingData) => {
+		if (err) {
+			return res.status(500).send(r.internal);
+		}
+		updatedTournament.users.ids[updatedTournament.users.result[0]].upcoming = upcomingData[updatedTournament.users.result[0]].slice(0, 1);
+		updatedTournament.users.ids[updatedTournament.users.result[1]].upcoming = upcomingData[updatedTournament.users.result[1]].slice(0, 1);
+
+		updateTournamentActive(req.db, true, updatedTournament.uuid, (err, results) => {
+			if (err) {
+				return res.status(500).send(r.internal);
+			}
+			updatedTournament.active = true;
+			return res.status(200).send(updatedTournament);
 		});
 	});
 }

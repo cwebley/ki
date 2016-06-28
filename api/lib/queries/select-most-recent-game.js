@@ -19,8 +19,8 @@ export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 			games g
 		LEFT JOIN rematch_games rg ON g.uuid = rg.game_uuid
 		WHERE
-			tournament_uuid = $1
-		ORDER BY time DESC
+			g.tournament_uuid = $1
+		ORDER BY g.time DESC
 		LIMIT 1
 	`;
 	const params = [tournamentUuid];
