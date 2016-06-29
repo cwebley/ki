@@ -58,7 +58,7 @@ export default function draftCharacterHandler (req, res) {
 							return res.status(500).send(r.internal);
 						}
 
-						updateDraftStatus(req.db, tournament.uuid, (err, draftStatus) => {
+						updateDraftStatus(req.db, req.redis, tournament.uuid, (err, draftStatus) => {
 							if (err) {
 								return res.status(500).send(r.internal);
 							}

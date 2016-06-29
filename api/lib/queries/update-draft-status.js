@@ -1,12 +1,13 @@
 import log from '../../logger';
 import getTournament from './get-tournament';
 import getTournamentUsers from './get-tournament-users';
+import getTournamentCharacters from './get-tournament-characters';
 import getTournamentCharacterCount from './get-tournament-character-count';
 import updateTournamentUsersDrafting from './update-tournament-users-drafting';
 import updateTournamentActive from './update-tournament-active';
 import createUpcomingList from './create-upcoming-list';
 
-export default function updateDraftStatus (db, tournamentUuid, cb) {
+export default function updateDraftStatus (db, rConn, tournamentUuid, cb) {
 	getTournament(db, 'uuid', tournamentUuid, (err, tournament) => {
 		if (err) {
 			return cb(err);
@@ -66,19 +67,19 @@ export default function updateDraftStatus (db, tournamentUuid, cb) {
 						}
 
 						log.debug('Draft is over. Creating upcoming list and updating active status of tournament to true', { tournamentUuid });
-						getTournamentCharactersQuery(db, tournament.uuid, tournamentUsers[0].uuid, (err, userCharacters) => {
+						getTournamentCharacters(db, tournamentUuid, tournamentUsers[0].uuid, (err, userCharacters) => {
 							if (err) {
 								return cb(err);
 							}
-							const userCharacterUuids = userCharacters.forEach(c => c.uuid);
+							const userCharacterUuids = userCharacters.map(c => c.uuid);
 
-							getTournamentCharactersQuery(db, tournament.uuid, tournamentUsers[1].uuid, (err, opponentCharacters) => {
+							getTournamentCharacters(db, tournamentUuid, tournamentUsers[1].uuid, (err, opponentCharacters) => {
 								if (err) {
 									return cb(err);
 								}
-								const opponentCharacterUuids = opponentCharacters.forEach(c => c.uuid);
+								const opponentCharacterUuids = opponentCharacters.map(c => c.uuid);
 
-								createUpcomingListQuery(req.redis, {
+								createUpcomingList(rConn, {
 									uuid: tournamentUuid,
 									user: {
 										uuid: tournamentUsers[0].uuid,
