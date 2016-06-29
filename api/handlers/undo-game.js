@@ -44,23 +44,25 @@ export default function undoGameHandler (req, res) {
 				// merge old state and diff
 				Object.keys(diff).forEach(tournamentKey => {
 					if (tournamentKey === 'users') {
-						Object.keys(diff[tournamentKey]).forEach(userUuid => {
-							Object.keys(diff[tournamentKey][userUuid]).forEach(userKey => {
+						diff[tournamentKey].result.forEach(userUuid => {
+							Object.keys(diff[tournamentKey].ids[userUuid]).forEach(userKey => {
 								if (userKey === 'characters') {
-									Object.keys(diff[tournamentKey][userUuid][userKey]).forEach(cUuid => {
-										Object.keys(diff[tournamentKey][userUuid][userKey][cUuid]).forEach(characterKey => {
-											tournament[tournamentKey][userUuid][userKey][cUuid][characterKey] = diff[tournamentKey][userUuid][userKey][cUuid][characterKey];
+									diff[tournamentKey].ids[userUuid][userKey].result.forEach(cUuid => {
+										Object.keys(diff[tournamentKey].ids[userUuid][userKey].ids[cUuid]).forEach(characterKey => {
+											tournament[tournamentKey].ids[userUuid][userKey].ids[cUuid][characterKey] = diff[tournamentKey].ids[userUuid][userKey].ids[cUuid][characterKey];
 										});
 									});
 									return;
 								}
-								tournament[tournamentKey][userUuid][userKey] = diff[tournamentKey][userUuid][userKey];
+								tournament[tournamentKey].ids[userUuid][userKey] = diff[tournamentKey].ids[userUuid][userKey];
 							});
 						});
 						return;
 					}
 					if (tournamentKey === '_remove') {
-						tournament.championUuid = null;
+						if (diff[tournamentKey].championUuid) {
+							tournament.championUuid = null;
+						}
 					}
 				});
 				delete tournament._remove;

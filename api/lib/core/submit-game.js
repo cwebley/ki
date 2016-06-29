@@ -202,7 +202,7 @@ export function updateLosingStreak (previousStreak) {
 }
 
 export function updateWinnerValue (previousValue) {
-	if (previousValue === 1) {
+	if (previousValue <= 1) {
 		return undefined;
 	}
 	return previousValue - 1;
