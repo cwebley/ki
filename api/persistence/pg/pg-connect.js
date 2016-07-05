@@ -1,6 +1,7 @@
 import pg from 'pg';
 import once from 'once';
 import log from '../../logger';
+import r from '../../reasons';
 
  export default function pgc (options = {}) {
 	pgc.user = options.user;
