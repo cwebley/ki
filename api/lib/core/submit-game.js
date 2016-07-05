@@ -122,7 +122,14 @@ export default function submitGame (state, gameResult) {
 					diff.users.ids[loserUuid].characters.ids[cUuid] = {};
 					diff.users.ids[loserUuid].characters.result.push(cUuid);
 				}
-				diff.users.ids[loserUuid].characters.ids[cUuid].value = state.users.ids[loserUuid].characters.ids[cUuid].value - 1;
+
+				// icing a character has the same logic as decrementing a winner's value. obviously can't drop below 1 pt so it could be undefined
+				const decreasedValue = updateWinnerValue(state.users.ids[loserUuid].characters.ids[cUuid].value);
+
+				// if the value changed, push the character on the result list
+				if (decreasedValue) {
+					diff.users.ids[loserUuid].characters.ids[cUuid].value = decreasedValue;
+				}
 			}
 		});
 	}

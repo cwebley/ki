@@ -48,7 +48,7 @@ const tournamentUsersReducer = (state = {}, action) => {
 				...state,
 				ids: Object.assign({}, state.ids, {
 					[state.result[0]]: tournamentUserReducer(state.ids[state.result[0]], action),
-					// add a drafting status of true for the right user
+					// add a drafting status of true to the right user if appropriate
 					[state.result[1]]: {
 						...state.ids[state.result[1]],
 						drafting: action.data.drafting === state.result[1]
@@ -66,6 +66,7 @@ const tournamentUserReducer = (state = {}, action) => {
 			return {
 				...state,
 				characters: userCharactersReducer(state.characters, action),
+				// keep drafting status on left user is appropriate
 				drafting: action.data.drafting === state.uuid
 			};
 		default:

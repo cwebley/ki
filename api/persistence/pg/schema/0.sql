@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS tournament_characters (
 	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
 	user_uuid char(36) NOT NULL REFERENCES users (uuid),
 	character_uuid char(36) NOT NULL REFERENCES characters (uuid),
-	value integer,
+	value integer, --never lower than 1
 	wins integer NOT NULL DEFAULT 0,
 	losses integer NOT NULL DEFAULT 0,
 	streak integer NOT NULL DEFAULT 0,
