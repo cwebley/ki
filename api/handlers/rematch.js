@@ -35,26 +35,12 @@ export default function rematchHandler (req, res) {
 		if (!tournament.rematchAvailable) {
 			return res.status(400).send(r.rematchAlreadyUsed);
 		}
-		let winnerGameData;
-		let loserGameData;
-		if (tournament.users.ids[tournament.users.result[0]].previous.winner) {
-			winnerGameData = tournament.users.ids[tournament.users.result[0]].previous;
-			winnerGameData.uuid = tournament.users.result[0];
-			loserGameData = tournament.users.ids[tournament.users.result[1]].previous
-			loserGameData.uuid = tournament.users.result[1];
-		}
-		else {
-			winnerGameData = tournament.users.ids[tournament.users.result[1]].previous;
-			winnerGameData.uuid = tournament.users.result[1];
-			loserGameData = tournament.users.ids[tournament.users.result[0]].previous
-			loserGameData.uuid = tournament.users.result[0];
-		}
+
 		const game = {
-			uuid: winnerGameData.gameUuid,
-			supreme: winnerGameData.supreme,
-			winner: winnerGameData,
-			loser: loserGameData,
-			supreme: winnerGameData.supreme,
+			uuid: tournament.previous.uuid,
+			supreme: tournament.previous.supreme,
+			winner: tournament.previous.ids[tournament.previous.result[0]],
+			loser: tournament.previous.ids[tournament.previous.result[1]],
 			rematched: req.user.uuid
 		};
 		insertRematchQuery(req.db, tournament.uuid, game, req.user.uuid, (err, results) => {

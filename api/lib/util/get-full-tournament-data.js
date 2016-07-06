@@ -133,9 +133,7 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 									});
 									tournament.rematchAvailable = rematchAvailable;
 									const previousGameWinnerData = {
-										winner: true,
-										supreme: gameResults[0].supreme,
-										gameUuid: gameResults[0].uuid,
+										uuid: gameResults[0].winning_player_uuid,
 										characterUuid: gameResults[0].winning_character_uuid,
 										value: gameResults[0].value,
 										streak: gameResults[0].winning_player_previous_streak,
@@ -144,9 +142,7 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 										characterGlobalStreak: gameResults[0].winning_character_previous_global_streak
 									};
 									const previousGameLoserData = {
-										winner: false,
-										supreme: gameResults[0].supreme,
-										gameUuid: gameResults[0].uuid,
+										uuid: gameResults[0].losing_player_uuid,
 										characterUuid: gameResults[0].losing_character_uuid,
 										value: gameResults[0].losing_character_previous_value,
 										streak: gameResults[0].losing_player_previous_streak,
@@ -161,6 +157,17 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 									else {
 										tournament.users.ids[tournament.users.result[0]].previous = previousGameLoserData;
 										tournament.users.ids[tournament.users.result[1]].previous = previousGameWinnerData;
+									}
+
+									tournament.previous = {
+										ids: {
+											[gameResults[0].winning_player_uuid]: previousGameWinnerData,
+											[gameResults[0].losing_player_uuid]: previousGameLoserData
+										},
+										// [winner, loser]
+										result: [gameResults[0].winning_player_uuid, gameResults[0].losing_player_uuid],
+										uuid: gameResults[0].uuid,
+										supreme: gameResults[0].supreme
 									}
 									return cb(null, tournament);
 								});
