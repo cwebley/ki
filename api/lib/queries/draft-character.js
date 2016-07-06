@@ -6,15 +6,19 @@ export default function draftCharacterQuery (db, tournamentUuid, character, user
 
 		const tcSql = `
 			INSERT INTO tournament_characters
-				(tournament_uuid, character_uuid, user_uuid, value)
+				(tournament_uuid, character_uuid, user_uuid, value, raw_value)
 			VALUES ($1, $2, $3,
 				(SELECT value from seeds
 				WHERE tournament_uuid = $4
 					AND user_uuid = $5
-					AND character_uuid = $6)
+					AND character_uuid = $6),
+				(SELECT value from seeds
+				WHERE tournament_uuid = $7
+					AND user_uuid = $8
+					AND character_uuid = $9)
 			)
 		`;
-		const tcParams = [tournamentUuid, character.uuid, userUuid, tournamentUuid, userUuid, character.uuid];
+		const tcParams = [tournamentUuid, character.uuid, userUuid, tournamentUuid, userUuid, character.uuid, tournamentUuid, userUuid, character.uuid];
 		db.query(tcSql, tcParams, (err, results) => {
 			if (err) {
 				log.error(err, { tcSql, tcParams });

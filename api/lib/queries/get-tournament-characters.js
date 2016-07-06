@@ -4,7 +4,8 @@ export default function getTournamentCharactersQuery (db, tournamentUuid, userUu
 	const sql = `
 		SELECT
 			c.name, c.season, c.slug, c.uuid,
-			tc.wins, tc.losses, tc.streak, tc.best_streak AS "bestStreak", tc.value, tc.fire_wins AS "fireWins",
+			tc.wins, tc.losses, tc.streak, tc.best_streak AS "bestStreak",
+			tc.value, tc.raw_value AS "rawValue", tc.fire_wins AS "fireWins",
 			uc.streak AS "globalStreak", uc.best_streak AS "globalBestStreak"
 		FROM characters AS c
 			JOIN tournament_characters AS tc

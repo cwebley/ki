@@ -41,6 +41,9 @@ export default function submitGame (state, gameResult) {
 				characters: {
 					ids: {
 						[winningCharacterUuid]: {
+							// raw value always goes down. if character is at 1, this can go down to 0.
+							// useful for undos and rematches so the data isn't lost.
+							rawValue: state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].rawValue - 1,
 							wins: state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].wins + 1,
 							streak: updateWinningStreak(state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].streak),
 							globalStreak: updateWinningStreak(state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].globalStreak)
@@ -60,7 +63,9 @@ export default function submitGame (state, gameResult) {
 							losses: state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].losses + 1,
 							streak: updateLosingStreak(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].streak),
 							globalStreak: updateLosingStreak(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].globalStreak),
-							value: updateLoserValue(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].value)
+							value: updateLoserValue(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].value),
+							// this is the only way to reset raw value to 1: losing a game
+							rawValue: updateLoserRawValue(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].rawValue)
 						}
 					},
 					result: [losingCharacterUuid]
@@ -133,8 +138,12 @@ export default function submitGame (state, gameResult) {
 					diff.users.ids[loserUuid].characters.result.push(cUuid);
 				}
 
-				// icing a character has the same logic as decrementing a winner's value. obviously can't drop below 1 pt so it could be undefined
+				// icing a character has the same logic as decrementing a winner's value. we can't drop below 1 pt so it could be undefined
 				const decreasedValue = updateWinnerValue(state.users.ids[loserUuid].characters.ids[cUuid].value);
+
+				// raw value always goes down one, even if the character is already at 1
+				// we need this to accurately rematch and undo this game. otherwise this data is lost.
+				diff.users.ids[loserUuid].characters.ids[cUuid].rawValue = state.users.ids[loserUuid].characters.ids[cUuid].rawValue - 1;
 
 				// if the value changed, push the character on the result list
 				if (decreasedValue) {
@@ -227,6 +236,13 @@ export function updateWinnerValue (previousValue) {
 
 export function updateLoserValue (previousValue) {
 	return previousValue + 1;
+}
+
+export function updateLoserRawValue (previousRawValue) {
+	if (previousRawValue < 1) {
+		return 1;
+	}
+	return previousRawValue + 1;
 }
 
 export function updateCoins (currentCoins, previousStreak, supreme) {

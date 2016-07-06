@@ -226,6 +226,18 @@ class TournamentLanding extends Component {
 		const rightUser = tournament.users.ids[tournament.users.result[1]];
 		const leftCharacter = leftUser.characters.ids[leftUser.upcoming[0]];
 		const rightCharacter = rightUser.characters.ids[rightUser.upcoming[0]];
+		let leftPrevious;
+		let	rightPrevious;
+
+		if (tournament.previous && tournament.previous.result[0] === tournament.users.result[0]) {
+			leftPrevious = tournament.previous.ids[tournament.previous.result[0]];
+			rightPrevious = tournament.previous.ids[tournament.previous.result[1]];
+		}
+		if (tournament.previous && tournament.previous.result[1] === tournament.users.result[0]) {
+			leftPrevious = tournament.previous.ids[tournament.previous.result[1]];
+			rightPrevious = tournament.previous.ids[tournament.previous.result[0]];
+		}
+
 		return (
 			<div>
 				{ tournament.name }
@@ -270,11 +282,11 @@ class TournamentLanding extends Component {
 							/>
 						</Form>
 					</div>
-					{ leftUser.previous && <div>
+					{ tournament.previous && <div>
 						<h5>Previous Match:</h5>
-						<div>{`(${leftUser.previous.value})${leftUser.characters.ids[leftUser.previous.characterUuid].name}`}</div>
+						<div>{`(${leftPrevious.value}) ${leftUser.characters.ids[leftPrevious.characterUuid].name}`}</div>
 						vs
-						<div>{`(${rightUser.previous.value})${rightUser.characters.ids[rightUser.previous.characterUuid].name}`}</div>
+						<div>{`(${rightPrevious.value}) ${rightUser.characters.ids[rightPrevious.characterUuid].name}`}</div>
 					</div> }
 				</div>
 				<div style={styles.powerBlock}>
@@ -283,7 +295,7 @@ class TournamentLanding extends Component {
 							style={{width: '100%'}}
 							label="Rematch"
 							secondary
-							disabled={!tournament.rematchAvailable}
+							disabled={leftUser.coins < 3 || !tournament.rematchAvailable}
 							onTouchTap={() => this.useRematch()}
 						/>
 					</div>

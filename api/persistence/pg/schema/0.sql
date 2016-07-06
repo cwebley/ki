@@ -104,6 +104,7 @@ CREATE TABLE IF NOT EXISTS tournament_characters (
 	user_uuid char(36) NOT NULL REFERENCES users (uuid),
 	character_uuid char(36) NOT NULL REFERENCES characters (uuid),
 	value integer, --never lower than 1
+	raw_value integer, --can be lower than 1 if value is decr'd after a loss at 1 pt or friendly is iced while at 1pt
 	wins integer NOT NULL DEFAULT 0,
 	losses integer NOT NULL DEFAULT 0,
 	streak integer NOT NULL DEFAULT 0,

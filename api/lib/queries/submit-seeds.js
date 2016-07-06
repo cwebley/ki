@@ -31,15 +31,15 @@ export default function submitSeedsQuery (db, opts, cb) {
 				tcUpdateQueries.push(done => {
 					const tcSql = `
 						UPDATE tournament_characters
-						SET value = $1
-						WHERE tournament_uuid = $2
-							AND user_uuid = $3
-							AND character_uuid = $4
+						SET value = $1, raw_value = $2
+						WHERE tournament_uuid = $3
+							AND user_uuid = $4
+							AND character_uuid = $5
 					`;
-					const tcParams = [seedValue, opts.tournamentUuid, opts.opponentUuid, cUuid];
+					const tcParams = [seedValue, seedValue, opts.tournamentUuid, opts.opponentUuid, cUuid];
 					db.query(tcSql, tcParams, (err, results) => {
 						if (err) {
-							log.error(err, { sql, params });
+							log.error(err, { sql: tcSql, params: tcParams });
 						}
 						done(err, results);
 					});
@@ -75,6 +75,7 @@ export default function submitSeedsQuery (db, opts, cb) {
 
 				db.query(tuSql, tuParams, (err, results) => {
 					if (err) {
+						log.error(err, {sql: tuSql, params: tuParams});
 						return rollback(db, err, cb);
 					}
 					// end transaction

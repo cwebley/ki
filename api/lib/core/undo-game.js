@@ -73,6 +73,7 @@ export default function undoGame (state, game, rematch) {
 			result: [losingCharacterUuid]
 		}
 	};
+
 	// rematches don't reset the losses, only the streaks
 	if (!rematch) {
 		diff.users.ids[loserUuid].losses = state.users.ids[loserUuid].losses - 1;
@@ -107,27 +108,66 @@ export default function undoGame (state, game, rematch) {
 	const undoIceUuid = undoIceStatus(losingCharacterUuid, game.loser.characterStreak);
 	state.users.ids[loserUuid].characters.result.forEach(cUuid => {
 		if (undoIceUuid && (cUuid !== undoIceUuid)) {
+
 			// we're undoing a character being iced, it's not this one, so incr value for all other characters that previously went down
 			if (!diff.users.ids[loserUuid].characters.ids[cUuid]) {
 				diff.users.ids[loserUuid].characters.ids[cUuid] = {};
 				diff.users.ids[loserUuid].characters.result.push(cUuid);
 			}
-			diff.users.ids[loserUuid].characters.ids[cUuid].value = state.users.ids[loserUuid].characters.ids[cUuid].value + 1;
+
+			const updatedValue = valueFromRawValue(state.users.ids[loserUuid].characters.ids[cUuid].rawValue);
+
+			// if the updated value isn't different than the current value don't add to the diff
+			if (updatedValue !== state.users.ids[loserUuid].characters.ids[cUuid].value) {
+				diff.users.ids[loserUuid].characters.ids[cUuid].value = updatedValue;
+			}
+
+			// raw value always goes up here, even if it was below 1
+			diff.users.ids[loserUuid].characters.ids[cUuid].rawValue = state.users.ids[loserUuid].characters.ids[cUuid].rawValue + 1;
 		}
 	});
+	/*
+		2 -> 1 friendly ice
+		rematch 1 -> 2 undo the ice
+		rematchSuccess, stay at 2
+
+		1 -> 0 friendly ice
+		rematch 0 -> 1 undo the ice
+		rematchSuccess stay at 1
+		rematchFail stay at 0
+		/////////////////////
+		2 -> 1 friendly ice
+		1 -> 0 friendly ice
+		0 -> -1 friendly ice
+		rematch
+		-1 -> 0 undo the ice
+		success: still at 0 (1)
+
+
+		1 -> 0 friendly ice
+		0 -> -1 friendly ice
+		-1 -> 2 character loses a round
+
+		undo character loss 2 -> 1
+
+
+		character loss 1 -> 0
+		rematch 0 -> 1
+	*/
 
 	const coinsDiff = undoCoins(state.users.ids[winnerUuid].coins, state.users.ids[winnerUuid].streak, game.supreme);
 	if (coinsDiff) {
 		diff.users.ids[winnerUuid].coins = coinsDiff;
 	}
 	if (rematch) {
-		if (coinsDiff) {
+		if (coinsDiff && rematch === winnerUuid) {
 			diff.users.ids[rematch].coins = diff.users.ids[rematch].coins - config.cost.rematch;
 		}
 		else {
 			diff.users.ids[rematch].coins = state.users.ids[rematch].coins - config.cost.rematch;
 		}
 	}
+	console.log("DIFF: ", JSON.stringify(diff, null, 4));
 	return diff;
 }
 
@@ -162,6 +202,13 @@ export function undoIceStatus (characterId, currentStreak) {
 		return undefined;
 	}
 	return characterId;
+}
+
+export function valueFromRawValue (rawValue) {
+	if (rawValue < 1) {
+		return 1;
+	}
+	return rawValue + 1;
 }
 
 export function undoCoins (currentCoins, currentStreak, supreme) {

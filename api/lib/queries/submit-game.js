@@ -5,7 +5,7 @@ import getTournamentCharacterUuidsByStreak from './get-tournament-character-uuid
 
 export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'bestStreak', 'coins'];
-	const tournamentCharactersFields = ['value', 'wins', 'losses', 'streak', 'bestStreak', 'fireWins'];
+	const tournamentCharactersFields = ['value', 'rawValue', 'wins', 'losses', 'streak', 'bestStreak', 'fireWins'];
 	const usersFields = ['globalStreak', 'globalBestStreak'];
 	const userCharactersFields = ['globalStreak', 'globalBestStreak'];
 
