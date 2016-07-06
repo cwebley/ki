@@ -37,7 +37,7 @@ export default function rematchHandler (req, res) {
 			}
 			// if the previous game was already rematched, return an error message
 			// because a game can't be re-rematched
-			if (gameResults[0].rematched || gameResults[1].rematched) {
+			if (gameResults[0].rematched || (gameResults[1] && gameResults[1].rematched)) {
 				return res.status(400).send(r.rematchAlreadyUsed);
 			}
 			const game = {
@@ -67,12 +67,12 @@ export default function rematchHandler (req, res) {
 				if (err) {
 					return res.status(500).send(r.internal);
 				}
-				const diff = undoGame(tournament, game, true);
+				const diff = undoGame(tournament, game, req.user.uuid);
 
 				undoGameQuery(req.db, {
 					tournamentUuid: tournament.uuid,
 					gameUuid: game.uuid,
-					rematch: true
+					rematch: req.user.uuid
 				}, diff, (err, results) => {
 					if (err) {
 						return res.status(500).send(r.internal);

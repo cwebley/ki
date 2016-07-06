@@ -2,6 +2,7 @@ import log from '../../logger';
 import async from 'neo-async';
 import snake from 'lodash.snakecase';
 import get from 'lodash.get';
+import config from '../../config';
 
 export default function undoGameQuery (db, opts, diff, cb) {
 	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'coins'];

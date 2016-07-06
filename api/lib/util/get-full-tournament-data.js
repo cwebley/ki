@@ -4,6 +4,7 @@ import getTournamentUsersQuery from '../queries/get-tournament-users';
 import getTournamentCharactersQuery from '../queries/get-tournament-characters';
 import getDraftCharactersQuery from '../queries/get-draft-characters';
 import getUpcomingQuery from '../queries/get-upcoming';
+import selectTwoRecentGames from '../queries/select-two-recent-games';
 
 export default function getFullTournamentData (db, rConn, opts, cb) {
 	if (!opts.upcomingAmount) {
@@ -117,7 +118,49 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 									}
 								}
 
-								return cb(null, tournament);
+								selectTwoRecentGames(db, tournament.uuid, (err, gameResults) => {
+									if (err) {
+										return cb(err);
+									}
+									if (!gameResults || !gameResults.length) {
+										return cb(null, tournament);
+									}
+									let rematchAvailable = true;
+									gameResults.forEach(g => {
+										if (g.rematched) {
+											rematchAvailable = false;
+										}
+									});
+									tournament.rematchAvailable = rematchAvailable;
+
+									const previousGameWinnerData = {
+										winner: true,
+										characterUuid: gameResults[0].winning_character_uuid,
+										value: gameResults[0].value,
+										streak: gameResults[0].winning_player_previous_streak,
+										characterStreak: gameResults[0].winning_character_previous_streak,
+										globalStreak: gameResults[0].winning_player_previous_global_streak,
+										characterGlobalStreak: gameResults[0].winning_character_previous_global_streak
+									};
+									const previousGameLoserData = {
+										winner: false,
+										characterUuid: gameResults[0].losing_character_uuid,
+										value: gameResults[0].losing_character_previous_value,
+										streak: gameResults[0].losing_player_previous_streak,
+										characterStreak: gameResults[0].losing_character_previous_streak,
+										globalStreak: gameResults[0].losing_player_previous_global_streak,
+										characterGlobalStreak: gameResults[0].losing_character_previous_global_streak
+									};
+									if (tournament.users.result[0] === gameResults[0].winning_player_uuid) {
+										tournament.users.ids[tournament.users.result[0]].previous = previousGameWinnerData;
+										tournament.users.ids[tournament.users.result[1]].previous = previousGameLoserData;
+									}
+									else {
+										tournament.users.ids[tournament.users.result[0]].previous = previousGameLoserData;
+										tournament.users.ids[tournament.users.result[1]].previous = previousGameWinnerData;
+									}
+									return cb(null, tournament);
+								});
 							});
 						});
 					});

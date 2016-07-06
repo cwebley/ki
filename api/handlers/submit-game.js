@@ -138,6 +138,7 @@ export default function submitGameHandler (req, res) {
 			game.loser.prevCharStreak = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].streak;
 			game.loser.prevCharGlobalStreak = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].globalStreak;
 			game.winner.value = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].value;
+			game.loser.value = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].value;
 			game.winner.prevStreak = tournament.users.ids[game.winner.uuid].streak;
 			game.winner.prevGlobalStreak = tournament.users.ids[game.winner.uuid].globalStreak;
 			game.winner.prevCharStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].streak;

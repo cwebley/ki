@@ -270,6 +270,7 @@ class TournamentLanding extends Component {
 							/>
 						</Form>
 					</div>
+					<h5>Previous</h5>
 				</div>
 				<div style={styles.powerBlock}>
 					<div style={styles.power}>
