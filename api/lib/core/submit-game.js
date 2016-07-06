@@ -18,7 +18,17 @@ export default function submitGame (state, gameResult) {
 	const losingCharacterUuid = gameResult.loser.characterUuid;
 
 	let diff = {
-		championUuid: evaluateChampion(winnerUuid, state.goal, state.users.ids[winnerUuid].score, state.users.ids[loserUuid].score)
+		championUuid: evaluateChampion(winnerUuid, state.goal, state.users.ids[winnerUuid].score, state.users.ids[loserUuid].score),
+		previous: {
+			ids: {
+				[winnerUuid]: gameResult.winner,
+				[loserUuid]: gameResult.loser,
+			},
+			result: [winnerUuid, loserUuid],
+			supreme: gameResult.supreme
+		},
+		// if this submission IS a rematched game, then the updated tournament state must reflect that
+		rematchAvailable: (gameResult.rematchSuccess === null || gameResult.rematchSuccess === undefined) ? true : false
 	};
 	diff.users = {
 		ids: {

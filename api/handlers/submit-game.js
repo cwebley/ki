@@ -126,8 +126,8 @@ export default function submitGameHandler (req, res) {
 				},
 				supreme: opts.supreme
 			};
-			if (prevGame && prevGame.rematched && prevGame.rematchSuccess === undefined) {
-				game.rematchSuccess = prevGame.rematched === winner.uuid ? true : false;
+			if (prevGame && prevGame.rematched && prevGame.rematchSuccess === null) {
+				game.rematchSuccess = (prevGame.rematched === game.winner.uuid) ? true : false;
 			}
 
 			let diff = submitGame(tournament, game);
@@ -144,7 +144,6 @@ export default function submitGameHandler (req, res) {
 			game.winner.prevCharStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].streak;
 			game.winner.prevCharGlobalStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].globalStreak;
 
-			// TODO Return previous matchup diff
 			submitGameQuery(req.db, tournament.uuid, game, diff, (err, updatedCharacterStreaks) => {
 				if (err) {
 					return res.status(500).send(r.internal);
