@@ -132,9 +132,10 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 										}
 									});
 									tournament.rematchAvailable = rematchAvailable;
-
 									const previousGameWinnerData = {
 										winner: true,
+										supreme: gameResults[0].supreme,
+										gameUuid: gameResults[0].uuid,
 										characterUuid: gameResults[0].winning_character_uuid,
 										value: gameResults[0].value,
 										streak: gameResults[0].winning_player_previous_streak,
@@ -144,6 +145,8 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 									};
 									const previousGameLoserData = {
 										winner: false,
+										supreme: gameResults[0].supreme,
+										gameUuid: gameResults[0].uuid,
 										characterUuid: gameResults[0].losing_character_uuid,
 										value: gameResults[0].losing_character_previous_value,
 										streak: gameResults[0].losing_player_previous_streak,

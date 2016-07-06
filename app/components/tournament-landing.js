@@ -270,7 +270,12 @@ class TournamentLanding extends Component {
 							/>
 						</Form>
 					</div>
-					<h5>Previous</h5>
+					{ leftUser.previous && <div>
+						<h5>Previous Match:</h5>
+						<div>{`(${leftUser.previous.value})${leftUser.characters.ids[leftUser.previous.characterUuid].name}`}</div>
+						vs
+						<div>{`(${rightUser.previous.value})${rightUser.characters.ids[rightUser.previous.characterUuid].name}`}</div>
+					</div> }
 				</div>
 				<div style={styles.powerBlock}>
 					<div style={styles.power}>
@@ -278,6 +283,7 @@ class TournamentLanding extends Component {
 							style={{width: '100%'}}
 							label="Rematch"
 							secondary
+							disabled={!tournament.rematchAvailable}
 							onTouchTap={() => this.useRematch()}
 						/>
 					</div>
