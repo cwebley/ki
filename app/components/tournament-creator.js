@@ -60,7 +60,7 @@ class TournamentCreator extends Component {
 	static contextTypes = {
 		router: PropTypes.object.isRequired
 	};
-	
+
 	state = {
 		finished: false,
 		stepIndex: 0,

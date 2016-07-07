@@ -291,7 +291,7 @@ class TournamentLanding extends Component {
 							/>
 						</Form>
 					</div>
-					{ tournament.previous && <div>
+					{ tournament.previous && <div style={{paddingTop: '1em'}}>
 						<h5>Previous Match:</h5>
 						<div>{`(${leftPrevious.value}) ${leftUser.characters.ids[leftPrevious.characterUuid].name}`}</div>
 						vs
@@ -367,11 +367,22 @@ class TournamentLanding extends Component {
 
 	renderCharacter (character, leftSide) {
 		let streakText = '';
+		let streakStyle = {};
 		if (character.streak > 0) {
 			streakText = character.streak + 'W';
+			streakStyle.color = green500;
+			if (character.streak === 2) {
+				streakStyle.fontSize = '1.25em';
+				streakStyle.fontWeight = '500';
+			}
+			if (character.streak >= 3) {
+				streakStyle.fontWeight = 600;
+				streakStyle.fontSize = '1.5em';
+			}
 		}
 		if (character.streak < 0) {
 			streakText = -1 * character.streak + 'L';
+			streakStyle.color = red500;
 		}
 		return (
 			<li key={character.uuid}>
@@ -419,7 +430,7 @@ class TournamentLanding extends Component {
 						paddingRight: '1em',
 						lineHeight: '2.5em'
 					}}>
-						{streakText}
+					<div style={streakStyle}>{streakText}</div>
 					</div>
 				</Paper>
 			</li>
