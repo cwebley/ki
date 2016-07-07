@@ -101,6 +101,12 @@ r.NoMaxStartingValue = {
 	level: 'error',
 	id: 'noMaxStartingValue'
 };
+r.NoCharacterSlug = {
+	message: 'Missing characterSlug',
+	field: 'characterSlug',
+	level: 'error',
+	id: 'noCharacterSlug'
+};
 r.InvalidOpponentSlug = {
 	message: 'Invalid opponentSlug. Opponent does not exist',
 	field: 'opponentSlug',
@@ -286,6 +292,12 @@ r.InvalidPick = (invalidCharacter) => ({
 	invalidCharacter,
 	level: 'error',
 	id: 'invalidPick'
+});
+r.InvalidCharacterSlug = (characterSlug) => ({
+	message: 'Invalid characterSlug',
+	characterSlug,
+	level: 'error',
+	id: 'invalidCharacterSlug'
 });
 r.InvalidSeeds = (invalidCharacters) => ({
 	message: 'seed data contains one or more invalid characters',

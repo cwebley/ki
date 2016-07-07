@@ -24,6 +24,8 @@ export const SUBMIT_GAME_FAILURE = 'SUBMIT_GAME_FAILURE';
 
 export const REMATCH_SUCCESS = 'REMATCH_SUCCESS';
 export const REMATCH_FAILURE = 'REMATCH_FAILURE';
+export const ODDSMAKER_SUCCESS = 'ODDSMAKER_SUCCESS';
+export const ODDSMAKER_FAILURE = 'ODDSMAKER_FAILURE';
 
 // localStorage property for the auth token
 export const LOCAL_STORAGE_PROPERTY = 'ki-state';

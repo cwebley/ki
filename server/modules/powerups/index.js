@@ -37,7 +37,7 @@ PowerInterface.getInspect = function(opts,cb) {
 
 		var players = opts.tournament.players
 		var uids = _.pluck(players,'id');
-	
+
 		if(!upcoming.check(tid,uids)) {
 			upcoming.create(tid,uids);
 		}
@@ -79,7 +79,7 @@ PowerInterface.postInspect = function(opts,cb) {
 		return cb();
 	}
 	var uids = _.pluck(players,'id');
-	
+
 	// make sure upcoming data exists
 	if(!upcoming.check(opts.tournament.id,uids)) {
 		upcoming.create(opts.tournament.id,uids);

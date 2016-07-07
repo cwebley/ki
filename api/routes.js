@@ -17,6 +17,7 @@ import submitGame from './handlers/submit-game';
 import draftCharacter from './handlers/draft-character';
 import undoGame from './handlers/undo-game';
 import rematch from './handlers/rematch';
+import oddsmaker from './handlers/oddsmaker';
 
 let router = express.Router();
 
@@ -59,5 +60,6 @@ router.delete('/tournament/:tournamentSlug/game', requiresLogin, undoGame);
 router.post('/tournament/:tournamentSlug/draft', requiresLogin, draftCharacter);
 
 router.post('/tournament/:tournamentSlug/power/rematch', requiresLogin, rematch);
+router.post('/tournament/:tournamentSlug/power/oddsmaker', requiresLogin, oddsmaker);
 
 export default router;

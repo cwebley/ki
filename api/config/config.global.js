@@ -17,7 +17,9 @@ var config = {
 	defaults: {
 		startCoins: 10,
 		goal: 100,
-		upcomingListLength: 50
+		upcomingListLength: 50,
+		oddsmakerLength: 15,
+		oddsmakerValue: 3.1
 	},
 	cost: {
 		rematch: 3,

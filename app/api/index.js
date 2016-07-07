@@ -148,3 +148,21 @@ export const rematch = (tournamentSlug, token) => new Promise((resolve, reject) 
 		resolve(body);
 	});
 });
+
+export const oddsmaker = (character, tournamentSlug, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/power/oddsmaker',
+		method: 'POST',
+		json: {
+			characterSlug: character.slug
+		},
+		headers: {
+			Authorization: 'Bearer ' + token
+		}
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});
