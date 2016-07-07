@@ -30,8 +30,6 @@ import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
 
-
-
 const styles = {
 	pageStyle: {
 		textAlign: 'center'
@@ -251,9 +249,9 @@ class TournamentLanding extends Component {
 
 		return (
 			<div>
-				{ tournament.name }
+				<h1>{ tournament.name }</h1>
+				{ tournament.championUuid && <h3>{`${tournament.users.ids[tournament.championUuid].name} is the Champion!`}</h3>}
 				<div>
-					<h3>Matchup</h3>
 					<div style={{
 						width: '50%',
 						float: 'left',
@@ -380,7 +378,10 @@ class TournamentLanding extends Component {
 				<Paper style={{
 					overflow: 'auto'
 				}}>
-					<div>
+					<div style={{
+						fontSize: '1.3em',
+						lineHeight: '1.3em'
+					}}>
 						{character.value || '?'}
 					</div>
 					<div>

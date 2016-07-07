@@ -167,7 +167,6 @@ export default function undoGame (state, game, rematch) {
 			diff.users.ids[rematch].coins = state.users.ids[rematch].coins - config.cost.rematch;
 		}
 	}
-	console.log("DIFF: ", JSON.stringify(diff, null, 4));
 	return diff;
 }
 

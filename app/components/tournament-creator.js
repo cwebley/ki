@@ -57,6 +57,10 @@ class TournamentCreator extends Component {
 		characters: []
 	};
 
+	static contextTypes = {
+		router: PropTypes.object.isRequired
+	};
+	
 	state = {
 		finished: false,
 		stepIndex: 0,
@@ -315,6 +319,14 @@ class TournamentCreator extends Component {
 
 	onSubmit (data) {
 		this.props.createTournament(data, this.props.me.token, formName)
+		// redirect to the tournament page if registration was successful
+		.then(
+			action => {
+				if (action.data.slug) {
+					this.context.router.push(`/${action.data.slug}`);
+				}
+			}
+		);
 	}
 }
 
