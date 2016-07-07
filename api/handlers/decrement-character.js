@@ -18,7 +18,7 @@ export default function decrementCharacterHandler (req, res) {
 			return res.status(500).send(r.internal);
 		}
 		if (!character) {
-			return res.status(400).send(r.invalidCharacterSlug);
+			return res.status(400).send(r(r.InvalidCharacterSlug(req.body.characterSlug)));
 		}
 
 		getFullTournamentData(req.db, req.redis, {
@@ -42,7 +42,7 @@ export default function decrementCharacterHandler (req, res) {
 			if (tournament.users.ids[tournament.users.result[1]].characters.ids[character.uuid].value <= 1) {
 				return res.status(400).send(r.characterValueAtOne);
 			}
-			
+
 			decrementCharacterQuery(req.db, {
 				tournamentUuid: tournament.uuid,
 				characterUuid: character.uuid,

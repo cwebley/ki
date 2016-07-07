@@ -1,5 +1,6 @@
 import * as api from '../api';
 import * as c from '../constants';
+import clearTournamentReasonsHelper from './clear-tournament-reasons-helper';
 import { GENERIC_ERROR } from '../errors';
 
 const submitGame = opts => dispatch =>
@@ -13,6 +14,8 @@ const submitGame = opts => dispatch =>
 				})
 			},
 			error => {
+				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
+
 				return dispatch({
 					type: c.SUBMIT_GAME_FAILURE,
 					...opts,

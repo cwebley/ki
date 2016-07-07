@@ -288,46 +288,46 @@ r.DraftInactive = {
 	id: 'draftInactive'
 };
 r.InvalidPick = (invalidCharacter) => ({
-	message: 'Invalid character slug in pick field',
+	message: `Invalid character slug in pick field: ${invalidCharacter}`,
 	invalidCharacter,
 	level: 'error',
 	id: 'invalidPick'
 });
 r.InvalidCharacterSlug = (characterSlug) => ({
-	message: 'Invalid characterSlug',
+	message: `Invalid characterSlug: ${characterSlug}`,
 	characterSlug,
 	level: 'error',
 	id: 'invalidCharacterSlug'
 });
 r.InvalidSeeds = (invalidCharacters) => ({
-	message: 'seed data contains one or more invalid characters',
+	message: `seed data contains one or more invalid characters: ${invalidCharacters}`,
 	invalidCharacters,
 	level: 'error',
 	id: 'invalidSeeds'
 });
 r.MyCharacterNotFound = (invalidCharacters) => ({
-	message: 'myCharacters contains one or more invalid characters',
+	message: `myCharacters contains one or more invalid characters: ${invalidCharacters}`,
 	field: 'myCharacters',
 	invalidCharacters,
 	level: 'error',
 	id: 'myCharacterNotFound'
 });
 r.OpponentCharacterNotFound = (invalidCharacters) => ({
-	message: 'opponentCharacters contains one or more invalid characters',
+	message: `opponentCharacters contains one or more invalid characters: ${invalidCharacters}`,
 	field: 'opponentCharacters',
 	invalidCharacters,
 	level: 'error',
 	id: 'opponentCharacterNotFound'
 });
 r.DraftCharacterNotFound = (invalidCharacters) => ({
-	message: 'draftCharacters contains one or more invalid characters',
+	message: `draftCharacters contains one or more invalid characters: ${invalidCharacters}`,
 	field: 'draftCharacters',
 	invalidCharacters,
 	level: 'error',
 	id: 'draftCharacterNotFound'
 });
 r.DraftPickNotFound = (character) => ({
-	message: 'Invalid draft pick. Character not found.',
+	message: `Invalid draft pick. Character not found ${character}`,
 	field: 'pick',
 	character,
 	level: 'error',

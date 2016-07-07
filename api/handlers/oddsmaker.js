@@ -18,8 +18,9 @@ export default function oddsmakerHandler (req, res) {
 			return res.status(500).send(r.internal);
 		}
 		if (!character) {
-			return res.status(400).send(r.invalidCharacterSlug);
+			return res.status(400).send(r(r.InvalidCharacterSlug(req.body.characterSlug)));
 		}
+
 
 		getFullTournamentData(req.db, req.redis, {
 			tournamentSlug: req.params.tournamentSlug,

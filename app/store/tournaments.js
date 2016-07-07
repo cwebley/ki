@@ -23,7 +23,24 @@ const tournamentReducer = (state = {}, action) => {
 	case c.DECREMENT_SUCCESS:
 		return {
 			...state,
+			// reasons should always get initialized to at least an empty array
+			reasons: tournamentReasonsReducer(state.reasons, action),
 			...action.data
+		};
+	case c.DECREMENT_FAILURE:
+	case c.DRAFT_CHARACTER_FAILURE:
+	case c.ODDSMAKER_FAILURE:
+	case c.REMATCH_FAILURE:
+	case c.SUBMIT_GAME_FAILURE:
+	case c.SUBMIT_SEEDS_FAILURE:
+		return {
+			...state,
+			reasons: tournamentReasonsReducer(state.reasons, action)
+		};
+	case c.POP_TOURNAMENT_REASON:
+		return {
+			...state,
+			reasons: tournamentReasonsReducer(state.reasons, action)
 		};
 	case c.UPDATE_SEEDS:
 		return {
@@ -41,6 +58,13 @@ const tournamentReducer = (state = {}, action) => {
 	default:
 		return state;
 	}
+}
+
+const tournamentReasonsReducer = (state = [], action) => {
+	if (action.type === c.POP_TOURNAMENT_REASON) {
+		return state.slice(1);
+	}
+	return action.reasons;
 }
 
 const tournamentUsersReducer = (state = {}, action) => {

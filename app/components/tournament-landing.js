@@ -20,6 +20,7 @@ import get from 'lodash.get';
 
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
 
 import SeedContainer from './seed-container';
 
@@ -134,6 +135,12 @@ class TournamentLanding extends Component {
 					<div>
 						{ this.props.children }
 					</div>
+					{this.props.tournament.reasons && this.props.tournament.reasons.length && <Snackbar
+						open={this.props.tournament.reasons.length}
+						message={this.props.tournament.reasons[0].message}
+						autoHideDuration={10000}
+						onRequestClose={this.handleRequestClose}
+					/>}
 				</div>
 		);
 	}
@@ -306,17 +313,10 @@ class TournamentLanding extends Component {
 					<div style={styles.power}>
 						<RaisedButton
 							style={{width: '100%'}}
-							label="Oddsmaker"
-							secondary
-							onTouchTap={() => {}}
-						/>
-					</div>
-					<div style={styles.power}>
-						<RaisedButton
-							style={{width: '100%'}}
 							label="Inspect"
 							secondary
 							onTouchTap={() => {}}
+							disabled
 						/>
 					</div>
 				</div>
@@ -407,7 +407,7 @@ class TournamentLanding extends Component {
 						<IconButton
 							tooltip="Decrement"
 							tooltipPosition="top-center"
-							disabled={this.props.tournament.users.ids[this.props.tournament.users.result[0]].coins < 1}
+							disabled={character.value <= 1 || this.props.tournament.users.ids[this.props.tournament.users.result[0]].coins < 1}
 							onTouchTap={() => this.decrementCharacter(character)}
 						>
 							<IconTrendingDown />

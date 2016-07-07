@@ -1,5 +1,6 @@
 import * as api from '../api';
 import * as c from '../constants';
+import clearTournamentReasonsHelper from './clear-tournament-reasons-helper';
 import { GENERIC_ERROR } from '../errors';
 
 const decrementCharacter = (character, tournamentSlug, token) => dispatch =>
@@ -14,6 +15,8 @@ const decrementCharacter = (character, tournamentSlug, token) => dispatch =>
 				})
 			},
 			error => {
+				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
+
 				return dispatch({
 					type: c.DECREMENT_FAILURE,
 					character,

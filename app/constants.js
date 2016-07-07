@@ -30,6 +30,8 @@ export const ODDSMAKER_FAILURE = 'ODDSMAKER_FAILURE';
 export const DECREMENT_SUCCESS = 'DECREMENT_SUCCESS';
 export const DECREMENT_FAILURE = 'DECREMENT_FAILURE';
 
+export const POP_TOURNAMENT_REASON = 'POP_TOURNAMENT_REASON';
+
 // localStorage property for the auth token
 export const LOCAL_STORAGE_PROPERTY = 'ki-state';
 
@@ -37,3 +39,5 @@ export const LOCAL_STORAGE_PROPERTY = 'ki-state';
 export const ItemTypes = {
 	DRAG_CHARACTER: 'draggableCharacter'
 };
+
+export const ERROR_RESET_TIME = 3000;

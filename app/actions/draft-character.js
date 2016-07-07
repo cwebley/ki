@@ -1,5 +1,6 @@
 import * as api from '../api';
 import * as c from '../constants';
+import clearTournamentReasonsHelper from './clear-tournament-reasons-helper';
 import { GENERIC_ERROR } from '../errors';
 
 const draftCharacter = (tournamentSlug, character, userUuid, token) => dispatch => {
@@ -15,6 +16,8 @@ const draftCharacter = (tournamentSlug, character, userUuid, token) => dispatch 
 					})
 				},
 				error => {
+					clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
+
 					return dispatch({
 						type: c.DRAFT_CHARACTER_FAILURE,
 						tournamentSlug,
