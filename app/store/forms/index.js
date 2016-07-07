@@ -86,12 +86,12 @@ const listNameReducer = (state = {}, action) => {
 			[action.name]: action.value
 		};
 	case c.TOGGLE_LIST_ITEMS:
-		let state = {};
+		let newState = {};
 		action.items.forEach(item => {
-			state[item] = !!action.on
+			newState[item] = !!action.on
 		});
-		state[action.toggleName] = action.on
-		return state;
+		newState[action.toggleName] = action.on
+		return newState;
 	default:
 		return state;
 	}
