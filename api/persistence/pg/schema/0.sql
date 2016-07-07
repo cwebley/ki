@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS games (
 	losing_player_uuid char(36) NOT NULL REFERENCES users (uuid),
 	losing_character_uuid char(36) NOT NULL REFERENCES characters (uuid),
 	value integer DEFAULT 0,
+	losing_character_previous_value integer DEFAULT 0,
 	-- submitting a game wipes a winning streak to -1, need to keep these streaks around for undos and stuff
 	losing_player_previous_streak integer NOT NULL DEFAULT 0,
 	winning_player_previous_streak integer NOT NULL DEFAULT 0,

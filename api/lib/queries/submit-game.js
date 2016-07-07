@@ -229,6 +229,7 @@ function insertGame (db, tournamentUuid, game, cb) {
 				losing_player_uuid,
 				losing_character_uuid,
 				value,
+				losing_character_previous_value,
 				winning_player_previous_streak,
 				winning_player_previous_global_streak,
 				winning_character_previous_streak,
@@ -236,9 +237,10 @@ function insertGame (db, tournamentUuid, game, cb) {
 				losing_player_previous_streak,
 				losing_player_previous_global_streak,
 				losing_character_previous_global_streak,
-				losing_character_previous_streak
+				losing_character_previous_streak,
+				supreme
 			)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
 	`;
 	const params = [
 		game.uuid,
@@ -248,6 +250,7 @@ function insertGame (db, tournamentUuid, game, cb) {
 		game.loser.uuid,
 		game.loser.characterUuid,
 		game.winner.value,
+		game.loser.value,
 		game.winner.prevStreak,
 		game.winner.prevGlobalStreak,
 		game.winner.prevCharStreak,
@@ -255,7 +258,8 @@ function insertGame (db, tournamentUuid, game, cb) {
 		game.loser.prevStreak,
 		game.loser.prevGlobalStreak,
 		game.loser.prevCharStreak,
-		game.loser.prevCharGlobalStreak
+		game.loser.prevCharGlobalStreak,
+		game.supreme
 	];
 
 	db.query(sql, params, (err, results) => {

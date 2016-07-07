@@ -13,6 +13,7 @@ export default function selectTwoRecentGames (db, tournamentUuid, cb) {
 			g.losing_character_uuid,
 			g.losing_player_previous_streak,
 			g.losing_character_previous_streak,
+			g.losing_character_previous_value,
 			g.supreme,
 			rg.user_uuid AS "rematched",
 			rg.success AS "rematchSuccess"

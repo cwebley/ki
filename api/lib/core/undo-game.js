@@ -1,3 +1,5 @@
+import config from '../../config';
+
 /*
 	{
 		winner: {
@@ -17,7 +19,7 @@
 */
 const COINS_FOR_SUPREME = 3;
 
-// rematch is an optional bool parameter that uses a rematch power which is essentially a soft undo
+// rematch is an optional parameter (the rematching user's uuid) that uses a rematch power which is essentially a soft undo
 export default function undoGame (state, game, rematch) {
 	const winnerUuid = game.winner.uuid;
 	const winningCharacterUuid = game.winner.characterUuid;
@@ -118,7 +120,14 @@ export default function undoGame (state, game, rematch) {
 	if (coinsDiff) {
 		diff.users.ids[winnerUuid].coins = coinsDiff;
 	}
-
+	if (rematch) {
+		if (coinsDiff) {
+			diff.users.ids[rematch].coins = diff.users.ids[rematch].coins - config.cost.rematch;
+		}
+		else {
+			diff.users.ids[rematch].coins = state.users.ids[rematch].coins - config.cost.rematch;
+		}
+	}
 	return diff;
 }
 
