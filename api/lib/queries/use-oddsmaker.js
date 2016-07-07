@@ -19,8 +19,6 @@ export default function oddsmakerQuery (db, rConn, opts, cb) {
 			}
 			return Math.floor(Math.random() * opts.oddsmakerLength / opts.oddsmakerValue) === 0 ? opts.characterUuid : cUuid
 		});
-		console.log("UPCOMING ", upcomingCharacters);
-		console.log("UPDATED: ", updatedCharacters);
 
 		rConn.ltrim(upcomingKey, 0, opts.oddsmakerLength + 1, (err, trimResult) => {
 			if (err) {
@@ -34,7 +32,7 @@ export default function oddsmakerQuery (db, rConn, opts, cb) {
 					return cb(err);
 				}
 
-				decrementCoins(db, opts.tournamentUuid, opts.userUuid, opts.oddsmakerCost, (err, results) => {
+				decrementCoins(db, opts.tournamentUuid, opts.userUuid, opts.cost, (err, results) => {
 					if (err) {
 						// already logged
 						return cb(err);

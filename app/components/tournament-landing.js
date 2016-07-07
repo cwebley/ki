@@ -8,6 +8,7 @@ import draftCharacter from '../actions/draft-character';
 import submitGame from '../actions/submit-game';
 import rematch from '../actions/rematch';
 import oddsmaker from '../actions/oddsmaker';
+import decrementCharacter from '../actions/decrement-character';
 
 import { getTournamentFromState, getMe, getFormState } from '../store';
 import * as formActions from '../actions/forms';
@@ -25,6 +26,7 @@ import SeedContainer from './seed-container';
 import IconButton from 'material-ui/IconButton';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import IconCasino from 'material-ui/svg-icons/places/casino';
+import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
 
 
@@ -376,7 +378,6 @@ class TournamentLanding extends Component {
 		return (
 			<li key={character.uuid}>
 				<Paper style={{
-					height: '7.5em',
 					overflow: 'auto'
 				}}>
 					<div>
@@ -386,18 +387,32 @@ class TournamentLanding extends Component {
 						<h4>{character.name}</h4>
 						<div>{character.wins} - {character.losses}</div>
 					</div>
-					<div style={{
+					{leftSide && <div style={{
 						float: 'left',
 						paddingLeft: '1em'
 					}}>
 						<IconButton
 							tooltip="Oddsmaker"
 							tooltipPosition="top-center"
+							disabled={this.props.tournament.users.ids[this.props.tournament.users.result[0]].coins < 3}
 							onTouchTap={() => this.useOddsmaker(character)}
 						>
 							<IconCasino />
 						</IconButton>
-					</div>
+					</div>}
+					{!leftSide && <div style={{
+						float: 'left',
+						paddingLeft: '1em'
+					}}>
+						<IconButton
+							tooltip="Decrement"
+							tooltipPosition="top-center"
+							disabled={this.props.tournament.users.ids[this.props.tournament.users.result[0]].coins < 1}
+							onTouchTap={() => this.decrementCharacter(character)}
+						>
+							<IconTrendingDown />
+						</IconButton>
+					</div>}
 					<div style={{
 						float: 'right',
 						paddingRight: '1em',
@@ -443,6 +458,10 @@ class TournamentLanding extends Component {
 	useOddsmaker (character) {
 		this.props.oddsmaker(character, this.props.tournament.slug, this.props.me.token);
 	}
+
+	decrementCharacter (character) {
+		this.props.decrementCharacter(character, this.props.tournament.slug, this.props.me.token);
+	}
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -456,5 +475,5 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
 	fetchTournament, updateSeeds, submitSeeds,
 	draftCharacter, submitGame, ...formActions,
-	rematch, oddsmaker
+	rematch, oddsmaker, decrementCharacter
 })(TournamentLanding);

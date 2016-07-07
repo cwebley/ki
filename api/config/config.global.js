@@ -24,7 +24,8 @@ var config = {
 	cost: {
 		rematch: 3,
 		oddsmaker: 3,
-		inspect: 3
+		inspect: 3,
+		decrement: 1
 	}
 };
 

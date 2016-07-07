@@ -345,6 +345,12 @@ r.NotEnoughCoins = {
 	level: 'error',
 	id: 'notEnoughCoins'
 };
+r.CharacterValueAtOne = {
+	message: 'Character value already at 1',
+	level: 'error',
+	id: 'characterValueAtOne'
+};
+
 
 r.Internal = {
 	message: 'Internal server error',

@@ -166,3 +166,21 @@ export const oddsmaker = (character, tournamentSlug, token) => new Promise((reso
 		resolve(body);
 	});
 });
+
+export const decrementCharacter = (character, tournamentSlug, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/power/decrement',
+		method: 'POST',
+		json: {
+			characterSlug: character.slug
+		},
+		headers: {
+			Authorization: 'Bearer ' + token
+		}
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});

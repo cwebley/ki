@@ -4,9 +4,9 @@ import config from '../config';
 
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import getCharacterQuery from '../lib/queries/get-character';
-import oddsmakerQuery from '../lib/queries/use-oddsmaker';
+import decrementCharacterQuery from '../lib/queries/decrement-character';
 
-export default function oddsmakerHandler (req, res) {
+export default function decrementCharacterHandler (req, res) {
 	if (!req.params.tournamentSlug) {
 		return res.status(400).send(r.noSlugParam);
 	}
@@ -31,26 +31,32 @@ export default function oddsmakerHandler (req, res) {
 			if (!tournament) {
 				return res.status(404).send(r.tournamentNotFound);
 			}
-			if (tournament.users.ids[req.user.uuid].coins < config.cost.oddsmaker) {
+			if (tournament.users.ids[req.user.uuid].coins < config.cost.decrement) {
 				return res.status(400).send(r.notEnoughCoins);
 			}
-			if (!tournament.users.ids[req.user.uuid].characters.ids[character.uuid]) {
+			// make sure the character actually owned by the opponent
+			if (!tournament.users.ids[tournament.users.result[1]].characters.ids[character.uuid]) {
 				return res.status(400).send(r.invalidCharacterSlug);
 			}
-
-			oddsmakerQuery(req.db, req.redis, {
+			// don't allow this action if character value is already 1
+			if (tournament.users.ids[tournament.users.result[1]].characters.ids[character.uuid].value <= 1) {
+				return res.status(400).send(r.characterValueAtOne);
+			}
+			
+			decrementCharacterQuery(req.db, {
 				tournamentUuid: tournament.uuid,
-				userUuid: req.user.uuid,
 				characterUuid: character.uuid,
-				oddsmakerLength: config.defaults.oddsmakerLength,
-				oddsmakerValue: config.defaults.oddsmakerValue,
-				cost: config.cost.oddsmaker
+				userUuid: tournament.users.result[0],
+				opponentUuid: tournament.users.result[1],
+				cost: config.cost.decrement
 			}, (err, results) => {
 				if (err) {
 					return res.status(500).send(r.internal);
 				}
 
-				tournament.users.ids[req.user.uuid].coins -= config.cost.oddsmaker;
+				tournament.users.ids[tournament.users.result[1]].characters.ids[character.uuid].value -= 1;
+				tournament.users.ids[tournament.users.result[1]].characters.ids[character.uuid].rawValue -= 1;
+				tournament.users.ids[req.user.uuid].coins -= config.cost.decrement;
 				return res.status(200).send(tournament);
 			});
 		});
