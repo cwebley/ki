@@ -104,6 +104,10 @@ class TournamentLanding extends Component {
 				const draftCharacters = this.props.tournament.draft.result.map(uuid => this.props.tournament.draft.ids[uuid]);
 				this.props.updateSeeds(this.props.tournament.slug, [...opponentCharacters, ...draftCharacters]);
 			});
+
+		setInterval(() => {
+			this.props.fetchTournament(this.props.params.tournamentSlug, this.props.me.token);
+		}, 5000);
 	}
 
 	render () {

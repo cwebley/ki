@@ -5,33 +5,63 @@ the tournament of champions.
 1v1 full cast killer instinct 3 tournament app.
 complete work in progress. master branch generally stable.
 
-TODO:
+---Tournament Creator Page---
+no reasons display on tournament-creator page
+opponent field of tournament-creator needs to accept username instead of slug
+charactersPerUser field in tournament no default bug fix
+review form data
 
---m-ui determinate progress bar for scores
+---Draft Page---
+backwards seed values on draft screen
+draft needs to say how many picks left and maybe even who the next pick belongs to
+show previous pick. maybe with a flash or something?
 
---Bosses. Calculate rivals on tourney start?
+--Tournament Landing---
+show value in the matchup button. Also heating/fire icons or something
+better indicator on player card of heating/fire
+material-ui determinate progress bar for user scores
+crown icon denoting previous champion in a current player matchup
+crown icon denoting previous winner in a character matchup
 
---dominant matchups? blowout differential in recent history 7-0, 6-1, 5-2?
 
---kubernetes
+---Server---
+undo game tests broken
+undo game button
+undo game and rematch don't work exactly. game being nuked.
 
---reimplement imminent victory calculator?
+---Powers---
+Oddsmaker could return a message telling you how many you got
+Query: 1 cost power to find out when a character is up. maybe this live updates forever or something cool
+Inspect
 
--checkpoints: winning predictions? stat summary, best streaks, upcoming matches preview?
+--Ops--
+kubernetes
 
--stats route to return a players best character in certain categories. accept timestamp query or tourney name
-	how many points fire really netted you?
-	most dangerous matchup?
 
-fighterHistory // how is he worth 17 points? breakdown of each incr/decr
+--New Pages--
+tournament index page
+stats page
+	user overall status
+	user-character stats
+	best character matchups
+	best character matchups
+	all of the above vs a particular opponent or across a particular time
 
-user-stats/ character-stats(character curStreaks, player streaks, biggest wins, worst losses, recentHistory)
-	Biggest wins list
+Random Ideas:
+--Mirror character
+--Achievements.
+	-beat every character
+	-win with every character
+	-highest streak with a character
+	-highest player streak
+	-the charm
+--Bosses. Calculate rivals on tourney start
+--Dominant matchups. blowout differential in recent history 7-0, 6-1, 5-2?
+--reimplement imminent victory calculator
+--checkpoints: winning predictions? stat summary, best streaks, upcoming matches preview
+--game history list on tournament-landing page
 
-user-overall-stats
-	spanning multiple tourneys, or over a given data range
-
-powerups ideas:
+Powerup brainstorming:
 	reseed opponents characters
 
 	3 matches (best of 3?) against opponent of your choice given the current character
@@ -43,7 +73,7 @@ powerups ideas:
 
 	matchMaker: since KI is a matchup based game and inspect is already good, another way to manipulate matches.
 		choice of 2 or 3 characters for current matchup. choice of 2 or 3 opponents for next matchup
-		or maybe this is better implemented in bosses.
+		or maybe this is better implemented with a feature like bosses
 
 	jack of all trades:
 		count future appearances of all characters in next 15 games,
@@ -53,19 +83,4 @@ powerups ideas:
 			if they win, they swap places with your current character and you can use them whenever you want
 				rematches will still crush the grab bag streak
 
-	deduct points: use this power to deduct 1-3 points from opponent's characters.
-		probably strong in small games and weak in big games
-		cant use while you're inspecting?
-
-
-	something to manipulate draft results?
-
-achievements? milestones not unique to one tourney:
-	beat every character
-	win with every character
-	highest streak with a character
-	highest player streak
-	the charm
-
-icon denoting previous champion in a current player matchup
-icon denoting previous winner in a character matchup
+	steal a character gamble

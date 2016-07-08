@@ -10,11 +10,11 @@ export default function draftCharacterQuery (db, tournamentUuid, character, user
 			VALUES ($1, $2, $3,
 				(SELECT value from seeds
 				WHERE tournament_uuid = $4
-					AND user_uuid = $5
+					AND opponent_uuid = $5
 					AND character_uuid = $6),
 				(SELECT value from seeds
 				WHERE tournament_uuid = $7
-					AND user_uuid = $8
+					AND opponent_uuid = $8
 					AND character_uuid = $9)
 			)
 		`;

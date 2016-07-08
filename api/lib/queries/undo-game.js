@@ -196,7 +196,7 @@ function deleteGame (db, gameUuid, rematch, cb) {
 		WHERE uuid = $1
 	`;
 	const params = [
-		opts.gameUuid
+		gameUuid
 	];
 
 	db.query(sql, params, (err, results) => {

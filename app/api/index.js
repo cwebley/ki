@@ -5,7 +5,7 @@ export const login = (formData) =>
 	new Promise((resolve, reject) => {
 		nets({
 			method: 'POST',
-			url: config.apiBase + config.loginPath,
+			url: config.loginPath,
 			json: formData
 		}, (err, resp, body) => {
 			if (err || resp.statusCode >= 400) {
@@ -19,7 +19,7 @@ export const register = (formData) =>
 	new Promise((resolve, reject) => {
 		nets({
 			method: 'POST',
-			url: config.apiBase + config.registerPath,
+			url: config.registerPath,
 			json: formData
 		}, (err, resp, body) => {
 			if (err || resp.statusCode >= 400) {
@@ -32,7 +32,7 @@ export const register = (formData) =>
 export const fetchCharacters = () =>
 	new Promise((resolve, reject) => {
 		nets({
-			url: config.apiBase + config.charactersPath,
+			url: config.charactersPath,
 			json: true
 		}, (err, resp, body) => {
 			if (err || resp.statusCode >= 400) {
@@ -46,7 +46,7 @@ export const createTournament = (formData, token) =>
 	new Promise((resolve, reject) => {
 		nets({
 			method: 'POST',
-			url: config.apiBase + config.tournamentsPath,
+			url: config.tournamentsPath,
 			json: formData,
 			headers: {
 				Authorization: 'Bearer ' + token
@@ -66,7 +66,7 @@ export const fetchTournament = (tournamentSlug, token) => {
 	}
 	return new Promise((resolve, reject) => {
 		nets({
-			url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug,
+			url: config.singleTournamentPath + '/' + tournamentSlug,
 			json: true,
 			headers
 		}, (err, resp, body) => {
@@ -81,7 +81,7 @@ export const fetchTournament = (tournamentSlug, token) => {
 export const submitSeeds = (tournamentSlug, seedValues, token) =>
 	new Promise((resolve, reject) => {
 		nets({
-			url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/seed',
+			url: config.singleTournamentPath + '/' + tournamentSlug + '/seed',
 			json: seedValues,
 			method: 'POST',
 			headers: {
@@ -98,7 +98,7 @@ export const submitSeeds = (tournamentSlug, seedValues, token) =>
 export const draftCharacter = (tournamentSlug, characterSlug, token) =>
 	new Promise((resolve, reject) => {
 		nets({
-			url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/draft',
+			url: config.singleTournamentPath + '/' + tournamentSlug + '/draft',
 			json: {
 				pick: characterSlug
 			},
@@ -118,7 +118,7 @@ export const submitGame = opts => {
 	const { token, tournamentSlug, ...gameData } = opts;
 	return new Promise((resolve, reject) => {
 		nets({
-			url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/game',
+			url: config.singleTournamentPath + '/' + tournamentSlug + '/game',
 			json: gameData,
 			method: 'POST',
 			headers: {
@@ -135,7 +135,7 @@ export const submitGame = opts => {
 
 export const rematch = (tournamentSlug, token) => new Promise((resolve, reject) => {
 	nets({
-		url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/power/rematch',
+		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/rematch',
 		method: 'POST',
 		json: {},
 		headers: {
@@ -151,7 +151,7 @@ export const rematch = (tournamentSlug, token) => new Promise((resolve, reject) 
 
 export const oddsmaker = (character, tournamentSlug, token) => new Promise((resolve, reject) => {
 	nets({
-		url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/power/oddsmaker',
+		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/oddsmaker',
 		method: 'POST',
 		json: {
 			characterSlug: character.slug
@@ -169,7 +169,7 @@ export const oddsmaker = (character, tournamentSlug, token) => new Promise((reso
 
 export const decrementCharacter = (character, tournamentSlug, token) => new Promise((resolve, reject) => {
 	nets({
-		url: config.apiBase + config.singleTournamentPath + '/' + tournamentSlug + '/power/decrement',
+		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/decrement',
 		method: 'POST',
 		json: {
 			characterSlug: character.slug
