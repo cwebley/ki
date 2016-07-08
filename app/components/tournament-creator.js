@@ -26,7 +26,7 @@ import { getFormValue, getListValues } from '../store/forms';
 /*
 	Example form data for /api/tournaments
 	// tournament rules
-	{ name: 'sibyl.org', goal: 231, opponentSlug: 'Orlo-Johnston', startCoins: 10 }
+	{ name: 'sibyl.org', goal: 231, opponentName: 'Orlo Johnston', startCoins: 10 }
 
 	// common character settings
 	{ opponentCharacters: ['kan-ra', 'aganos', 'jago'], myCharacters: ['aganos', 'gargos', 'arbiter'] }
@@ -134,7 +134,7 @@ class TournamentCreator extends Component {
 					defaultValue={100}
 				/>
 				<Text
-					name="opponentSlug"
+					name="opponentName"
 					validate={['required']}
 					label="Opponent"
 					placeholder="rico"
@@ -152,7 +152,7 @@ class TournamentCreator extends Component {
 	renderCharactersForm () {
 		const { formState } = this.props;
 		const draftCharacters = getListValues(formState, 'draftCharacters');
-		const opponentSlug = getFormValue(formState, 'opponentSlug') || 'Opponent';
+		const opponentName = getFormValue(formState, 'opponentName') || 'Opponent';
 
 		return (
 			<div>
@@ -176,7 +176,7 @@ class TournamentCreator extends Component {
 						/>
 					)}
 				</FormList>
-				<h2>{opponentSlug}</h2>
+				<h2>{opponentName}</h2>
 				<FormList
 					listName="opponentCharacters"
 					formState={formState}

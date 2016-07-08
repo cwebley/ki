@@ -83,11 +83,11 @@ r.NoStartCoins = {
 	level: 'error',
 	id: 'noStartCoins'
 };
-r.NoOpponentSlug = {
-	message: 'Missing opponentSlug',
-	field: 'opponentSlug',
+r.NoOpponentName = {
+	message: 'Missing opponentName',
+	field: 'opponentName',
 	level: 'error',
-	id: 'NoOpponentSlug'
+	id: 'NoOpponentName'
 };
 r.NoCharactersPerUser = {
 	message: 'Missing charactersPerUser',
@@ -107,11 +107,11 @@ r.NoCharacterSlug = {
 	level: 'error',
 	id: 'noCharacterSlug'
 };
-r.InvalidOpponentSlug = {
-	message: 'Invalid opponentSlug. Opponent does not exist',
-	field: 'opponentSlug',
+r.InvalidOpponentName = {
+	message: 'Invalid opponentName. Opponent does not exist',
+	field: 'opponentName',
 	level: 'error',
-	id: 'InvalidOpponentSlug'
+	id: 'InvalidOpponentName'
 };
 r.NoSeason = {
 	message: 'Missing season',

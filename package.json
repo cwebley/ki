@@ -5,7 +5,7 @@
   "directories": {},
   "scripts": {
     "start": "webpack-dev-server --progress",
-    "start-prod": "webpack --progress",
+    "build": "webpack --progress",
     "clean-build": "rm -rf node_modules && npm install"
   },
   "dependencies": {

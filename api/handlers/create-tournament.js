@@ -24,8 +24,8 @@ export default function createTournamentHandler (req, res) {
 	if (!tournamentOpts.name) {
 		problems.push(r.NoName);
 	}
-	if (!req.body.opponentSlug) {
-		problems.push(r.NoOpponentSlug);
+	if (!req.body.opponentName) {
+		problems.push(r.NoOpponentName);
 	}
 	if (!tournamentOpts.goal) {
 		problems.push(r.NoGoal);
@@ -83,12 +83,12 @@ export default function createTournamentHandler (req, res) {
 	}
 
 	// fetch opponent data
-	getUserQuery(req.db, 'slug', req.body.opponentSlug, (err, opponentData) => {
+	getUserQuery(req.db, 'name', req.body.opponentName, (err, opponentData) => {
 		if (err) {
 			return res.status(500).send(r.internal);
 		}
 		if (!opponentData) {
-			return res.status(400).send(r.invalidOpponentSlug);
+			return res.status(400).send(r.InvalidOpponentName);
 		}
 
 		tournamentOpts.uuid = uuid.v4();

@@ -6,7 +6,6 @@ the tournament of champions.
 complete work in progress. master branch generally stable.
 
 ---Tournament Creator Page---
-no reasons display on tournament-creator page
 opponent field of tournament-creator needs to accept username instead of slug
 charactersPerUser field in tournament no default bug fix
 review form data
@@ -27,18 +26,21 @@ better indicator on player card of heating/fire
 material-ui determinate progress bar for user scores
 crown icon denoting previous champion in a current player matchup
 crown icon denoting previous winner in a character matchup
-
+undo button
+extend tournament button after champion is crowned
 
 ---Server---
 undo game tests broken
 undo game button
 undo game and rematch don't work exactly. game being nuked.
+extend tournament logic
 
 ---Powers---
 Inspect
 Oddsmaker could return a message telling you how many you got
 
 --Setup/Ops--
+Webpack proxy dev server to /api* to localhost:3000 https://webpack.github.io/docs/webpack-dev-server.html
 Kubernetes
 Completely configurable costs, powers, and power settings on a per tournament basis
 SSL
