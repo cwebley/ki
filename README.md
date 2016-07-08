@@ -6,7 +6,6 @@ the tournament of champions.
 complete work in progress. master branch generally stable.
 
 ---Tournament Creator Page---
-opponent field of tournament-creator needs to accept username instead of slug
 charactersPerUser field in tournament no default bug fix
 review form data
 

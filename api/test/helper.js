@@ -17,6 +17,7 @@ let testVals = {
 	userOneTournamentBestStreak: undefined,
 
 	userOneXterOneVal: undefined,
+	userOneXterOneRawVal: undefined,
 	userOneXterOneWins: undefined,
 	userOneXterOneLosses: undefined,
 	userOneXterOneFireWins: undefined,
@@ -26,6 +27,7 @@ let testVals = {
 	userOneXterOneGlobalBestStreak: undefined,
 
 	userOneXterTwoVal: undefined,
+	userOneXterTwoRawVal: undefined,
 	userOneXterTwoWins: undefined,
 	userOneXterTwoLosses: undefined,
 	userOneXterTwoFireWins: undefined,
@@ -47,6 +49,7 @@ let testVals = {
 	userTwoTournamentBestStreak: undefined,
 
 	userTwoXterOneVal: undefined,
+	userTwoXterOneRawVal: undefined,
 	userTwoXterOneWins: undefined,
 	userTwoXterOneLosses: undefined,
 	userTwoXterOneFireWins: undefined,
@@ -56,6 +59,7 @@ let testVals = {
 	userTwoXterOneGlobalBestStreak: undefined,
 
 	userTwoXterTwoVal: undefined,
+	userTwoXterTwoRawVal: undefined,
 	userTwoXterTwoWins: undefined,
 	userTwoXterTwoLosses: undefined,
 	userTwoXterTwoFireWins: undefined,
@@ -85,6 +89,7 @@ function resetTestState () {
 	testVals.userOneUpcoming = ['xter1Uuid', 'xter2Uuid'];
 
 	testVals.userOneXterOneVal = 6;
+	testVals.userOneXterRawVal = 6;
 	testVals.userOneXterOneWins = 0;
 	testVals.userOneXterOneLosses = 0;
 	testVals.userOneXterOneStreak = 0;
@@ -94,6 +99,7 @@ function resetTestState () {
 	testVals.userOneXterOneGlobalBestStreak = 0;
 
 	testVals.userOneXterTwoVal = 3;
+	testVals.userOneXterTwoRawVal = 3;
 	testVals.userOneXterTwoWins = 0;
 	testVals.userOneXterTwoLosses = 0;
 	testVals.userOneXterTwoStreak = 0;
@@ -115,6 +121,7 @@ function resetTestState () {
 	testVals.userTwoUpcoming = ['xter1Uuid', 'xter2Uuid'];
 
 	testVals.userTwoXterOneVal = 5;
+	testVals.userTwoXterOneRawVal = 5;
 	testVals.userTwoXterOneWins = 0;
 	testVals.userTwoXterOneLosses = 0;
 	testVals.userTwoXterOneStreak = 0;
@@ -124,6 +131,7 @@ function resetTestState () {
 	testVals.userTwoXterOneGlobalBestStreak = 0;
 
 	testVals.userTwoXterTwoVal = 2;
+	testVals.userTwoXterRawVal = 2;
 	testVals.userTwoXterTwoWins = 0;
 	testVals.userTwoXterTwoLosses = 0;
 	testVals.userTwoXterTwoStreak = 0;
@@ -158,6 +166,7 @@ let testState = {
 					ids: {
 						'xter1Uuid': {
 							get value() { return testVals.userOneXterOneVal },
+							get rawValue() { return testVals.userOneXterOneRawVal },
 							get streak() { return testVals.userOneXterOneStreak },
 							get bestStreak() { return testVals.userOneXterOneBestStreak },
 							get wins() { return testVals.userOneXterOneWins },
@@ -168,6 +177,7 @@ let testState = {
 						},
 						'xter2Uuid': {
 							get value() { return testVals.userOneXterTwoVal },
+							get rawValue() { return testVals.userOneXterTwoRawVal },
 							get streak() { return testVals.userOneXterTwoStreak },
 							get bestStreak() { return testVals.userOneXterTwoBestStreak },
 							get wins() { return testVals.userOneXterTwoWins },
@@ -199,6 +209,7 @@ let testState = {
 					ids: {
 						'xter1Uuid': {
 							get value () { return testVals.userTwoXterOneVal },
+							get rawValue () { return testVals.userTwoXterOneRawVal },
 							get streak () { return testVals.userTwoXterOneStreak },
 							get bestStreak () { return testVals.userTwoXterOneBestStreak },
 							get wins () { return testVals.userTwoXterOneWins },
@@ -211,6 +222,7 @@ let testState = {
 						},
 						'xter2Uuid': {
 							get value () { return testVals.userTwoXterTwoVal },
+							get rawValue () { return testVals.userTwoXterTwoRawVal },
 							get streak () { return testVals.userTwoXterTwoStreak },
 							get bestStreak () { return testVals.userTwoXterTwoBestStreak },
 							get wins () { return testVals.userTwoXterTwoWins },
