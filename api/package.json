@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha --compilers js:babel-register --recursive",
     "start": "node index.js --logLevel debug",
+    "start-prod": "NODE_ENV=production node index.js",
     "createdb": "createdb ki; psql ki < persistence/pg/schema/0.sql",
+    "createdb-prod": "createdb prod; psql prod < persistence/pg/schema/0.sql",
     "dropdb": "dropdb ki",
     "clean-deploy": "npm run dropdb ; npm run createdb",
     "postgres": "initdb tmp/pg ; postgres -D tmp/pg > tmp/pg.log  2>&1 &"
@@ -33,6 +35,7 @@
     "neo-async": "^1.7.4",
     "node-uuid": "^1.4.7",
     "once": "^1.3.3",
+    "path": "^0.12.7",
     "pg": "^4.4.6",
     "redis": "^2.4.2",
     "slug": "^0.9.1"
