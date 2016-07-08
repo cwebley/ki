@@ -11,8 +11,13 @@ opponent field of tournament-creator needs to accept username instead of slug
 charactersPerUser field in tournament no default bug fix
 review form data
 
+---Seed Page---
+Sort seeds by how you seeded them last time against this opponent if possible
+Show W-L record of each character last time you faced them
+
 ---Draft Page---
 backwards seed values on draft screen
+3 sort options. by value difference, and by value for each user.
 draft needs to say how many picks left and maybe even who the next pick belongs to
 show previous pick. maybe with a flash or something?
 
@@ -30,13 +35,13 @@ undo game button
 undo game and rematch don't work exactly. game being nuked.
 
 ---Powers---
-Oddsmaker could return a message telling you how many you got
-Query: 1 cost power to find out when a character is up. maybe this live updates forever or something cool
 Inspect
+Oddsmaker could return a message telling you how many you got
 
---Ops--
-kubernetes
-
+--Setup/Ops--
+Kubernetes
+Completely configurable costs, powers, and power settings on a per tournament basis
+SSL
 
 --New Pages--
 tournament index page
@@ -62,6 +67,11 @@ Random Ideas:
 --game history list on tournament-landing page
 
 Powerup brainstorming:
+	Query
+		1 cost power to find out when a character is up.
+		maybe this live updates forever or something cool.
+		could even be tied into the matchup inspector
+
 	reseed opponents characters
 
 	3 matches (best of 3?) against opponent of your choice given the current character
