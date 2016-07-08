@@ -29,13 +29,13 @@ undo button
 extend tournament button after champion is crowned
 
 ---Server---
-undo game tests broken
 undo game button
 undo game and rematch don't work exactly. game being nuked.
-extend tournament logic
+extend tournament after champion is crowned logic
 
 ---Powers---
 Inspect
+	build this in a way that we can track stats for wins while inspect is active and stuff
 Oddsmaker could return a message telling you how many you got
 
 --Setup/Ops--
@@ -55,6 +55,7 @@ stats page
 
 Random Ideas:
 --Mirror character
+	Mirrors can go on fire, but mirror matches count for each player
 --Achievements.
 	-beat every character
 	-win with every character

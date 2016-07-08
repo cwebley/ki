@@ -20,6 +20,12 @@ module.exports = {
 		contentBase: "./public",
 		colors: true,
 		historyApiFallback: true,
-		inline: true
+		inline: true,
+		proxy: {
+			'/api*': {
+				target: 'http://localhost:3000',
+				secure: false
+			}
+		}
 	}
 }
