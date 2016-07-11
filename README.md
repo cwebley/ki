@@ -7,14 +7,13 @@ complete work in progress. master branch generally stable.
 
 ---Tournament Creator Page---
 charactersPerUser field in tournament no default bug fix
-review form data
+review form data before submission
 
 ---Seed Page---
 Sort seeds by how you seeded them last time against this opponent if possible
 Show W-L record of each character last time you faced them
 
 ---Draft Page---
-backwards seed values on draft screen
 3 sort options. by value difference, and by value for each user.
 draft needs to say how many picks left and maybe even who the next pick belongs to
 show previous pick. maybe with a flash or something?

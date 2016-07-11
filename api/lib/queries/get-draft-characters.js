@@ -2,11 +2,12 @@ import log from '../../logger';
 
 export default function getDraftCharactersQuery (db, tournamentUuid, userUuids, cb) {
 	let draftCharacterData = {};
-	getDraftCharactersForUserQuery(db, tournamentUuid, userUuids[0], (err, results) => {
+
+	getDraftCharactersForUserQuery(db, tournamentUuid, userUuids[0], (err, leftUserResults) => {
 		if (err) {
 			return cb(err);
 		}
-		results.forEach(c => {
+		leftUserResults.forEach(c => {
 			draftCharacterData[c.uuid] = {
 				uuid: c.uuid,
 				name: c.name,
@@ -18,31 +19,40 @@ export default function getDraftCharactersQuery (db, tournamentUuid, userUuids, 
 						losses: c.losses,
 						streak: c.streak,
 						bestStreak: c.bestStreak,
-						value: c.value,
 						fireWins: c.fireWins,
 						globalStreak: c.globalStreak,
 						globalBestStreak: c.globalBestStreak
 					}
 				}
 			}
+			// value is what this user seeded their opponent's character at
+			// so it's actually the value for the other user
+			draftCharacterData[c.uuid].users[userUuids[1]] = {
+				value: c.value
+			};
 		});
 
-		getDraftCharactersForUserQuery(db, tournamentUuid, userUuids[1], (err, results) => {
+		getDraftCharactersForUserQuery(db, tournamentUuid, userUuids[1], (err, rightUserResults) => {
 			if (err) {
 				return cb(err);
 			}
-			results.forEach(c => {
-				draftCharacterData[c.uuid].users[userUuids[1]] = {
+			rightUserResults.forEach(c => {
+				draftCharacterData[c.uuid].users[userUuids[1]] = Object.assign(draftCharacterData[c.uuid].users[userUuids[1]], {
 					wins: c.wins,
 					losses: c.losses,
 					streak: c.streak,
 					bestStreak: c.bestStreak,
-					value: c.value,
 					fireWins: c.fireWins,
 					globalStreak: c.globalStreak,
 					globalBestStreak: c.globalBestStreak
-				}
+				});
+
+				// update the value for the opponent character too
+				draftCharacterData[c.uuid].users[userUuids[0]] = {
+					value: c.value
+				};
 			});
+
 			return cb(null, draftCharacterData);
 		});
 	});

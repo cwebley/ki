@@ -105,9 +105,15 @@ class TournamentLanding extends Component {
 				this.props.updateSeeds(this.props.tournament.slug, [...opponentCharacters, ...draftCharacters]);
 			});
 
-		setInterval(() => {
+		// poll for updates
+		this.pollingInterval = setInterval(() => {
 			this.props.fetchTournament(this.props.params.tournamentSlug, this.props.me.token);
 		}, 5000);
+	}
+
+	componentWillUnmount () {
+		// stop polling if you navigate away from this page
+		clearInterval(this.pollingInterval);
 	}
 
 	render () {
