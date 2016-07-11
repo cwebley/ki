@@ -1,14 +1,19 @@
 import log from '../../logger';
 
 export default function getDraftCharactersQuery (db, tournamentUuid, userUuids, cb) {
-	let draftCharacterData = {};
+	let draftData = {
+		characters: {
+			ids: {},
+			result: []
+		}
+	};
 
 	getDraftCharactersForUserQuery(db, tournamentUuid, userUuids[0], (err, leftUserResults) => {
 		if (err) {
 			return cb(err);
 		}
 		leftUserResults.forEach(c => {
-			draftCharacterData[c.uuid] = {
+			draftData.characters.ids[c.uuid] = {
 				uuid: c.uuid,
 				name: c.name,
 				season: c.season,
@@ -18,6 +23,7 @@ export default function getDraftCharactersQuery (db, tournamentUuid, userUuids, 
 						wins: c.wins,
 						losses: c.losses,
 						streak: c.streak,
+						value: c.value,
 						bestStreak: c.bestStreak,
 						fireWins: c.fireWins,
 						globalStreak: c.globalStreak,
@@ -25,11 +31,6 @@ export default function getDraftCharactersQuery (db, tournamentUuid, userUuids, 
 					}
 				}
 			}
-			// value is what this user seeded their opponent's character at
-			// so it's actually the value for the other user
-			draftCharacterData[c.uuid].users[userUuids[1]] = {
-				value: c.value
-			};
 		});
 
 		getDraftCharactersForUserQuery(db, tournamentUuid, userUuids[1], (err, rightUserResults) => {
@@ -37,23 +38,22 @@ export default function getDraftCharactersQuery (db, tournamentUuid, userUuids, 
 				return cb(err);
 			}
 			rightUserResults.forEach(c => {
-				draftCharacterData[c.uuid].users[userUuids[1]] = Object.assign(draftCharacterData[c.uuid].users[userUuids[1]], {
+				draftData.characters.ids[c.uuid].users[userUuids[1]] = {
 					wins: c.wins,
 					losses: c.losses,
 					streak: c.streak,
+					value: c.value,
 					bestStreak: c.bestStreak,
 					fireWins: c.fireWins,
 					globalStreak: c.globalStreak,
 					globalBestStreak: c.globalBestStreak
-				});
-
-				// update the value for the opponent character too
-				draftCharacterData[c.uuid].users[userUuids[0]] = {
-					value: c.value
 				};
+
+				// order results based on the seed values that right user has specified for left user
+				draftData.characters.result.push(c.uuid);
 			});
 
-			return cb(null, draftCharacterData);
+			return cb(null, draftData);
 		});
 	});
 }
@@ -73,9 +73,10 @@ const getDraftCharactersForUserQuery = (db, tournamentUuid, userUuid, cb) => {
 			LEFT JOIN seeds AS s
 				ON s.character_uuid = dc.character_uuid
 				AND s.tournament_uuid = dc.tournament_uuid
-				AND s.user_uuid = uc.user_uuid
+				AND s.opponent_uuid = uc.user_uuid
 		WHERE dc.tournament_uuid = $1
 			AND uc.user_uuid = $2
+			ORDER BY s.value
 	`;
 	const params = [tournamentUuid, userUuid];
 	db.query(sql, params, (err, results) => {

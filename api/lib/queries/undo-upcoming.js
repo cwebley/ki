@@ -5,26 +5,22 @@ import range from 'lodash.range';
 import async from 'neo-async';
 
 export default function undoUpcomingQuery (rConn, tournamentState, cb) {
-	// check length of upcomingList for each user
-	// start assembling a user object that will ultimately contain uuid and characterUuids
-	let users = Object.keys(tournamentState.users).map(uuid => {
-		return { uuid }
-	});
 
 	// pop most recent game off of upcoming list
 	let calls = [];
-	users.forEach(user => {
+	tournamentState.users.result.forEach(uUuid => {
 		calls.push(
-			popPush(rConn, tournamentState, user.uuid)
+			popPush(rConn, tournamentState.uuid, uUuid)
 		);
 	});
 	async.parallel(calls, cb);
 }
 
-function popPush (rConn, tournamentState, userUuid) {
+function popPush (rConn, tournamentUuid, userUuid) {
 	return function(done) {
-		const previousKey = previousList(tournamentState.uuid, userUuid);
-		const upcomingKey = upcomingList(tournamentState.uuid, userUuid);
+		const previousKey = previousList(tournamentUuid, userUuid);
+		const upcomingKey = upcomingList(tournamentUuid, userUuid);
+
 		// pop most recent item from previous list
 		rConn.lpop(previousKey, (err, charUuid) => {
 			if (err) {
@@ -37,6 +33,7 @@ function popPush (rConn, tournamentState, userUuid) {
 				});
 				return done();
 			}
+
 			// push onto front of upcoming list
 			rConn.lpush(upcomingKey, charUuid, (err, success) => {
 				if (err) {

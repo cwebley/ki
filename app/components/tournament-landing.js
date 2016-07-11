@@ -9,6 +9,7 @@ import submitGame from '../actions/submit-game';
 import rematch from '../actions/rematch';
 import oddsmaker from '../actions/oddsmaker';
 import decrementCharacter from '../actions/decrement-character';
+import toggleDraftFilter from '../actions/toggle-draft-filter';
 
 import { getTournamentFromState, getMe, getFormState } from '../store';
 import * as formActions from '../actions/forms';
@@ -20,6 +21,7 @@ import get from 'lodash.get';
 
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 
 import SeedContainer from './seed-container';
@@ -28,6 +30,7 @@ import IconButton from 'material-ui/IconButton';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
+import IconFilterList from 'material-ui/svg-icons/content/filter-list';
 import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
 
 const styles = {
@@ -101,7 +104,7 @@ class TournamentLanding extends Component {
 				}
 				const opponent = this.props.tournament.users.ids[this.props.tournament.users.result[1]];
 				const opponentCharacters = opponent.characters.result.map(uuid => opponent.characters.ids[uuid]);
-				const draftCharacters = this.props.tournament.draft.result.map(uuid => this.props.tournament.draft.ids[uuid]);
+				const draftCharacters = this.props.tournament.draft.characters.result.map(uuid => this.props.tournament.draft.characters.ids[uuid]);
 				this.props.updateSeeds(this.props.tournament.slug, [...opponentCharacters, ...draftCharacters]);
 			});
 
@@ -334,15 +337,24 @@ class TournamentLanding extends Component {
 
 	renderDraft () {
 		const { tournament } = this.props;
-		const draftCharacters = tournament.draft.result.map(cUuid => tournament.draft.ids[cUuid]);
+		const draftCharacters = tournament.draft.characters.result.map(cUuid => tournament.draft.characters.ids[cUuid]);
 		return (
 			<div>
-				Draft it up
+				<h2>Draft it up</h2>
+				<FlatButton
+					label="Toggle Sort"
+					icon={<IconFilterList />}
+					onTouchTap={() => this.toggleDraftFilter()}
+				/>
 				<ol style={styles.draftCharacters}>
 					{draftCharacters.map(c => this.renderDraftCharacter(c))}
 				</ol>
 			</div>
 		);
+	}
+
+	toggleDraftFilter () {
+		this.props.toggleDraftFilter(this.props.tournament.slug, this.props.tournament.users.result[0], this.props.tournament.users.result[1]);
 	}
 
 	renderDraftCharacter (character) {
@@ -497,5 +509,5 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
 	fetchTournament, updateSeeds, submitSeeds,
 	draftCharacter, submitGame, ...formActions,
-	rematch, oddsmaker, decrementCharacter
+	rematch, oddsmaker, decrementCharacter, toggleDraftFilter
 })(TournamentLanding);

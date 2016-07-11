@@ -16,6 +16,13 @@ const tournamentReducer = (state = {}, action) => {
 	switch (action.type) {
 
 	case c.FETCH_TOURNAMENT_SUCCESS:
+		return {
+			...state,
+			// reasons should always get initialized to at least an empty array
+			reasons: tournamentReasonsReducer(state.reasons, action),
+			...action.data,
+			draft: draftReducer(state.draft, action)
+		};
 	case c.SUBMIT_SEEDS_SUCCESS:
 	case c.SUBMIT_GAME_SUCCESS:
 	case c.REMATCH_SUCCESS:
@@ -53,6 +60,11 @@ const tournamentReducer = (state = {}, action) => {
 			...state,
 			active: action.data.tournamentActive,
 			users: tournamentUsersReducer(state.users, action),
+			draft: draftReducer(state.draft, action)
+		};
+	case c.TOGGLE_DRAFT_FILTER:
+		return {
+			...state,
 			draft: draftReducer(state.draft, action)
 		};
 	default:
@@ -136,10 +148,56 @@ const userCharacterReducer = (state = {}, action) => {
 
 const draftReducer = (state = {}, action) => {
 	switch (action.type) {
+		case c.FETCH_TOURNAMENT_SUCCESS:
+			return {
+				...state,
+				characters: draftCharactersReducer(state.characters, action)
+			};
+		case c.DRAFT_CHARACTER_SUCCESS:
+			return {
+				...state,
+				characters: draftCharactersReducer(state.characters, action),
+				previous: {
+					user: action.userUuid,
+					pick: action.data.pick
+				},
+				current: action.data.drafting
+			};
+		case c.TOGGLE_DRAFT_FILTER:
+			return {
+				...state,
+				characters: draftCharactersReducer(state.characters, action)
+			};
+		default:
+			return state;
+	}
+}
+
+const draftCharactersReducer = (state = {}, action) => {
+
+	// default is sorted by left user
+	const sortDraftCharactersByRightUser = (rightUuid) => (a, b) => a.users[rightUuid].value < b.users[rightUuid].value ? -1 : 1;
+
+	switch (action.type) {
+		case c.FETCH_TOURNAMENT_SUCCESS:
+			return {
+				...state,
+				// if these already exist, don't mess up the client side sorting.
+				// otherwise use the data from the action.
+				result: state.result ? state.result : action.data.draft.characters.result,
+				ids: state.ids ? state.ids : action.data.draft.characters.ids,
+			};
 		case c.DRAFT_CHARACTER_SUCCESS:
 			return {
 				...state,
 				result: state.result.filter(cUuid => cUuid !== action.character.uuid)
+			}
+		case c.TOGGLE_DRAFT_FILTER:
+			const filter = (state.filter === 'rightUuid') ? 'leftUuid' : 'rightUuid';
+			return {
+				...state,
+				result: state.result.map(cUuid => state.ids[cUuid]).sort(sortDraftCharactersByRightUser(action[filter])).map(c => c.uuid),
+				filter
 			}
 		default:
 			return state;

@@ -35,6 +35,8 @@ export default function undoGame (state, game, rematch) {
 		// removing something like championUuid should go in here
 		_remove: {}
 	};
+	const winnerUpcoming = state.users.ids[winnerUuid].upcoming || [];
+	const loserUpcoming = state.users.ids[loserUuid].upcoming || [];
 
 	diff._remove.championUuid = unEvaluateChampion(winnerUuid, state.goal, state.users.ids[winnerUuid].score, state.users.ids[loserUuid].score, winningCharPrevValue);
 
@@ -48,7 +50,8 @@ export default function undoGame (state, game, rematch) {
 				}
 			},
 			result: [winningCharacterUuid]
-		}
+		},
+		upcoming: [winningCharacterUuid].concat(winnerUpcoming)
 	};
 	// rematches don't reset the wins, only the streaks
 	if (!rematch) {
@@ -71,7 +74,8 @@ export default function undoGame (state, game, rematch) {
 				}
 			},
 			result: [losingCharacterUuid]
-		}
+		},
+		upcoming: [losingCharacterUuid].concat(loserUpcoming)
 	};
 
 	// rematches don't reset the losses, only the streaks

@@ -42,8 +42,8 @@ export default function submitGameHandler (req, res) {
 		opponentCharacters.result.forEach(cUuid => {
 			allEligibleCharacterSlugMap[opponentCharacters.ids[cUuid].slug] = opponentCharacters.ids[cUuid];
 		});
-		tournament.draft.result.forEach(cUuid => {
-			allEligibleCharacterSlugMap[tournament.draft.ids[cUuid].slug] = tournament.draft.ids[cUuid];
+		tournament.draft.characters.result.forEach(cUuid => {
+			allEligibleCharacterSlugMap[tournament.draft.characters.ids[cUuid].slug] = tournament.draft.characters.ids[cUuid];
 		});
 
 		if (req.body.length !== Object.keys(allEligibleCharacterSlugMap).length) {

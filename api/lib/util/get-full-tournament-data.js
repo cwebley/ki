@@ -100,14 +100,11 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 							}
 							tournament.users.ids[users[1]].upcoming = upcomingResults;
 
-							getDraftCharactersQuery(db, tournament.uuid, users, (err, draftCharacters) => {
+							getDraftCharactersQuery(db, tournament.uuid, users, (err, draftData) => {
 								if (err) {
 									return cb(err);
 								}
-								tournament.draft = {
-									ids: draftCharacters,
-									result: Object.keys(draftCharacters)
-								};
+								tournament.draft = draftData;
 
 								// if user is logged in and in the tournament, make sure they are the first user returned
 								if (opts.userUuid) {

@@ -14,22 +14,19 @@ Sort seeds by how you seeded them last time against this opponent if possible
 Show W-L record of each character last time you faced them
 
 ---Draft Page---
-3 sort options. by value difference, and by value for each user.
 draft needs to say how many picks left and maybe even who the next pick belongs to
 show previous pick. maybe with a flash or something?
 
 --Tournament Landing---
+undo button
 show value in the matchup button. Also heating/fire icons or something
 better indicator on player card of heating/fire
 material-ui determinate progress bar for user scores
 crown icon denoting previous champion in a current player matchup
 crown icon denoting previous winner in a character matchup
-undo button
 extend tournament button after champion is crowned
 
 ---Server---
-undo game button
-undo game and rematch don't work exactly. game being nuked.
 extend tournament after champion is crowned logic
 
 ---Powers---
@@ -38,7 +35,6 @@ Inspect
 Oddsmaker could return a message telling you how many you got
 
 --Setup/Ops--
-Webpack proxy dev server to /api* to localhost:3000 https://webpack.github.io/docs/webpack-dev-server.html
 Kubernetes
 Completely configurable costs, powers, and power settings on a per tournament basis
 SSL

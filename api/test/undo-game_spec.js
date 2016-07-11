@@ -156,6 +156,12 @@ describe('undo-game logic', () => {
 			const diff2 = undoGame(testState, testUndoGame);
 			expect(diff2.users.ids['user1Uuid'].coins).to.equal(undefined);
 		});
+
+		it('returns upcoming with the previous matchup showing up in the first slot', () => {
+			const diff = undoGame(testState, testUndoGame);
+			expect(diff.users.ids['user1Uuid'].upcoming && diff.users.ids['user1Uuid'].upcoming[0]).to.equal('xter1Uuid');
+			expect(diff.users.ids['user2Uuid'].upcoming && diff.users.ids['user2Uuid'].upcoming[0]).to.equal('xter2Uuid');
+		});
 	});
 
 	describe('undoGame with rematch = true', () => {
