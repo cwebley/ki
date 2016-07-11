@@ -2,7 +2,7 @@ import log from '../../logger';
 import getTournamentQuery from '../queries/get-tournament';
 import getTournamentUsersQuery from '../queries/get-tournament-users';
 import getTournamentCharactersQuery from '../queries/get-tournament-characters';
-import getDraftCharactersQuery from '../queries/get-draft-characters';
+import getDraftQuery from '../queries/get-draft';
 import getUpcomingQuery from '../queries/get-upcoming';
 import selectTwoRecentGames from '../queries/select-two-recent-games';
 
@@ -100,7 +100,7 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 							}
 							tournament.users.ids[users[1]].upcoming = upcomingResults;
 
-							getDraftCharactersQuery(db, tournament.uuid, users, (err, draftData) => {
+							getDraftQuery(db, tournament.uuid, users, (err, draftData) => {
 								if (err) {
 									return cb(err);
 								}
