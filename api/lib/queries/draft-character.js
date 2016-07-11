@@ -25,19 +25,37 @@ export default function draftCharacterQuery (db, tournamentUuid, character, user
 				return rollback(db, err, cb);
 			}
 
-			const dcSql = `
-				DELETE FROM draft_characters
-				WHERE tournament_uuid = $1
-					AND character_uuid = $2
+			const draftsSql = `
+				INSERT INTO drafts
+					(tournament_uuid, character_uuid, user_uuid, pick)
+				VALUES ($1, $2, $3,
+					(SELECT coalesce(MAX(pick), 0) FROM drafts
+						WHERE tournament_uuid = $4
+					) + 1
+				)
 			`;
-			const dcParams = [tournamentUuid, character.uuid];
-			db.query(dcSql, dcParams, (err, results) => {
+			const draftsParams = [tournamentUuid, character.uuid, userUuid, tournamentUuid];
+
+			db.query(draftsSql, draftsParams, (err, results) => {
 				if (err) {
-					log.error(err, {dcSql, dcParams});
+					log.error(err, {draftsSql, draftsParams});
 					return rollback(db, err, cb);
 				}
-				db.query('COMMIT', () => {
-					return cb(null, results);
+
+				const dcSql = `
+					DELETE FROM draft_characters
+					WHERE tournament_uuid = $1
+						AND character_uuid = $2
+				`;
+				const dcParams = [tournamentUuid, character.uuid];
+				db.query(dcSql, dcParams, (err, results) => {
+					if (err) {
+						log.error(err, {dcSql, dcParams});
+						return rollback(db, err, cb);
+					}
+					db.query('COMMIT', () => {
+						return cb(null, results);
+					});
 				});
 			});
 		});

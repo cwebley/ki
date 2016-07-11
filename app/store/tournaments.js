@@ -184,7 +184,7 @@ const draftCharactersReducer = (state = {}, action) => {
 				...state,
 				// if these already exist, don't mess up the client side sorting.
 				// otherwise use the data from the action.
-				result: state.result ? state.result : action.data.draft.characters.result,
+				result: (state.result && state.result.length === action.data.draft.characters.result.length) ? state.result : action.data.draft.characters.result,
 				ids: state.ids ? state.ids : action.data.draft.characters.ids,
 			};
 		case c.DRAFT_CHARACTER_SUCCESS:
