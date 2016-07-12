@@ -388,6 +388,8 @@ class TournamentLanding extends Component {
 	}
 
 	renderCharacter (character, leftSide) {
+		const { tournament } = this.props;
+
 		let streakText = '';
 		let streakStyle = {};
 		if (character.streak > 0) {
@@ -428,7 +430,7 @@ class TournamentLanding extends Component {
 						<IconButton
 							tooltip="Oddsmaker"
 							tooltipPosition="top-center"
-							disabled={this.props.tournament.users.ids[this.props.tournament.users.result[0]].coins < 3}
+							disabled={!tournament.active || tournament.users.ids[tournament.users.result[0]].coins < 3}
 							onTouchTap={() => this.useOddsmaker(character)}
 						>
 							<IconCasino />
@@ -441,7 +443,7 @@ class TournamentLanding extends Component {
 						<IconButton
 							tooltip="Decrement"
 							tooltipPosition="top-center"
-							disabled={character.value <= 1 || this.props.tournament.users.ids[this.props.tournament.users.result[0]].coins < 1}
+							disabled={!tournament.active || character.value <= 1 || tournament.users.ids[tournament.users.result[0]].coins < 1}
 							onTouchTap={() => this.decrementCharacter(character)}
 						>
 							<IconTrendingDown />
