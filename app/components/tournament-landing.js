@@ -10,6 +10,7 @@ import rematch from '../actions/rematch';
 import oddsmaker from '../actions/oddsmaker';
 import decrementCharacter from '../actions/decrement-character';
 import toggleDraftFilter from '../actions/toggle-draft-filter';
+import undoLastGame from '../actions/undo-last-game';
 
 import { getTournamentFromState, getMe, getFormState } from '../store';
 import * as formActions from '../actions/forms';
@@ -31,6 +32,7 @@ import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import IconFilterList from 'material-ui/svg-icons/content/filter-list';
+import IconUndo from 'material-ui/svg-icons/content/undo';
 import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
 
 const styles = {
@@ -143,8 +145,18 @@ class TournamentLanding extends Component {
 					{this.renderLeftUser()}
 					{this.renderCenter(seedingInProgress, draftInProgress)}
 					{this.renderRightUser(seedingInProgress)}
-					<div>
-						{ this.props.children }
+					<div style={{
+						position: 'absolute',
+						left: 0,
+						bottom: 0
+					}}>
+						<FlatButton
+							label="Dangerous Undo"
+							hoverColor={red500}
+							icon={<IconUndo />}
+							disabled={!this.props.tournament.previous}
+							onTouchTap={() => this.undoLastGame()}
+						/>
 					</div>
 					{this.props.tournament.reasons && this.props.tournament.reasons.length && <Snackbar
 						open={this.props.tournament.reasons.length}
@@ -498,6 +510,10 @@ class TournamentLanding extends Component {
 	decrementCharacter (character) {
 		this.props.decrementCharacter(character, this.props.tournament.slug, this.props.me.token);
 	}
+
+	undoLastGame () {
+		this.props.undoLastGame(this.props.tournament.slug, this.props.me.token);
+	}
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -511,5 +527,6 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
 	fetchTournament, updateSeeds, submitSeeds,
 	draftCharacter, submitGame, ...formActions,
-	rematch, oddsmaker, decrementCharacter, toggleDraftFilter
+	rematch, oddsmaker, decrementCharacter, toggleDraftFilter,
+	undoLastGame
 })(TournamentLanding);

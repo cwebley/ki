@@ -184,3 +184,19 @@ export const decrementCharacter = (character, tournamentSlug, token) => new Prom
 		resolve(body);
 	});
 });
+
+export const undoLastGame = (tournamentSlug, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.singleTournamentPath + '/' + tournamentSlug + '/game',
+		method: 'DELETE',
+		json: {},
+		headers: {
+			Authorization: 'Bearer ' + token
+		}
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});

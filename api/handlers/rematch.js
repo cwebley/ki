@@ -89,7 +89,6 @@ export default function rematchHandler (req, res) {
 					if (err) {
 						return res.status(500).send(r.internal);
 					}
-
 					return res.status(200).send(tournament);
 				});
 			});
