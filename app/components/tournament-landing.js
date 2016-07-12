@@ -284,7 +284,7 @@ class TournamentLanding extends Component {
 					}}>
 						<RaisedButton
 							style={{width: '100%'}}
-							label={leftCharacter.name}
+							label={`(${leftCharacter.value}) ${leftCharacter.name}`}
 							primary
 							onTouchTap={() => this.submitGame(leftUser, leftCharacter, rightUser, rightCharacter)}
 						/>
@@ -296,7 +296,7 @@ class TournamentLanding extends Component {
 					}}>
 						<RaisedButton
 							style={{width: '100%'}}
-							label={rightCharacter.name}
+							label={`(${rightCharacter.value}) ${rightCharacter.name}`}
 							primary
 							onTouchTap={() => this.submitGame(rightUser, rightCharacter, leftUser, leftCharacter)}
 						/>
