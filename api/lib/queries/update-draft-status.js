@@ -62,7 +62,9 @@ export default function updateDraftStatus (db, rConn, tournamentUuid, cb) {
 							// don't change active status of tournament if draft is ongoing
 							return cb(null, {
 								tournamentActive: false,
-								drafting: draftingUuid
+								drafting: draftingUuid,
+								current: user1Count + user2Count,
+								total: tournament.charactersPerUser * 2
 							});
 						}
 
@@ -100,7 +102,9 @@ export default function updateDraftStatus (db, rConn, tournamentUuid, cb) {
 										}
 										return cb(null, {
 											tournamentActive: true,
-											upcoming: upcomingData
+											upcoming: upcomingData,
+											current: user1Count + user2Count,
+											total: tournament.charactersPerUser * 2
 										});
 									});
 								});

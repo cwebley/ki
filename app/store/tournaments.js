@@ -132,14 +132,15 @@ const userCharactersReducer = (state = {}, action) => {
 const userCharacterReducer = (state = {}, action) => {
 	switch (action.type) {
 		case c.DRAFT_CHARACTER_SUCCESS:
+			const { users, ...commonCharacterData } = action.character;
 			return {
-				...action.data.pick,
+				...commonCharacterData,
 				wins: 0,
 				losses: 0,
 				streak: 0,
 				bestStreak: 0,
 				fireWins: 0,
-				...action.character.users[action.userUuid]
+				...users[action.userUuid]
 			};
 		default:
 			return state;
@@ -151,6 +152,7 @@ const draftReducer = (state = {}, action) => {
 		case c.FETCH_TOURNAMENT_SUCCESS:
 			return {
 				...state,
+				...action.data.draft,
 				characters: draftCharactersReducer(state.characters, action)
 			};
 		case c.DRAFT_CHARACTER_SUCCESS:
@@ -158,10 +160,13 @@ const draftReducer = (state = {}, action) => {
 				...state,
 				characters: draftCharactersReducer(state.characters, action),
 				previous: {
-					user: action.userUuid,
+					userUuid: action.userUuid,
+					characterUuid: action.character.uuid,
+					value: action.data.value,
 					pick: action.data.pick
 				},
-				current: action.data.drafting
+				current: action.data.current,
+				total: action.data.total
 			};
 		case c.TOGGLE_DRAFT_FILTER:
 			return {

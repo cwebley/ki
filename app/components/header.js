@@ -28,11 +28,12 @@ class Header extends Component {
 		return (
 			<Toolbar>
 				<ToolbarGroup
-					float="left"
+					style={{
+						float: "left"
+					}}
 				>
 					<FlatButton
 						containerElement={<Link to="/" activeClassName="active-route" />}
-						linkButton={true}
 						label="Home"
 						icon={<HomeIcon />}
 					/>
@@ -46,12 +47,13 @@ class Header extends Component {
 		if (this.props.me && this.props.me.name) {
 			return (
 				<ToolbarGroup
-					float="right"
+					style={{
+						float: "right"
+					}}
 				>
 					<ToolbarTitle text={this.props.me.name} />
 					<RaisedButton
 						label="Create Tournament" primary={true}
-						linkButton={true}
 						containerElement={<Link to="/create" activeClassName="active-route" />}
 					/>
 					<ToolbarSeparator />
@@ -64,16 +66,16 @@ class Header extends Component {
 		}
 		return (
 			<ToolbarGroup
-				float="right"
+				style={{
+					float: "right"
+				}}
 			>
 				<FlatButton
 					containerElement={<Link to="/register" activeClassName="active-route" />}
-					linkButton={true}
 					label="Register"
 				/>
 				<FlatButton
 					containerElement={<Link to="/sign-in" activeClassName="active-route" />}
-					linkButton={true}
 					label="Sign In"
 				/>
 			</ToolbarGroup>

@@ -145,7 +145,7 @@ class TournamentLanding extends Component {
 					{this.renderLeftUser()}
 					{this.renderCenter(seedingInProgress, draftInProgress)}
 					{this.renderRightUser(seedingInProgress)}
-					<div style={{
+					{this.props.tournament.active && <div style={{
 						position: 'absolute',
 						left: 0,
 						bottom: 0
@@ -157,7 +157,7 @@ class TournamentLanding extends Component {
 							disabled={!this.props.tournament.previous}
 							onTouchTap={() => this.undoLastGame()}
 						/>
-					</div>
+					</div>}
 					{this.props.tournament.reasons && this.props.tournament.reasons.length && <Snackbar
 						open={this.props.tournament.reasons.length}
 						message={this.props.tournament.reasons[0].message}
@@ -350,9 +350,17 @@ class TournamentLanding extends Component {
 	renderDraft () {
 		const { tournament } = this.props;
 		const draftCharacters = tournament.draft.characters.result.map(cUuid => tournament.draft.characters.ids[cUuid]);
+		const previousUser = tournament.draft.previous && tournament.users.ids[tournament.draft.previous.userUuid];
+		const previousCharacter = previousUser && previousUser.characters.ids[tournament.draft.previous.characterUuid]
 		return (
 			<div>
 				<h2>Draft it up</h2>
+				<div>{`${tournament.draft.current} / ${tournament.draft.total}`}</div>
+				{previousUser && previousCharacter && <div>
+					<h5>Previous</h5>
+					<div>{previousUser.name}</div>
+					<div>{`(${previousCharacter.value})${previousCharacter.name}`}</div>
+				</div>}
 				<FlatButton
 					label="Toggle Sort"
 					icon={<IconFilterList />}

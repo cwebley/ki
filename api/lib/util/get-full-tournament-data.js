@@ -106,6 +106,16 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 								}
 								tournament.draft = draftData;
 
+								const finalCharacterCount = tournament.charactersPerUser * 2;
+
+								// sum up the total number of characters in the tournament currently
+								const currentCharacterCount = tournament.users.result
+									.map((uUuid => tournament.users.ids[uUuid].characters.result.length))
+									.reduce((previousValue, currentValue) => previousValue + currentValue);
+
+								tournament.draft.current = currentCharacterCount;
+								tournament.draft.total = finalCharacterCount;
+
 								// if user is logged in and in the tournament, make sure they are the first user returned
 								if (opts.userUuid) {
 									const userIndex = tournament.users.result.indexOf(opts.userUuid);
