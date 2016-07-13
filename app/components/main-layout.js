@@ -36,10 +36,14 @@ class MainLayout extends Component {
 	getStyles () {
 		const styles = {
 			content: {
-				margin: spacing.desktopGutter
+				padding: spacing.desktopGutter,
+				overflow: 'auto',
+				position: 'relative'
 			},
 			contentWhenMedium: {
-				margin: `${spacing.desktopGutter * 2}px ${spacing.desktopGutter * 3}px`,
+				padding: `${spacing.desktopGutter * 2}px ${spacing.desktopGutter * 3}px`,
+				overflow: 'auto',
+				position: 'relative'
 			}
 		}
 
