@@ -27,6 +27,8 @@ export const SUBMIT_GAME_FAILURE = 'SUBMIT_GAME_FAILURE';
 export const UNDO_LAST_GAME_SUCCESS = 'UNDO_LAST_GAME_SUCCESS';
 export const UNDO_LAST_GAME_FAILURE = 'UNDO_LAST_GAME_FAILURE';
 
+export const UPDATE_INSPECT_STATE = 'UPDATE_INSPECT_STATE';
+
 // coins
 export const REMATCH_SUCCESS = 'REMATCH_SUCCESS';
 export const REMATCH_FAILURE = 'REMATCH_FAILURE';
@@ -43,7 +45,8 @@ export const LOCAL_STORAGE_PROPERTY = 'ki-state';
 
 
 export const ItemTypes = {
-	DRAG_CHARACTER: 'draggableCharacter'
+	DRAG_CHARACTER: 'draggableCharacter',
+	DRAGGABLE_INSPECT_CHARACTER: 'draggableInspectCharacter'
 };
 
 export const ERROR_RESET_TIME = 3000;

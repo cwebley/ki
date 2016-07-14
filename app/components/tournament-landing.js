@@ -12,6 +12,7 @@ import useInspect from '../actions/use-inspect';
 import decrementCharacter from '../actions/decrement-character';
 import toggleDraftFilter from '../actions/toggle-draft-filter';
 import undoLastGame from '../actions/undo-last-game';
+import updateInspectState from '../actions/update-inspect-state';
 
 import { getTournamentFromState, getMe, getFormState } from '../store';
 import * as formActions from '../actions/forms';
@@ -27,6 +28,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 
 import SeedContainer from './seed-container';
+import InspectContainer from './inspect-container';
 
 import IconButton from 'material-ui/IconButton';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
@@ -81,6 +83,7 @@ class TournamentLanding extends Component {
 	constructor(props) {
 		super(props);
 		this.updateSeeds = this.updateSeeds.bind(this);
+		this.updateInspectState = this.updateInspectState.bind(this);
 	}
 
 	static propTypes = {
@@ -197,6 +200,7 @@ class TournamentLanding extends Component {
 				/>}
 				{draftInProgress && this.renderDraft()}
 				{tournament.active && this.renderTournamentActions()}
+				{tournament.inspect.users && this.renderInspect()}
 			</div>
 		);
 	}
@@ -259,8 +263,8 @@ class TournamentLanding extends Component {
 		const { tournament } = this.props;
 		const leftUser = tournament.users.ids[tournament.users.result[0]];
 		const rightUser = tournament.users.ids[tournament.users.result[1]];
-		const leftCharacter = leftUser.characters.ids[leftUser.upcoming[0]];
-		const rightCharacter = rightUser.characters.ids[rightUser.upcoming[0]];
+		const leftCharacter = leftUser.characters.ids[leftUser.upcoming[0].characterUuid];
+		const rightCharacter = rightUser.characters.ids[rightUser.upcoming[0].characterUuid];
 		let leftPrevious;
 		let	rightPrevious;
 
@@ -371,6 +375,52 @@ class TournamentLanding extends Component {
 					{draftCharacters.map(c => this.renderDraftCharacter(c))}
 				</ol>
 			</div>
+		);
+	}
+
+	renderInspect () {
+		const { tournament } = this.props;
+		const leftUserUuid = tournament.inspect.users.result[0];
+		const rightUserUuid = tournament.inspect.users.result[1];
+		const leftUpcomingCharacters = tournament.inspect.users.ids[leftUserUuid]
+			.map(matchData => Object.assign({}, tournament.users.ids[leftUserUuid].characters.ids[matchData.characterUuid], {matchUuid: matchData.uuid}));
+		const rightUpcomingCharacters = tournament.inspect.users.ids[rightUserUuid]
+			.map(matchData => Object.assign({}, tournament.users.ids[rightUserUuid].characters.ids[matchData.characterUuid], {matchUuid: matchData.uuid}));
+
+		return (
+			<div>
+				<InspectContainer
+					characters={leftUpcomingCharacters}
+					updateInspectState={this.updateInspectState}
+					userUuid={leftUserUuid}
+				/>
+			</div>
+		);
+	}
+
+	renderInspectCharacter () {
+		const valueStyles = {
+			fontSize: '2em',
+			fontWeight: 600,
+			padding: '0 .4em'
+		};
+
+		return (
+			<li
+				key={character.uuid}
+			>
+				<Paper style={{marginBottom: '0.25em'}}>
+					<h4>{character.name}</h4>
+					<IconButton
+						disabled={!this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
+						onTouchTap={() => this.draftCharacter(character, this.props.me.uuid)}
+					>
+					</IconButton>
+					<div style={{...valueStyles, float: 'left'}}>
+						{character.users[this.props.tournament.users.result[0]].value}
+					</div>
+				</Paper>
+			</li>
 		);
 	}
 
@@ -486,6 +536,10 @@ class TournamentLanding extends Component {
 		this.props.updateSeeds(this.props.tournament.slug, data)
 	}
 
+	updateInspectState (data) {
+		this.props.updateInspectState(this.props.tournament.slug, data.userUuid, data.state);
+	}
+
 	draftCharacter (character, myUuid) {
 		this.props.draftCharacter(this.props.tournament.slug, character, myUuid, this.props.me.token);
 	}
@@ -542,5 +596,5 @@ export default connect(mapStateToProps, {
 	draftCharacter, submitGame, ...formActions,
 	rematch, oddsmaker, useInspect,
 	decrementCharacter, toggleDraftFilter,
-	undoLastGame
+	undoLastGame, updateInspectState
 })(TournamentLanding);

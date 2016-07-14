@@ -18,14 +18,13 @@ export default function decrementInpsect (rConn, opts, cb) {
 			});
 		}
 
-		const userInspect = inspect(opts.tournamentUuid, inspectUuid);
+		const userInspectKey = userInspect(opts.tournamentUuid, inspectUuid);
 
-		rConn.decr(userInspect, (err, gamesRemaining) => {
+		rConn.decr(userInspectKey, (err, gamesRemaining) => {
 			if (err) {
 				log.error({ userInspect });
 				return cb(err);
 			}
-
 			if (parseInt(gamesRemaining, 10) >= 0) {
 				return getInspect(rConn, opts, cb);
 			}

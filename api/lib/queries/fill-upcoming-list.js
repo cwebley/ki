@@ -3,6 +3,7 @@ import config from '../../config';
 import { upcomingList, previousList } from '../util/redis-keys';
 import range from 'lodash.range';
 import async from 'neo-async';
+import generateUpcomingCharacter from '../util/generate-upcoming-character';
 
 export default function fillUpcomingListQuery (rConn, tournamentState, cb) {
 	let calls = [];
@@ -58,9 +59,7 @@ const popPushAndFill = (rConn, tournamentState, uUuid) => done => {
 				}
 
 				const availableCharUuids = tournamentState.users.ids[uUuid].characters.result;
-				const randomCharactersToFill = range(0, slotsToFill).map(() => {
-					return availableCharUuids[Math.floor(Math.random() * availableCharUuids.length)];
-				});
+				const randomCharactersToFill = range(0, slotsToFill).map(() => generateUpcomingCharacter(availableCharUuids));
 
 				rConn.rpush(upcomingKey, ...randomCharactersToFill, (err, success) => {
 					if (err) {

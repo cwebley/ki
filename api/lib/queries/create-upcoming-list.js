@@ -2,6 +2,7 @@ import log from '../../logger';
 import config from '../../config';
 import { upcomingList } from '../util/redis-keys';
 import range from 'lodash.range';
+import generateUpcomingCharacter from '../util/generate-upcoming-character';
 
 // needs opts.uuid (tournamentUuid)
 // opts.user.uuid, opts.user.characters (array),
@@ -9,9 +10,7 @@ import range from 'lodash.range';
 export default function createUpcomingListQuery (rConn, opts, cb) {
 
 	// assemble the the user data
-	const randomUserCharacters = range(0, config.defaults.upcomingListLength).map(() => {
-		return opts.user.characters[Math.floor(Math.random() * opts.user.characters.length)];
-	});
+	const randomUserCharacters = range(0, config.defaults.upcomingListLength).map(() => generateUpcomingCharacter(opts.user.characters));
 	const userKey = upcomingList(opts.uuid, opts.user.uuid);
 
 	// push the user data
@@ -29,12 +28,10 @@ export default function createUpcomingListQuery (rConn, opts, cb) {
 		});
 
 		// assemble the opponent data
-		const randomOpponentCharacters = range(0, config.defaults.upcomingListLength).map(() => {
-			return opts.opponent.characters[Math.floor(Math.random() * opts.opponent.characters.length)];
-		});
+		const randomOpponentCharacters = range(0, config.defaults.upcomingListLength).map(() => generateUpcomingCharacter(opts.opponent.characters));
 		const opponentKey = upcomingList(opts.uuid, opts.opponent.uuid);
 
-		// push the opponent data
+		// push the opponent datar
 		rConn.rpush(opponentKey, ...randomOpponentCharacters, (err, results) => {
 			if (err) {
 				log.error(err, {

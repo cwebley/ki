@@ -3,7 +3,7 @@ import r from '../reasons';
 import config from '../config';
 
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
-import useInpsectQuery from '../lib/queries/use-inspect';
+import useInspectQuery from '../lib/queries/use-inspect';
 
 export default function useInpsectHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -27,7 +27,7 @@ export default function useInpsectHandler (req, res) {
 			return res.status(400).send(r.notEnoughCoins);
 		}
 
-		useInpsectQuery(req.db, req.redis, {
+		useInspectQuery(req.db, req.redis, {
 			tournamentUuid: tournament.uuid,
 			userUuid: req.user.uuid,
 			opponentUuid: tournament.users.result[1],

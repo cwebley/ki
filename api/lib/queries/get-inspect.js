@@ -45,14 +45,14 @@ export default function getInspect (rConn, opts, cb) {
 				}
 
 			// user is inspecting with games remaining
-			rConn.lrange(userUpcomingKey, 1, parseInt(gamesRemaining, 10) + 1, (err, userUpcoming) => {
+			rConn.lrange(userUpcomingKey, 1, parseInt(gamesRemaining, 10), (err, userUpcoming) => {
 				if (err) {
 					log.error(err, {
-						userUpcomingKey
+						key: userUpcomingKey
 					});
 				}
 
-				rConn.lrange(userUpcomingKey, 1, parseInt(gamesRemaining, 10) + 1, (err, opponentUpcoming) => {
+				rConn.lrange(userUpcomingKey, 1, parseInt(gamesRemaining, 10), (err, opponentUpcoming) => {
 					if (err) {
 						log.error(err, {
 							opponentUpcomingKey
@@ -64,8 +64,8 @@ export default function getInspect (rConn, opts, cb) {
 						remaining: parseInt(gamesRemaining, 10),
 						users: {
 							ids: {
-								[opts.userUuid]: userUpcoming,
-								[opts.opponentUuid]: opponentUpcoming
+								[opts.userUuid]: userUpcoming.map(r => JSON.parse(r)),
+								[opts.opponentUuid]: opponentUpcoming.map(r => JSON.parse(r))
 							},
 							result: [opts.userUuid, opts.opponentUuid]
 						}

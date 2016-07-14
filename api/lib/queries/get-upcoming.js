@@ -14,6 +14,6 @@ export default function getUpcoming (rConn, opts, cb) {
 				key: key
 			});
 		}
-		return cb(err, results);
+		return cb(err, results.map(r => JSON.parse(r)));
 	});
 }
