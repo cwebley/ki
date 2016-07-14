@@ -361,6 +361,21 @@ r.MissingMatchups = {
 	level: 'error',
 	id: 'missingMatchups'
 };
+r.UnauthorizedInspect = {
+	message: 'Unauthorized inspect request. You are not inspecting.',
+	level: 'error',
+	id: 'unauthorizedInspect'
+};
+r.InvalidMatchupUser = {
+	message: 'One or more submitted userslugs are invalid',
+	level: 'error',
+	id: 'invalidMatchupUser'
+};
+r.InvalidMatchups = {
+	message: 'Something is wrong with the submitted matchups',
+	level: 'error',
+	id: 'invalidMatchups'
+};
 
 
 r.Internal = {

@@ -1,7 +1,6 @@
 import log from '../../logger';
 import config from '../../config';
 import { upcomingList, previousList } from '../util/redis-keys';
-import range from 'lodash.range';
 import async from 'neo-async';
 
 export default function undoUpcomingQuery (rConn, tournamentState, cb) {
