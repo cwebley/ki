@@ -350,6 +350,17 @@ r.CharacterValueAtOne = {
 	level: 'error',
 	id: 'characterValueAtOne'
 };
+r.InspectNotAvailable = {
+	message: 'Inspect power not available',
+	level: 'error',
+	id: 'inpsectNotAvailable'
+};
+r.MissingMatchups = {
+	message: 'Missing matchups field',
+	field: 'matchups',
+	level: 'error',
+	id: 'missingMatchups'
+};
 
 
 r.Internal = {

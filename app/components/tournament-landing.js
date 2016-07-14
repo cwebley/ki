@@ -8,6 +8,7 @@ import draftCharacter from '../actions/draft-character';
 import submitGame from '../actions/submit-game';
 import rematch from '../actions/rematch';
 import oddsmaker from '../actions/oddsmaker';
+import useInspect from '../actions/use-inspect';
 import decrementCharacter from '../actions/decrement-character';
 import toggleDraftFilter from '../actions/toggle-draft-filter';
 import undoLastGame from '../actions/undo-last-game';
@@ -338,8 +339,8 @@ class TournamentLanding extends Component {
 							style={{width: '100%'}}
 							label="Inspect"
 							secondary
-							onTouchTap={() => {}}
-							disabled
+							onTouchTap={() => this.useInspect()}
+							disabled={leftUser.coins < 3 || !tournament.inspect.available}
 						/>
 					</div>
 				</div>
@@ -522,6 +523,10 @@ class TournamentLanding extends Component {
 	undoLastGame () {
 		this.props.undoLastGame(this.props.tournament.slug, this.props.me.token);
 	}
+
+	useInspect () {
+		this.props.useInspect(this.props.tournament.slug, this.props.me.token);
+	}
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -535,6 +540,7 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
 	fetchTournament, updateSeeds, submitSeeds,
 	draftCharacter, submitGame, ...formActions,
-	rematch, oddsmaker, decrementCharacter, toggleDraftFilter,
+	rematch, oddsmaker, useInspect,
+	decrementCharacter, toggleDraftFilter,
 	undoLastGame
 })(TournamentLanding);

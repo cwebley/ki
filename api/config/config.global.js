@@ -19,12 +19,13 @@ var config = {
 		goal: 100,
 		upcomingListLength: 50,
 		oddsmakerLength: 15,
-		oddsmakerValue: 3.1
+		oddsmakerValue: 3.1,
+		inspectLength: 7
 	},
 	cost: {
 		rematch: 3,
 		oddsmaker: 3,
-		inspect: 3,
+		inspect: 2,
 		decrement: 1
 	}
 };

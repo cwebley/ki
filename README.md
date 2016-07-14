@@ -14,12 +14,8 @@ Sort seeds by how you seeded them last time against this opponent if possible
 Show W-L record of each character last time you faced them
 
 ---Draft Page---
-draft needs to say how many picks left and maybe even who the next pick belongs to
-show previous pick. maybe with a flash or something?
 
 --Tournament Landing---
-undo button
-show value in the matchup button. Also heating/fire icons or something
 better indicator on player card of heating/fire
 material-ui determinate progress bar for user scores
 crown icon denoting previous champion in a current player matchup

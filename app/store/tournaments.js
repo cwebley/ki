@@ -28,6 +28,7 @@ const tournamentReducer = (state = {}, action) => {
 	case c.REMATCH_SUCCESS:
 	case c.ODDSMAKER_SUCCESS:
 	case c.DECREMENT_SUCCESS:
+	case c.UNDO_LAST_GAME_SUCCESS:
 		return {
 			...state,
 			// reasons should always get initialized to at least an empty array
@@ -37,6 +38,8 @@ const tournamentReducer = (state = {}, action) => {
 	case c.DECREMENT_FAILURE:
 	case c.DRAFT_CHARACTER_FAILURE:
 	case c.ODDSMAKER_FAILURE:
+	case c.UNDO_LAST_GAME_FAILURE:
+	case c.USE_INSPECT_FAILURE:
 	case c.REMATCH_FAILURE:
 	case c.SUBMIT_GAME_FAILURE:
 	case c.SUBMIT_SEEDS_FAILURE:
@@ -48,6 +51,12 @@ const tournamentReducer = (state = {}, action) => {
 		return {
 			...state,
 			reasons: tournamentReasonsReducer(state.reasons, action)
+		};
+	case c.USE_INSPECT_SUCCESS:
+		return {
+			...state,
+			reasons: tournamentReasonsReducer(state.reasons, action),
+			inspect: inspectReducer(state.inspect, action)
 		};
 	case c.UPDATE_SEEDS:
 		return {
@@ -69,6 +78,15 @@ const tournamentReducer = (state = {}, action) => {
 		};
 	default:
 		return state;
+	}
+}
+
+const inspectReducer = (state = {}, action) => {
+	switch (action.type) {
+		case c.USE_INSPECT_SUCCESS:
+			return action.data;
+		default:
+			return state;
 	}
 }
 

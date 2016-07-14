@@ -7,6 +7,7 @@ import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import submitGameQuery from '../lib/queries/submit-game';
 import fillUpcomingListQuery from '../lib/queries/fill-upcoming-list';
 import selectMostRecentGame from '../lib/queries/select-most-recent-game';
+import decrementInspect from '../lib/queries/decrement-inspect';
 
 export default function submitGameHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -149,39 +150,46 @@ export default function submitGameHandler (req, res) {
 					return res.status(500).send(r.internal);
 				}
 
-				// merge old state and diff
-				Object.keys(diff).forEach(tournamentKey => {
-					if (tournamentKey === 'users') {
-						diff[tournamentKey].result.forEach(uUuid => {
-							Object.keys(diff[tournamentKey].ids[uUuid]).forEach(userKey => {
-								if (userKey === 'characters') {
-									diff[tournamentKey].ids[uUuid][userKey].result.forEach(cUuid => {
-										Object.keys(diff[tournamentKey].ids[uUuid][userKey].ids[cUuid]).forEach(characterKey => {
-											tournament[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey] = diff[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey];
-										});
-									});
-									// characters.result is an array of cUuids ordered by streak. that data was returned from submitGameQuery
-									tournament[tournamentKey].ids[uUuid][userKey].result = updatedCharacterStreaks[uUuid];
-									return;
-								}
-								tournament[tournamentKey].ids[uUuid][userKey] = diff[tournamentKey].ids[uUuid][userKey];
-							});
-						});
-						return;
-					}
-					tournament[tournamentKey] = diff[tournamentKey];
-				});
-
-				// the first matchup was this one. return the next matchup.
-				tournament.users.result.forEach(uUuid => {
-					tournament.users.ids[uUuid].upcoming = tournament.users.ids[uUuid].upcoming.slice(1, 2);
-				});
-
-				fillUpcomingListQuery(req.redis, tournament, (err, results) => {
+				decrementInspect(req.redis, tournament.uuid, (err, updatedInspect) => {
 					if (err) {
-						return res.status(500).send(r.internal);
+						return res.status(500).send(r.interal);
 					}
-					return res.status(201).send(tournament);
+					tournament.inspect = updatedInspect;
+
+					// merge old state and diff
+					Object.keys(diff).forEach(tournamentKey => {
+						if (tournamentKey === 'users') {
+							diff[tournamentKey].result.forEach(uUuid => {
+								Object.keys(diff[tournamentKey].ids[uUuid]).forEach(userKey => {
+									if (userKey === 'characters') {
+										diff[tournamentKey].ids[uUuid][userKey].result.forEach(cUuid => {
+											Object.keys(diff[tournamentKey].ids[uUuid][userKey].ids[cUuid]).forEach(characterKey => {
+												tournament[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey] = diff[tournamentKey].ids[uUuid][userKey].ids[cUuid][characterKey];
+											});
+										});
+										// characters.result is an array of cUuids ordered by streak. that data was returned from submitGameQuery
+										tournament[tournamentKey].ids[uUuid][userKey].result = updatedCharacterStreaks[uUuid];
+										return;
+									}
+									tournament[tournamentKey].ids[uUuid][userKey] = diff[tournamentKey].ids[uUuid][userKey];
+								});
+							});
+							return;
+						}
+						tournament[tournamentKey] = diff[tournamentKey];
+					});
+
+					// the first matchup was this one. return the next matchup.
+					tournament.users.result.forEach(uUuid => {
+						tournament.users.ids[uUuid].upcoming = tournament.users.ids[uUuid].upcoming.slice(1, 2);
+					});
+
+					fillUpcomingListQuery(req.redis, tournament, (err, results) => {
+						if (err) {
+							return res.status(500).send(r.internal);
+						}
+						return res.status(201).send(tournament);
+					});
 				});
 			});
 		});

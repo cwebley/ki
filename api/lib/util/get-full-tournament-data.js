@@ -4,6 +4,7 @@ import getTournamentUsersQuery from '../queries/get-tournament-users';
 import getTournamentCharactersQuery from '../queries/get-tournament-characters';
 import getDraftQuery from '../queries/get-draft';
 import getUpcomingQuery from '../queries/get-upcoming';
+import getInspect from '../queries/get-inspect';
 import selectTwoRecentGames from '../queries/select-two-recent-games';
 
 export default function getFullTournamentData (db, rConn, opts, cb) {
@@ -118,65 +119,77 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 
 								// if user is logged in and in the tournament, make sure they are the first user returned
 								if (opts.userUuid) {
-									const userIndex = tournament.users.result.indexOf(opts.userUuid);
-									if (userIndex === 1) {
+									if (tournament.users.result.indexOf(opts.userUuid) === 1) {
 										// logged in user in the second position, reverse the order
 										tournament.users.result.reverse();
 									}
 								}
 
-								selectTwoRecentGames(db, tournament.uuid, (err, gameResults) => {
+								getInspect(rConn, {
+									tournamentUuid: tournament.uuid,
+									userUuid: tournament.users.result[0],
+									opponentUuid: tournament.users.result[1]
+								}, (err, inspectResults) => {
 									if (err) {
 										return cb(err);
 									}
-									if (!gameResults || !gameResults.length) {
-										return cb(null, tournament);
-									}
-									let rematchAvailable = true;
-									gameResults.forEach(g => {
-										if (g.rematched) {
-											rematchAvailable = false;
-										}
-									});
-									tournament.rematchAvailable = rematchAvailable;
-									const previousGameWinnerData = {
-										uuid: gameResults[0].winning_player_uuid,
-										characterUuid: gameResults[0].winning_character_uuid,
-										value: gameResults[0].value,
-										streak: gameResults[0].winning_player_previous_streak,
-										characterStreak: gameResults[0].winning_character_previous_streak,
-										globalStreak: gameResults[0].winning_player_previous_global_streak,
-										characterGlobalStreak: gameResults[0].winning_character_previous_global_streak
-									};
-									const previousGameLoserData = {
-										uuid: gameResults[0].losing_player_uuid,
-										characterUuid: gameResults[0].losing_character_uuid,
-										value: gameResults[0].losing_character_previous_value,
-										streak: gameResults[0].losing_player_previous_streak,
-										characterStreak: gameResults[0].losing_character_previous_streak,
-										globalStreak: gameResults[0].losing_player_previous_global_streak,
-										characterGlobalStreak: gameResults[0].losing_character_previous_global_streak
-									};
-									if (tournament.users.result[0] === gameResults[0].winning_player_uuid) {
-										tournament.users.ids[tournament.users.result[0]].previous = previousGameWinnerData;
-										tournament.users.ids[tournament.users.result[1]].previous = previousGameLoserData;
-									}
-									else {
-										tournament.users.ids[tournament.users.result[0]].previous = previousGameLoserData;
-										tournament.users.ids[tournament.users.result[1]].previous = previousGameWinnerData;
-									}
+									tournament.inspect = inspectResults;
 
-									tournament.previous = {
-										ids: {
-											[gameResults[0].winning_player_uuid]: previousGameWinnerData,
-											[gameResults[0].losing_player_uuid]: previousGameLoserData
-										},
-										// [winner, loser]
-										result: [gameResults[0].winning_player_uuid, gameResults[0].losing_player_uuid],
-										uuid: gameResults[0].uuid,
-										supreme: gameResults[0].supreme
-									}
-									return cb(null, tournament);
+									selectTwoRecentGames(db, tournament.uuid, (err, gameResults) => {
+										if (err) {
+											return cb(err);
+										}
+										if (!gameResults || !gameResults.length) {
+											return cb(null, tournament);
+										}
+
+										let rematchAvailable = true;
+										gameResults.forEach(g => {
+											if (g.rematched) {
+												rematchAvailable = false;
+											}
+										});
+										tournament.rematchAvailable = rematchAvailable;
+
+										const previousGameWinnerData = {
+											uuid: gameResults[0].winning_player_uuid,
+											characterUuid: gameResults[0].winning_character_uuid,
+											value: gameResults[0].value,
+											streak: gameResults[0].winning_player_previous_streak,
+											characterStreak: gameResults[0].winning_character_previous_streak,
+											globalStreak: gameResults[0].winning_player_previous_global_streak,
+											characterGlobalStreak: gameResults[0].winning_character_previous_global_streak
+										};
+										const previousGameLoserData = {
+											uuid: gameResults[0].losing_player_uuid,
+											characterUuid: gameResults[0].losing_character_uuid,
+											value: gameResults[0].losing_character_previous_value,
+											streak: gameResults[0].losing_player_previous_streak,
+											characterStreak: gameResults[0].losing_character_previous_streak,
+											globalStreak: gameResults[0].losing_player_previous_global_streak,
+											characterGlobalStreak: gameResults[0].losing_character_previous_global_streak
+										};
+										if (tournament.users.result[0] === gameResults[0].winning_player_uuid) {
+											tournament.users.ids[tournament.users.result[0]].previous = previousGameWinnerData;
+											tournament.users.ids[tournament.users.result[1]].previous = previousGameLoserData;
+										}
+										else {
+											tournament.users.ids[tournament.users.result[0]].previous = previousGameLoserData;
+											tournament.users.ids[tournament.users.result[1]].previous = previousGameWinnerData;
+										}
+
+										tournament.previous = {
+											ids: {
+												[gameResults[0].winning_player_uuid]: previousGameWinnerData,
+												[gameResults[0].losing_player_uuid]: previousGameLoserData
+											},
+											// [winner, loser]
+											result: [gameResults[0].winning_player_uuid, gameResults[0].losing_player_uuid],
+											uuid: gameResults[0].uuid,
+											supreme: gameResults[0].supreme
+										}
+										return cb(null, tournament);
+									});
 								});
 							});
 						});

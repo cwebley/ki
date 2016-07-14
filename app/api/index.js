@@ -200,3 +200,19 @@ export const undoLastGame = (tournamentSlug, token) => new Promise((resolve, rej
 		resolve(body);
 	});
 });
+
+export const useInspect = (tournamentSlug, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/inspect',
+		method: 'POST',
+		json: {},
+		headers: {
+			Authorization: 'Bearer ' + token
+		}
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});

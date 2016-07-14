@@ -141,47 +141,6 @@ CREATE TABLE IF NOT EXISTS inspect_games (
 	time timestamp DEFAULT now(),
 	PRIMARY KEY (game_uuid)
 );
--- CREATE TABLE IF NOT EXISTS tournament_coins (
--- 	tournament_uuid char(36) NOT NULL REFERENCES tournaments (uuid),
--- 	user_uuid char(36) NOT NULL REFERENCES users (uuid),
--- 	stock integer NOT NULL DEFAULT 0,
--- 	PRIMARY KEY (tournament_uuid, user_uuid)
--- );
---
--- CREATE TABLE IF NOT EXISTS events (
--- 	id serial NOT NULL PRIMARY KEY,
--- 	description varchar(255) NOT NULL
--- );
---
--- INSERT INTO events (description) VALUES
--- 	('seeding'),
--- 	('game'),
--- 	('fire'),
--- 	('friendlyFire'),
--- 	('ice'),
--- 	('friendlyIce'),
--- 	('power-reseed'),
--- 	('power-deduct-points'),
--- 	('power-deduct-exipres'),
--- 	('power-oddsMaker'),
--- 	('power-inspect'),
--- 	('power-stock-init'),
--- 	('power-stock-incr'),
--- 	('power-rematch'),
--- 	('streak-points-incr'),
--- 	('streak-points-adjust-opponent'),
--- 	('character-adjustment');
---
--- CREATE TABLE IF NOT EXISTS history (
--- 	id serial NOT NULL PRIMARY KEY,
--- 	tournamentId integer NOT NULL REFERENCES tournaments (id),
--- 	userId integer NOT NULL REFERENCES users (id),
--- 	characterId integer NOT NULL REFERENCES characters (id),
--- 	eventId integer NOT NULL REFERENCES events (id),
--- 	value integer DEFAULT 0,
--- 	delta integer DEFAULT 0,
--- 	time timestamp DEFAULT now()
--- );
 
 CREATE USER ki WITH PASSWORD '123456789FOOBARBAZ';
 GRANT ALL PRIVILEGES ON DATABASE ki TO ki;
