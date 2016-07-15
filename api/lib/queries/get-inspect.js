@@ -25,24 +25,24 @@ export default function getInspect (rConn, opts, cb) {
 			}
 
 			// opponent is using inspect, but there are 0 games left so it is available for the user.
-				if (inspectUuid !== opts.userUuid) {
-					if (parseInt(gamesRemaining, 10) === 0) {
-						return cb(null, {
-							available: true,
-							remaining: 0
-						});
-					}
+			if (inspectUuid !== opts.userUuid) {
+				if (parseInt(gamesRemaining, 10) === 0) {
 					return cb(null, {
-						available: false,
-						remaining: parseInt(gamesRemaining, 10)
-					});
-				}
-				if (inspectUuid === opts.userUuid && parseInt(gamesRemaining, 10) === 0) {
-					return cb(null, {
-						available: false,
+						available: true,
 						remaining: 0
 					});
 				}
+				return cb(null, {
+					available: false,
+					remaining: parseInt(gamesRemaining, 10)
+				});
+			}
+			if (inspectUuid === opts.userUuid && parseInt(gamesRemaining, 10) === 0) {
+				return cb(null, {
+					available: false,
+					remaining: 0
+				});
+			}
 
 			// user is inspecting with games remaining
 			rConn.lrange(userUpcomingKey, 1, parseInt(gamesRemaining, 10), (err, userUpcoming) => {
@@ -52,7 +52,7 @@ export default function getInspect (rConn, opts, cb) {
 					});
 				}
 
-				rConn.lrange(userUpcomingKey, 1, parseInt(gamesRemaining, 10), (err, opponentUpcoming) => {
+				rConn.lrange(opponentUpcomingKey, 1, parseInt(gamesRemaining, 10), (err, opponentUpcoming) => {
 					if (err) {
 						log.error(err, {
 							opponentUpcomingKey

@@ -384,43 +384,33 @@ class TournamentLanding extends Component {
 		const rightUserUuid = tournament.inspect.users.result[1];
 		const leftUpcomingCharacters = tournament.inspect.users.ids[leftUserUuid]
 			.map(matchData => Object.assign({}, tournament.users.ids[leftUserUuid].characters.ids[matchData.characterUuid], {matchUuid: matchData.uuid}));
+
 		const rightUpcomingCharacters = tournament.inspect.users.ids[rightUserUuid]
 			.map(matchData => Object.assign({}, tournament.users.ids[rightUserUuid].characters.ids[matchData.characterUuid], {matchUuid: matchData.uuid}));
 
 		return (
 			<div>
-				<InspectContainer
-					characters={leftUpcomingCharacters}
-					updateInspectState={this.updateInspectState}
-					userUuid={leftUserUuid}
-				/>
+				<div style={{
+					width: '50%',
+					float: 'left'
+				}}>
+					<InspectContainer
+						characters={leftUpcomingCharacters}
+						updateInspectState={this.updateInspectState}
+						userUuid={leftUserUuid}
+					/>
+				</div>
+				<div style={{
+					width: '50%',
+					float: 'right'
+				}}>
+					<InspectContainer
+						characters={rightUpcomingCharacters}
+						updateInspectState={this.updateInspectState}
+						userUuid={rightUserUuid}
+					/>
+				</div>
 			</div>
-		);
-	}
-
-	renderInspectCharacter () {
-		const valueStyles = {
-			fontSize: '2em',
-			fontWeight: 600,
-			padding: '0 .4em'
-		};
-
-		return (
-			<li
-				key={character.uuid}
-			>
-				<Paper style={{marginBottom: '0.25em'}}>
-					<h4>{character.name}</h4>
-					<IconButton
-						disabled={!this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
-						onTouchTap={() => this.draftCharacter(character, this.props.me.uuid)}
-					>
-					</IconButton>
-					<div style={{...valueStyles, float: 'left'}}>
-						{character.users[this.props.tournament.users.result[0]].value}
-					</div>
-				</Paper>
-			</li>
 		);
 	}
 
