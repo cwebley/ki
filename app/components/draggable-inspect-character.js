@@ -5,11 +5,9 @@ import flow from 'lodash.flow';
 
 import Paper from 'material-ui/Paper';
 
-class DraggableCharacter extends Component {
+class DraggableInspectCharacter extends Component {
 	constructor(props) {
 		super(props);
-		this.moveCharacter = this.moveCharacter.bind(this);
-
 		this.state = {
 			characters: this.props.characters,
 			dragActive: false
@@ -50,21 +48,6 @@ class DraggableCharacter extends Component {
 		}
 		return styles;
 	}
-
-	moveCharacter (id, hoverId) {
-		const { characters } = this.state;
-		const character = characters.filter(c => c.id === id)[0];
-		const hoverCharacter = characters.filter(c => c.id === hoverId)[0];
-		const characterIndex = characters.indexOf(character);
-		const hoverIndex = characters.indexOf(hoverCharacter);
-
-		const stateWithCharacterSpliced = [...this.state.characters.slice(0, characterIndex), ...this.state.characters.slice(characterIndex + 1)];
-		const stateWithCharacterMoved = [...stateWithCharacterSpliced.slice(0, hoverIndex), character, ...stateWithCharacterSpliced.slice(hoverIndex)];
-
-		this.setState({
-			characters: stateWithCharacterMoved
-		});
-	}
 }
 
 const characterSource = {
@@ -96,4 +79,4 @@ const collect = (connect) => ({
 export default flow(
 	DragSource(ItemTypes.DRAGGABLE_INSPECT_CHARACTER, characterSource, connect),
 	DropTarget(ItemTypes.DRAGGABLE_INSPECT_CHARACTER, characterTarget, collect)
-)(DraggableCharacter)
+)(DraggableInspectCharacter)

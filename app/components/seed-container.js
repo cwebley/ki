@@ -3,7 +3,6 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import DraggableCharacter from './draggable-character';
 
-
 class SeedContainer extends Component {
 	constructor(props) {
 		super(props);
@@ -44,7 +43,7 @@ class SeedContainer extends Component {
 		const characterIndex = characters.indexOf(character);
 		const hoverIndex = characters.indexOf(hoverCharacter);
 
-		const stateWithCharacterSpliced = [...this.props.characters.slice(0, characterIndex), ...this.props.characters.slice(characterIndex + 1)];
+		const stateWithCharacterSpliced = [...characters.slice(0, characterIndex), ...characters.slice(characterIndex + 1)];
 		const stateWithCharacterMoved = [...stateWithCharacterSpliced.slice(0, hoverIndex), character, ...stateWithCharacterSpliced.slice(hoverIndex)];
 
 		this.props.updateSeeds(stateWithCharacterMoved);

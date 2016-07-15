@@ -76,6 +76,11 @@ const tournamentReducer = (state = {}, action) => {
 			...state,
 			draft: draftReducer(state.draft, action)
 		};
+	case c.UPDATE_INSPECT_STATE:
+		return {
+			...state,
+			inspect: inspectReducer(state.inspect, action)
+		};
 	default:
 		return state;
 	}
@@ -85,6 +90,10 @@ const inspectReducer = (state = {}, action) => {
 	switch (action.type) {
 		case c.USE_INSPECT_SUCCESS:
 			return action.data;
+		case c.UPDATE_INSPECT_STATE:
+			return {
+				...state
+			};
 		default:
 			return state;
 	}

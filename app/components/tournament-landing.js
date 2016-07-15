@@ -400,7 +400,7 @@ class TournamentLanding extends Component {
 						userUuid={leftUserUuid}
 					/>
 				</div>
-				<div style={{
+				{/*<div style={{
 					width: '50%',
 					float: 'right'
 				}}>
@@ -409,7 +409,7 @@ class TournamentLanding extends Component {
 						updateInspectState={this.updateInspectState}
 						userUuid={rightUserUuid}
 					/>
-				</div>
+				</div>*/}
 			</div>
 		);
 	}
