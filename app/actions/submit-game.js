@@ -14,7 +14,7 @@ const submitGame = opts => dispatch =>
 				})
 			},
 			error => {
-				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
+				clearTournamentReasonsHelper(dispatch, opts.tournamentSlug, error.reasons);
 
 				return dispatch({
 					type: c.SUBMIT_GAME_FAILURE,

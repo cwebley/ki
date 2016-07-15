@@ -394,7 +394,7 @@ r.NotFound = {
 	id: 'resourceNotFound'
 };
 r.Unauthorized = {
-	message: 'User unauthorized',
+	message: 'You are unauthorized to perform this action',
 	level: 'error',
 	id: 'unauthorized'
 };

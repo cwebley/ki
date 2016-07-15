@@ -5,6 +5,9 @@ the tournament of champions.
 1v1 full cast killer instinct 3 tournament app.
 complete work in progress. master branch generally stable.
 
+-----------------random bugs------------
+POP_TOURNAMENT_REASON leaves a 0 at the bottom of rematch after unauthorized game submission and maybe everything.
+
 ---Tournament Creator Page---
 charactersPerUser field in tournament no default bug fix
 review form data before submission
