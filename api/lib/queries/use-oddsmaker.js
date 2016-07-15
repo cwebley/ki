@@ -18,10 +18,14 @@ export default function oddsmakerQuery (db, rConn, opts, cb) {
 				// don't odds the first character
 				return characterObjectString;
 			}
-			return Math.floor(Math.random() * opts.oddsmakerLength / opts.oddsmakerValue) === 0 ? generateUpcomingCharacter(opts.characterUuid) : characterObjectString
+			if (Math.floor(Math.random() * opts.oddsmakerLength / opts.oddsmakerValue) === 0) {
+				const matchup = generateUpcomingCharacter(opts.characterUuid);
+				return matchup;
+			}
+			return characterObjectString;
 		});
 
-		rConn.ltrim(upcomingKey, oddsmaker.length, -1, (err, trimResult) => {
+		rConn.ltrim(upcomingKey, opts.oddsmakerLength, -1, (err, trimResult) => {
 			if (err) {
 				return log.error(err, { upcomingKey });
 				return cb(err);
