@@ -8,12 +8,6 @@ import Paper from 'material-ui/Paper';
 class DraggableCharacter extends Component {
 	constructor(props) {
 		super(props);
-		this.moveCharacter = this.moveCharacter.bind(this);
-
-		this.state = {
-			characters: this.props.characters,
-			dragActive: false
-		}
 	}
 
 	static propTypes = {
@@ -54,24 +48,9 @@ class DraggableCharacter extends Component {
 		}
 		return styles;
 	}
-
-	moveCharacter (id, hoverId) {
-		const { characters } = this.state;
-		const character = characters.filter(c => c.id === id)[0];
-		const hoverCharacter = characters.filter(c => c.id === hoverId)[0];
-		const characterIndex = characters.indexOf(character);
-		const hoverIndex = characters.indexOf(hoverCharacter);
-
-		const stateWithCharacterSpliced = [...this.state.characters.slice(0, characterIndex), ...this.state.characters.slice(characterIndex + 1)];
-		const stateWithCharacterMoved = [...stateWithCharacterSpliced.slice(0, hoverIndex), character, ...stateWithCharacterSpliced.slice(hoverIndex)];
-
-		this.setState({
-			characters: stateWithCharacterMoved
-		});
-	}
 }
 
-const characterSource = {
+const dragSource = {
 	beginDrag (props) {
 		return {
 			id: props.id
@@ -79,10 +58,10 @@ const characterSource = {
 	}
 }
 
-const characterTarget = {
+const dragTarget = {
 	hover (props, monitor) {
 		const draggedId = monitor.getItem().id;
-		if(draggedId !== props.id){
+		if (draggedId !== props.id) {
 			props.moveCharacter(draggedId, props.id);
 		}
 	}
@@ -98,6 +77,6 @@ const collect = (connect) => ({
 });
 
 export default flow(
-	DragSource(ItemTypes.DRAG_CHARACTER, characterSource, connect),
-	DropTarget(ItemTypes.DRAG_CHARACTER, characterTarget, collect)
-)(DraggableCharacter)
+	DragSource(ItemTypes.DRAG_CHARACTER, dragSource, connect),
+	DropTarget(ItemTypes.DRAG_CHARACTER, dragTarget, collect)
+)(DraggableCharacter);

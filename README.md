@@ -7,10 +7,12 @@ complete work in progress. master branch generally stable.
 
 -----------------random bugs------------
 POP_TOURNAMENT_REASON leaves a 0 at the bottom of rematch after unauthorized game submission and maybe everything.
+Thunder and spinal both logged 2 extra losses for one game somehow. random other losses added to characters as well?
 
 ---Tournament Creator Page---
 charactersPerUser field in tournament no default bug fix
 review form data before submission
+add a clear for button
 
 ---Seed Page---
 Sort seeds by how you seeded them last time against this opponent if possible

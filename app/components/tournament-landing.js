@@ -382,11 +382,38 @@ class TournamentLanding extends Component {
 		const { tournament } = this.props;
 		const leftUserUuid = tournament.inspect.users.result[0];
 		const rightUserUuid = tournament.inspect.users.result[1];
-		const leftUpcomingCharacters = tournament.inspect.users.ids[leftUserUuid]
-			.map(matchData => Object.assign({}, tournament.users.ids[leftUserUuid].characters.ids[matchData.characterUuid], {matchUuid: matchData.uuid}));
 
-		const rightUpcomingCharacters = tournament.inspect.users.ids[rightUserUuid]
-			.map(matchData => Object.assign({}, tournament.users.ids[rightUserUuid].characters.ids[matchData.characterUuid], {matchUuid: matchData.uuid}));
+		let leftUpcomingCharacters;
+		 if (tournament.inspect.custom && tournament.inspect.custom[leftUserUuid]) {
+			 leftUpcomingCharacters = tournament.inspect.custom[leftUserUuid]
+		 }
+		 else {
+			 leftUpcomingCharacters = tournament.inspect.users.ids[leftUserUuid];
+		}
+		const leftHydratedCharacters = leftUpcomingCharacters.map(matchData => Object.assign(
+			{},
+			tournament.users.ids[leftUserUuid].characters.ids[matchData.characterUuid],
+			{
+				matchUuid: matchData.uuid,
+				userUuid: leftUserUuid
+			}
+		));
+
+		let rightUpcomingCharacters;
+		if (tournament.inspect.custom && tournament.inspect.custom[rightUserUuid]) {
+			rightUpcomingCharacters = tournament.inspect.custom[rightUserUuid];
+		}
+		else {
+			rightUpcomingCharacters = tournament.inspect.users.ids[rightUserUuid];
+		}
+		const rightHydratedCharacters = rightUpcomingCharacters.map(matchData => Object.assign(
+			{},
+			tournament.users.ids[rightUserUuid].characters.ids[matchData.characterUuid],
+			{
+				matchUuid: matchData.uuid,
+				userUuid: rightUserUuid
+			}
+		));
 
 		return (
 			<div>
@@ -395,21 +422,23 @@ class TournamentLanding extends Component {
 					float: 'left'
 				}}>
 					<InspectContainer
-						characters={leftUpcomingCharacters}
+						characters={leftHydratedCharacters}
 						updateInspectState={this.updateInspectState}
 						userUuid={leftUserUuid}
+						side="left"
 					/>
 				</div>
-				{/*<div style={{
+				<div style={{
 					width: '50%',
 					float: 'right'
 				}}>
 					<InspectContainer
-						characters={rightUpcomingCharacters}
+						characters={rightHydratedCharacters}
 						updateInspectState={this.updateInspectState}
 						userUuid={rightUserUuid}
+						side="right"
 					/>
-				</div>*/}
+				</div>
 			</div>
 		);
 	}
@@ -489,8 +518,6 @@ class TournamentLanding extends Component {
 						paddingLeft: '1em'
 					}}>
 						<IconButton
-							tooltip="Oddsmaker"
-							tooltipPosition="top-center"
 							disabled={!tournament.active || tournament.users.ids[tournament.users.result[0]].coins < 3}
 							onTouchTap={() => this.useOddsmaker(character)}
 						>
@@ -502,8 +529,6 @@ class TournamentLanding extends Component {
 						paddingLeft: '1em'
 					}}>
 						<IconButton
-							tooltip="Decrement"
-							tooltipPosition="top-center"
 							disabled={!tournament.active || character.value <= 1 || tournament.users.ids[tournament.users.result[0]].coins < 1}
 							onTouchTap={() => this.decrementCharacter(character)}
 						>
@@ -527,7 +552,11 @@ class TournamentLanding extends Component {
 	}
 
 	updateInspectState (data) {
-		this.props.updateInspectState(this.props.tournament.slug, data.userUuid, data.state);
+		console.log("UPDATE DATA: ", data)
+		this.props.updateInspectState(this.props.tournament.slug, data.userUuid, data.state.map(c => Object.assign({}, {
+			characterUuid: c.uuid,
+			uuid: c.matchUuid
+		})));
 	}
 
 	draftCharacter (character, myUuid) {

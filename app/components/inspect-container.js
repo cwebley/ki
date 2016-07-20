@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import DraggableInspectCharacter from './draggable-inspect-character';
+import InspectCharacter from './inspect-character';
 
 
 class InspectContainer extends Component {
@@ -13,23 +13,23 @@ class InspectContainer extends Component {
 	static propTypes = {
 		characters: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
 		updateInspectState: PropTypes.func.isRequired,
-		userUuid: PropTypes.string.isRequired
+		userUuid: PropTypes.string.isRequired,
+		side: PropTypes.string.isRequired
 	};
 
 	render () {
 		return (
 			<div>
 			{
-				this.props.characters.map((character, i, thisArray) => {
-					return (
-						<DraggableInspectCharacter
-							key={character.matchUuid}
-							id={character.matchUuid}
-							name={character.name}
-							value={character.value}
-							moveCharacter={this.moveCharacter}
-						/>
-					);
+				this.props.characters.map((character, i) => {
+					return <InspectCharacter
+						key={character.matchUuid}
+						id={character.matchUuid}
+						userUuid={character.userUuid}
+						name={character.name}
+						value={character.value}
+						moveCharacter={this.moveCharacter}
+					/>;
 				})
 			}
 			</div>
@@ -52,5 +52,6 @@ class InspectContainer extends Component {
 		});
 	}
 }
+
 
 export default DragDropContext(HTML5Backend)(InspectContainer);

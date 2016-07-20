@@ -1,25 +1,19 @@
 import React, { PropTypes, Component } from 'react';
+import Paper from 'material-ui/Paper';
+import flow from 'lodash.flow';
 import { DragSource, DropTarget } from 'react-dnd';
 import { ItemTypes } from '../constants';
-import flow from 'lodash.flow';
 
-import Paper from 'material-ui/Paper';
-
-class DraggableInspectCharacter extends Component {
+class InspectCharacter extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			characters: this.props.characters,
-			dragActive: false
-		}
 	}
 
 	static propTypes = {
 		name: PropTypes.string.isRequired,
-		moveCharacter: PropTypes.func.isRequired,
 		connectDragSource: React.PropTypes.func.isRequired,
 		connectDropTarget: React.PropTypes.func.isRequired,
-		isDragging: React.PropTypes.bool.isRequired
+		isDragging: React.PropTypes.bool.isRequired,
 	};
 
 	render () {
@@ -50,33 +44,36 @@ class DraggableInspectCharacter extends Component {
 	}
 }
 
-const characterSource = {
-	beginDrag (props) {
-		return {
-			id: props.id
-		};
-	}
-}
-
-const characterTarget = {
+const dropTarget = {
 	hover (props, monitor) {
-		const draggedId = monitor.getItem().id;
-		if(draggedId !== props.id){
-			props.moveCharacter(draggedId, props.id);
+		const draggedItem = monitor.getItem();
+		if (draggedItem.userUuid !== props.userUuid) {
+			return;
+		}
+		if (draggedItem.id !== props.id) {
+			props.moveCharacter(draggedItem.id, props.id);
 		}
 	}
-}
+};
 
+const dragSource = {
+	beginDrag (props) {
+		return {
+			id: props.id,
+			userUuid: props.userUuid
+		};
+	}
+};
 const connect = (connect, monitor) => ({
 	connectDragSource: connect.dragSource(),
 	isDragging: monitor.isDragging()
 });
-
 const collect = (connect) => ({
 	connectDropTarget: connect.dropTarget()
 });
 
+
 export default flow(
-	DragSource(ItemTypes.DRAGGABLE_INSPECT_CHARACTER, characterSource, connect),
-	DropTarget(ItemTypes.DRAGGABLE_INSPECT_CHARACTER, characterTarget, collect)
-)(DraggableInspectCharacter)
+	DragSource(ItemTypes.DRAGGABLE_INSPECT_CHARACTER, dragSource, connect),
+	DropTarget(ItemTypes.DRAGGABLE_INSPECT_CHARACTER, dropTarget, collect)
+)(InspectCharacter);

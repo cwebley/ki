@@ -21,7 +21,8 @@ const tournamentReducer = (state = {}, action) => {
 			// reasons should always get initialized to at least an empty array
 			reasons: tournamentReasonsReducer(state.reasons, action),
 			...action.data,
-			draft: draftReducer(state.draft, action)
+			draft: draftReducer(state.draft, action),
+			inspect: inspectReducer(state.inspect, action)
 		};
 	case c.SUBMIT_SEEDS_SUCCESS:
 	case c.SUBMIT_GAME_SUCCESS:
@@ -92,8 +93,29 @@ const inspectReducer = (state = {}, action) => {
 			return action.data;
 		case c.UPDATE_INSPECT_STATE:
 			return {
-				...state
+				...state,
+				custom: customInspectReducer(state.custom, action)
 			};
+		case c.FETCH_TOURNAMENT_SUCCESS:
+			return {
+				...state,
+				...action.data.inspect,
+				custom: customInspectReducer(state.custom, action)
+			};
+		default:
+			return state;
+	}
+}
+
+const customInspectReducer = (state = {}, action) => {
+	switch (action.type) {
+		case c.UPDATE_INSPECT_STATE:
+			return {
+				...state,
+				[action.userUuid]: action.data
+			};
+		case c.FETCH_TOURNAMENT_SUCCESS:
+			return state;
 		default:
 			return state;
 	}
