@@ -216,3 +216,21 @@ export const useInspect = (tournamentSlug, token) => new Promise((resolve, rejec
 		resolve(body);
 	});
 });
+
+export const updateMatchups = (tournamentSlug, matchupData, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/inspect',
+		method: 'PUT',
+		json: {
+			matchups: matchupData
+		},
+		headers: {
+			Authorization: 'Bearer ' + token
+		}
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});

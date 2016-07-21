@@ -8,8 +8,10 @@ complete work in progress. master branch generally stable.
 -----------------random bugs------------
 POP_TOURNAMENT_REASON leaves a 0 at the bottom of rematch after unauthorized game submission and maybe everything.
 Thunder and spinal both logged 2 extra losses for one game somehow. random other losses added to characters as well?
+Inspect dnd stuff is pretty slow. Plus there's some bug related to hovering over a long name/fat card that updates every hover event causing a crawl.
 
 ---Tournament Creator Page---
+errors don't show up anywhere
 charactersPerUser field in tournament no default bug fix
 review form data before submission
 add a clear for button
@@ -21,6 +23,7 @@ Show W-L record of each character last time you faced them
 ---Draft Page---
 
 --Tournament Landing---
+tournament found message
 better indicator on player card of heating/fire
 material-ui determinate progress bar for user scores
 crown icon denoting previous champion in a current player matchup

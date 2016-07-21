@@ -16,6 +16,7 @@ const tournamentReducer = (state = {}, action) => {
 	switch (action.type) {
 
 	case c.FETCH_TOURNAMENT_SUCCESS:
+	case c.UPDATE_MATCHUPS_SUCCESS:
 		return {
 			...state,
 			// reasons should always get initialized to at least an empty array
@@ -44,6 +45,7 @@ const tournamentReducer = (state = {}, action) => {
 	case c.REMATCH_FAILURE:
 	case c.SUBMIT_GAME_FAILURE:
 	case c.SUBMIT_SEEDS_FAILURE:
+	case c.UPDATE_MATCHUPS_FAILURE:
 		return {
 			...state,
 			reasons: tournamentReasonsReducer(state.reasons, action)
@@ -96,11 +98,29 @@ const inspectReducer = (state = {}, action) => {
 				...state,
 				custom: customInspectReducer(state.custom, action)
 			};
+		case c.UPDATE_MATCHUPS_SUCCESS:
+			return {
+				...action.data.inspect,
+				custom: customInspectReducer(state.custom, action)
+			};
 		case c.FETCH_TOURNAMENT_SUCCESS:
+			let customInspect = customInspectReducer(state.custom, action);
+
+			if (state.custom && state.users) {
+				const leftUserUuid = state.users.result[0];
+				const rightUserUuid = state.users.result[1];
+
+				if ((state.custom[leftUserUuid] && state.custom[leftUserUuid].length > state.users.ids[leftUserUuid].length)
+					|| (state.custom[rightUserUuid] && state.custom[rightUserUuid].length > state.users.ids[rightUserUuid].legnth)) {
+					// one of our custom lists is too long, a matchup was probably submitted.
+					// wipe the custom lists to refresh the data
+					customInspect = {}
+				}
+			}
 			return {
 				...state,
 				...action.data.inspect,
-				custom: customInspectReducer(state.custom, action)
+				custom: customInspect
 			};
 		default:
 			return state;
@@ -114,6 +134,9 @@ const customInspectReducer = (state = {}, action) => {
 				...state,
 				[action.userUuid]: action.data
 			};
+		case c.UPDATE_MATCHUPS_SUCCESS:
+			// previously edited matchups became the official matchups on the server
+			return {};
 		case c.FETCH_TOURNAMENT_SUCCESS:
 			return state;
 		default:
@@ -125,7 +148,10 @@ const tournamentReasonsReducer = (state = [], action) => {
 	if (action.type === c.POP_TOURNAMENT_REASON) {
 		return state.slice(1);
 	}
-	return action.reasons;
+	if (action.reasons) {
+		return [...state, ...action.reasons]
+	}
+	return state;
 }
 
 const tournamentUsersReducer = (state = {}, action) => {

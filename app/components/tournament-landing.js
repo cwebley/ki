@@ -13,6 +13,7 @@ import decrementCharacter from '../actions/decrement-character';
 import toggleDraftFilter from '../actions/toggle-draft-filter';
 import undoLastGame from '../actions/undo-last-game';
 import updateInspectState from '../actions/update-inspect-state';
+import updateMatchups from '../actions/update-matchups';
 
 import { getTournamentFromState, getMe, getFormState } from '../store';
 import * as formActions from '../actions/forms';
@@ -162,7 +163,7 @@ class TournamentLanding extends Component {
 							onTouchTap={() => this.undoLastGame()}
 						/>
 					</div>}
-					{this.props.tournament.reasons && this.props.tournament.reasons.length && <Snackbar
+					{this.props.tournament.reasons && this.props.tournament.reasons.length > 0 && <Snackbar
 						open={this.props.tournament.reasons.length}
 						message={this.props.tournament.reasons[0].message}
 						autoHideDuration={10000}
@@ -439,6 +440,12 @@ class TournamentLanding extends Component {
 						side="right"
 					/>
 				</div>
+				<RaisedButton
+					label="Save Changes"
+					primary
+					disabled={!tournament.inspect.custom || (!tournament.inspect.custom[rightUserUuid] && !tournament.inspect.custom[leftUserUuid])}
+					onTouchTap={() => this.updateMatchups()}
+				/>
 			</div>
 		);
 	}
@@ -552,7 +559,6 @@ class TournamentLanding extends Component {
 	}
 
 	updateInspectState (data) {
-		console.log("UPDATE DATA: ", data)
 		this.props.updateInspectState(this.props.tournament.slug, data.userUuid, data.state.map(c => Object.assign({}, {
 			characterUuid: c.uuid,
 			uuid: c.matchUuid
@@ -600,6 +606,36 @@ class TournamentLanding extends Component {
 	useInspect () {
 		this.props.useInspect(this.props.tournament.slug, this.props.me.token);
 	}
+
+	updateMatchups () {
+		const { tournament } = this.props;
+
+		const leftUserUuid = tournament.inspect.users.result[0];
+		const rightUserUuid = tournament.inspect.users.result[1];
+
+		let leftUpcomingCharacterSlugs;
+		 if (tournament.inspect.custom && tournament.inspect.custom[leftUserUuid]) {
+			 leftUpcomingCharacterSlugs = tournament.inspect.custom[leftUserUuid].map(inspectCharacter => tournament.users.ids[leftUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
+		 }
+		 else {
+			 leftUpcomingCharacterSlugs = tournament.inspect.users.ids[leftUserUuid].map(inspectCharacter => tournament.users.ids[leftUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
+		}
+
+		let rightUpcomingCharacterSlugs;
+		if (tournament.inspect.custom && tournament.inspect.custom[rightUserUuid]) {
+			rightUpcomingCharacterSlugs = tournament.inspect.custom[rightUserUuid].map(inspectCharacter => tournament.users.ids[rightUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
+		}
+		else {
+			rightUpcomingCharacterSlugs = tournament.inspect.users.ids[rightUserUuid].map(inspectCharacter => tournament.users.ids[rightUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
+		}
+
+		const matchupData = {
+			[tournament.users.ids[leftUserUuid].slug]: leftUpcomingCharacterSlugs,
+			[tournament.users.ids[rightUserUuid].slug]: rightUpcomingCharacterSlugs
+		};
+		console.log("MU DATA: ", matchupData);
+		this.props.updateMatchups(this.props.tournament.slug, matchupData, this.props.me.token);
+	}
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -615,5 +651,5 @@ export default connect(mapStateToProps, {
 	draftCharacter, submitGame, ...formActions,
 	rematch, oddsmaker, useInspect,
 	decrementCharacter, toggleDraftFilter,
-	undoLastGame, updateInspectState
+	undoLastGame, updateInspectState, updateMatchups
 })(TournamentLanding);

@@ -24,7 +24,7 @@ export default function updateInspectHandler (req, res) {
 			return res.status(404).send(r.tournamentNotFound);
 		}
 		if (!tournament.inspect.users) {
-			return res.status(401).send(r.unAuthorizedInspect);
+			return res.status(401).send(r.unauthorizedInspect);
 		}
 		const hydratedUsers = tournament.users.result.map(uUuid => tournament.users.ids[uUuid]);
 
@@ -37,13 +37,15 @@ export default function updateInspectHandler (req, res) {
 		});
 
 		let invalidMatchupUser = false;
-		let matchupData = {};
+
+		// matchupUuids is just the user and character uuids: {<left-user-uuid>: [<first-character-uuid>, <second-character-uuid>, ... etc]}
+		let matchupUuids = {};
 		hydratedUsers.forEach(u => {
 			if (!req.body.matchups[u.slug]) {
 				invalidMatchupUser = true;
 				return;
 			}
-			matchupData[u.uuid] = req.body.matchups[u.slug].map(characterSlug => characterSlugToUuid[characterSlug]);
+			matchupUuids[u.uuid] = req.body.matchups[u.slug].map(characterSlug => characterSlugToUuid[characterSlug]);
 		});
 
 		if (invalidMatchupUser) {
@@ -52,29 +54,40 @@ export default function updateInspectHandler (req, res) {
 
 		// there are another couple invalid cases here that are ignored.
 		// maybe a todo at some point
-		if (matchupData[tournament.users.result[0]].length !== matchupData[tournament.users.result[1]].length) {
+		if (matchupUuids[tournament.users.result[0]].length !== matchupUuids[tournament.users.result[1]].length) {
 			return res.status(400).send(r.invalidMatchups);
 		}
 
 		let invalidMatchups = false;
-		tournament.users.result.forEach(uUuid => {
-			// iterate over each submitted character uuid for each user
 
-			matchupData[uUuid].forEach(cUuid => {
+		// hydratedMatchupData will contain the full upcoming object to insert back into redis {<left-user-uuid>: [{uuid: <unique-matchup-uuid>, characterUuid: <character-uuid>, oddsmaker: true}]}
+		let hydratedMatchupData = {};
+		tournament.users.result.forEach(uUuid => {
+			hydratedMatchupData[uUuid] = [];
+
+			// iterate over each submitted character uuid for each user
+			matchupUuids[uUuid].forEach(cUuid => {
 				// determine that the character is on the inspection list from the server
 
-				let validatedIndex = tournament.inspect.ids[uUuid].indexOf(cUuid);
-				if (validatedIndex === -1) {
+				let validatedIndex;
+				tournament.inspect.users.ids[uUuid].forEach((matchupItem, i) => {
+					if (matchupItem.characterUuid === cUuid) {
+						validatedIndex = i;
+						console.log("CHARACTER FOUND, INDEX: ", validatedIndex);
+					}
+				});
+				if (validatedIndex === undefined) {
 					// submitted character not found in the inspection list
 					invalidMatchups = true;
 					return;
 				}
-				// submitted character found in the list, splice 'em out and continue
-				tournament.inspect.ids[uUuid].splice(validatedIndex, 1);
+				// submitted character found in the list, splice 'em out
+				// push the full upcoming object into the hydrated data
+				hydratedMatchupData[uUuid].push(tournament.inspect.users.ids[uUuid].splice(validatedIndex, 1)[0]);
 			});
 
 			// if any characters remain in the inspection list then the submission was invalid
-			if (tournament.inspect.ids[uUuid].length) {
+			if (tournament.inspect.users.ids[uUuid].length) {
 				invalidMatchups = true;
 			}
 		});
@@ -83,17 +96,19 @@ export default function updateInspectHandler (req, res) {
 			return res.status(400).send(r.invalidMatchups);
 		}
 
+		console.log("HYDRATED: ", JSON.stringify(hydratedMatchupData, null, 4));
+
 		updateInspectQuery(req.redis, {
 			tournamentUuid: tournament.uuid,
-			matchups: matchupData
+			matchups: hydratedMatchupData
 		}, (err, inspectData) => {
 			if (err) {
 				return res.status(500).send(r.internal);
 			}
 
 			// update the users inspection lists since query was successful
-			tournament.inspect.users.ids[tournament.users.result[0]] = matchupData[tournament.users.result[0]];
-			tournament.inspect.users.ids[tournament.users.result[1]] = matchupData[tournament.users.result[1]];
+			tournament.inspect.users.ids[tournament.users.result[0]] = hydratedMatchupData[tournament.users.result[0]];
+			tournament.inspect.users.ids[tournament.users.result[1]] = hydratedMatchupData[tournament.users.result[1]];
 
 			return res.status(200).send(tournament);
 		});
