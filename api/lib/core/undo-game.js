@@ -51,7 +51,7 @@ export default function undoGame (state, game, rematch) {
 			},
 			result: [winningCharacterUuid]
 		},
-		upcoming: [winningCharacterUuid].concat(winnerUpcoming)
+		upcoming: [state.users.ids[winnerUuid].previous].concat(winnerUpcoming)
 	};
 	// rematches don't reset the wins, only the streaks
 	if (!rematch) {
@@ -75,7 +75,7 @@ export default function undoGame (state, game, rematch) {
 			},
 			result: [losingCharacterUuid]
 		},
-		upcoming: [losingCharacterUuid].concat(loserUpcoming)
+		upcoming: [state.users.ids[loserUuid].previous].concat(loserUpcoming)
 	};
 
 	// rematches don't reset the losses, only the streaks

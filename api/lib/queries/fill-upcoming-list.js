@@ -17,12 +17,12 @@ export default function fillUpcomingListQuery (rConn, tournamentState, cb) {
 
 const popPushAndFill = (rConn, tournamentState, uUuid) => done => {
 	const upcomingKey = upcomingList(tournamentState.uuid, uUuid);
-	rConn.lpop(upcomingKey, (err, charUuid) => {
+	rConn.lpop(upcomingKey, (err, upcomingItem) => {
 		if (err) {
 			log.error(err, { key: upcomingKey });
 			return done(err);
 		}
-		if (!charUuid) {
+		if (!upcomingItem) {
 			log.debug('lpop returned no result', {
 				key: upcomingKey
 			});
@@ -30,14 +30,14 @@ const popPushAndFill = (rConn, tournamentState, uUuid) => done => {
 		}
 		// push onto previous list
 		const previousKey = previousList(tournamentState.uuid, uUuid);
-		rConn.lpush(previousKey, charUuid, (err, success) => {
+		rConn.lpush(previousKey, upcomingItem, (err, success) => {
 			if (err) {
-				log.error(err, { key: previousKey, value: charUuid });
+				log.error(err, { key: previousKey, value: upcomingItem });
 				return done(err);
 			}
 			if (!success) {
 				log.debug('lpush failed', {
-					key: previousKey, value: charUuid
+					key: previousKey, value: upcomingItem
 				});
 				return done();
 			}
