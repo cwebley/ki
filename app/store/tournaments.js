@@ -106,19 +106,18 @@ const inspectReducer = (state = {}, action) => {
 		case c.FETCH_TOURNAMENT_SUCCESS:
 			let customInspect = customInspectReducer(state.custom, action);
 
-			if (state.custom && state.users) {
+			if (state.custom && action.data.inspect.users) {
 				const leftUserUuid = state.users.result[0];
 				const rightUserUuid = state.users.result[1];
 
-				if ((state.custom[leftUserUuid] && state.custom[leftUserUuid].length > state.users.ids[leftUserUuid].length)
-					|| (state.custom[rightUserUuid] && state.custom[rightUserUuid].length > state.users.ids[rightUserUuid].legnth)) {
-					// one of our custom lists is too long, a matchup was probably submitted.
+				if ((state.custom[leftUserUuid] && state.custom[leftUserUuid].length > action.data.inspect.users.ids[leftUserUuid].length)
+					|| (state.custom[rightUserUuid] && state.custom[rightUserUuid].length > action.data.inspect.users.ids[rightUserUuid].length)) {
+					// one of our custom lists is too long, a matchup was probably submitted
 					// wipe the custom lists to refresh the data
 					customInspect = {}
 				}
 			}
 			return {
-				...state,
 				...action.data.inspect,
 				custom: customInspect
 			};

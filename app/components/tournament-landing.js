@@ -342,7 +342,7 @@ class TournamentLanding extends Component {
 					<div style={styles.power}>
 						<RaisedButton
 							style={{width: '100%'}}
-							label="Inspect"
+							label={tournament.inspect.remaining !== undefined && !tournament.inspect.available ? `Inspect (${tournament.inspect.remaining})` : 'Inspect'}
 							secondary
 							onTouchTap={() => this.useInspect()}
 							disabled={leftUser.coins < 3 || !tournament.inspect.available}
