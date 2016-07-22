@@ -86,7 +86,20 @@ function resetTestState () {
 	testVals.userOneTournamentStreak = 0;
 	testVals.userOneTournamentBestStreak = 0;
 	testVals.userOneCoins = 10;
-	testVals.userOneUpcoming = ['xter1Uuid', 'xter2Uuid'];
+	testVals.userOneUpcoming = [
+		{
+			uuid: 'someMatchupUuid',
+			characterUuid: 'xter1Uuid'
+		},
+		{
+			uuid: 'someMatchupUuid2',
+			characterUuid: 'xter2Uuid'
+		},
+	];
+	testVals.userOnePrevious = {
+		uuid: 'somePreviousMatchupUuid',
+		characterUuid: 'xter1Uuid'
+	};
 
 	testVals.userOneXterOneVal = 6;
 	testVals.userOneXterRawVal = 6;
@@ -118,7 +131,20 @@ function resetTestState () {
 	testVals.userTwoTournamentStreak = 0;
 	testVals.userTwoTournamentBestStreak = 0;
 	testVals.userTwoCoins = 10;
-	testVals.userTwoUpcoming = ['xter1Uuid', 'xter2Uuid'];
+	testVals.userTwoUpcoming = [
+		{
+			uuid: 'someMatchupUuid3',
+			characterUuid: 'xter1Uuid'
+		},
+		{
+			uuid: 'someMatchupUuid4',
+			characterUuid: 'xter2Uuid'
+		},
+	];
+	testVals.userTwoPrevious = {
+		uuid: 'somePreviousMatchupUuid2',
+		characterUuid: 'xter2Uuid'
+	};
 
 	testVals.userTwoXterOneVal = 5;
 	testVals.userTwoXterOneRawVal = 5;
@@ -161,6 +187,7 @@ let testState = {
 				get upcoming() { return testVals.userOneUpcoming },
 				get tournamentStreak() { return testVals.userOneTournamentStreak },
 				get tournamentBestStreak() { return testVals.userOneTournamentBestStreak },
+				get previous() { return testVals.userOnePrevious },
 
 				characters: {
 					ids: {
@@ -203,7 +230,7 @@ let testState = {
 				get upcoming () { return testVals.userTwoUpcoming },
 				get tournamentStreak () { return testVals.userTwoTournamentStreak },
 				get tournamentBestStreak () { return testVals.userTwoTournamentBestStreak },
-
+				get previous() { return testVals.userTwoPrevious },
 
 				characters: {
 					ids: {
@@ -237,6 +264,10 @@ let testState = {
 			}
 		},
 		result: ['user1Uuid', 'user2Uuid']
+	},
+	inspect: {
+		// TODO make this configurable for testing
+		available: true
 	}
 };
 

@@ -2,6 +2,8 @@ export const FORM_UPDATE_VALUE = 'FORM_UPDATE_VALUE';
 export const FORM_UPDATE_LIST = 'FORM_UPDATE_LIST';
 export const TOGGLE_LIST_ITEMS = 'TOGGLE_LIST_ITEMS';
 export const FORM_RESET = 'FORM_RESET';
+export const POP_FORM_REASON = 'POP_TOURNAMENT_REASON';
+
 export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 export const LOGOUT = 'LOGOUT';
 
@@ -52,4 +54,4 @@ export const ItemTypes = {
 	DRAGGABLE_INSPECT_CHARACTER: 'draggableInspectCharacter'
 };
 
-export const ERROR_RESET_TIME = 3000;
+export const ERROR_RESET_TIME = 5000;

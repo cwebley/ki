@@ -73,4 +73,7 @@ module.exports = [{
 },{
 	name: 'General RAAM',
 	season: 3
+},{
+	name: 'Eyedol',
+	season: 3
 }];

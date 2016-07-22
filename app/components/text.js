@@ -94,7 +94,7 @@ export default React.createClass({
 					onBlur={this.onBlur}
 					errorText={this.state.errors.length ? (
 						<div>
-							{this.state.errors.map((error) => <div key={error.id}>{error.msg}</div>)}
+							{this.state.errors.map((error) => <div key={error.id}>{error.message}</div>)}
 						</div>
 					) : null}
 				/>

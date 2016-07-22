@@ -8,6 +8,7 @@ import ReasonsList from './reasons-list';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import Snackbar from 'material-ui/Snackbar';
 
 import * as formActions from '../actions/forms';
 import fetchCharacters from '../actions/fetch-characters';
@@ -297,8 +298,6 @@ class TournamentCreator extends Component {
 		return (
 			<div className="page">
 				<h1>Create a Tournament</h1>
-				<ReasonsList reasons={this.props.formState.reasons} />
-
 				<div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
 					<Stepper activeStep={this.state.stepIndex}>
 						<Step>
@@ -312,6 +311,11 @@ class TournamentCreator extends Component {
 						</Step>
 					</Stepper>
 					{ this.renderStepContent() }
+					{this.props.formState.reasons && this.props.formState.reasons.length > 0 && <Snackbar
+						open={!!this.props.formState.reasons.length}
+						message={this.props.formState.reasons[0].message}
+						autoHideDuration={10000}
+					/>}
 				</div>
 			</div>
 		);

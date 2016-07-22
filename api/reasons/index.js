@@ -119,7 +119,7 @@ r.NoSeason = {
 	level: 'error',
 	id: 'noSeason'
 };
-r.InavlidName = {
+r.InvalidName = {
 	message: 'Name must be less than 25 characters',
 	field: 'name',
 	level: 'error',

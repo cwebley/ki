@@ -53,10 +53,10 @@ export default function createTournamentHandler (req, res) {
 		problems.push(r.InvalidMyCharacters);
 	}
 	if (!Array.isArray(req.body.opponentCharacters)) {
-		problems.push(r.InvalidMyCharacters);
+		problems.push(r.InvalidOpponentCharacters);
 	}
 	if (!Array.isArray(req.body.draftCharacters)) {
-		problems.push(r.InvalidMyCharacters);
+		problems.push(r.InvalidDraftCharacters);
 	}
 	if (problems.length) {
 		return res.status(400).send(r(...problems));

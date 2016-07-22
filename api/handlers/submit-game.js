@@ -100,15 +100,14 @@ export default function submitGameHandler (req, res) {
 		if (!losingCharacterUuid && !!loserUuid) {
 			problems.push(r.InvalidLosingCharacterSlug);
 		}
+
+		// check that the submitted characters are actually in the current matchup
+		if (tournament.users.ids[winnerUuid].upcoming[0].characterUuid !== winningCharacterUuid || tournament.users.ids[loserUuid].upcoming[0].characterUuid !== losingCharacterUuid) {
+			problems.push(r.invalidGame);
+		}
 		if (problems.length) {
 			return res.status(400).send(r(...problems));
 		}
-
-		// check that the submitted characters are actually in the current matchup
-		if (tournament.users.ids[winnerUuid].upcoming[0] !== winningCharacterUuid) {
-			problems.push(r.invalidGame);
-		}
-
 		selectMostRecentGame(req.db, tournament.uuid, (err, prevGame) => {
 			if (err) {
 				return res.status(500).send(r.internal);
@@ -144,6 +143,25 @@ export default function submitGameHandler (req, res) {
 			game.winner.prevGlobalStreak = tournament.users.ids[game.winner.uuid].globalStreak;
 			game.winner.prevCharStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].streak;
 			game.winner.prevCharGlobalStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].globalStreak;
+
+			if (tournament.users.ids[tournament.users.result[0]].upcoming[0].inspectUserUuid) {
+				// the submitted game was an inspected one, track its result in the inspect_games table
+				// inspectUserUuid is a field placed on both users' upcoming lists if this game was inspected
+				game.inspectUserUuid = tournament.users.ids[tournament.users.result[0]].upcoming[0].inspectUserUuid;
+			}
+
+			if (tournament.users.ids[tournament.users.result[0]].upcoming[0].oddsmaker) {
+				// the submitted game was an oddsmaker one, push this userUuid onto an array of oddsmakerUserUuids
+				// it's an array since its possible both users are playing with oddsmaker characters for this game
+				game.oddsmakerUserUuids = [tournament.users.result[0]];
+			}
+			// add the oddsmaker data for the other user if available
+			if (tournament.users.ids[tournament.users.result[1]].upcoming[0].oddsmaker) {
+				if (!game.oddsmakerUserUuids) {
+					game.oddsmakerUserUuids = [];
+				}
+				game.oddsmakerUserUuids.push(tournament.users.result[1]);
+			}
 
 			submitGameQuery(req.db, tournament.uuid, game, diff, (err, updatedCharacterStreaks) => {
 				if (err) {

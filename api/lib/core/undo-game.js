@@ -37,6 +37,8 @@ export default function undoGame (state, game, rematch) {
 	};
 	const winnerUpcoming = state.users.ids[winnerUuid].upcoming || [];
 	const loserUpcoming = state.users.ids[loserUuid].upcoming || [];
+	const winnerPrevious = state.users.ids[winnerUuid].previous;
+	const loserPrevious = state.users.ids[loserUuid].previous;
 
 	diff._remove.championUuid = unEvaluateChampion(winnerUuid, state.goal, state.users.ids[winnerUuid].score, state.users.ids[loserUuid].score, winningCharPrevValue);
 
@@ -51,7 +53,7 @@ export default function undoGame (state, game, rematch) {
 			},
 			result: [winningCharacterUuid]
 		},
-		upcoming: [state.users.ids[winnerUuid].previous].concat(winnerUpcoming)
+		upcoming: [winnerPrevious].concat(winnerUpcoming)
 	};
 	// rematches don't reset the wins, only the streaks
 	if (!rematch) {
@@ -75,7 +77,7 @@ export default function undoGame (state, game, rematch) {
 			},
 			result: [losingCharacterUuid]
 		},
-		upcoming: [state.users.ids[loserUuid].previous].concat(loserUpcoming)
+		upcoming: [loserPrevious].concat(loserUpcoming)
 	};
 
 	// rematches don't reset the losses, only the streaks
@@ -130,34 +132,13 @@ export default function undoGame (state, game, rematch) {
 			diff.users.ids[loserUuid].characters.ids[cUuid].rawValue = state.users.ids[loserUuid].characters.ids[cUuid].rawValue + 1;
 		}
 	});
-	/*
-		2 -> 1 friendly ice
-		rematch 1 -> 2 undo the ice
-		rematchSuccess, stay at 2
 
-		1 -> 0 friendly ice
-		rematch 0 -> 1 undo the ice
-		rematchSuccess stay at 1
-		rematchFail stay at 0
-		/////////////////////
-		2 -> 1 friendly ice
-		1 -> 0 friendly ice
-		0 -> -1 friendly ice
-		rematch
-		-1 -> 0 undo the ice
-		success: still at 0 (1)
-
-
-		1 -> 0 friendly ice
-		0 -> -1 friendly ice
-		-1 -> 2 character loses a round
-
-		undo character loss 2 -> 1
-
-
-		character loss 1 -> 0
-		rematch 0 -> 1
-	*/
+	// give the inspecting user 1 game back
+	// remaining can be 0
+	if (state.inspect.remaining !== undefined) {
+		diff.inspect = state.inspect;
+		diff.inspect.remaining = state.inspect.remaining + 1;
+	}
 
 	const coinsDiff = undoCoins(state.users.ids[winnerUuid].coins, state.users.ids[winnerUuid].streak, game.supreme);
 	if (coinsDiff) {
@@ -218,7 +199,7 @@ export function valueFromRawValue (rawValue) {
 export function undoCoins (currentCoins, currentStreak, supreme) {
 	let newCoins = currentCoins;
 
-	if (currentStreak === 3 || currentStreak >= 5) {
+	if (currentStreak >= 3) {
 		newCoins--;
 	}
 	if (supreme) {

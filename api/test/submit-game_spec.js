@@ -94,7 +94,7 @@ describe('submit-game logic', () => {
 	});
 
 	describe('updateCoins', () => {
-		it('increments coins when new previousStreak is 2 or >= 4', () => {
+		it('increments coins when new previousStreak is >= 2', () => {
 			expect(updateCoins(0, 2)).to.equal(1);
 			expect(updateCoins(1, 2)).to.equal(2);
 			expect(updateCoins(1, 4)).to.equal(2);
@@ -214,7 +214,7 @@ describe('submit-game logic', () => {
 
 		});
 
-		it('updates coins for the winner only when previousStreak is 2 or >= 4 streaks', () => {
+		it('updates coins for the winner only when previousStreak is >=2', () => {
 
 			testVals.userOneStreak = 2;
 			const diff = submitGame(testState, testGame);
@@ -226,6 +226,8 @@ describe('submit-game logic', () => {
 			expect(submitGame(testState, testGame).users.ids['user1Uuid'].coins).to.equal(testVals.userOneCoins + 1);
 			testVals.userOneStreak = 999;
 			expect(submitGame(testState, testGame).users.ids['user1Uuid'].coins).to.equal(testVals.userOneCoins + 1);
+			testVals.userOneStreak = 3;
+			expect(submitGame(testState, testGame).users.ids['user1Uuid'].coins).to.equal(testVals.userOneCoins + 1);
 
 			// no update if current streak after this game is less than 3, or 4
 			testVals.userOneStreak = -5;
@@ -233,8 +235,6 @@ describe('submit-game logic', () => {
 			testVals.userOneStreak = 0;
 			expect(submitGame(testState, testGame).users.ids['user1Uuid'].coins).to.equal(undefined);
 			testVals.userOneStreak = 1;
-			expect(submitGame(testState, testGame).users.ids['user1Uuid'].coins).to.equal(undefined);
-			testVals.userOneStreak = 3;
 			expect(submitGame(testState, testGame).users.ids['user1Uuid'].coins).to.equal(undefined);
 		});
 

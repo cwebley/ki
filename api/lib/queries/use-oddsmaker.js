@@ -19,7 +19,7 @@ export default function oddsmakerQuery (db, rConn, opts, cb) {
 				return characterObjectString;
 			}
 			if (Math.floor(Math.random() * opts.oddsmakerLength / opts.oddsmakerValue) === 0) {
-				const matchup = generateUpcomingCharacter(opts.characterUuid);
+				const matchup = generateUpcomingCharacter(opts.characterUuid, { oddsmaker: true });
 				return matchup;
 			}
 			return characterObjectString;

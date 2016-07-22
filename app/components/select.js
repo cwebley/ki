@@ -39,7 +39,13 @@ export default React.createClass({
 		if (defaultItem) {
 			this.updateValue(defaultItem.value);
 		}
+	},
 
+	componentWillUpdate (nextProps) {
+		// if a new default value was passed in, make sure the store data matches the UI
+		if (nextProps.defaultValue && nextProps.defaultValue !== this.props.defaultValue) {
+			this.updateValue(this.props.defaultValue);
+		}
 	},
 
 	updateValue (value) {

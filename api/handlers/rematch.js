@@ -8,6 +8,7 @@ import insertRematchQuery from '../lib/queries/insert-rematch';
 import undoGame from '../lib/core/undo-game';
 import undoGameQuery from '../lib/queries/undo-game';
 import undoUpcomingQuery from '../lib/queries/undo-upcoming';
+import incrementInspectQuery from '../lib/queries/increment-inspect';
 
 export default function rematchHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -48,6 +49,7 @@ export default function rematchHandler (req, res) {
 				return res.status(500).send(r.internal);
 			}
 			tournament.rematchAvailable = false;
+
 			const diff = undoGame(tournament, game, req.user.uuid);
 
 			undoGameQuery(req.db, {
@@ -89,7 +91,21 @@ export default function rematchHandler (req, res) {
 					if (err) {
 						return res.status(500).send(r.internal);
 					}
-					return res.status(200).send(tournament);
+
+					incrementInspectQuery(req.redis, {
+						tournamentUuid: tournament.uuid,
+						userUuid: tournament.users.result[0],
+						opponentUuid: tournament.users.result[1]
+					}, (err, updatedInspect) => {
+						if (err) {
+							return res.status(500).send(r.internal);
+						}
+						if (!updatedInspect) {
+							return res.status(200).send(tournament);
+						}
+						tournament.inspect = updatedInspect;
+						return res.status(200).send(tournament);
+					});
 				});
 			});
 		});

@@ -164,10 +164,9 @@ class TournamentLanding extends Component {
 						/>
 					</div>}
 					{this.props.tournament.reasons && this.props.tournament.reasons.length > 0 && <Snackbar
-						open={this.props.tournament.reasons.length}
+						open={!!this.props.tournament.reasons.length}
 						message={this.props.tournament.reasons[0].message}
 						autoHideDuration={10000}
-						onRequestClose={this.handleRequestClose}
 					/>}
 				</div>
 		);
@@ -633,7 +632,6 @@ class TournamentLanding extends Component {
 			[tournament.users.ids[leftUserUuid].slug]: leftUpcomingCharacterSlugs,
 			[tournament.users.ids[rightUserUuid].slug]: rightUpcomingCharacterSlugs
 		};
-		console.log("MU DATA: ", matchupData);
 		this.props.updateMatchups(this.props.tournament.slug, matchupData, this.props.me.token);
 	}
 }

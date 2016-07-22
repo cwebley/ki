@@ -60,7 +60,7 @@ export default function submitGame (state, gameResult) {
 				characters: {
 					ids: {
 						[losingCharacterUuid]: {
-							losses: state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].losses + 1,
+							losses: state.users.ids[loserUuid].characters.ids[losingCharacterUuid].losses + 1,
 							streak: updateLosingStreak(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].streak),
 							globalStreak: updateLosingStreak(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].globalStreak),
 							value: updateLoserValue(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].value),
@@ -247,7 +247,7 @@ export function updateLoserRawValue (previousRawValue) {
 
 export function updateCoins (currentCoins, previousStreak, supreme) {
 	let updatedCoins = currentCoins;
-	if (previousStreak === 2 || previousStreak >= 4) {
+	if (previousStreak >= 2) {
 		updatedCoins += 1;
 	}
 	if (supreme) {

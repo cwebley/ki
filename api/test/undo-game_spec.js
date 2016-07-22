@@ -36,12 +36,12 @@ describe('undo-game logic', () => {
 	});
 
 	describe('undoCoins', () => {
-		it('returns undefined when player streak is anything other than 3 or >=5 and game wasn\'t supreme', () => {
+		it('returns undefined when player streak is not >= 3 and game wasn\'t supreme', () => {
 			expect(undoCoins(3, 1, false)).to.equal(undefined);
 			expect(undoCoins(3, 2, false)).to.equal(undefined);
-			expect(undoCoins(3, 4, false)).to.equal(undefined);
+			expect(undoCoins(3, 0, false)).to.equal(undefined);
 		});
-		it('decrements streak points if streak is 3 or >= 5', () => {
+		it('decrements coins if streak is >= 3', () => {
 			expect(undoCoins(3, 3, false)).to.equal(2);
 			expect(undoCoins(3, 5, false)).to.equal(2);
 			expect(undoCoins(3, 50, false)).to.equal(2);
@@ -148,19 +148,19 @@ describe('undo-game logic', () => {
 			expect(diff2.users.ids['user2Uuid'].characters.ids['xter1Uuid'].value).to.equal(testVals.userTwoXterOneVal + 1);
 		});
 
-		it('doesn\'t return streakPoints if streak is neither 3 nor >= 5', () => {
+		it('doesn\'t return streakPoints if streak is not >= 3', () => {
 			const diff = undoGame(testState, testUndoGame);
 			expect(diff.users.ids['user1Uuid'].coins).to.equal(undefined);
 
-			testVals.userOneStreak = 4;
+			testVals.userOneStreak = 2;
 			const diff2 = undoGame(testState, testUndoGame);
 			expect(diff2.users.ids['user1Uuid'].coins).to.equal(undefined);
 		});
 
 		it('returns upcoming with the previous matchup showing up in the first slot', () => {
 			const diff = undoGame(testState, testUndoGame);
-			expect(diff.users.ids['user1Uuid'].upcoming && diff.users.ids['user1Uuid'].upcoming[0]).to.equal('xter1Uuid');
-			expect(diff.users.ids['user2Uuid'].upcoming && diff.users.ids['user2Uuid'].upcoming[0]).to.equal('xter2Uuid');
+			expect(diff.users.ids['user1Uuid'].upcoming && diff.users.ids['user1Uuid'].upcoming[0] && diff.users.ids['user1Uuid'].upcoming[0].characterUuid).to.equal('xter1Uuid');
+			expect(diff.users.ids['user2Uuid'].upcoming && diff.users.ids['user2Uuid'].upcoming[0] && diff.users.ids['user2Uuid'].upcoming[0].characterUuid).to.equal('xter2Uuid');
 		});
 	});
 
@@ -267,11 +267,11 @@ describe('undo-game logic', () => {
 			expect(diff2.users.ids['user2Uuid'].characters.ids['xter1Uuid'].value).to.equal(testVals.userTwoXterOneVal + 1);
 		});
 
-		it('subtracts coins properly if user is not on a 3 or >= 5 streak', () => {
+		it('subtracts coins properly if user is not on a >= 3 streak', () => {
 			const diff = undoGame(testState, testUndoGame, 'user1Uuid');
 			expect(diff.users.ids['user1Uuid'].coins).to.equal(testVals.userOneCoins - config.cost.rematch);
 
-			testVals.userOneStreak = 4;
+			testVals.userOneStreak = 2;
 			const diff2 = undoGame(testState, testUndoGame, 'user1Uuid');
 			expect(diff2.users.ids['user1Uuid'].coins).to.equal(testVals.userOneCoins - config.cost.rematch);
 		});

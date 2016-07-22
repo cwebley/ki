@@ -73,7 +73,6 @@ export default function updateInspectHandler (req, res) {
 				tournament.inspect.users.ids[uUuid].forEach((matchupItem, i) => {
 					if (matchupItem.characterUuid === cUuid) {
 						validatedIndex = i;
-						console.log("CHARACTER FOUND, INDEX: ", validatedIndex);
 					}
 				});
 				if (validatedIndex === undefined) {
@@ -81,9 +80,11 @@ export default function updateInspectHandler (req, res) {
 					invalidMatchups = true;
 					return;
 				}
-				// submitted character found in the list, splice 'em out
-				// push the full upcoming object into the hydrated data
-				hydratedMatchupData[uUuid].push(tournament.inspect.users.ids[uUuid].splice(validatedIndex, 1)[0]);
+				// submitted character found in the list, splice 'em out, add an inspectUserUuid field,
+				// and push the full upcoming object into the hydrated data
+				let foundMatchup = tournament.inspect.users.ids[uUuid].splice(validatedIndex, 1)[0];
+				foundMatchup.inspectUserUuid = req.user.uuid;
+				hydratedMatchupData[uUuid].push(foundMatchup);
 			});
 
 			// if any characters remain in the inspection list then the submission was invalid
@@ -95,8 +96,6 @@ export default function updateInspectHandler (req, res) {
 		if (invalidMatchups) {
 			return res.status(400).send(r.invalidMatchups);
 		}
-
-		console.log("HYDRATED: ", JSON.stringify(hydratedMatchupData, null, 4));
 
 		updateInspectQuery(req.redis, {
 			tournamentUuid: tournament.uuid,
