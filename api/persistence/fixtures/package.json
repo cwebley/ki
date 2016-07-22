@@ -1,0 +1,22 @@
+{
+  "name": "fixtures",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "mokr clean",
+    "tournaments": "mokr up tournaments",
+    "characters": "mokr run characters"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "each-async": "^1.1.1",
+    "faker": "^3.1.0",
+    "lodash.range": "^3.1.2",
+    "mokr": "^1.4.0"
+  },
+  "devDependencies": {
+    "babel": "^6.5.2"
+  }
+}

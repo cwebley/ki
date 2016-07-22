@@ -1,2 +1,3 @@
 node_modules
-public/dist/**
+api/persistence/fixtures/mokr/.mokr
+public/bundle.js
