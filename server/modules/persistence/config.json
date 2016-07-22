@@ -1,8 +1,0 @@
-{
-	"redis": {
-		"cleanInterval": 900000
-	},
-	"mysql": {
-		"cleanInterval": 900000
-	}
-}
