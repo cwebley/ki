@@ -156,47 +156,71 @@ class TournamentCreator extends Component {
 		const opponentName = getFormValue(formState, 'opponentName') || 'Opponent';
 
 		return (
-			<div>
-				<h2>{this.props.me.name}</h2>
-				<FormList
-					listName="myCharacters"
-					formState={formState}
-					updateList={this.props.updateList}
-					toggleListItems={this.props.toggleListItems}
-				>
-				<FormListToggle />
-					{this.props.characters.map(c =>
-						<Check
-							key={c.uuid}
-							name={c.slug}
-							label={c.name}
-							disabled={
-								//can't select this character if they're in the draft
-								!!draftCharacters[c.slug]
-							}
-						/>
-					)}
-				</FormList>
-				<h2>{opponentName}</h2>
-				<FormList
-					listName="opponentCharacters"
-					formState={formState}
-					updateList={this.props.updateList}
-					toggleListItems={this.props.toggleListItems}
-				>
-				<FormListToggle />
-					{this.props.characters.map(c =>
-						<Check
-							key={c.uuid}
-							name={c.slug}
-							label={c.name}
-							disabled={
-								//can't select this character if they're in the draft
-								!!draftCharacters[c.slug]
-							}
-						/>
-					)}
-				</FormList>
+			<div style={{
+				overflow: 'auto'
+			}}>
+				<div style={{
+					width: '50%',
+					float: 'left'
+				}}>
+					<h2>{this.props.me.name}</h2>
+					<FormList
+						listName="myCharacters"
+						formState={formState}
+						updateList={this.props.updateList}
+						toggleListItems={this.props.toggleListItems}
+					>
+					<div style={{
+						padding: '1rem',
+						width: '50%',
+						float: 'right'
+					}}>
+						<FormListToggle />
+					</div>
+						{this.props.characters.map(c =>
+							<Check
+								key={c.uuid}
+								name={c.slug}
+								label={c.name}
+								disabled={
+									//can't select this character if they're in the draft
+									!!draftCharacters[c.slug]
+								}
+							/>
+						)}
+					</FormList>
+				</div>
+				<div style={{
+					width: '50%',
+					float: 'right'
+				}}>
+					<h2>{opponentName}</h2>
+					<FormList
+						listName="opponentCharacters"
+						formState={formState}
+						updateList={this.props.updateList}
+						toggleListItems={this.props.toggleListItems}
+					>
+					<div style={{
+						padding: '1rem',
+						width: '50%',
+						float: 'right'
+					}}>
+						<FormListToggle />
+					</div>
+						{this.props.characters.map(c =>
+							<Check
+								key={c.uuid}
+								name={c.slug}
+								label={c.name}
+								disabled={
+									//can't select this character if they're in the draft
+									!!draftCharacters[c.slug]
+								}
+							/>
+						)}
+					</FormList>
+				</div>
 			</div>
 		);
 	}
@@ -237,7 +261,13 @@ class TournamentCreator extends Component {
 					updateList={this.props.updateList}
 					toggleListItems={this.props.toggleListItems}
 				>
-					<FormListToggle />
+					<div style={{
+						padding: '1rem',
+						width: '25%',
+						float: 'right'
+					}}>
+						<FormListToggle />
+					</div>
 					{this.props.characters.map(c =>
 						<Check
 							key={c.uuid}
@@ -264,9 +294,80 @@ class TournamentCreator extends Component {
 	}
 
 	renderReview () {
+		const tournamentName = getFormValue(this.props.formState, 'name') || 'Unnamed Tournament';
+		const goal = getFormValue(this.props.formState, 'goal') || 'Not yet specified';
+		const startCoins = getFormValue(this.props.formState, 'startCoins') || 'Not yet specified';
+		const opponentName = getFormValue(this.props.formState, 'opponentName') || 'Unnamed Opponent';
+		const myCharacters = getFormValue(this.props.formState, 'myCharacters') || [];
+		const opponentCharacters = getFormValue(this.props.formState, 'opponentCharacters') || [];
+		const draftCharacters = getFormValue(this.props.formState, 'draftCharacters') || [];
+		const charactersPerPlayer = getFormValue(this.props.formState, 'charactersPerPlayer') || 'Not yet specified';
+		const maxStartingValue = getFormValue(this.props.formState, 'maxStartingValue') || 'Not yet specified';
+
 		return (
-			<div>
-				<SubmitButton label="Submit"/>
+			<div style={{
+				overflow: 'auto'
+			}}>
+				<div style={{
+					paddingBottom: '1rem'
+				}}>
+					<h2 style={{
+						textAlign: 'center',
+						paddingBottom: '1rem'
+					}}>{tournamentName}</h2>
+					<ul>
+						<li>{`Goal: ${goal}`}</li>
+						<li>{`Starting coin stock: ${startCoins}`}</li>
+					</ul>
+				</div>
+				<div>
+				<h3 style={{
+					textAlign: 'center',
+					paddingBottom: '1rem'
+				}}>Players</h3>
+					<div style={{
+						width: '50%',
+						float: 'left'
+					}}>
+						<h3 style={{textAlign: 'center'}}>{this.props.me.name}</h3>
+						{myCharacters.length ? <ul>{myCharacters.map(cSlug =>
+							<li key={cSlug}>{cSlug}</li>
+						)}</ul> : false}
+					</div>
+					<div style={{
+						width: '50%',
+						float: 'right'
+					}}>
+						<h3 style={{textAlign: 'center'}}>{opponentName}</h3>
+						{opponentCharacters.length ? <ul>{opponentCharacters.map(cSlug =>
+							<li key={cSlug}>{cSlug}</li>
+						)}</ul> : false}
+					</div>
+				</div>
+				<div>
+					<h2 style={{
+						textAlign: 'center',
+						paddingBottom: '1rem'
+					}}>Draft</h2>
+					{draftCharacters.length ? <div>
+						<h3>Eligible Characters</h3>
+						<ul>{draftCharacters.map(cSlug =>
+							<li key={cSlug}>{cSlug}</li>
+						)}</ul>
+						<h3>Draft Settings</h3>
+						<ul>
+							<li>{`Characters Per Player: ${charactersPerPlayer}`}</li>
+							<li>{`Max starting value: ${maxStartingValue}`}</li>
+						</ul>
+					</div> : <span>This tournament will have no draft</span>}
+				</div>
+
+				<div style={{
+					paddingTop: '1rem',
+					float: 'right'
+				}}>
+					<SubmitButton label="Submit"/>
+				</div>
 			</div>
 		);
 	}
@@ -276,19 +377,24 @@ class TournamentCreator extends Component {
 		return (
 			<div>
 				{this.renderForm(stepIndex)}
-				<div style={{marginTop: 12}}>
-					<FlatButton
-						label="Back"
-						disabled={stepIndex === 0}
-						onTouchTap={() => this.prevStep()}
-						style={{marginRight: 12}}
-					/>
-					<RaisedButton
-						label={stepIndex === 2 ? 'Review' : 'Next'}
-						primary={true}
-						onTouchTap={() => this.nextStep()}
-						disabled={stepIndex > 2}
-					/>
+				<div>
+					<div style={{
+						paddingTop: '1rem',
+						margin: '0 auto'
+					}}>
+						<FlatButton
+							label="Back"
+							disabled={stepIndex === 0}
+							onTouchTap={() => this.prevStep()}
+							style={{marginRight: 12}}
+						/>
+						<RaisedButton
+							label={stepIndex === 2 ? 'Review' : 'Next'}
+							primary={true}
+							onTouchTap={() => this.nextStep()}
+							disabled={stepIndex > 2}
+						/>
+					</div>
 				</div>
 			</div>
 		);
