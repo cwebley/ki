@@ -31,6 +31,7 @@ const tournamentReducer = (state = {}, action) => {
 	case c.ODDSMAKER_SUCCESS:
 	case c.DECREMENT_SUCCESS:
 	case c.UNDO_LAST_GAME_SUCCESS:
+	case c.EXTEND_TOURNAMENT_SUCCESS:
 		return {
 			...state,
 			// reasons should always get initialized to at least an empty array
@@ -46,6 +47,7 @@ const tournamentReducer = (state = {}, action) => {
 	case c.SUBMIT_GAME_FAILURE:
 	case c.SUBMIT_SEEDS_FAILURE:
 	case c.UPDATE_MATCHUPS_FAILURE:
+	case c.EXTEND_TOURNAMENT_FAILURE:
 		return {
 			...state,
 			reasons: tournamentReasonsReducer(state.reasons, action)

@@ -408,6 +408,11 @@ r.Unique = {
 	level: 'error',
 	id: 'unique'
 };
+r.TournamentAlreadyOver = {
+	message: 'Tournament already over',
+	level: 'error',
+	id: 'tournamentAlreadyOver'
+};
 
 // Lowercase descriptions are single reason methods for convenience
 Object.keys(r).forEach((k) => {

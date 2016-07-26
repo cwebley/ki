@@ -12,6 +12,7 @@ import useInspect from '../actions/use-inspect';
 import decrementCharacter from '../actions/decrement-character';
 import toggleDraftFilter from '../actions/toggle-draft-filter';
 import undoLastGame from '../actions/undo-last-game';
+import extendTournament from '../actions/extend-tournament';
 import updateInspectState from '../actions/update-inspect-state';
 import updateMatchups from '../actions/update-matchups';
 
@@ -37,6 +38,7 @@ import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import IconFilterList from 'material-ui/svg-icons/content/filter-list';
 import IconUndo from 'material-ui/svg-icons/content/undo';
+import IconRedo from 'material-ui/svg-icons/content/redo';
 import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
 
 const styles = {
@@ -161,6 +163,18 @@ class TournamentLanding extends Component {
 							icon={<IconUndo />}
 							disabled={!this.props.tournament.previous}
 							onTouchTap={() => this.undoLastGame()}
+						/>
+					</div>}
+					{this.props.tournament.championUuid && <div style={{
+						position: 'absolute',
+						right: 0,
+						bottom: 0
+					}}>
+						<FlatButton
+							label="Extend Tournaent 25pts"
+							hoverColor={red500}
+							icon={<IconRedo />}
+							onTouchTap={() => this.extendTournament()}
 						/>
 					</div>}
 					{this.props.tournament.reasons && this.props.tournament.reasons.length > 0 && <Snackbar
@@ -292,6 +306,7 @@ class TournamentLanding extends Component {
 							label={`(${leftCharacter.value}) ${leftCharacter.name}`}
 							primary
 							onTouchTap={() => this.submitGame(leftUser, leftCharacter, rightUser, rightCharacter)}
+							disabled={!!tournament.championUuid}
 						/>
 					</div>
 					<div style={{
@@ -304,6 +319,7 @@ class TournamentLanding extends Component {
 							label={`(${rightCharacter.value}) ${rightCharacter.name}`}
 							primary
 							onTouchTap={() => this.submitGame(rightUser, rightCharacter, leftUser, leftCharacter)}
+							disabled={!!tournament.championUuid}
 						/>
 					</div>
 					<div style={{
@@ -602,6 +618,11 @@ class TournamentLanding extends Component {
 		this.props.undoLastGame(this.props.tournament.slug, this.props.me.token);
 	}
 
+	extendTournament () {
+		const newGoal = this.props.tournament.goal + 25;
+		this.props.extendTournament(this.props.tournament.slug, newGoal, this.props.me.token);
+	}
+
 	useInspect () {
 		this.props.useInspect(this.props.tournament.slug, this.props.me.token);
 	}
@@ -649,5 +670,6 @@ export default connect(mapStateToProps, {
 	draftCharacter, submitGame, ...formActions,
 	rematch, oddsmaker, useInspect,
 	decrementCharacter, toggleDraftFilter,
-	undoLastGame, updateInspectState, updateMatchups
+	undoLastGame, updateInspectState, updateMatchups,
+	extendTournament
 })(TournamentLanding);

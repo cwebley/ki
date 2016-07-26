@@ -51,6 +51,9 @@ export default function submitGameHandler (req, res) {
 		if (!tournament) {
 			return res.status(404).send(r.tournamentNotFound);
 		}
+		if (tournament.championUuid) {
+			return res.status(409).send(r.tournamentAlreadyOver);
+		}
 
 		// validate inputs
 		// this is a little difficult because we don't have the uuids, only slugs

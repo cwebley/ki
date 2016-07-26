@@ -21,6 +21,7 @@ import oddsmaker from './handlers/oddsmaker';
 import decrementCharacter from './handlers/decrement-character';
 import useInspect from './handlers/use-inspect';
 import updateInspect from './handlers/update-inspect';
+import editTournament from './handlers/edit-tournament';
 
 let router = express.Router();
 
@@ -57,6 +58,7 @@ router.post('/tournaments', requiresLogin, createTournament);
 router.get('/tournament/:tournamentSlug', acceptUser, getTournament);
 
 // TODO: logged in user must be in the tournament
+router.put('/tournament/:tournamentSlug', requiresLogin, editTournament);
 router.post('/tournament/:tournamentSlug/seed', requiresLogin, submitSeeds);
 router.post('/tournament/:tournamentSlug/game', requiresLogin, submitGame);
 router.delete('/tournament/:tournamentSlug/game', requiresLogin, undoGame);

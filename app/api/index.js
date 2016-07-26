@@ -201,6 +201,24 @@ export const undoLastGame = (tournamentSlug, token) => new Promise((resolve, rej
 	});
 });
 
+export const extendTournament = (tournamentSlug, newGoal, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.singleTournamentPath + '/' + tournamentSlug,
+		method: 'PUT',
+		json: {
+			goal: newGoal
+		},
+		headers: {
+			Authorization: 'Bearer ' + token
+		}
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});
+
 export const useInspect = (tournamentSlug, token) => new Promise((resolve, reject) => {
 	nets({
 		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/inspect',

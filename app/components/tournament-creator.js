@@ -126,7 +126,7 @@ class TournamentCreator extends Component {
 					name="name"
 					validate={['required']}
 					label="Tournament Name"
-					placeholder="Like a Rock: Behind The Ruin"
+					placeholder="Like a Rock: A story of ruin"
 				/>
 				<Select
 					name="goal"

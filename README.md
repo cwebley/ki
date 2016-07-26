@@ -9,7 +9,6 @@ complete work in progress. master branch generally stable.
 Inspect dnd stuff is pretty slow. Plus there's some bug related to hovering over a long name/fat card that updates every hover event causing a crawl.
 
 ---Tournament Creator Page---
-review form data before submission
 add a clear form button
 
 ---Seed Page---
