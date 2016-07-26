@@ -171,7 +171,7 @@ class TournamentLanding extends Component {
 						bottom: 0
 					}}>
 						<FlatButton
-							label="Extend Tournaent 25pts"
+							label={`Extend goal to ${this.props.tournament.goal + 25} pts`}
 							hoverColor={red500}
 							icon={<IconRedo />}
 							onTouchTap={() => this.extendTournament()}
