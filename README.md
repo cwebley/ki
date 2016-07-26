@@ -23,10 +23,8 @@ better indicator on player card of heating/fire
 material-ui determinate progress bar for user scores
 crown icon denoting previous champion in a current player matchup
 crown icon denoting previous winner in a character matchup
-extend tournament button after champion is crowned
 
 ---Server---
-extend tournament after champion is crowned logic
 
 ---Powers---
 Oddsmaker could return a message telling you how many you got
