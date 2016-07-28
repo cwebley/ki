@@ -20,7 +20,6 @@ Show W-L record of each character last time you faced them
 --Tournament Landing---
 tournament not found message
 better indicator on player card of heating/fire
-material-ui determinate progress bar for user scores
 crown icon denoting previous champion in a current player matchup
 crown icon denoting previous winner in a character matchup
 

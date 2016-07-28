@@ -40,6 +40,8 @@ import IconFilterList from 'material-ui/svg-icons/content/filter-list';
 import IconUndo from 'material-ui/svg-icons/content/undo';
 import IconRedo from 'material-ui/svg-icons/content/redo';
 import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
+import LinearProgress from 'material-ui/LinearProgress';
+
 
 const styles = {
 	pageStyle: {
@@ -255,10 +257,15 @@ class TournamentLanding extends Component {
 			streakText = -1 * user.streak + 'L';
 			streakStyle.color = red500;
 		}
+		let percentComplete = 100 * user.score / this.props.tournament.goal;
+		if (percentComplete > 100) {
+			percentComplete = 100;
+		}
 
 		return (
 			<div>
 				<div style={{fontSize: 'larger'}}>{user.score}</div>
+				<LinearProgress mode="determinate" value={percentComplete} />
 				<div>{`${user.wins} - ${user.losses}`}</div>
 				<div style={{
 					...streakStyle,
