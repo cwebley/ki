@@ -20,11 +20,10 @@ export default function undoGameQuery (db, opts, diff, cb) {
 		uuid: opts.tournamentUuid
 	};
 	let tournamentsUpdates = {};
-	if (get(diff._remove.championUuid)) {
+	if (get(diff, '_remove.championUuid')) {
 		// set the champion_uuid to the null value
 		tournamentsUpdates.championUuid = null;
 	}
-
 	diff.users.result.forEach(userUuid => {
 		const tournamentUsersWhere = {
 			tournamentUuid: opts.tournamentUuid,

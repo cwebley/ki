@@ -39,6 +39,7 @@ import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import IconFilterList from 'material-ui/svg-icons/content/filter-list';
 import IconUndo from 'material-ui/svg-icons/content/undo';
 import IconRedo from 'material-ui/svg-icons/content/redo';
+import IconFire from 'material-ui/svg-icons/social/whatshot';
 import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
 
@@ -539,7 +540,9 @@ class TournamentLanding extends Component {
 						{character.value || '?'}
 					</div>
 					<div>
-						<h4>{character.name}</h4>
+						{character.streak >= 3 && <IconFire color={red500}/>}
+						<h4 style={{display: 'inline'}}>{character.name}</h4>
+						{character.streak >= 3 && <IconFire color={red500}/>}
 						<div>{character.wins} - {character.losses}</div>
 					</div>
 					{leftSide && <div style={{
@@ -569,7 +572,7 @@ class TournamentLanding extends Component {
 						paddingRight: '1em',
 						lineHeight: '2.5em'
 					}}>
-					<div style={streakStyle}>{streakText}</div>
+						<div style={streakStyle}>{streakText}</div>
 					</div>
 				</Paper>
 			</li>

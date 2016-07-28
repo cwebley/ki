@@ -16,10 +16,10 @@ Sort seeds by how you seeded them last time against this opponent if possible
 Show W-L record of each character last time you faced them
 
 ---Draft Page---
+sort updated draft data on receipt. data gets shuffled with every update.
 
 --Tournament Landing---
 tournament not found message
-better indicator on player card of heating/fire
 crown icon denoting previous champion in a current player matchup
 crown icon denoting previous winner in a character matchup
 
@@ -32,6 +32,8 @@ Oddsmaker could return a message telling you how many you got
 Kubernetes
 Completely configurable costs, powers, and power settings on a per tournament basis
 SSL
+Responsive styling
+DnD on touch devices
 
 --New Pages--
 tournament index page
