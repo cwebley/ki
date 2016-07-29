@@ -105,7 +105,9 @@ const getDraftCharactersForUserQuery = (db, tournamentUuid, userUuid, cb) => {
 			dc.character_uuid AS "uuid",
 			c.name, c.season, c.slug,
 			s.value,
-			uc.streak AS "globalStreak", uc.best_streak AS "globalBestStreak"
+			uc.streak AS "globalStreak", uc.best_streak AS "globalBestStreak",
+			(SELECT SUM(wins) FROM tournament_characters WHERE user_uuid = uc.user_uuid AND character_uuid = c.uuid) wins,
+			(SELECT SUM(losses) FROM tournament_characters WHERE user_uuid = uc.user_uuid AND character_uuid = c.uuid) losses
 		FROM draft_characters AS dc
 			JOIN characters AS c
 				ON c.uuid = dc.character_uuid
@@ -121,7 +123,6 @@ const getDraftCharactersForUserQuery = (db, tournamentUuid, userUuid, cb) => {
 	`;
 	const params = [tournamentUuid, userUuid];
 	db.query(sql, params, (err, results) => {
-
 		if (err) {
 			log.error(err, { sql, params });
 			return cb(err);
