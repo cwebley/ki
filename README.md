@@ -5,6 +5,7 @@ Complete work in progress.
 * Node
 * Mocha/Chai
 * React
+* Redux
 * [React DnD](https://github.com/gaearon/react-dnd)
 * [Material UI](http://www.material-ui.com/)
 * Postgres
