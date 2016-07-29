@@ -301,7 +301,7 @@ class TournamentCreator extends Component {
 		const myCharacters = getFormValue(this.props.formState, 'myCharacters') || [];
 		const opponentCharacters = getFormValue(this.props.formState, 'opponentCharacters') || [];
 		const draftCharacters = getFormValue(this.props.formState, 'draftCharacters') || [];
-		const charactersPerPlayer = getFormValue(this.props.formState, 'charactersPerPlayer') || 'Not yet specified';
+		const charactersPerUser = getFormValue(this.props.formState, 'charactersPerUser') || 'Not yet specified';
 		const maxStartingValue = getFormValue(this.props.formState, 'maxStartingValue') || 'Not yet specified';
 
 		return (
@@ -356,7 +356,7 @@ class TournamentCreator extends Component {
 						)}</ul>
 						<h3>Draft Settings</h3>
 						<ul>
-							<li>{`Characters Per Player: ${charactersPerPlayer}`}</li>
+							<li>{`Characters Per Player: ${charactersPerUser}`}</li>
 							<li>{`Max starting value: ${maxStartingValue}`}</li>
 						</ul>
 					</div> : <span>This tournament will have no draft</span>}
