@@ -442,7 +442,8 @@ class TournamentLanding extends Component {
 		return (
 			<div>
 				<div style={{
-					marginBottom: '1em'
+					marginTop: '1em',
+					overflow: 'auto'
 				}}>
 					<div style={{
 						width: '50%',
@@ -469,7 +470,6 @@ class TournamentLanding extends Component {
 				</div>
 				<div style={{
 					marginTop: '1em',
-					clear: 'both'
 				}}>
 					<RaisedButton
 						label="Save Changes"
