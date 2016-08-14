@@ -442,33 +442,42 @@ class TournamentLanding extends Component {
 		return (
 			<div>
 				<div style={{
-					width: '50%',
-					float: 'left'
+					marginBottom: '1em'
 				}}>
-					<InspectContainer
-						characters={leftHydratedCharacters}
-						updateInspectState={this.updateInspectState}
-						userUuid={leftUserUuid}
-						side="left"
-					/>
+					<div style={{
+						width: '50%',
+						float: 'left'
+					}}>
+						<InspectContainer
+							characters={leftHydratedCharacters}
+							updateInspectState={this.updateInspectState}
+							userUuid={leftUserUuid}
+							side="left"
+						/>
+					</div>
+					<div style={{
+						width: '50%',
+						float: 'right'
+					}}>
+						<InspectContainer
+							characters={rightHydratedCharacters}
+							updateInspectState={this.updateInspectState}
+							userUuid={rightUserUuid}
+							side="right"
+						/>
+					</div>
 				</div>
 				<div style={{
-					width: '50%',
-					float: 'right'
+					marginTop: '1em',
+					clear: 'both'
 				}}>
-					<InspectContainer
-						characters={rightHydratedCharacters}
-						updateInspectState={this.updateInspectState}
-						userUuid={rightUserUuid}
-						side="right"
+					<RaisedButton
+						label="Save Changes"
+						primary
+						disabled={!tournament.inspect.custom || (!tournament.inspect.custom[rightUserUuid] && !tournament.inspect.custom[leftUserUuid])}
+						onTouchTap={() => this.updateMatchups()}
 					/>
 				</div>
-				<RaisedButton
-					label="Save Changes"
-					primary
-					disabled={!tournament.inspect.custom || (!tournament.inspect.custom[rightUserUuid] && !tournament.inspect.custom[leftUserUuid])}
-					onTouchTap={() => this.updateMatchups()}
-				/>
 			</div>
 		);
 	}

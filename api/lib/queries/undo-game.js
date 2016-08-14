@@ -189,20 +189,46 @@ function deleteGame (db, gameUuid, rematch, cb) {
 		return cb();
 	}
 
-	const sql = `
-		DELETE FROM
-			games
-		WHERE uuid = $1
-	`;
 	const params = [
 		gameUuid
 	];
 
-	db.query(sql, params, (err, results) => {
+	const inspectSql = `
+		DELETE FROM
+			inspect_games
+		WHERE game_uuid = $1
+	`;
+
+	const oddsmakerSql = `
+		DELETE FROM
+			oddsmaker_games
+		WHERE game_uuid = $1
+	`;
+
+	const gamesSql = `
+		DELETE FROM
+			games
+		WHERE uuid = $1
+	`;
+
+
+	db.query(inspectSql, params, (err, results) => {
 		if (err) {
 			log.error(err, { sql, params });
 		}
-		return cb(err, results);
+
+		db.query(oddsmakerSql, params, (err, results) => {
+			if (err) {
+				log.error(err, { sql, params });
+			}
+
+			db.query(gamesSql, params, (err, results) => {
+				if (err) {
+					log.error(err, { sql, params });
+				}
+				return cb(err, results);
+			});
+		});
 	});
 }
 
