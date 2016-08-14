@@ -19,7 +19,11 @@ class InspectCharacter extends Component {
 	render () {
 		return this.props.connectDragSource(this.props.connectDropTarget(
 			<div style={this.getStyles()}>
-				<Paper>
+				<Paper style={{
+					height: '100%',
+					overflow: 'hidden',
+					whiteSpace: 'nowrap'
+				}}>
 					<div>
 						{this.props.value || '?'}
 					</div>
@@ -34,7 +38,8 @@ class InspectCharacter extends Component {
 	getStyles () {
 		const styles = {
 			border: '1px dashed gray',
-			cursor: 'move'
+			cursor: 'move',
+			height: '4em'
 		};
 
 		if (this.props.isDragging) {
