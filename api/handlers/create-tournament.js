@@ -88,7 +88,7 @@ export default function createTournamentHandler (req, res) {
 			return res.status(500).send(r.internal);
 		}
 		if (!opponentData) {
-			return res.status(400).send(r.InvalidOpponentName);
+			return res.status(400).send(r.invalidOpponentName);
 		}
 
 		tournamentOpts.uuid = uuid.v4();
