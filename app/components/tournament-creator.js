@@ -170,13 +170,13 @@ class TournamentCreator extends Component {
 						updateList={this.props.updateList}
 						toggleListItems={this.props.toggleListItems}
 					>
-					<div style={{
-						padding: '1rem',
-						width: '50%',
-						float: 'right'
-					}}>
-						<FormListToggle />
-					</div>
+						<div style={{
+							padding: '1rem',
+							width: '50%',
+							float: 'right'
+						}}>
+							<FormListToggle />
+						</div>
 						{this.props.characters.map(c =>
 							<Check
 								key={c.uuid}
@@ -287,7 +287,7 @@ class TournamentCreator extends Component {
 					name="maxStartingValue"
 					label="Max starting value"
 					items={config.oneToTwentyFive}
-					defaultValue={this.props.characters.length}
+					defaultValue={this.props.characters.length / 2}
 				/>
 			</div>
 		);
