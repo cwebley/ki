@@ -41,7 +41,7 @@ export default function submitGame (state, gameResult) {
 				characters: {
 					ids: {
 						[winningCharacterUuid]: {
-							// raw value always goes down. if character is at 1, this can go down to 0.
+							// raw value always goes down for winning character. if character is at 1, this can go down to 0.
 							// useful for undos and rematches so the data isn't lost.
 							rawValue: state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].rawValue - 1,
 							wins: state.users.ids[winnerUuid].characters.ids[winningCharacterUuid].wins + 1,
@@ -64,7 +64,7 @@ export default function submitGame (state, gameResult) {
 							streak: updateLosingStreak(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].streak),
 							globalStreak: updateLosingStreak(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].globalStreak),
 							value: updateLoserValue(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].value),
-							// this is the only way to reset raw value to 1: losing a game
+							// after this raw value will equal value
 							rawValue: updateLoserRawValue(state.users.ids[loserUuid].characters.ids[losingCharacterUuid].rawValue)
 						}
 					},
@@ -126,6 +126,8 @@ export default function submitGame (state, gameResult) {
 				diff.users.ids[winnerUuid].characters.result.push(cUuid);
 			}
 			diff.users.ids[winnerUuid].characters.ids[cUuid].value = state.users.ids[winnerUuid].characters.ids[cUuid].value + 1;
+			// raw value is set to match value here
+			diff.users.ids[winnerUuid].characters.ids[cUuid].rawValue = updateLoserRawValue(state.users.ids[winnerUuid].characters.ids[cUuid].value)
 		}
 	});
 
@@ -238,8 +240,8 @@ export function updateLoserValue (previousValue) {
 }
 
 export function updateLoserRawValue (previousRawValue) {
-	if (previousRawValue < 1) {
-		return 1;
+	if (previousRawValue < 2) {
+		return 2;
 	}
 	return previousRawValue + 1;
 }

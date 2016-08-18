@@ -72,7 +72,7 @@ export default function undoGameHandler (req, res) {
 					if (err) {
 						return res.status(500).send(r.internal);
 					}
-					
+
 					incrementInspectQuery(req.redis, {
 						tournamentUuid: tournament.uuid,
 						userUuid: tournament.users.result[0],

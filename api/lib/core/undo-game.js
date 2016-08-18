@@ -106,7 +106,9 @@ export default function undoGame (state, game, rematch) {
 				diff.users.ids[winnerUuid].characters.ids[cUuid] = {};
 				diff.users.ids[winnerUuid].characters.result.push(cUuid);
 			}
+			// both value and raw value go down for all characters except the one whose fire is being undone
 			diff.users.ids[winnerUuid].characters.ids[cUuid].value = state.users.ids[winnerUuid].characters.ids[cUuid].value - 1;
+			diff.users.ids[winnerUuid].characters.ids[cUuid].rawValue = state.users.ids[winnerUuid].characters.ids[cUuid].rawValue - 1;
 		}
 	});
 
@@ -123,7 +125,8 @@ export default function undoGame (state, game, rematch) {
 
 			const updatedValue = valueFromRawValue(state.users.ids[loserUuid].characters.ids[cUuid].rawValue);
 
-			// if the updated value isn't different than the current value don't add to the diff
+			// if the updated value is different than the current value add to the diff
+			// this won't be the case if raw value was < 1
 			if (updatedValue !== state.users.ids[loserUuid].characters.ids[cUuid].value) {
 				diff.users.ids[loserUuid].characters.ids[cUuid].value = updatedValue;
 			}
