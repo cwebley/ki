@@ -224,7 +224,7 @@ r.InvalidLosingCharacterSlug = {
 	id: 'invalidLosingCharacterSlug'
 };
 r.InvalidGame = {
-	message: 'Invalid game submission. Double check which characters are in the current matchup',
+	message: 'Invalid game submission--double check which characters are active',
 	level: 'error',
 	id: 'invalidGame'
 };
