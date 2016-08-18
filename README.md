@@ -18,7 +18,6 @@ Inspect dnd stuff is pretty slow. Plus there's some bug related to hovering over
 
 ###Tournament Creator Page
 * Add a clear form button
-* Inspect matchups don't always line up depending on screen size
 
 ###Seed Page
 * Sort seeds by how you seeded them last time against this opponent if possible
@@ -41,7 +40,7 @@ Inspect dnd stuff is pretty slow. Plus there's some bug related to hovering over
 * Kubernetes
 * Completely configurable costs, powers, and power settings on a per tournament basis
 * SSL
-* Responsive styling
+* Mobile first responsive styling
 * DnD on touch devices
 
 ###New Pages
