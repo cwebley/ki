@@ -31,7 +31,7 @@ export default function createUpcomingListQuery (rConn, opts, cb) {
 		const randomOpponentCharacters = range(0, config.defaults.upcomingListLength).map(() => generateUpcomingCharacter(opts.opponent.characters));
 		const opponentKey = upcomingList(opts.uuid, opts.opponent.uuid);
 
-		// push the opponent datar
+		// push the opponent data
 		rConn.rpush(opponentKey, ...randomOpponentCharacters, (err, results) => {
 			if (err) {
 				log.error(err, {
@@ -44,8 +44,8 @@ export default function createUpcomingListQuery (rConn, opts, cb) {
 				value: randomOpponentCharacters
 			});
 			return cb(err, {
-				[opts.user.uuid]: randomUserCharacters,
-				[opts.opponent.uuid]: randomOpponentCharacters
+				[opts.user.uuid]: JSON.parse(randomUserCharacters),
+				[opts.opponent.uuid]: JSON.parse(randomOpponentCharacters)
 			});
 		});
 	});

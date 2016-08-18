@@ -106,7 +106,7 @@ export default function submitGameHandler (req, res) {
 
 		// check that the submitted characters are actually in the current matchup
 		if (tournament.users.ids[winnerUuid].upcoming[0].characterUuid !== winningCharacterUuid || tournament.users.ids[loserUuid].upcoming[0].characterUuid !== losingCharacterUuid) {
-			problems.push(r.invalidGame);
+			problems.push(r.InvalidGame);
 		}
 		if (problems.length) {
 			return res.status(400).send(r(...problems));

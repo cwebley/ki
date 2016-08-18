@@ -145,7 +145,6 @@ export default function submitGame (state, gameResult) {
 				// we need this to accurately rematch and undo this game. otherwise this data is lost.
 				diff.users.ids[loserUuid].characters.ids[cUuid].rawValue = state.users.ids[loserUuid].characters.ids[cUuid].rawValue - 1;
 
-				// if the value changed, push the character on the result list
 				if (decreasedValue) {
 					diff.users.ids[loserUuid].characters.ids[cUuid].value = decreasedValue;
 				}

@@ -187,7 +187,6 @@ describe('undo-game logic', () => {
 		});
 
 		it('handles the edge case of the winning character value being 1 after the the last game', () => {
-
 			testVals.userOneXterOneVal = 1;
 			testVals.lastGameWasForOnePoint = true;
 
@@ -201,7 +200,6 @@ describe('undo-game logic', () => {
 		});
 
 		it('handles undoing the winning player and character streaks properly', () => {
-
 			testVals.userOneStreak = 5;
 			testVals.userOneXterOneStreak = 5;
 			testVals.userTwoStreak = -5;
@@ -216,7 +214,6 @@ describe('undo-game logic', () => {
 		});
 
 		it('always subtracts 1 point for losing character\'s value', () => {
-
 			testVals.userTwoXterTwoVal = 7;
 			const diff = undoGame(testState, testUndoGame, 'user1Uuid');
 			expect(diff.users.ids['user2Uuid'].characters.ids['xter2Uuid'].value).to.equal(6);

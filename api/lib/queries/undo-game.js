@@ -6,7 +6,7 @@ import config from '../../config';
 
 export default function undoGameQuery (db, opts, diff, cb) {
 	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'coins'];
-	const tournamentCharactersFields = ['value', 'wins', 'losses', 'streak', 'fireWins'];
+	const tournamentCharactersFields = ['value', 'rawValue', 'wins', 'losses', 'streak', 'fireWins'];
 	const usersFields = ['globalStreak'];
 	const userCharactersFields = ['globalStreak'];
 
