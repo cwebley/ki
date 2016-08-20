@@ -490,25 +490,33 @@ class TournamentLanding extends Component {
 		const valueStyles = {
 			fontSize: '2em',
 			fontWeight: 600,
-			padding: '0 .4em'
+			width: '25%'
 		};
 
 		return (
 			<li
 				key={character.uuid}
 			>
-				<Paper style={{marginBottom: '0.25em'}}>
-					<h4>{character.name}</h4>
-					<IconButton
-						disabled={!this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
-						onTouchTap={() => this.draftCharacter(character, this.props.me.uuid)}
-					>
-						<AddCircleOutline color={cyan500}/>
-					</IconButton>
-					<div style={{...valueStyles, float: 'left'}}>
+				<Paper style={{
+					marginBottom: '0.25em',
+					width: '100%',
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center'
+				}}>
+					<div style={{...valueStyles}}>
 						{character.users[this.props.tournament.users.result[0]].value}
 					</div>
-					<div style={{...valueStyles, float: 'right'}}>
+					<div>
+						<h4>{character.name}</h4>
+						<IconButton
+							disabled={!this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
+							onTouchTap={() => this.draftCharacter(character, this.props.me.uuid)}
+						>
+							<AddCircleOutline color={cyan500}/>
+						</IconButton>
+					</div>
+					<div style={{...valueStyles}}>
 						{character.users[this.props.tournament.users.result[1]].value}
 					</div>
 				</Paper>
