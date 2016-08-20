@@ -489,9 +489,37 @@ class TournamentLanding extends Component {
 	renderDraftCharacter (character) {
 		const valueStyles = {
 			fontSize: '2em',
-			fontWeight: 600,
-			width: '25%'
+			fontWeight: 600
 		};
+		const dataStyles = {
+			flex: '1 1 20%'
+		}
+
+		let leftStreakText = '';
+		let leftStreakStyle = {
+			flex: '0 1 10%'
+		};
+		if (character.users[this.props.tournament.users.result[0]].globalStreak > 0) {
+			leftStreakText = character.users[this.props.tournament.users.result[0]].globalStreak + 'W';
+			leftStreakStyle.color = green500;
+		}
+		if (character.users[this.props.tournament.users.result[0]].globalStreak < 0) {
+			leftStreakText = -1 * character.users[this.props.tournament.users.result[0]].globalStreak + 'L';
+			leftStreakStyle.color = red500;
+		}
+
+		let rightStreakText = '';
+		let rightStreakStyle = {
+			flex: '0 1 10%'
+		};
+		if (character.users[this.props.tournament.users.result[1]].globalStreak > 0) {
+			rightStreakText = character.users[this.props.tournament.users.result[1]].globalStreak + 'W';
+			rightStreakStyle.color = green500;
+		}
+		if (character.users[this.props.tournament.users.result[1]].streak < 0) {
+			rightStreakText = -1 * character.users[this.props.tournament.users.result[1]].globalStreak + 'L';
+			rightStreakStyle.color = red500;
+		}
 
 		return (
 			<li
@@ -501,13 +529,23 @@ class TournamentLanding extends Component {
 					marginBottom: '0.25em',
 					width: '100%',
 					display: 'flex',
-					justifyContent: 'space-between',
+					justifyContent: 'space-around',
 					alignItems: 'center'
 				}}>
-					<div style={{...valueStyles}}>
-						{character.users[this.props.tournament.users.result[0]].value}
+					<div style={dataStyles}>
+						<div style={valueStyles}>
+							{character.users[this.props.tournament.users.result[0]].value}
+						</div>
+						<div>
+							{`${character.users[this.props.tournament.users.result[0]].wins} - ${character.users[this.props.tournament.users.result[0]].losses}`}
+						</div>
 					</div>
-					<div>
+					<div style={leftStreakStyle}>
+						{leftStreakText}
+					</div>
+					<div style={{
+						flex: '2 1 40%'
+					}}>
 						<h4>{character.name}</h4>
 						<IconButton
 							disabled={!this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
@@ -516,8 +554,16 @@ class TournamentLanding extends Component {
 							<AddCircleOutline color={cyan500}/>
 						</IconButton>
 					</div>
-					<div style={{...valueStyles}}>
-						{character.users[this.props.tournament.users.result[1]].value}
+					<div style={rightStreakStyle}>
+						{rightStreakText}
+					</div>
+					<div style={dataStyles}>
+						<div style={valueStyles}>
+							{character.users[this.props.tournament.users.result[1]].value}
+						</div>
+						<div>
+							{`${character.users[this.props.tournament.users.result[1]].wins} - ${character.users[this.props.tournament.users.result[1]].losses}`}
+						</div>
 					</div>
 				</Paper>
 			</li>
