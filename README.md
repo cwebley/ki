@@ -73,7 +73,7 @@ Complete work in progress.
 * checkpoints: winning predictions? stat summary, best streaks, upcoming matches preview
 * game history list on tournament-landing page
 
-###Powerup brainstorming:
+##Powerup brainstorming:
 * Query
  * 1 cost power to find out when a character is up.
  * maybe this live updates forever or something cool.
