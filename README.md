@@ -1,4 +1,4 @@
-##The Tournament Of Champions
+#The Tournament Of Champions
 1v1 full cast fighting game tournament app built with Killer Instinct in mind.
 Complete work in progress.
 
@@ -13,8 +13,11 @@ Complete work in progress.
 * Webpack
 * Babel
 
+##Todo: Upcoming bug fixes and feature additions
+
 ###Random bugs
-Inspect dnd stuff is pretty slow. Plus there's some bug related to hovering over a long name/fat card that updates every hover event causing a crawl.
+* Inspect sometimes hides a guy? Not sure what's happening here. Maybe its just Kanra that hides.
+* Inspect DnD stuff is pretty slow. Plus there's some bug related to hovering over a long name/fat card that updates every hover event causing a crawl.
 
 ###Tournament Creator Page
 * Add a clear form button
@@ -75,6 +78,11 @@ Inspect dnd stuff is pretty slow. Plus there's some bug related to hovering over
  * 1 cost power to find out when a character is up.
  * maybe this live updates forever or something cool.
  * could even be tied into the matchup inspector
+
+* Meld
+ * Risk/ reward kind of power. Blend 2 characters into one.
+ * The values for each character average out, and every time one of the melded characters show up, it could be EITHER character
+ * The actual matchup isn't decided/resolved until it is the current match. Inspect won't tell you who the melded character is
 
 * reseed opponents characters
 
