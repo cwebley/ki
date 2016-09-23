@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import { ItemTypes } from '../constants';
 import flow from 'lodash.flow';
+import intToStreak from 'int-to-streak';
 
 import Paper from 'material-ui/Paper';
 
@@ -13,6 +14,11 @@ class DraggableCharacter extends Component {
 	static propTypes = {
 		name: PropTypes.string.isRequired,
 		draftCharacter: PropTypes.bool,
+		value: PropTypes.number,
+		wins: PropTypes.any, // comes back from api as string becuase of node-pg's bigint handling when using SUM()
+		losses: PropTypes.any, // comes back from api as string becuase of node-pg's bigint handling when using SUM()
+		globalStreak: PropTypes.number,
+		globalBestStreak: PropTypes.number,
 		moveCharacter: PropTypes.func.isRequired,
 		connectDragSource: React.PropTypes.func.isRequired,
 		connectDropTarget: React.PropTypes.func.isRequired,
@@ -27,10 +33,16 @@ class DraggableCharacter extends Component {
 					style={{background: backgroundStyle}}
 				>
 					<div>
+						<h4>{this.props.name}</h4>
+					</div>
+					<div>
 						{this.props.value || '?'}
 					</div>
 					<div>
-						<h4>{this.props.name}</h4>
+						{`${this.props.wins} - ${this.props.losses}`}
+					</div>
+					<div>
+						{intToStreak(this.props.globalStreak)}
 					</div>
 				</Paper>
 			</div>

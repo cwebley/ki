@@ -25,7 +25,11 @@ class SeedContainer extends Component {
 							key={character.uuid}
 							id={character.uuid}
 							name={character.name}
-							draftCharacter={!!character.users}
+							draftCharacter={character.draft}
+							wins={character.wins}
+							losses={character.losses}
+							globalStreak={character.globalStreak}
+							globalBestStreak={character.globalBestStreak}
 							value={Math.floor((i * this.props.maxStartingValue) / thisArray.length) + 1}
 							moveCharacter={this.moveCharacter}
 						/>

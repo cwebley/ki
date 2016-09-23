@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "email-validator": "^1.0.4",
+    "int-to-streak": "^1.2.0",
     "jwt-decode": "^2.0.1",
     "lodash.flow": "^3.3.0",
     "lodash.get": "^4.3.0",

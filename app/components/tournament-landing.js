@@ -31,12 +31,11 @@ import Snackbar from 'material-ui/Snackbar';
 
 import SeedContainer from './seed-container';
 import InspectContainer from './inspect-container';
+import DraftContainer from './draft-container';
 
 import IconButton from 'material-ui/IconButton';
-import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
-import IconFilterList from 'material-ui/svg-icons/content/filter-list';
 import IconUndo from 'material-ui/svg-icons/content/undo';
 import IconRedo from 'material-ui/svg-icons/content/redo';
 import IconFire from 'material-ui/svg-icons/social/whatshot';
@@ -65,11 +64,6 @@ const styles = {
 	},
 	power: {
 		padding: '0 25%',
-	},
-	draftCharacters: {
-		margin: 0,
-		padding: '1em',
-		listStyleType: 'none'
 	},
 	leftUserStyle: {
 		float: 'left',
@@ -116,7 +110,11 @@ class TournamentLanding extends Component {
 				}
 				const opponent = this.props.tournament.users.ids[this.props.tournament.users.result[1]];
 				const opponentCharacters = opponent.characters.result.map(uuid => opponent.characters.ids[uuid]);
-				const draftCharacters = this.props.tournament.draft.characters.result.map(uuid => this.props.tournament.draft.characters.ids[uuid]);
+				const draftCharacters = this.props.tournament.draft.characters.result.map(uuid => ({
+					...this.props.tournament.draft.characters.ids[uuid],
+					...this.props.tournament.draft.characters.ids[uuid].users[this.props.tournament.users.result[1]],
+					draft: true
+				}));
 				this.props.updateSeeds(this.props.tournament.slug, [...opponentCharacters, ...draftCharacters]);
 			});
 
@@ -207,6 +205,7 @@ class TournamentLanding extends Component {
 
 	renderCenter (seedingInProgress, draftInProgress) {
 		const { tournament } = this.props;
+		const previousUser = tournament.draft.previous && tournament.users.ids[tournament.draft.previous.userUuid];
 		return (
 			<div style={styles.centerColStyle}>
 				{seedingInProgress && <RaisedButton
@@ -215,7 +214,18 @@ class TournamentLanding extends Component {
 					disabled={tournament.users.ids[tournament.users.result[0]].seeded}
 					onTouchTap={() => this.submitSeeds()}
 				/>}
-				{draftInProgress && this.renderDraft()}
+				{draftInProgress && <DraftContainer
+					characters={tournament.draft.characters.result.map(cUuid => tournament.draft.characters.ids[cUuid])}
+					completedPicks={tournament.draft.current}
+					totalPicks={tournament.draft.total}
+					onToggleDraftFilter={this.handleToggleDraftFilter}
+					onDraftCharacter={this.handleDraftCharater}
+					drafting={this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
+					leftUserUuid={tournament.users.result[0]}
+					rightUserUuid={tournament.users.result[1]}
+					previousUser={previousUser}
+					previousCharacter={previousUser && previousUser.characters.ids[tournament.draft.previous.characterUuid]}
+				/>}
 				{tournament.active && this.renderTournamentActions()}
 				{tournament.inspect.users && this.renderInspect()}
 			</div>
@@ -225,7 +235,6 @@ class TournamentLanding extends Component {
 	renderRightUser (seedingInProgress) {
 		const { tournament } = this.props;
 		const user = tournament.users.ids[tournament.users.result[1]];
-		const userCharacters = user.characters.result.map(uuid => user.characters.ids[uuid]);
 		const characters = user.characters.result.map(uuid => user.characters.ids[uuid]);
 
 		return (
@@ -368,36 +377,10 @@ class TournamentLanding extends Component {
 							label={tournament.inspect.remaining !== undefined && !tournament.inspect.available ? `Inspect (${tournament.inspect.remaining})` : 'Inspect'}
 							secondary
 							onTouchTap={() => this.useInspect()}
-							disabled={leftUser.coins < 3 || !tournament.inspect.available}
+							disabled={leftUser.coins < 2 || !tournament.inspect.available}
 						/>
 					</div>
 				</div>
-			</div>
-		);
-	}
-
-	renderDraft () {
-		const { tournament } = this.props;
-		const draftCharacters = tournament.draft.characters.result.map(cUuid => tournament.draft.characters.ids[cUuid]);
-		const previousUser = tournament.draft.previous && tournament.users.ids[tournament.draft.previous.userUuid];
-		const previousCharacter = previousUser && previousUser.characters.ids[tournament.draft.previous.characterUuid]
-		return (
-			<div>
-				<h2>Draft it up</h2>
-				<div>{`${tournament.draft.current} / ${tournament.draft.total}`}</div>
-				{previousUser && previousCharacter && <div>
-					<h5>Previous</h5>
-					<div>{previousUser.name}</div>
-					<div>{`(${previousCharacter.value})${previousCharacter.name}`}</div>
-				</div>}
-				<FlatButton
-					label="Toggle Sort"
-					icon={<IconFilterList />}
-					onTouchTap={() => this.toggleDraftFilter()}
-				/>
-				<ol style={styles.draftCharacters}>
-					{draftCharacters.map(c => this.renderDraftCharacter(c))}
-				</ol>
 			</div>
 		);
 	}
@@ -482,92 +465,8 @@ class TournamentLanding extends Component {
 		);
 	}
 
-	toggleDraftFilter () {
+	handleToggleDraftFilter () {
 		this.props.toggleDraftFilter(this.props.tournament.slug, this.props.tournament.users.result[0], this.props.tournament.users.result[1]);
-	}
-
-	renderDraftCharacter (character) {
-		const valueStyles = {
-			fontSize: '2em',
-			fontWeight: 600
-		};
-		const dataStyles = {
-			flex: '1 1 20%'
-		}
-
-		let leftStreakText = '';
-		let leftStreakStyle = {
-			flex: '0 1 10%'
-		};
-		if (character.users[this.props.tournament.users.result[0]].globalStreak > 0) {
-			leftStreakText = character.users[this.props.tournament.users.result[0]].globalStreak + 'W';
-			leftStreakStyle.color = green500;
-		}
-		if (character.users[this.props.tournament.users.result[0]].globalStreak < 0) {
-			leftStreakText = -1 * character.users[this.props.tournament.users.result[0]].globalStreak + 'L';
-			leftStreakStyle.color = red500;
-		}
-
-		let rightStreakText = '';
-		let rightStreakStyle = {
-			flex: '0 1 10%'
-		};
-		if (character.users[this.props.tournament.users.result[1]].globalStreak > 0) {
-			rightStreakText = character.users[this.props.tournament.users.result[1]].globalStreak + 'W';
-			rightStreakStyle.color = green500;
-		}
-		if (character.users[this.props.tournament.users.result[1]].streak < 0) {
-			rightStreakText = -1 * character.users[this.props.tournament.users.result[1]].globalStreak + 'L';
-			rightStreakStyle.color = red500;
-		}
-
-		return (
-			<li
-				key={character.uuid}
-			>
-				<Paper style={{
-					marginBottom: '0.25em',
-					width: '100%',
-					display: 'flex',
-					justifyContent: 'space-around',
-					alignItems: 'center'
-				}}>
-					<div style={dataStyles}>
-						<div style={valueStyles}>
-							{character.users[this.props.tournament.users.result[0]].value}
-						</div>
-						<div>
-							{`${character.users[this.props.tournament.users.result[0]].wins} - ${character.users[this.props.tournament.users.result[0]].losses}`}
-						</div>
-					</div>
-					<div style={leftStreakStyle}>
-						{leftStreakText}
-					</div>
-					<div style={{
-						flex: '2 1 40%'
-					}}>
-						<h4>{character.name}</h4>
-						<IconButton
-							disabled={!this.props.tournament.users.ids[this.props.tournament.users.result[0]].drafting}
-							onTouchTap={() => this.draftCharacter(character, this.props.me.uuid)}
-						>
-							<AddCircleOutline color={cyan500}/>
-						</IconButton>
-					</div>
-					<div style={rightStreakStyle}>
-						{rightStreakText}
-					</div>
-					<div style={dataStyles}>
-						<div style={valueStyles}>
-							{character.users[this.props.tournament.users.result[1]].value}
-						</div>
-						<div>
-							{`${character.users[this.props.tournament.users.result[1]].wins} - ${character.users[this.props.tournament.users.result[1]].losses}`}
-						</div>
-					</div>
-				</Paper>
-			</li>
-		);
 	}
 
 	renderCharacter (character, leftSide) {
@@ -653,8 +552,8 @@ class TournamentLanding extends Component {
 		})));
 	}
 
-	draftCharacter (character, myUuid) {
-		this.props.draftCharacter(this.props.tournament.slug, character, myUuid, this.props.me.token);
+	handleDraftCharater (character) {
+		this.props.draftCharacter(this.props.tournament.slug, character, this.props.me.uuid, this.props.me.token);
 	}
 
 	submitSeeds () {
