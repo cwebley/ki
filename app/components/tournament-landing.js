@@ -31,7 +31,7 @@ import Snackbar from 'material-ui/Snackbar';
 
 import SeedContainer from './seed-container';
 import InspectContainer from './inspect-container';
-import DraftContainer from './draft-container';
+import Draft from './draft';
 
 import IconButton from 'material-ui/IconButton';
 import IconCasino from 'material-ui/svg-icons/places/casino';
@@ -214,7 +214,7 @@ class TournamentLanding extends Component {
 					disabled={tournament.users.ids[tournament.users.result[0]].seeded}
 					onTouchTap={() => this.submitSeeds()}
 				/>}
-				{draftInProgress && <DraftContainer
+				{draftInProgress && <Draft
 					characters={tournament.draft.characters.result.map(cUuid => tournament.draft.characters.ids[cUuid])}
 					completedPicks={tournament.draft.current}
 					totalPicks={tournament.draft.total}
