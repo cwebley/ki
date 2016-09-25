@@ -3,13 +3,13 @@ import * as c from '../constants';
 import clearTournamentReasonsHelper from './clear-tournament-reasons-helper';
 import { GENERIC_ERROR } from '../errors';
 
-const decrementCharacter = (character, tournamentSlug, token) => dispatch =>
-	api.decrementCharacter(character, tournamentSlug, token)
+const decrementCharacter = (characterSlug, tournamentSlug, token) => dispatch =>
+	api.decrementCharacter(characterSlug, tournamentSlug, token)
 		.then(
 			body => {
 				return dispatch({
 					type: c.DECREMENT_SUCCESS,
-					character,
+					characterSlug,
 					tournamentSlug,
 					data: body
 				})
@@ -19,7 +19,7 @@ const decrementCharacter = (character, tournamentSlug, token) => dispatch =>
 
 				return dispatch({
 					type: c.DECREMENT_FAILURE,
-					character,
+					characterSlug,
 					tournamentSlug,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
 				})

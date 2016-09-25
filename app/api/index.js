@@ -149,12 +149,12 @@ export const rematch = (tournamentSlug, token) => new Promise((resolve, reject) 
 	});
 });
 
-export const oddsmaker = (character, tournamentSlug, token) => new Promise((resolve, reject) => {
+export const oddsmaker = (characterSlug, tournamentSlug, token) => new Promise((resolve, reject) => {
 	nets({
 		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/oddsmaker',
 		method: 'POST',
 		json: {
-			characterSlug: character.slug
+			characterSlug
 		},
 		headers: {
 			Authorization: 'Bearer ' + token
@@ -167,12 +167,12 @@ export const oddsmaker = (character, tournamentSlug, token) => new Promise((reso
 	});
 });
 
-export const decrementCharacter = (character, tournamentSlug, token) => new Promise((resolve, reject) => {
+export const decrementCharacter = (characterSlug, tournamentSlug, token) => new Promise((resolve, reject) => {
 	nets({
 		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/decrement',
 		method: 'POST',
 		json: {
-			characterSlug: character.slug
+			characterSlug
 		},
 		headers: {
 			Authorization: 'Bearer ' + token

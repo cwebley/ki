@@ -22,7 +22,7 @@ export default function Draft (props) {
 			<FlatButton
 				label="Toggle Sort"
 				icon={<IconFilterList />}
-				onTouchTap={() => props.toggleDraftFilter()}
+				onTouchTap={props.onToggleDraftFilter}
 			/>
 			<ol style={draftListStyle}>
 				{props.characters.map(c => (

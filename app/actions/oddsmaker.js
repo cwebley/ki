@@ -3,13 +3,13 @@ import * as c from '../constants';
 import clearTournamentReasonsHelper from './clear-tournament-reasons-helper';
 import { GENERIC_ERROR } from '../errors';
 
-const oddsmaker = (character, tournamentSlug, token) => dispatch =>
-	api.oddsmaker(character, tournamentSlug, token)
+const oddsmaker = (characterSlug, tournamentSlug, token) => dispatch =>
+	api.oddsmaker(characterSlug, tournamentSlug, token)
 		.then(
 			body => {
 				return dispatch({
 					type: c.ODDSMAKER_SUCCESS,
-					character,
+					characterSlug,
 					tournamentSlug,
 					data: body
 				})
@@ -19,7 +19,7 @@ const oddsmaker = (character, tournamentSlug, token) => dispatch =>
 
 				return dispatch({
 					type: c.ODDSMAKER_FAILURE,
-					character,
+					characterSlug,
 					tournamentSlug,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
 				})

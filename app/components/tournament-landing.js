@@ -24,7 +24,6 @@ import { getFormValue } from '../store/forms';
 
 import get from 'lodash.get';
 
-import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
@@ -32,13 +31,11 @@ import Snackbar from 'material-ui/Snackbar';
 import SeedContainer from './seed-container';
 import InspectContainer from './inspect-container';
 import Draft from './draft';
+import TournamentCharacter from './tournament-character';
 
-import IconButton from 'material-ui/IconButton';
-import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import IconUndo from 'material-ui/svg-icons/content/undo';
 import IconRedo from 'material-ui/svg-icons/content/redo';
-import IconFire from 'material-ui/svg-icons/social/whatshot';
 import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
 
@@ -84,6 +81,10 @@ class TournamentLanding extends Component {
 		super(props);
 		this.updateSeeds = this.updateSeeds.bind(this);
 		this.updateInspectState = this.updateInspectState.bind(this);
+		this.handleToggleDraftFilter = this.handleToggleDraftFilter.bind(this);
+		this.handleDraftCharater = this.handleDraftCharater.bind(this);
+		this.handleDecrementCharacter = this.handleDecrementCharacter.bind(this);
+		this.handleOddsmaker = this.handleOddsmaker.bind(this);
 	}
 
 	static propTypes = {
@@ -197,7 +198,20 @@ class TournamentLanding extends Component {
 				<h2 style={styles.userHeaderStyle}>{user.name}</h2>
 					{tournament.active && this.renderUserStats(user)}
 				<ol style={styles.resetListStyle}>
-					{characters.map(c => this.renderCharacter(c, true))}
+					{characters.map(c =>
+						<TournamentCharacter
+							key={c.uuid}
+							tournamentActive={tournament.active}
+							coinsAvailable={tournament.users.ids[tournament.users.result[0]].coins}
+							name={c.name}
+							slug={c.slug}
+							value={c.value}
+							streak={c.streak}
+							wins={c.wins}
+							losses={c.losses}
+							onOddsmaker={this.handleOddsmaker}
+						/>
+					)}
 				</ol>
 			</div>
 		);
@@ -247,7 +261,21 @@ class TournamentLanding extends Component {
 				/>}
 				{tournament.active && this.renderUserStats(user)}
 				{!seedingInProgress && <ol style={styles.resetListStyle}>
-					{characters.map(c => this.renderCharacter(c))}
+					{characters.map(c =>
+						<TournamentCharacter
+							key={c.uuid}
+							opponentCharacter
+							tournamentActive={tournament.active}
+							coinsAvailable={tournament.users.ids[tournament.users.result[0]].coins}
+							name={c.name}
+							slug={c.slug}
+							value={c.value}
+							streak={c.streak}
+							wins={c.wins}
+							losses={c.losses}
+							onDecrementCharacter={this.handleDecrementCharacter}
+						/>
+					)}
 				</ol>}
 			</div>
 		);
@@ -469,78 +497,6 @@ class TournamentLanding extends Component {
 		this.props.toggleDraftFilter(this.props.tournament.slug, this.props.tournament.users.result[0], this.props.tournament.users.result[1]);
 	}
 
-	renderCharacter (character, leftSide) {
-		const { tournament } = this.props;
-
-		let streakText = '';
-		let streakStyle = {};
-		if (character.streak > 0) {
-			streakText = character.streak + 'W';
-			streakStyle.color = green500;
-			if (character.streak === 2) {
-				streakStyle.fontSize = '1.25em';
-				streakStyle.fontWeight = '500';
-			}
-			if (character.streak >= 3) {
-				streakStyle.fontWeight = 600;
-				streakStyle.fontSize = '1.5em';
-			}
-		}
-		if (character.streak < 0) {
-			streakText = -1 * character.streak + 'L';
-			streakStyle.color = red500;
-		}
-		return (
-			<li key={character.uuid}>
-				<Paper style={{
-					overflow: 'auto'
-				}}>
-					<div style={{
-						fontSize: '1.3em',
-						lineHeight: '1.3em'
-					}}>
-						{character.value || '?'}
-					</div>
-					<div>
-						{character.streak >= 3 && <IconFire color={red500}/>}
-						<h4 style={{display: 'inline'}}>{character.name}</h4>
-						{character.streak >= 3 && <IconFire color={red500}/>}
-						<div>{character.wins} - {character.losses}</div>
-					</div>
-					{leftSide && <div style={{
-						float: 'left',
-						paddingLeft: '1em'
-					}}>
-						<IconButton
-							disabled={!tournament.active || tournament.users.ids[tournament.users.result[0]].coins < 3}
-							onTouchTap={() => this.useOddsmaker(character)}
-						>
-							<IconCasino />
-						</IconButton>
-					</div>}
-					{!leftSide && <div style={{
-						float: 'left',
-						paddingLeft: '1em'
-					}}>
-						<IconButton
-							disabled={!tournament.active || character.value <= 1 || tournament.users.ids[tournament.users.result[0]].coins < 1}
-							onTouchTap={() => this.decrementCharacter(character)}
-						>
-							<IconTrendingDown />
-						</IconButton>
-					</div>}
-					<div style={{
-						float: 'right',
-						paddingRight: '1em',
-						lineHeight: '2.5em'
-					}}>
-						<div style={streakStyle}>{streakText}</div>
-					</div>
-				</Paper>
-			</li>
-		);
-	}
-
 	updateSeeds (data) {
 		this.props.updateSeeds(this.props.tournament.slug, data)
 	}
@@ -578,12 +534,12 @@ class TournamentLanding extends Component {
 		this.props.rematch(this.props.tournament.slug, this.props.me.token);
 	}
 
-	useOddsmaker (character) {
-		this.props.oddsmaker(character, this.props.tournament.slug, this.props.me.token);
+	handleOddsmaker (characterSlug) {
+		this.props.oddsmaker(characterSlug, this.props.tournament.slug, this.props.me.token);
 	}
 
-	decrementCharacter (character) {
-		this.props.decrementCharacter(character, this.props.tournament.slug, this.props.me.token);
+	handleDecrementCharacter (characterSlug) {
+		this.props.decrementCharacter(characterSlug, this.props.tournament.slug, this.props.me.token);
 	}
 
 	undoLastGame () {

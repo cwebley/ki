@@ -64,7 +64,7 @@ export default function DraftCharacter ({ drafting, leftUserUuid, rightUserUuid,
 				}}>
 					<h4>{character.name}</h4>
 					<IconButton
-						disabled={drafting}
+						disabled={!drafting}
 						onTouchTap={() => onDraftCharacter(character)}
 					>
 						<AddCircleOutline color={cyan500}/>
