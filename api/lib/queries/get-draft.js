@@ -20,8 +20,8 @@ export default function getDraftQuery (db, tournamentUuid, userUuids, cb) {
 				slug: c.slug,
 				users: {
 					[userUuids[0]]: {
-						wins: c.wins,
-						losses: c.losses,
+						globalWins: parseInt(c.globalWins, 10), // psql SUM function retruns this value as a string
+						globalLosses: parseInt(c.globalLosses, 10), // psql SUM function retruns this value as a string
 						streak: c.streak,
 						value: c.value,
 						bestStreak: c.bestStreak,
@@ -39,8 +39,8 @@ export default function getDraftQuery (db, tournamentUuid, userUuids, cb) {
 			}
 			rightUserResults.forEach(c => {
 				draftData.characters.ids[c.uuid].users[userUuids[1]] = {
-					wins: c.wins,
-					losses: c.losses,
+					globalWins: parseInt(c.globalWins, 10), // psql SUM function retruns this value as a string
+					globalLosses: parseInt(c.globalLosses, 10), // psql SUM function retruns this value as a string
 					streak: c.streak,
 					value: c.value,
 					bestStreak: c.bestStreak,
@@ -106,8 +106,8 @@ const getDraftCharactersForUserQuery = (db, tournamentUuid, userUuid, cb) => {
 			c.name, c.season, c.slug,
 			s.value,
 			uc.streak AS "globalStreak", uc.best_streak AS "globalBestStreak",
-			(SELECT SUM(wins) FROM tournament_characters WHERE user_uuid = uc.user_uuid AND character_uuid = c.uuid) wins,
-			(SELECT SUM(losses) FROM tournament_characters WHERE user_uuid = uc.user_uuid AND character_uuid = c.uuid) losses
+			(SELECT SUM(wins) AS "globalWins" FROM tournament_characters WHERE user_uuid = uc.user_uuid AND character_uuid = c.uuid),
+			(SELECT SUM(losses) AS "globalLosses" FROM tournament_characters WHERE user_uuid = uc.user_uuid AND character_uuid = c.uuid)
 		FROM draft_characters AS dc
 			JOIN characters AS c
 				ON c.uuid = dc.character_uuid
