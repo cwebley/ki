@@ -8,6 +8,7 @@ import getTournamentCharacterCount from '../lib/queries/get-tournament-character
 import draftCharacterQuery from '../lib/queries/draft-character';
 import updateDraftStatus from '../lib/queries/update-draft-status';
 import getDraftQuery from '../lib/queries/get-draft';
+import getFullTournamentData from '../lib/util/get-full-tournament-data';
 
 export default function draftCharacterHandler (req, res) {
 	if (!req.params.tournamentSlug) {
@@ -78,7 +79,7 @@ export default function draftCharacterHandler (req, res) {
 									return res.status(500).send(r.internal);
 								}
 
-								return res.status(200).send({
+								const draftDto = {
 									drafting: draftStatus.drafting,
 									tournamentActive: draftStatus.tournamentActive,
 									current: draftStatus.current,
@@ -86,6 +87,26 @@ export default function draftCharacterHandler (req, res) {
 									character: character,
 									pick: draftData.previous.pick,
 									value: draftData.previous.value
+								};
+
+								// if the draft isn't over this is all we need
+								if (draftStatus.current !== draftStatus.total) {
+									return res.status(200).send(draftDto);
+								}
+								// if the draft is over we need the upcoming data for the first match of the tournament
+								getFullTournamentData(req.db, req.redis, {
+									tournamentSlug: req.params.tournamentSlug,
+									userUuid: req.user.uuid
+								}, (err, tournament) => {
+									if (err) {
+										return res.status(500).send(r.internal);
+									}
+									if (!tournament) {
+										return res.status(404).send(r.tournamentNotFound);
+									}
+
+									draftDto.upcoming = tournament.users.result.map((userUuid) => tournament.users.ids[userUuid].upcoming[0]);
+									return res.status(200).send(draftDto);
 								});
 							});
 						});

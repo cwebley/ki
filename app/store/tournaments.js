@@ -161,11 +161,15 @@ const tournamentUsersReducer = (state = {}, action) => {
 			return {
 				...state,
 				ids: Object.assign({}, state.ids, {
-					[state.result[0]]: tournamentUserReducer(state.ids[state.result[0]], action),
+					[state.result[0]]: {
+						...tournamentUserReducer(state.ids[state.result[0]], action),
+						upcoming: action.data.upcoming ? [action.data.upcoming[0]] : []
+					},
 					// add a drafting status of true to the right user if appropriate
 					[state.result[1]]: {
 						...state.ids[state.result[1]],
-						drafting: action.data.drafting === state.result[1]
+						drafting: action.data.drafting === state.result[1],
+						upcoming: action.data.upcoming ? [action.data.upcoming[1]] : []
 					}
 				})
 			};
