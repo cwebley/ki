@@ -1,11 +1,13 @@
 import React, { PropTypes, Component } from 'react';
 import DraftCharacter from './draft-character';
+
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
-import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconButton from 'material-ui/IconButton';
+import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconFire from 'material-ui/svg-icons/social/whatshot';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
+import { green500, red500 } from 'material-ui/styles/colors';
 
 export default function TournamentCharacter (props) {
 	let streakText = '';

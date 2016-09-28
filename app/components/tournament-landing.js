@@ -36,7 +36,7 @@ import TournamentCharacter from './tournament-character';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import IconUndo from 'material-ui/svg-icons/content/undo';
 import IconRedo from 'material-ui/svg-icons/content/redo';
-import { cyan500, green500, red500, amber500 } from 'material-ui/styles/colors';
+import { green500, red500, amber500 } from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
 
 
