@@ -14,6 +14,8 @@ Complete work in progress.
 * Babel
 
 ##Todo: Upcoming bug fixes and feature additions
+* Add previous streak to previous match
+* W-L records on seeding component undefined after api bug fix
 
 ###Random bugs
 * Inspect sometimes hides a guy? Not sure what's happening here. Maybe its just Kanra that hides.
