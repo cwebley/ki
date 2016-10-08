@@ -16,6 +16,8 @@ Complete work in progress.
 ##Todo: Upcoming bug fixes and feature additions
 * Add previous streak to previous match
 * W-L records on seeding component undefined after api bug fix
+* lower inspect by 1 matchup
+* tournament table "active" column doesn't become false after tournament is over
 
 ###Random bugs
 * Inspect sometimes hides a guy? Not sure what's happening here. Maybe its just Kanra that hides.
