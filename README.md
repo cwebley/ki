@@ -18,6 +18,7 @@ Complete work in progress.
 * W-L records on seeding component undefined after api bug fix
 * lower inspect by 1 matchup
 * tournament table "active" column doesn't become false after tournament is over
+* inspect sometimes a duplicate uuid gets returned by backend and react doesnt render.
 
 ###Random bugs
 * Inspect sometimes hides a guy? Not sure what's happening here. Maybe its just Kanra that hides.
