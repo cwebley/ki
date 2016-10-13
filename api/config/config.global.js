@@ -20,7 +20,7 @@ var config = {
 		upcomingListLength: 50,
 		oddsmakerLength: 15,
 		oddsmakerValue: 3.1,
-		inspectLength: 7
+		inspectLength: 5
 	},
 	cost: {
 		rematch: 3,

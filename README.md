@@ -16,12 +16,10 @@ Complete work in progress.
 ##Todo: Upcoming bug fixes and feature additions
 * Add previous streak to previous match
 * W-L records on seeding component undefined after api bug fix
-* lower inspect by 1 matchup
 * tournament table "active" column doesn't become false after tournament is over
-* inspect sometimes a duplicate uuid gets returned by backend and react doesnt render.
 
 ###Random bugs
-* Inspect sometimes hides a guy? Not sure what's happening here. Maybe its just Kanra that hides.
+* Inspect sometimes hides a guy: duplicate uuid gets returned by backend and react doesnt render.
 * Inspect DnD stuff is pretty slow. Plus there's some bug related to hovering over a long name/fat card that updates every hover event causing a crawl.
 
 ###Tournament Creator Page
