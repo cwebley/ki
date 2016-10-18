@@ -1,6 +1,4 @@
-import log from '../logger';
 import r from '../reasons';
-
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import editTournamentQuery from '../lib/queries/edit-tournament';
 
@@ -8,10 +6,8 @@ export default function editTournament (req, res) {
 	if (!req.params.tournamentSlug) {
 		return res.status(400).send(r.noSlugParam);
 	}
-
-
 	if (!req.body.goal) {
-		res.status(400).send(noGoal);
+		res.status(400).send(r.noGoal);
 	}
 	if (req.body.goal < 1) {
 		res.status(400).send(r.invalidGoal);

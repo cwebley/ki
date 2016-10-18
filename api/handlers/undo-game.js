@@ -1,6 +1,4 @@
-import log from '../logger';
 import r from '../reasons';
-
 import selectMostRecentGame from '../lib/queries/select-most-recent-game';
 import undoGame from '../lib/core/undo-game';
 import getFullTournamentData from '../lib/util/get-full-tournament-data';

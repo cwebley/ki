@@ -1,10 +1,8 @@
 import log from '../../logger';
-import config from '../../config';
 import { upcomingList, previousList } from '../util/redis-keys';
 import async from 'neo-async';
 
 export default function undoUpcomingQuery (rConn, tournamentState, cb) {
-
 	// pop most recent game off of upcoming list
 	let calls = [];
 	tournamentState.users.result.forEach(uUuid => {

@@ -1,5 +1,4 @@
 import log from '../../logger';
-import config from '../../config';
 import { upcomingList } from '../util/redis-keys';
 import decrementCoins from './decrement-coins';
 import generateUpcomingCharacter from '../util/generate-upcoming-character';
@@ -27,13 +26,13 @@ export default function oddsmakerQuery (db, rConn, opts, cb) {
 
 		rConn.ltrim(upcomingKey, opts.oddsmakerLength, -1, (err, trimResult) => {
 			if (err) {
-				return log.error(err, { upcomingKey });
+				log.error(err, { upcomingKey });
 				return cb(err);
 			}
 
 			rConn.lpush(upcomingKey, ...updatedCharacters.reverse(), (err, pushResults) => {
 				if (err) {
-					return log.error(err, { upcomingKey, updatedCharacters });
+					log.error(err, { upcomingKey, updatedCharacters });
 					return cb(err);
 				}
 

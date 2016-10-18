@@ -3,17 +3,19 @@ import log from '../../logger';
 
 export default function submitSeedsQuery (db, opts, cb) {
 	if (
-		!opts || !opts.tournamentUuid
-		|| !opts.seeds || !opts.maxStartingValue
-		|| !opts.opponentUuid || !opts.userUuid
-		|| !opts.opponentCharacters
+		!opts ||
+		!opts.tournamentUuid ||
+		!opts.seeds ||
+		!opts.maxStartingValue ||
+		!opts.opponentUuid ||
+		!opts.userUuid ||
+		!opts.opponentCharacters
 	) {
 		return cb(new Error('invalid opts passed to submitSeedsQuery'));
 	}
 
 	// begin transaction
 	db.query('BEGIN', () => {
-
 		let seedsValues = [];
 		let seedsParams = [];
 

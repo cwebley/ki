@@ -1,5 +1,3 @@
-import log from '../../logger';
-
 export default function getTournamentCharacterCount (db, tournamentUuid, userUuid, cb) {
 	const sql = `
 		SELECT COUNT(1)::integer

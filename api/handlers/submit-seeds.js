@@ -1,6 +1,4 @@
-import log from '../logger';
 import r from '../reasons';
-
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import submitSeedsQuery from '../lib/queries/submit-seeds';
 import assignFirstDraftPick from '../lib/queries/assign-first-draft-pick';
@@ -109,16 +107,13 @@ export default function submitGameHandler (req, res) {
 				// user 1 gets first pick if they have less characters
 				if (user1CharLen < user2CharLen) {
 					firstPickUuid = updatedTournament.users.result[0];
-				}
-				// user 2 gets first pick if they have less characters
-				else if (user2CharLen < user1CharLen) {
+				} else if (user2CharLen < user1CharLen) {
+					// user 2 gets first pick if they have less characters
 					firstPickUuid = updatedTournament.users.result[1];
-				}
-				// if they have the same amount of characters, assign the first pick randomly
-				else {
+				} else {
+					// if they have the same amount of characters, assign the first pick randomly
 					firstPickUuid = updatedTournament.users.result[Math.floor(Math.random() * 2)];
 				}
-
 
 				assignFirstDraftPick(req.db, updatedTournament.uuid, firstPickUuid, (err, results) => {
 					if (err) {

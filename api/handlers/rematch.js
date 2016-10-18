@@ -1,9 +1,6 @@
-import log from '../logger';
 import r from '../reasons';
 import config from '../config';
-
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
-import selectTwoRecentGames from '../lib/queries/select-two-recent-games';
 import insertRematchQuery from '../lib/queries/insert-rematch';
 import undoGame from '../lib/core/undo-game';
 import undoGameQuery from '../lib/queries/undo-game';

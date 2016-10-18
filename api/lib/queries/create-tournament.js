@@ -4,7 +4,6 @@ import log from '../../logger';
 export default function createTournamentQuery (db, opts, cb) {
 	// begin transaction
 	db.query('BEGIN', () => {
-
 		addToTournamentsTable(db, opts, (err, results) => {
 			if (err) {
 				return rollback(db, err, cb);

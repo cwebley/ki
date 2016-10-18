@@ -1,6 +1,5 @@
 import log from '../../logger';
-import config from '../../config';
-import { upcomingList, inspect, userInspect } from '../util/redis-keys';
+import { upcomingList } from '../util/redis-keys';
 import async from 'neo-async';
 
 export default function updateInspectQuery (rConn, opts, cb) {

@@ -8,7 +8,6 @@ import generateUpcomingCharacter from '../util/generate-upcoming-character';
 // opts.user.uuid, opts.user.characters (array),
 // opts.opponent.uuid, opts.opponent.characters (array)
 export default function createUpcomingListQuery (rConn, opts, cb) {
-
 	// assemble the the user data
 	const randomUserCharacters = range(0, config.defaults.upcomingListLength).map(() => generateUpcomingCharacter(opts.user.characters));
 	const userKey = upcomingList(opts.uuid, opts.user.uuid);

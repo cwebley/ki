@@ -1,8 +1,6 @@
 import uuid from 'node-uuid';
 import slug from 'slug';
 import bcrypt from 'bcryptjs';
-
-import log from '../logger';
 import r from '../reasons';
 import registerUserQuery from '../lib/queries/register-user';
 import createToken from '../lib/auth/create-token';

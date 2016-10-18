@@ -2,7 +2,6 @@ import log from '../../logger';
 import async from 'neo-async';
 import snake from 'lodash.snakecase';
 import get from 'lodash.get';
-import config from '../../config';
 
 export default function undoGameQuery (db, opts, diff, cb) {
 	const tournamentUsersFields = ['score', 'wins', 'losses', 'streak', 'coins'];
@@ -38,7 +37,6 @@ export default function undoGameQuery (db, opts, diff, cb) {
 
 		// all keys on each user object
 		Object.keys(diff.users.ids[userUuid]).forEach(userKey => {
-
 			if (tournamentUsersFields.indexOf(userKey) !== -1) {
 				tournamentUsersUpdates[userKey] = diff.users.ids[userUuid][userKey];
 				return;
@@ -67,7 +65,6 @@ export default function undoGameQuery (db, opts, diff, cb) {
 
 					// iterate over each key for the character
 					Object.keys(diff.users.ids[userUuid].characters.ids[cUuid]).forEach(charKey => {
-
 						if (tournamentCharactersFields.indexOf(charKey) !== -1) {
 							tournamentCharactersUpdates[charKey] = diff.users.ids[userUuid].characters.ids[cUuid][charKey];
 							return;
@@ -211,20 +208,19 @@ function deleteGame (db, gameUuid, rematch, cb) {
 		WHERE uuid = $1
 	`;
 
-
 	db.query(inspectSql, params, (err, results) => {
 		if (err) {
-			log.error(err, { sql, params });
+			log.error(err, { inspectSql, params });
 		}
 
 		db.query(oddsmakerSql, params, (err, results) => {
 			if (err) {
-				log.error(err, { sql, params });
+				log.error(err, { oddsmakerSql, params });
 			}
 
 			db.query(gamesSql, params, (err, results) => {
 				if (err) {
-					log.error(err, { sql, params });
+					log.error(err, { gamesSql, params });
 				}
 				return cb(err, results);
 			});

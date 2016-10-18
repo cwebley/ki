@@ -1,6 +1,4 @@
-import log from '../logger';
 import r from '../reasons';
-
 import getTournament from '../lib/queries/get-tournament';
 import getTournamentUsers from '../lib/queries/get-tournament-users';
 import getCharacter from '../lib/queries/get-character';

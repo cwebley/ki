@@ -1,7 +1,5 @@
-import log from '../logger';
 import r from '../reasons';
 import config from '../config';
-
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import getCharacterQuery from '../lib/queries/get-character';
 import oddsmakerQuery from '../lib/queries/use-oddsmaker';
@@ -20,7 +18,6 @@ export default function oddsmakerHandler (req, res) {
 		if (!character) {
 			return res.status(400).send(r(r.InvalidCharacterSlug(req.body.characterSlug)));
 		}
-
 
 		getFullTournamentData(req.db, req.redis, {
 			tournamentSlug: req.params.tournamentSlug,

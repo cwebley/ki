@@ -8,8 +8,7 @@ export default function insertRematch (db, tournamentUuid, game, userUuid, cb) {
 		userCharacterUuid = game.winner.characterUuid;
 		opponentUuid = game.loser.uuid;
 		opponentCharacterUuid = game.loser.characterUuid;
-	}
-	else {
+	} else {
 		userCharacterUuid = game.loser.characterUuid;
 		opponentUuid = game.winner.uuid;
 		opponentCharacterUuid = game.winner.characterUuid;

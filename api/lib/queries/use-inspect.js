@@ -1,5 +1,4 @@
 import log from '../../logger';
-import config from '../../config';
 import { upcomingList, inspect, userInspect } from '../util/redis-keys';
 import decrementCoins from './decrement-coins';
 
@@ -33,7 +32,7 @@ export default function useInspectQuery (db, rConn, opts, cb) {
 			const gamesRemainingKey = userInspect(opts.tournamentUuid, inspectUserUuid);
 			rConn.get(gamesRemainingKey, (err, gamesRemaining) => {
 				if (err) {
-					log.error(err, { key:gamesRemainingKey });
+					log.error(err, { key: gamesRemainingKey });
 					return cb(err);
 				}
 
@@ -72,14 +71,14 @@ const claimAndProcessInspect = (db, rConn, opts, cb) => {
 			// get one extra since we're not actually inspecting the current matchup
 			rConn.lrange(opts.userUpcomingKey, 1, opts.inspectLength, (err, userUpcomingCharacters) => {
 				if (err) {
-					log.error(err, { userUpcomingKey });
+					log.error(err, { opts.userUpcomingKey });
 					return cb(err);
 				}
 
 				// get one extra since we're not actually inspecting the current matchup
 				rConn.lrange(opts.opponentUpcomingKey, 1, opts.inspectLength, (err, opponentUpcomingCharacters) => {
 					if (err) {
-						log.error(err, { opponentUpcomingKey });
+						log.error(err, { opts.opponentUpcomingKey });
 						return cb(err);
 					}
 

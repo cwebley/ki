@@ -1,4 +1,3 @@
-import log from '../logger';
 import r from '../reasons';
 import config from '../config';
 

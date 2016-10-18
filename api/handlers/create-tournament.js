@@ -74,7 +74,6 @@ export default function createTournamentHandler (req, res) {
 	req.body.draftCharacters = Object.keys(draftCharObj);
 
 	const charDifference = Math.abs(req.body.myCharacters.length - req.body.opponentCharacters.length);
-	const moreCharacters = Math.max(req.body.myCharacters.length, req.body.opponentCharacters.length);
 
 	if ((req.body.charactersPerUser.length > (Math.floor(req.body.draftCharacters.length - charDifference) / 2) + charDifference) ||
 		req.body.charactersPerUser.length < req.body.myCharacters.length ||

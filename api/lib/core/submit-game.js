@@ -28,7 +28,7 @@ export default function submitGame (state, gameResult) {
 			supreme: gameResult.supreme
 		},
 		// if this submission IS a rematched game, then the updated tournament state must reflect that
-		rematchAvailable: (gameResult.rematchSuccess === null || gameResult.rematchSuccess === undefined) ? true : false
+		rematchAvailable: (gameResult.rematchSuccess === null || gameResult.rematchSuccess === undefined)
 	};
 	diff.users = {
 		ids: {

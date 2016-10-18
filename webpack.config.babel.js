@@ -60,7 +60,14 @@ const productionConfig = {
 	devtool: 'cheap-module-source-map',
 	plugins: [
 		HtmlWebpackPluginConfig,
-		productionPlugin
+		productionPlugin,
+		new webpack.optimize.UglifyJsPlugin({
+			sourceMap: true,
+			minimize: true,
+			compress: {
+				warnings: false
+			}
+		})
 	],
 }
 

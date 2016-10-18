@@ -1,6 +1,6 @@
 import log from '../../logger';
 import getInspect from './get-inspect';
-import { inspect, userInspect, userUpcomingList } from '../util/redis-keys';
+import { inspect, userInspect } from '../util/redis-keys';
 
 export default function decrementInpsect (rConn, opts, cb) {
 	const inspectKey = inspect(opts.tournamentUuid);

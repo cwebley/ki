@@ -130,7 +130,7 @@ export default function submitGameHandler (req, res) {
 				supreme: opts.supreme
 			};
 			if (prevGame && prevGame.rematched && prevGame.rematchSuccess === null) {
-				game.rematchSuccess = (prevGame.rematched === game.winner.uuid) ? true : false;
+				game.rematchSuccess = !!(prevGame.rematched === game.winner.uuid);
 			}
 
 			let diff = submitGame(tournament, game);

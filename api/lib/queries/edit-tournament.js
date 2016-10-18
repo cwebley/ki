@@ -10,8 +10,7 @@ export default function editTournamentQuery (db, opts, cb) {
 	db.query(sql, params, (err, results) => {
 		if (err) {
 			log.error(err, { sql, params });
-			return rollback(db, err, cb);
 		}
-		return cb(null, results);
+		return cb(err, results);
 	});
 }

@@ -116,7 +116,6 @@ export default function undoGame (state, game, rematch) {
 	const undoIceUuid = undoIceStatus(losingCharacterUuid, game.loser.characterStreak);
 	state.users.ids[loserUuid].characters.result.forEach(cUuid => {
 		if (undoIceUuid && (cUuid !== undoIceUuid)) {
-
 			// we're undoing a character being iced, it's not this one, so incr value for all other characters that previously went down
 			if (!diff.users.ids[loserUuid].characters.ids[cUuid]) {
 				diff.users.ids[loserUuid].characters.ids[cUuid] = {};
@@ -150,8 +149,7 @@ export default function undoGame (state, game, rematch) {
 	if (rematch) {
 		if (coinsDiff && rematch === winnerUuid) {
 			diff.users.ids[rematch].coins = diff.users.ids[rematch].coins - config.cost.rematch;
-		}
-		else {
+		} else {
 			diff.users.ids[rematch].coins = state.users.ids[rematch].coins - config.cost.rematch;
 		}
 	}

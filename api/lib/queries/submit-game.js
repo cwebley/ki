@@ -65,7 +65,6 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 
 					// iterate over each key for the character
 					Object.keys(diff.users.ids[userUuid].characters.ids[cUuid]).forEach(charKey => {
-
 						if (tournamentCharactersFields.indexOf(charKey) !== -1) {
 							tournamentCharactersUpdates[charKey] = diff.users.ids[userUuid].characters.ids[cUuid][charKey];
 							return;
@@ -289,8 +288,7 @@ function insertInspectGame (db, game, cb) {
 	let opponentUuid;
 	if (game.winner.uuid === game.inspectUserUuid) {
 		opponentUuid = game.loser.uuid;
-	}
-	else {
+	} else {
 		opponentUuid = game.winner.uuid;
 	}
 	const sql = `
@@ -323,8 +321,7 @@ function insertOddsmakerGames (db, game, cb) {
 	let opponentUuid;
 	if (game.winner.uuid === game.oddsmakerUserUuids[0]) {
 		opponentUuid = game.loser.uuid;
-	}
-	else {
+	} else {
 		opponentUuid = game.winner.uuid;
 	}
 	const sql1 = `
@@ -356,8 +353,7 @@ function insertOddsmakerGames (db, game, cb) {
 		let opponentUuid;
 		if (game.winner.uuid === game.oddsmakerUserUuids[1]) {
 			opponentUuid = game.loser.uuid;
-		}
-		else {
+		} else {
 			opponentUuid = game.winner.uuid;
 		}
 

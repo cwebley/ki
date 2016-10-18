@@ -1,7 +1,4 @@
-import log from '../logger';
 import r from '../reasons';
-import config from '../config';
-
 import getFullTournamentData from '../lib/util/get-full-tournament-data';
 import updateInspectQuery from '../lib/queries/update-inspect';
 

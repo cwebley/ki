@@ -3,7 +3,6 @@ import log from '../../logger';
 export default function draftCharacterQuery (db, tournamentUuid, character, userUuid, cb) {
 	// begin transaction
 	db.query('BEGIN', () => {
-
 		const tcSql = `
 			INSERT INTO tournament_characters
 				(tournament_uuid, character_uuid, user_uuid, value, raw_value)

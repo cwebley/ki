@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --compilers js:babel-register --recursive",
     "start": "node index.js --logLevel debug",
-    "start-prod": "NODE_ENV=production node index.js",
+    "production": "NODE_ENV=production node index.js",
     "createdb": "createdb ki; psql ki < persistence/pg/schema/0.sql",
     "createdb-prod": "createdb prod; psql prod < persistence/pg/schema/0.sql",
     "dropdb": "dropdb ki",

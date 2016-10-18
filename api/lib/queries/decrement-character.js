@@ -1,5 +1,4 @@
 import log from '../../logger';
-import config from '../../config';
 import decrementCoins from './decrement-coins';
 
 export default function decrementQuery (db, opts, cb) {
