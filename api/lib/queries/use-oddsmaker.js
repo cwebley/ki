@@ -10,7 +10,7 @@ export default function oddsmakerQuery (db, rConn, opts, cb) {
 	// get one extra since we're not actually oddsmakering the current matchup
 	rConn.lrange(upcomingKey, 0, opts.oddsmakerLength, (err, upcomingCharacters) => {
 		if (err) {
-			log.error(err, { upcomingKey })
+			log.error(err, { upcomingKey });
 			return cb(err);
 		}
 		const updatedCharacters = upcomingCharacters.map((characterObjectString, i) => {

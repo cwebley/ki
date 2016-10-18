@@ -19,7 +19,7 @@ export default function getTournamentUsersQuery (db, tournamentUuid, cb) {
 				sql: sql,
 				params: params
 			});
-			return cb(err)
+			return cb(err);
 		}
 		if (results.rows.length !== 2) {
 			err = new Error('getTournamentUsersQuery did not find 2 results');

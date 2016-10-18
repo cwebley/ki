@@ -13,7 +13,7 @@ const draftCharacter = (tournamentSlug, character, userUuid, token) => dispatch 
 					character,
 					userUuid,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
@@ -24,9 +24,9 @@ const draftCharacter = (tournamentSlug, character, userUuid, token) => dispatch 
 					character,
 					userUuid,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
-}
+		);
+};
 
 export default draftCharacter;

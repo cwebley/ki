@@ -66,9 +66,9 @@ export default function createTournamentHandler (req, res) {
 	let myCharObj = {};
 	let oppCharObj = {};
 	let draftCharObj = {};
-	req.body.myCharacters.forEach(char => {myCharObj[char] = true});
-	req.body.opponentCharacters.forEach(char => {oppCharObj[char] = true});
-	req.body.draftCharacters.forEach(char => {draftCharObj[char] = true});
+	req.body.myCharacters.forEach(char => { myCharObj[char] = true; });
+	req.body.opponentCharacters.forEach(char => { oppCharObj[char] = true; });
+	req.body.draftCharacters.forEach(char => { draftCharObj[char] = true; });
 	req.body.myCharacters = Object.keys(myCharObj);
 	req.body.opponentCharacters = Object.keys(oppCharObj);
 	req.body.draftCharacters = Object.keys(draftCharObj);

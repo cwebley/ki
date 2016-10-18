@@ -6,6 +6,6 @@ const Root = ({store}) => (
 	<Provider store={store}>
 		<Routes />
 	</Provider>
-)
+);
 
 export default Root;

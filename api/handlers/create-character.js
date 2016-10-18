@@ -7,7 +7,7 @@ export default function createCharacterHandler (req, res) {
 	let opts = {
 		name: req.body.name,
 		season: parseInt(req.body.season, 10)
-	}
+	};
 
 	let problems = [];
 	if (!opts.name) {

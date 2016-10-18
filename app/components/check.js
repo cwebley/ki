@@ -43,7 +43,7 @@ export default React.createClass({
 	componentWillReceiveProps (newProps) {
 		if (this.unregisterWithList && !this.props.disabled && newProps.disabled) {
 			// newly disabled, unregister from toggleAll method
-			return this.unregisterWithList()
+			return this.unregisterWithList();
 		}
 		if (this.context.registerWithList && this.props.disabled && !newProps.disabled) {
 			// no longer disabled, register it

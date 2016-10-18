@@ -19,12 +19,12 @@ export default function updateDraftStatus (db, rConn, tournamentUuid, cb) {
 			// get first user's character count
 			getTournamentCharacterCount(db, tournamentUuid, tournamentUsers[0].uuid, (err, user1Count) => {
 				if (err) {
-					return cb(err)
+					return cb(err);
 				}
 				// get second user's character count
 				getTournamentCharacterCount(db, tournamentUuid, tournamentUsers[1].uuid, (err, user2Count) => {
 					if (err) {
-						return cb(err)
+						return cb(err);
 					}
 
 					let draftingUpdates = {
@@ -54,10 +54,10 @@ export default function updateDraftStatus (db, rConn, tournamentUuid, cb) {
 						if (draftingUpdates.user1Drafting === true || draftingUpdates.user2Drafting === true) {
 							let draftingUuid;
 							if (draftingUpdates.user1Drafting) {
-								draftingUuid = tournamentUsers[0].uuid
+								draftingUuid = tournamentUsers[0].uuid;
 							}
 							if (draftingUpdates.user2Drafting) {
-								draftingUuid = tournamentUsers[1].uuid
+								draftingUuid = tournamentUsers[1].uuid;
 							}
 							// don't change active status of tournament if draft is ongoing
 							return cb(null, {

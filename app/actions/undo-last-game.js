@@ -11,7 +11,7 @@ const undoLastGame = (tournamentSlug, token) => dispatch =>
 					type: c.UNDO_LAST_GAME_SUCCESS,
 					tournamentSlug,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
@@ -20,8 +20,8 @@ const undoLastGame = (tournamentSlug, token) => dispatch =>
 					type: c.UNDO_LAST_GAME_FAILURE,
 					tournamentSlug,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
+		);
 
 export default undoLastGame;

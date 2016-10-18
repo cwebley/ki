@@ -12,7 +12,7 @@ const oddsmaker = (characterSlug, tournamentSlug, token) => dispatch =>
 					characterSlug,
 					tournamentSlug,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
@@ -22,8 +22,8 @@ const oddsmaker = (characterSlug, tournamentSlug, token) => dispatch =>
 					characterSlug,
 					tournamentSlug,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
+		);
 
 export default oddsmaker;

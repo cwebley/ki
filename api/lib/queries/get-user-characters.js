@@ -5,7 +5,7 @@ export default function getUserCharactersQuery (db, userUuid, characterUuids, cb
 	let params = [userUuid];
 
 	characterUuids.forEach((c, i) => {
-		values.push(`$${i + 2}`)
+		values.push(`$${i + 2}`);
 		params.push(c);
 	});
 

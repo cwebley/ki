@@ -23,4 +23,4 @@ export default function getTournamentQuery (db, field, value, cb) {
 		}
 		return cb(null, results.rows[0]);
 	});
-};
+}

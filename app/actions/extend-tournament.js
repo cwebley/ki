@@ -12,7 +12,7 @@ const extendTournament = (tournamentSlug, newGoal, token) => dispatch =>
 					tournamentSlug,
 					newGoal,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
@@ -22,8 +22,8 @@ const extendTournament = (tournamentSlug, newGoal, token) => dispatch =>
 					tournamentSlug,
 					newGoal,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
+		);
 
 export default extendTournament;

@@ -11,7 +11,7 @@ const submitSeeds = (tournamentSlug, seedValues, token) => dispatch =>
 					type: c.SUBMIT_SEEDS_SUCCESS,
 					tournamentSlug,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
@@ -21,8 +21,8 @@ const submitSeeds = (tournamentSlug, seedValues, token) => dispatch =>
 					tournamentSlug,
 					data: seedValues,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
+		);
 
 export default submitSeeds;

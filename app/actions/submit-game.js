@@ -11,7 +11,7 @@ const submitGame = opts => dispatch =>
 					type: c.SUBMIT_GAME_SUCCESS,
 					...opts,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearTournamentReasonsHelper(dispatch, opts.tournamentSlug, error.reasons);
@@ -20,8 +20,8 @@ const submitGame = opts => dispatch =>
 					type: c.SUBMIT_GAME_FAILURE,
 					...opts,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
+		);
 
 export default submitGame;

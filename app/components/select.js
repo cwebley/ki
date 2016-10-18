@@ -15,7 +15,7 @@ export default React.createClass({
 	contextTypes: {
 		formName: PropTypes.string.isRequired,
 		update: PropTypes.func.isRequired,
-		values: PropTypes.object.isRequired,
+		values: PropTypes.object.isRequired
 	},
 
 	getDefaultProps () {

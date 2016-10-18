@@ -27,11 +27,11 @@ let router = express.Router();
 
 // sets req.db
 router.use(db.middleware({
-	releaseIn: 30*1000 // 30 seconds
+	releaseIn: 30 * 1000 // 30 seconds
 }));
 
 router.use(redis.middleware({
-	releaseIn: 30*1000 // 30 seconds
+	releaseIn: 30 * 1000 // 30 seconds
 }));
 
 // validates token and sets req.user with token data

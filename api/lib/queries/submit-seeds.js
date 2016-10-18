@@ -92,7 +92,7 @@ const rollback = (db, err, cb) => {
 	db.query('ROLLBACK', () => {
 		cb(err);
 	});
-}
+};
 
 const getSeedValue = (index, length, maxStartingValue) =>
 	Math.floor((index * maxStartingValue) / length) + 1;

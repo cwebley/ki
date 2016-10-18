@@ -112,7 +112,7 @@ export default function undoGame (state, game, rematch) {
 		}
 	});
 
-	//undo ice
+	// undo ice
 	const undoIceUuid = undoIceStatus(losingCharacterUuid, game.loser.characterStreak);
 	state.users.ids[loserUuid].characters.result.forEach(cUuid => {
 		if (undoIceUuid && (cUuid !== undoIceUuid)) {

@@ -29,7 +29,7 @@ export default function submitGameHandler (req, res) {
 
 		// dedup seed data and make sure nothing changed
 		let seededSlugMap = {};
-		req.body.forEach(cSlug => { seededSlugMap[cSlug] = true });
+		req.body.forEach(cSlug => { seededSlugMap[cSlug] = true; });
 		const dedupedSeedSlugs = Object.keys(seededSlugMap);
 		if (req.body.length !== dedupedSeedSlugs.length) {
 			return res.status(400).send(r.duplicateSeed);
@@ -58,7 +58,7 @@ export default function submitGameHandler (req, res) {
 				invalidSeeds.push(cSlug);
 				return;
 			}
-			seedUuids.push(allEligibleCharacterSlugMap[cSlug].uuid)
+			seedUuids.push(allEligibleCharacterSlugMap[cSlug].uuid);
 		});
 		if (invalidSeeds.length) {
 			return res.status(400).send(r.invalidSeeds(invalidSeeds));
@@ -72,12 +72,12 @@ export default function submitGameHandler (req, res) {
 			seeds: seedUuids,
 			// also need to track the non draft characters here since their values can be added directly to the db now
 			opponentCharacters: opponentCharacters.ids
-		}
+		};
 
 		submitSeedsQuery(req.db, opts, (err, results) => {
 			if (err) {
 				if (err.message.slice(0, 9) === 'duplicate' && err.message.indexOf('seeds_pkey') !== -1) {
-					return res.status(409).send(r.seedsAlreadySubmitted)
+					return res.status(409).send(r.seedsAlreadySubmitted);
 				}
 				return res.status(500).send(r.internal);
 			}
@@ -129,7 +129,7 @@ export default function submitGameHandler (req, res) {
 					updatedTournament.users.ids[firstPickUuid].drafting = true;
 					return res.status(200).send(updatedTournament);
 				});
-			})
+			});
 		});
 	});
 }
@@ -161,4 +161,4 @@ const kickStartTournament = (req, res, updatedTournament) => {
 			return res.status(200).send(updatedTournament);
 		});
 	});
-}
+};

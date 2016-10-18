@@ -18,16 +18,16 @@ const rearrangeUpcoming = (rConn, tournamentUuid, uUuid, upcomingObjects) => (do
 	// pop off the current match and add it to the front of the inspection list
 	rConn.lpop(upcomingKey, (err, currentMatch) => {
 		if (err) {
-			log.error(err, { upcomingKey })
+			log.error(err, { upcomingKey });
 			done(err);
 		}
 
-		let stringifiedUpcoming = upcomingObjects.map(obj => JSON.stringify(obj))
+		let stringifiedUpcoming = upcomingObjects.map(obj => JSON.stringify(obj));
 		stringifiedUpcoming.unshift(currentMatch);
 
 		rConn.ltrim(upcomingKey, stringifiedUpcoming.length, -1, (err, success) => {
 			if (err) {
-				log.error(err, { upcomingKey })
+				log.error(err, { upcomingKey });
 				return done(err);
 			}
 

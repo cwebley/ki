@@ -32,7 +32,7 @@ module.exports.up = function (next) {
 				err = new Error('Non 200 response: ' + resp.statusCode);
 			}
 			if (err) {
-				if(!errors) {
+				if (!errors) {
 					errors = [err];
 				} else {
 					errors.push(err);

@@ -16,7 +16,7 @@ export default function undoUpcomingQuery (rConn, tournamentState, cb) {
 }
 
 function popPush (rConn, tournamentUuid, userUuid) {
-	return function(done) {
+	return function (done) {
 		const previousKey = previousList(tournamentUuid, userUuid);
 		const upcomingKey = upcomingList(tournamentUuid, userUuid);
 
@@ -48,5 +48,5 @@ function popPush (rConn, tournamentUuid, userUuid) {
 				return done(null, success);
 			});
 		});
-	}
+	};
 }

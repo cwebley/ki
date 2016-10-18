@@ -13,25 +13,25 @@ const ReasonsList = ({ reasons }) => {
 	return (
 		<div>
 			<List>
-				{ reasons.map((r) =>
+				{reasons.map((r) =>
 					<ListItem
 						key={r.id}
 						primaryText={r.message}
 						leftIcon={r.level === 'error' ? <AlertError color={red500} /> : <AlertErrorOutline color={blue500} />}
-						disabled={true}
+						disabled
 					/>
-				) }
+				)}
 			</List>
 		</div>
 	);
-}
+};
 
-ReasonsList.displayName = "reasonsList";
+ReasonsList.displayName = 'reasonsList';
 ReasonsList.propTypes = {
 	reasons: PropTypes.arrayOf(
 		PropTypes.object
 	)
-}
+};
 
 
 export default ReasonsList;

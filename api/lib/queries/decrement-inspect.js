@@ -33,7 +33,7 @@ export default function decrementInpsect (rConn, opts, cb) {
 			rConn.del(inspectKey, (err, success) => {
 				if (err) {
 					log.error({ inspectKey });
-					return cb(err)
+					return cb(err);
 				}
 				return cb(null, {
 					available: true

@@ -11,7 +11,7 @@ const rematch = (tournamentSlug, token) => dispatch =>
 					type: c.REMATCH_SUCCESS,
 					tournamentSlug,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
@@ -20,8 +20,8 @@ const rematch = (tournamentSlug, token) => dispatch =>
 					type: c.REMATCH_FAILURE,
 					tournamentSlug,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
+		);
 
 export default rematch;

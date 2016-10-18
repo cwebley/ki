@@ -72,7 +72,7 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 						}
 
 						if (userCharactersFields.indexOf(charKey) !== -1) {
-							userCharactersUpdates[charKey] = diff.users.ids[userUuid].characters.ids[cUuid][charKey]
+							userCharactersUpdates[charKey] = diff.users.ids[userUuid].characters.ids[cUuid][charKey];
 							return;
 						}
 					});
@@ -99,7 +99,7 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 
 	const rematchGamesMap = new Map();
 	const rematchGamesWhere = {
-		gameUuid: game.uuid,
+		gameUuid: game.uuid
 	};
 	const rematchGamesUpdates = {
 		success: game.rematchSuccess
@@ -214,7 +214,7 @@ function updateTable (db, tableName, updateMap, cb) {
 				${tableName}
 			SET
 				${sets.join(', ')} WHERE ${wheres.join(' AND ')}
-		`
+		`;
 		updates.push(done => {
 			db.query(sql, params, (err, results) => {
 				if (err) {

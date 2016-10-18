@@ -10,7 +10,7 @@ const fetchTournament = (tournamentSlug, token) => {
 					tournamentSlug,
 					data
 				})
-			)
-}
+			);
+};
 
 export default fetchTournament;

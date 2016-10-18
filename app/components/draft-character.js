@@ -11,7 +11,7 @@ export default function DraftCharacter ({ drafting, leftUserUuid, rightUserUuid,
 	};
 	const dataStyles = {
 		flex: '1 1 20%'
-	}
+	};
 
 	let leftStreakText = '';
 	let leftStreakStyle = {
@@ -67,7 +67,7 @@ export default function DraftCharacter ({ drafting, leftUserUuid, rightUserUuid,
 						disabled={!drafting}
 						onTouchTap={() => onDraftCharacter(character)}
 					>
-						<AddCircleOutline color={cyan500}/>
+						<AddCircleOutline color={cyan500} />
 					</IconButton>
 				</div>
 				<div style={rightStreakStyle}>
@@ -93,5 +93,5 @@ DraftCharacter.propTypes = {
 	character: PropTypes.shape({
 		users: PropTypes.object.isRequired
 	}),
-	onDraftCharacter: PropTypes.func.isRequired,
+	onDraftCharacter: PropTypes.func.isRequired
 };

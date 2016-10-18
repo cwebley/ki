@@ -57,7 +57,7 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 					characterIds.push(c.uuid);
 				});
 				// add the first user's character data to the tourament data
-				tournament.users.ids[users[0]].characters = {}
+				tournament.users.ids[users[0]].characters = {};
 				tournament.users.ids[users[0]].characters.ids = characters;
 				tournament.users.ids[users[0]].characters.result = characterIds;
 
@@ -187,7 +187,7 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 											result: [gameResults[0].winning_player_uuid, gameResults[0].losing_player_uuid],
 											uuid: gameResults[0].uuid,
 											supreme: gameResults[0].supreme
-										}
+										};
 										return cb(null, tournament);
 									});
 								});

@@ -1,3 +1,4 @@
+/* global describe it */
 import { expect } from 'chai';
 import config from '../config';
 import { testVals, testState, testUndoGame, resetTestState } from './helper';

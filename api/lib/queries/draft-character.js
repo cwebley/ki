@@ -66,4 +66,4 @@ const rollback = (db, err, cb) => {
 	db.query('ROLLBACK', () => {
 		cb(err);
 	});
-}
+};

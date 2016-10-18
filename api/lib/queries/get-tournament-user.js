@@ -20,7 +20,7 @@ export default function getTournamentUserQuery (db, tournamentUuid, userUuid, cb
 				sql,
 				params
 			});
-			return cb(err)
+			return cb(err);
 		}
 		return cb(null, results.rows && results.rows[0]);
 	});

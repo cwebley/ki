@@ -10,4 +10,4 @@ var oneToTwentyFive = [];
 for (let i = 0; i <= 25; i++) {
 	oneToTwentyFive.push(i);
 }
-export { oneToTwentyFive }
+export { oneToTwentyFive };

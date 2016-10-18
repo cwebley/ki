@@ -9,7 +9,7 @@ const fetchCharacters = () => {
 					type: c.FETCH_CHARACTERS_SUCCESS,
 					data
 				})
-			)
-}
+			);
+};
 
 export default fetchCharacters;

@@ -22,7 +22,7 @@ export default function submitGame (state, gameResult) {
 		previous: {
 			ids: {
 				[winnerUuid]: gameResult.winner,
-				[loserUuid]: gameResult.loser,
+				[loserUuid]: gameResult.loser
 			},
 			result: [winnerUuid, loserUuid],
 			supreme: gameResult.supreme
@@ -73,7 +73,7 @@ export default function submitGame (state, gameResult) {
 			}
 		},
 		result: [winnerUuid, loserUuid]
-	}
+	};
 
 	const winnerBestStreakDiff = updateBestStreak(state.users.ids[winnerUuid].streak, state.users.ids[winnerUuid].bestStreak);
 	if (winnerBestStreakDiff) {
@@ -88,7 +88,7 @@ export default function submitGame (state, gameResult) {
 	if (winningCharacterGlobalBestStreakDiff) {
 		diff.users.ids[winnerUuid].characters.ids[winningCharacterUuid].globalBestStreak = winningCharacterGlobalBestStreakDiff;
 	}
-	const winnerTournamentBestStreakDiff =  updateBestStreak(state.users.ids[winnerUuid].tournamentBestStreak);
+	const winnerTournamentBestStreakDiff = updateBestStreak(state.users.ids[winnerUuid].tournamentBestStreak);
 	if (winnerTournamentBestStreakDiff) {
 		diff.users.ids[winnerUuid].tournamentBestStreak = winnerTournamentBestStreakDiff;
 	}
@@ -127,7 +127,7 @@ export default function submitGame (state, gameResult) {
 			}
 			diff.users.ids[winnerUuid].characters.ids[cUuid].value = state.users.ids[winnerUuid].characters.ids[cUuid].value + 1;
 			// raw value is set to match value here
-			diff.users.ids[winnerUuid].characters.ids[cUuid].rawValue = updateLoserRawValue(state.users.ids[winnerUuid].characters.ids[cUuid].value)
+			diff.users.ids[winnerUuid].characters.ids[cUuid].rawValue = updateLoserRawValue(state.users.ids[winnerUuid].characters.ids[cUuid].value);
 		}
 	});
 
@@ -176,7 +176,7 @@ export function updateTournamentStreak (prevStreak, isChampion) {
 	return updateWinningStreak(prevStreak);
 }
 
-export function updateTournamentLosingStreak(prevStreak, champExists) {
+export function updateTournamentLosingStreak (prevStreak, champExists) {
 	if (!champExists) {
 		return undefined;
 	}

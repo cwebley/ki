@@ -1,3 +1,4 @@
+/* global describe it */
 import { expect } from 'chai';
 import get from 'lodash.get';
 import { testVals, testState, testGame, resetTestState } from './helper';
@@ -33,7 +34,7 @@ describe('submit-game logic', () => {
 			expect(evaluateChampion('winnerUuid', goal, 1000, 999)).to.equal('winnerUuid');
 			expect(evaluateChampion('winnerUuid', goal, 115, 101)).to.equal('winnerUuid');
 		});
-	})
+	});
 
 	describe('updateWinnerValue', () => {
 		it('decrements value when previousValue > 1', () => {

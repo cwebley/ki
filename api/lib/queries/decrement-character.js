@@ -23,7 +23,7 @@ export default function decrementQuery (db, opts, cb) {
 					// already logged
 					return rollback(db, err, cb);
 				}
-				db.query('COMMIT', cb(null, results))
+				db.query('COMMIT', cb(null, results));
 			});
 		});
 	});

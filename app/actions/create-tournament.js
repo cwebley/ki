@@ -10,7 +10,7 @@ const createTournament = (data, token, formName) => dispatch =>
 				return dispatch({
 					type: c.CREATE_TOURNAMENT_SUCCESS,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearFormReasonsHelper(dispatch, formName, error.reasons);
@@ -20,8 +20,8 @@ const createTournament = (data, token, formName) => dispatch =>
 					formName,
 					data,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
+		);
 
 export default createTournament;

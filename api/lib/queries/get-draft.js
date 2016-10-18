@@ -30,7 +30,7 @@ export default function getDraftQuery (db, tournamentUuid, userUuids, cb) {
 						globalBestStreak: c.globalBestStreak
 					}
 				}
-			}
+			};
 		});
 
 		getDraftCharactersForUserQuery(db, tournamentUuid, userUuids[1], (err, rightUserResults) => {
@@ -64,7 +64,7 @@ export default function getDraftQuery (db, tournamentUuid, userUuids, cb) {
 			});
 		});
 	});
-};
+}
 
 const getPreviousPick = (db, tournamentUuid, cb) => {
 	const sql = `

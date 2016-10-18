@@ -10,5 +10,5 @@ import Root from './components/root';
 // https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin();
 
-ReactDOM.render(<Root store={configureStore()}/>,
+ReactDOM.render(<Root store={configureStore()} />,
 	document.getElementById('root'));

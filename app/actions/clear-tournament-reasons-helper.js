@@ -13,7 +13,7 @@ function popReasons (dispatch, tournamentSlug, reasonsToPop) {
 			type: c.POP_TOURNAMENT_REASON,
 			tournamentSlug
 		});
-		reasonsToPop--
+		reasonsToPop--;
 		//  call again until we're ready to clear the last one
 		if (reasonsToPop > 0) {
 			popReasons(dispatch, tournamentSlug, reasonsToPop);

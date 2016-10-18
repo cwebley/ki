@@ -13,7 +13,7 @@ function popReasons (dispatch, formName, reasonsToPop) {
 			type: c.POP_FORM_REASON,
 			formName
 		});
-		reasonsToPop--
+		reasonsToPop--;
 
 		//  recursively call until we're ready to clear the last one
 		if (reasonsToPop > 0) {

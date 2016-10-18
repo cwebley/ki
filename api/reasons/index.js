@@ -1,12 +1,12 @@
 export default function r () {
 	let reasons = [];
-	for(var i=0; i<arguments.length; i++) {
+	for (var i = 0; i < arguments.length; i++) {
 		reasons.push(arguments[i]);
 	}
 	return {
 		reasons: reasons
 	};
-};
+}
 
 // register/login user
 r.NoUsername = {

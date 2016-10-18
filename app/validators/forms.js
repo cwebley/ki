@@ -1,5 +1,5 @@
 import emailValidator from 'email-validator';
-import *  as e from '../errors';
+import * as e from '../errors';
 
 export function required (value) {
 	return !value ? [e.TEXT_REQUIRED] : [];

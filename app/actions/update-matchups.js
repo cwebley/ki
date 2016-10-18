@@ -11,7 +11,7 @@ const updateMatchups = (tournamentSlug, matchupData, token) => dispatch =>
 					type: c.UPDATE_MATCHUPS_SUCCESS,
 					tournamentSlug,
 					data: body
-				})
+				});
 			},
 			error => {
 				clearTournamentReasonsHelper(dispatch, tournamentSlug, error.reasons);
@@ -21,8 +21,8 @@ const updateMatchups = (tournamentSlug, matchupData, token) => dispatch =>
 					tournamentSlug,
 					matchupData,
 					reasons: (error && error.reasons) || [GENERIC_ERROR]
-				})
+				});
 			}
-		)
+		);
 
 export default updateMatchups;

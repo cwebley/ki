@@ -10,11 +10,11 @@ import r from '../../reasons';
 	pgc.db = options.db;
 	pgc.connectionString = `postgres://${pgc.user}:${pgc.password}@${pgc.host}/${pgc.db}`;
 	return pgc;
-};
+}
 
 // Get a connection, log err on failure
 pgc.connect = function (done) {
-	pg.connect(pgc.connectionString, function(err, client, release) {
+	pg.connect(pgc.connectionString, function (err, client, release) {
 		if (err) {
 			log.error(err, {
 				connString: pgc.connectionString
@@ -27,8 +27,8 @@ pgc.connect = function (done) {
 
 // A middleware generator with options
 pgc.middleware = function (options = {}) {
-	return function(req, res, next) {
-		pgc.connect(function(err, conn, release) {
+	return function (req, res, next) {
+		pgc.connect(function (err, conn, release) {
 			if (err) {
 				// The error is logged inside db
 				return res.status(500).send(r.internal);
@@ -40,7 +40,7 @@ pgc.middleware = function (options = {}) {
 			// Start timeout if one was set
 			var _to;
 			if (options.releaseIn) {
-				_to = setTimeout(function() {
+				_to = setTimeout(function () {
 					log.warning('DB connection released after timeout');
 					req.db = null;
 					release();
@@ -49,7 +49,7 @@ pgc.middleware = function (options = {}) {
 
 			// Release on close
 			if (options.releaseOnClose !== false) {
-				res.on('finish', function() {
+				res.on('finish', function () {
 					log.debug('Releasing db connection on finish');
 					clearTimeout(_to);
 					req.db = null;

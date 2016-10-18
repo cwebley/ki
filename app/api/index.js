@@ -62,7 +62,7 @@ export const createTournament = (formData, token) =>
 export const fetchTournament = (tournamentSlug, token) => {
 	let headers = {};
 	if (token) {
-		headers['Authorization']  = 'Bearer ' + token;
+		headers['Authorization'] = 'Bearer ' + token;
 	}
 	return new Promise((resolve, reject) => {
 		nets({
@@ -76,7 +76,7 @@ export const fetchTournament = (tournamentSlug, token) => {
 			resolve(body);
 		});
 	});
-}
+};
 
 export const submitSeeds = (tournamentSlug, seedValues, token) =>
 	new Promise((resolve, reject) => {

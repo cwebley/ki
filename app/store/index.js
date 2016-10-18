@@ -8,7 +8,7 @@ export default combineReducers({
 	me,
 	forms,
 	characters,
-	tournaments,
+	tournaments
 });
 
 export const getCharactersFromState = (state) => state.characters || [];

@@ -45,7 +45,7 @@ export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 				streak: results.rows[0].winning_player_previous_streak,
 				characterStreak: results.rows[0].winning_character_previous_streak,
 				globalStreak: results.rows[0].winning_player_previous_global_streak,
-				characterGlobalStreak: results.rows[0].winning_character_previous_global_streak,
+				characterGlobalStreak: results.rows[0].winning_character_previous_global_streak
 			},
 			loser: {
 				uuid: results.rows[0].losing_player_uuid,
@@ -53,7 +53,7 @@ export default function selectMostRecentGameQuery (db, tournamentUuid, cb) {
 				streak: results.rows[0].losing_player_previous_streak,
 				characterStreak: results.rows[0].losing_character_previous_streak,
 				globalStreak: results.rows[0].losing_player_previous_global_streak,
-				characterGlobalStreak: results.rows[0].losing_character_previous_global_streak,
+				characterGlobalStreak: results.rows[0].losing_character_previous_global_streak
 			},
 			supreme: results.rows[0].supreme,
 			rematched: results.rows[0].rematched,

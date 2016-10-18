@@ -96,7 +96,7 @@ function addToTournamentCharactersTable (db, opts, cb) {
 	let params = [];
 
 	opts.user.characters.forEach((cUuid, i) => {
-		values.push(`($${3 * i + 1}, $${3 * i + 2}, $${3 * i + 3})`)
+		values.push(`($${3 * i + 1}, $${3 * i + 2}, $${3 * i + 3})`);
 		params.push(opts.uuid, opts.user.uuid, cUuid);
 	});
 

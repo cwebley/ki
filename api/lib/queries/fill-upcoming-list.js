@@ -80,5 +80,5 @@ const popPushAndFill = (rConn, tournamentState, uUuid) => done => {
 				});
 			});
 		});
-	})
-}
+	});
+};

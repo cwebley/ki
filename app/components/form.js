@@ -18,7 +18,7 @@ export default React.createClass({
 	getDefaultProps () {
 		return {
 			values: {}
-		}
+		};
 	},
 
 	childContextTypes: {
@@ -67,7 +67,7 @@ export default React.createClass({
 			values: this.props.values,
 			registerValidation: this.registerValidation,
 			isFormValid: this.isFormValid
-		}
+		};
 	},
 
 	render () {

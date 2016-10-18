@@ -74,7 +74,7 @@ export default function undoGameQuery (db, opts, diff, cb) {
 						}
 
 						if (userCharactersFields.indexOf(charKey) !== -1) {
-							userCharactersUpdates[charKey] = diff.users.ids[userUuid].characters.ids[cUuid][charKey]
+							userCharactersUpdates[charKey] = diff.users.ids[userUuid].characters.ids[cUuid][charKey];
 							return;
 						}
 					});
@@ -171,7 +171,7 @@ function updateTable (db, tableName, updateMap, cb) {
 				${tableName}
 			SET
 				${sets.join(', ')} WHERE ${wheres.join(' AND ')}
-		`
+		`;
 		updates.push(done => {
 			db.query(sql, params, (err, results) => {
 				if (err) {

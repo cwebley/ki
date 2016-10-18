@@ -42,9 +42,9 @@ export default function TournamentCharacter (props) {
 					{props.value || '?'}
 				</div>
 				<div>
-					{props.streak >= 3 && <IconFire color={red500}/>}
+					{props.streak >= 3 && <IconFire color={red500} />}
 					<h4 style={{display: 'inline'}}>{props.name}</h4>
-					{props.streak >= 3 && <IconFire color={red500}/>}
+					{props.streak >= 3 && <IconFire color={red500} />}
 					<div>{props.wins} - {props.losses}</div>
 				</div>
 				{!props.opponentCharacter && <div style={{

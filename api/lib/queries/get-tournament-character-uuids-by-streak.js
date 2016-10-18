@@ -1,6 +1,6 @@
 import log from '../../logger';
 
-export default function getTournamentCharacterUuidsByStreak(db, tUuid, uUuid, cb) {
+export default function getTournamentCharacterUuidsByStreak (db, tUuid, uUuid, cb) {
 	const sql = `
 		SELECT character_uuid AS "uuid" from tournament_characters
 		WHERE tournament_uuid = $1

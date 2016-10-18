@@ -52,7 +52,7 @@ export function registerUser (data, formName) {
 			.then(
 				loginOrRegisterSuccess(dispatch, formName),
 				loginOrRegisterFailure(dispatch, formName)
-			)
+			);
 }
 
 export function signInUser (data, formName) {
@@ -61,7 +61,7 @@ export function signInUser (data, formName) {
 			.then(
 				loginOrRegisterSuccess(dispatch, formName),
 				loginOrRegisterFailure(dispatch, formName)
-			)
+			);
 }
 
 // common helper onResolve function for api login/regsiter calls
@@ -81,7 +81,7 @@ const loginOrRegisterSuccess = (dispatch, formName) => (body) => {
 		token: token,
 		me: decoded
 	});
-}
+};
 
 // common helper onReject function for api login/regsiter calls
 const loginOrRegisterFailure = (dispatch, formName) => (error) => {
@@ -89,5 +89,5 @@ const loginOrRegisterFailure = (dispatch, formName) => (error) => {
 		type: c.DISPLAY_FORM_ERROR,
 		formName: formName,
 		reasons: (error && error.reasons) || [errors.GENERIC_ERROR]
-	})
-}
+	});
+};
