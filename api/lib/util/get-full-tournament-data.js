@@ -111,7 +111,7 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 
 								// sum up the total number of characters in the tournament currently
 								const currentCharacterCount = tournament.users.result
-									.map((uUuid => tournament.users.ids[uUuid].characters.result.length))
+									.map(uUuid => tournament.users.ids[uUuid].characters.result.length)
 									.reduce((previousValue, currentValue) => previousValue + currentValue);
 
 								tournament.draft.current = currentCharacterCount;
@@ -172,8 +172,7 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 										if (tournament.users.result[0] === gameResults[0].winning_player_uuid) {
 											tournament.users.ids[tournament.users.result[0]].previous = previousGameWinnerData;
 											tournament.users.ids[tournament.users.result[1]].previous = previousGameLoserData;
-										}
-										else {
+										} else {
 											tournament.users.ids[tournament.users.result[0]].previous = previousGameLoserData;
 											tournament.users.ids[tournament.users.result[1]].previous = previousGameWinnerData;
 										}
