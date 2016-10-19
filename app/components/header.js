@@ -12,7 +12,7 @@ import logout from '../actions/logout';
 import { getMe } from '../store';
 
 class Header extends Component {
-	static displayName = "header"
+	static displayName = 'header'
 
 	static propTypes = {
 		me: PropTypes.object,
@@ -28,7 +28,7 @@ class Header extends Component {
 			<Toolbar>
 				<ToolbarGroup
 					style={{
-						float: "left"
+						float: 'left'
 					}}
 				>
 					<FlatButton
@@ -37,7 +37,7 @@ class Header extends Component {
 						icon={<HomeIcon />}
 					/>
 				</ToolbarGroup>
-				{ this.renderHeaderActions() }
+				{this.renderHeaderActions()}
 			</Toolbar>
 		);
 	}
@@ -47,12 +47,13 @@ class Header extends Component {
 			return (
 				<ToolbarGroup
 					style={{
-						float: "right"
+						float: 'right'
 					}}
 				>
 					<ToolbarTitle text={this.props.me.name} />
 					<RaisedButton
-						label="Create Tournament" primary={true}
+						label="Create Tournament"
+						primary
 						containerElement={<Link to="/create" activeClassName="active-route" />}
 					/>
 					<ToolbarSeparator />
@@ -66,7 +67,7 @@ class Header extends Component {
 		return (
 			<ToolbarGroup
 				style={{
-					float: "right"
+					float: 'right'
 				}}
 			>
 				<FlatButton

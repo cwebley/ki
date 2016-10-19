@@ -1,6 +1,4 @@
 import React, { PropTypes } from 'react';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import Form from './form';
 import Text from './text';
 import SubmitButton from './submit-button';
@@ -12,7 +10,6 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
 import { getFormState } from '../store';
-import get from 'lodash.get';
 
 const formName = 'register';
 
@@ -21,7 +18,7 @@ class Register extends React.Component {
 
 	static propTypes = {
 		registerUser: PropTypes.func.isRequired,
-		values: PropTypes.object,
+		values: PropTypes.object
 	}
 
 	static contextTypes = {
@@ -77,7 +74,7 @@ class Register extends React.Component {
 			.then(
 				action => {
 					if (action.token) {
-						this.context.router.push('/')
+						this.context.router.push('/');
 					}
 				}
 			);

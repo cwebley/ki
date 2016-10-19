@@ -1,9 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import get from 'lodash.get';
 import * as config from '../config';
-
-import ReasonsList from './reasons-list';
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -64,7 +61,7 @@ class TournamentCreator extends Component {
 
 	state = {
 		finished: false,
-		stepIndex: 0,
+		stepIndex: 0
 	};
 
 	componentDidMount () {
@@ -104,7 +101,7 @@ class TournamentCreator extends Component {
 				formSection = this.renderReview();
 				break;
 			default:
-				formSection = 'You shouldn\'t be here...'
+				formSection = 'You shouldn\'t be here...';
 		}
 		return (
 			<Form
@@ -183,7 +180,7 @@ class TournamentCreator extends Component {
 								name={c.slug}
 								label={c.name}
 								disabled={
-									//can't select this character if they're in the draft
+									// can't select this character if they're in the draft
 									!!draftCharacters[c.slug]
 								}
 							/>
@@ -201,24 +198,24 @@ class TournamentCreator extends Component {
 						updateList={this.props.updateList}
 						toggleListItems={this.props.toggleListItems}
 					>
-					<div style={{
-						padding: '1rem',
-						width: '50%',
-						float: 'right'
-					}}>
-						<FormListToggle />
-					</div>
-						{this.props.characters.map(c =>
-							<Check
-								key={c.uuid}
-								name={c.slug}
-								label={c.name}
-								disabled={
-									//can't select this character if they're in the draft
-									!!draftCharacters[c.slug]
-								}
-							/>
-						)}
+						<div style={{
+							padding: '1rem',
+							width: '50%',
+							float: 'right'
+						}}>
+							<FormListToggle />
+						</div>
+							{this.props.characters.map(c =>
+								<Check
+									key={c.uuid}
+									name={c.slug}
+									label={c.name}
+									disabled={
+										// can't select this character if they're in the draft
+										!!draftCharacters[c.slug]
+									}
+								/>
+							)}
 					</FormList>
 				</div>
 			</div>
@@ -321,10 +318,10 @@ class TournamentCreator extends Component {
 					</ul>
 				</div>
 				<div>
-				<h3 style={{
-					textAlign: 'center',
-					paddingBottom: '1rem'
-				}}>Players</h3>
+					<h3 style={{
+						textAlign: 'center',
+						paddingBottom: '1rem'
+					}}>Players</h3>
 					<div style={{
 						width: '50%',
 						float: 'left'
@@ -366,7 +363,7 @@ class TournamentCreator extends Component {
 					paddingTop: '1rem',
 					float: 'right'
 				}}>
-					<SubmitButton label="Submit"/>
+					<SubmitButton label="Submit" />
 				</div>
 			</div>
 		);
@@ -390,7 +387,7 @@ class TournamentCreator extends Component {
 						/>
 						<RaisedButton
 							label={stepIndex === 2 ? 'Review' : 'Next'}
-							primary={true}
+							primary
 							onTouchTap={() => this.nextStep()}
 							disabled={stepIndex > 2}
 						/>
@@ -416,7 +413,7 @@ class TournamentCreator extends Component {
 							<StepLabel>Draft Settings</StepLabel>
 						</Step>
 					</Stepper>
-					{ this.renderStepContent() }
+					{this.renderStepContent()}
 					{this.props.formState.reasons && this.props.formState.reasons.length > 0 && <Snackbar
 						open={!!this.props.formState.reasons.length}
 						message={this.props.formState.reasons[0].message}
@@ -439,7 +436,6 @@ class TournamentCreator extends Component {
 		);
 	}
 }
-
 
 const mapStateToProps = (state) => ({
 	characters: getCharactersFromState(state),

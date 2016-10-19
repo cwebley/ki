@@ -22,8 +22,6 @@ import Form from './form';
 import Check from './check';
 import { getFormValue } from '../store/forms';
 
-import get from 'lodash.get';
-
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
@@ -33,12 +31,10 @@ import InspectContainer from './inspect-container';
 import Draft from './draft';
 import TournamentCharacter from './tournament-character';
 
-import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import IconUndo from 'material-ui/svg-icons/content/undo';
 import IconRedo from 'material-ui/svg-icons/content/redo';
 import { green500, red500, amber500 } from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
-
 
 const styles = {
 	pageStyle: {
@@ -54,13 +50,13 @@ const styles = {
 	resetListStyle: {
 		margin: 0,
 		padding: 0,
-		listStyleType: 'none',
+		listStyleType: 'none'
 	},
 	powerBlock: {
 		paddingTop: '2em'
 	},
 	power: {
-		padding: '0 25%',
+		padding: '0 25%'
 	},
 	leftUserStyle: {
 		float: 'left',
@@ -74,11 +70,11 @@ const styles = {
 		float: 'left',
 		width: '34%'
 	}
-}
+};
 
 class TournamentLanding extends Component {
-	constructor(props) {
-		super(props);
+	constructor () {
+		super();
 		this.updateSeeds = this.updateSeeds.bind(this);
 		this.updateInspectState = this.updateInspectState.bind(this);
 		this.handleToggleDraftFilter = this.handleToggleDraftFilter.bind(this);
@@ -90,8 +86,8 @@ class TournamentLanding extends Component {
 	static propTypes = {
 		me: PropTypes.object,
 		tournament: PropTypes.object.isRequired,
-		fetchTournament:PropTypes.func.isRequired,
-		updateSeeds:PropTypes.func.isRequired
+		fetchTournament: PropTypes.func.isRequired,
+		updateSeeds: PropTypes.func.isRequired
 	};
 
 	componentDidMount () {
@@ -150,41 +146,41 @@ class TournamentLanding extends Component {
 		});
 
 		return (
-				<div style={styles.pageStyle}>
-					{this.renderLeftUser()}
-					{this.renderCenter(seedingInProgress, draftInProgress)}
-					{this.renderRightUser(seedingInProgress)}
-					{this.props.tournament.active && <div style={{
-						position: 'absolute',
-						left: 0,
-						bottom: 0
-					}}>
-						<FlatButton
-							label="Dangerous Undo"
-							hoverColor={red500}
-							icon={<IconUndo />}
-							disabled={!this.props.tournament.previous}
-							onTouchTap={() => this.undoLastGame()}
-						/>
-					</div>}
-					{this.props.tournament.championUuid && <div style={{
-						position: 'absolute',
-						right: 0,
-						bottom: 0
-					}}>
-						<FlatButton
-							label={`Extend goal to ${this.props.tournament.goal + 25} pts`}
-							hoverColor={red500}
-							icon={<IconRedo />}
-							onTouchTap={() => this.extendTournament()}
-						/>
-					</div>}
-					{this.props.tournament.reasons && this.props.tournament.reasons.length > 0 && <Snackbar
-						open={!!this.props.tournament.reasons.length}
-						message={this.props.tournament.reasons[0].message}
-						autoHideDuration={10000}
-					/>}
-				</div>
+			<div style={styles.pageStyle}>
+				{this.renderLeftUser()}
+				{this.renderCenter(seedingInProgress, draftInProgress)}
+				{this.renderRightUser(seedingInProgress)}
+				{this.props.tournament.active && <div style={{
+					position: 'absolute',
+					left: 0,
+					bottom: 0
+				}}>
+					<FlatButton
+						label="Dangerous Undo"
+						hoverColor={red500}
+						icon={<IconUndo />}
+						disabled={!this.props.tournament.previous}
+						onTouchTap={() => this.undoLastGame()}
+					/>
+				</div>}
+				{this.props.tournament.championUuid && <div style={{
+					position: 'absolute',
+					right: 0,
+					bottom: 0
+				}}>
+					<FlatButton
+						label={`Extend goal to ${this.props.tournament.goal + 25} pts`}
+						hoverColor={red500}
+						icon={<IconRedo />}
+						onTouchTap={() => this.extendTournament()}
+					/>
+				</div>}
+				{this.props.tournament.reasons && this.props.tournament.reasons.length > 0 && <Snackbar
+					open={!!this.props.tournament.reasons.length}
+					message={this.props.tournament.reasons[0].message}
+					autoHideDuration={10000}
+				/>}
+			</div>
 		);
 	}
 
@@ -338,8 +334,8 @@ class TournamentLanding extends Component {
 
 		return (
 			<div>
-				<h1>{ tournament.name }</h1>
-				{ tournament.championUuid && <h3>{`${tournament.users.ids[tournament.championUuid].name} is the Champion!`}</h3>}
+				<h1>{tournament.name}</h1>
+				{tournament.championUuid && <h3>{`${tournament.users.ids[tournament.championUuid].name} is the Champion!`}</h3>}
 				<div>
 					<div style={{
 						width: '50%',
@@ -382,12 +378,12 @@ class TournamentLanding extends Component {
 							/>
 						</Form>
 					</div>
-					{ tournament.previous && <div style={{paddingTop: '1em'}}>
+					{tournament.previous && <div style={{paddingTop: '1em'}}>
 						<h5>Previous Match:</h5>
 						<div>{`(${leftPrevious.value}) ${leftUser.characters.ids[leftPrevious.characterUuid].name}`}</div>
 						vs
 						<div>{`(${rightPrevious.value}) ${rightUser.characters.ids[rightPrevious.characterUuid].name}`}</div>
-					</div> }
+					</div>}
 				</div>
 				<div style={styles.powerBlock}>
 					<div style={styles.power}>
@@ -419,11 +415,10 @@ class TournamentLanding extends Component {
 		const rightUserUuid = tournament.inspect.users.result[1];
 
 		let leftUpcomingCharacters;
-		 if (tournament.inspect.custom && tournament.inspect.custom[leftUserUuid]) {
-			 leftUpcomingCharacters = tournament.inspect.custom[leftUserUuid]
-		 }
-		 else {
-			 leftUpcomingCharacters = tournament.inspect.users.ids[leftUserUuid];
+		if (tournament.inspect.custom && tournament.inspect.custom[leftUserUuid]) {
+			leftUpcomingCharacters = tournament.inspect.custom[leftUserUuid];
+		} else {
+			leftUpcomingCharacters = tournament.inspect.users.ids[leftUserUuid];
 		}
 		const leftHydratedCharacters = leftUpcomingCharacters.map(matchData => Object.assign(
 			{},
@@ -437,8 +432,7 @@ class TournamentLanding extends Component {
 		let rightUpcomingCharacters;
 		if (tournament.inspect.custom && tournament.inspect.custom[rightUserUuid]) {
 			rightUpcomingCharacters = tournament.inspect.custom[rightUserUuid];
-		}
-		else {
+		} else {
 			rightUpcomingCharacters = tournament.inspect.users.ids[rightUserUuid];
 		}
 		const rightHydratedCharacters = rightUpcomingCharacters.map(matchData => Object.assign(
@@ -480,7 +474,7 @@ class TournamentLanding extends Component {
 					</div>
 				</div>
 				<div style={{
-					marginTop: '1em',
+					marginTop: '1em'
 				}}>
 					<RaisedButton
 						label="Save Changes"
@@ -498,7 +492,7 @@ class TournamentLanding extends Component {
 	}
 
 	updateSeeds (data) {
-		this.props.updateSeeds(this.props.tournament.slug, data)
+		this.props.updateSeeds(this.props.tournament.slug, data);
 	}
 
 	updateInspectState (data) {
@@ -562,18 +556,16 @@ class TournamentLanding extends Component {
 		const rightUserUuid = tournament.inspect.users.result[1];
 
 		let leftUpcomingCharacterSlugs;
-		 if (tournament.inspect.custom && tournament.inspect.custom[leftUserUuid]) {
-			 leftUpcomingCharacterSlugs = tournament.inspect.custom[leftUserUuid].map(inspectCharacter => tournament.users.ids[leftUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
-		 }
-		 else {
-			 leftUpcomingCharacterSlugs = tournament.inspect.users.ids[leftUserUuid].map(inspectCharacter => tournament.users.ids[leftUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
+		if (tournament.inspect.custom && tournament.inspect.custom[leftUserUuid]) {
+			leftUpcomingCharacterSlugs = tournament.inspect.custom[leftUserUuid].map(inspectCharacter => tournament.users.ids[leftUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
+		} else {
+			leftUpcomingCharacterSlugs = tournament.inspect.users.ids[leftUserUuid].map(inspectCharacter => tournament.users.ids[leftUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
 		}
 
 		let rightUpcomingCharacterSlugs;
 		if (tournament.inspect.custom && tournament.inspect.custom[rightUserUuid]) {
 			rightUpcomingCharacterSlugs = tournament.inspect.custom[rightUserUuid].map(inspectCharacter => tournament.users.ids[rightUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
-		}
-		else {
+		} else {
 			rightUpcomingCharacterSlugs = tournament.inspect.users.ids[rightUserUuid].map(inspectCharacter => tournament.users.ids[rightUserUuid].characters.ids[inspectCharacter.characterUuid].slug);
 		}
 
@@ -590,8 +582,8 @@ const mapStateToProps = (state, ownProps) => {
 		tournament: getTournamentFromState(state, ownProps.params.tournamentSlug),
 		me: getMe(state),
 		matchupForm: getFormState(state, 'matchup')
-	}
-}
+	};
+};
 
 export default connect(mapStateToProps, {
 	fetchTournament, updateSeeds, submitSeeds,

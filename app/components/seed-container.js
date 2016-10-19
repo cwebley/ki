@@ -4,8 +4,8 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import DraggableCharacter from './draggable-character';
 
 class SeedContainer extends Component {
-	constructor(props) {
-		super(props);
+	constructor (props) {
+		super();
 		this.moveCharacter = this.moveCharacter.bind(this);
 	}
 

@@ -7,10 +7,6 @@ import intToStreak from 'int-to-streak';
 import Paper from 'material-ui/Paper';
 
 class DraggableCharacter extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	static displayName = 'DraggableCharacter'
 
 	static propTypes = {
@@ -28,7 +24,7 @@ class DraggableCharacter extends Component {
 	};
 
 	render () {
-		const backgroundStyle = this.props.draftCharacter ? '#ddd' : "#fff";
+		const backgroundStyle = this.props.draftCharacter ? '#ddd' : '#fff';
 		return this.props.connectDragSource(this.props.connectDropTarget(
 			<div style={this.getStyles()}>
 				<Paper
@@ -70,7 +66,7 @@ const dragSource = {
 			id: props.id
 		};
 	}
-}
+};
 
 const dragTarget = {
 	hover (props, monitor) {
@@ -79,7 +75,7 @@ const dragTarget = {
 			props.moveCharacter(draggedId, props.id);
 		}
 	}
-}
+};
 
 const connect = (connect, monitor) => ({
 	connectDragSource: connect.dragSource(),

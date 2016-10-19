@@ -8,16 +8,15 @@ import ReasonsList from './reasons-list';
 import * as actions from '../actions/forms';
 
 import { getFormState } from '../store';
-import get from 'lodash.get';
 
-const formName = "signin";
+const formName = 'signin';
 
 class SignIn extends Component {
-	static displayName = formName
+	static displayName = formName;
 
 	static propTypes = {
 		signInUser: PropTypes.func.isRequired,
-		values: PropTypes.object,
+		values: PropTypes.object
 	}
 
 	static contextTypes = {
@@ -61,13 +60,12 @@ class SignIn extends Component {
 			.then(
 				action => {
 					if (action.token) {
-						this.context.router.push('/')
+						this.context.router.push('/');
 					}
 				}
 			);
 	}
 }
-
 
 const mapStateToProps = (state) => ({
 	formState: getFormState(state, formName)

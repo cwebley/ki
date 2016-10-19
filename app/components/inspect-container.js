@@ -3,9 +3,8 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import InspectCharacter from './inspect-character';
 
-
 class InspectContainer extends Component {
-	constructor(props) {
+	constructor (props) {
 		super(props);
 		this.moveCharacter = this.moveCharacter.bind(this);
 	}
@@ -52,6 +51,5 @@ class InspectContainer extends Component {
 		});
 	}
 }
-
 
 export default DragDropContext(HTML5Backend)(InspectContainer);

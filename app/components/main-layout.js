@@ -1,14 +1,10 @@
 import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux';
-
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { deepOrange500 } from 'material-ui/styles/colors';
 import spacing from 'material-ui/styles/spacing';
 import withWidth, {MEDIUM, LARGE} from 'material-ui/utils/withWidth';
 
 import Header from './header';
-
 
 class MainLayout extends Component {
 	static displayName = 'MainLayout'
@@ -19,18 +15,18 @@ class MainLayout extends Component {
 	}
 
 	static childContextTypes = {
-		muiTheme: PropTypes.object,
+		muiTheme: PropTypes.object
 	}
 
 	getChildContext () {
 		return {
 			muiTheme: this.state.muiTheme
-		}
+		};
 	}
 
 	state = {
 		muiTheme: getMuiTheme()
-	}
+	};
 
 	getStyles () {
 		const styles = {
@@ -44,7 +40,7 @@ class MainLayout extends Component {
 				overflow: 'auto',
 				position: 'relative'
 			}
-		}
+		};
 
 		if (this.props.width === MEDIUM || this.props.width === LARGE) {
 			styles.content = Object.assign(styles.content, styles.contentWhenMedium);
@@ -64,7 +60,7 @@ class MainLayout extends Component {
 						<Header />
 					</header>
 					<main style={preparedStyles.content}>
-						{ this.props.children }
+						{this.props.children}
 					</main>
 				</div>
 			</MuiThemeProvider>

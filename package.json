@@ -7,7 +7,7 @@
     "start": "webpack-dev-server --progress",
     "production": "webpack --progress",
     "clean-build": "rm -rf node_modules && npm install",
-    "happiness": "happiness"
+    "happiness": "happiness --parser babel-eslint"
   },
   "dependencies": {
     "babel-preset-react-hmre": "^1.1.1",

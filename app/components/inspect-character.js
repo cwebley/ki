@@ -5,15 +5,11 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { ItemTypes } from '../constants';
 
 class InspectCharacter extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	static propTypes = {
 		name: PropTypes.string.isRequired,
 		connectDragSource: React.PropTypes.func.isRequired,
 		connectDropTarget: React.PropTypes.func.isRequired,
-		isDragging: React.PropTypes.bool.isRequired,
+		isDragging: React.PropTypes.bool.isRequired
 	};
 
 	render () {
@@ -76,7 +72,6 @@ const connect = (connect, monitor) => ({
 const collect = (connect) => ({
 	connectDropTarget: connect.dropTarget()
 });
-
 
 export default flow(
 	DragSource(ItemTypes.DRAGGABLE_INSPECT_CHARACTER, dragSource, connect),
