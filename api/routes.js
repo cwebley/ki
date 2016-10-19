@@ -47,7 +47,6 @@ const acceptUser = (req, res, next) => {
 	return next();
 };
 
-
 router.post('/user/register', registerUser);
 router.post('/user/login', loginUser);
 

@@ -51,7 +51,6 @@ export const POP_TOURNAMENT_REASON = 'POP_TOURNAMENT_REASON';
 // localStorage property for the auth token
 export const LOCAL_STORAGE_PROPERTY = 'ki-state';
 
-
 export const ItemTypes = {
 	DRAG_CHARACTER: 'draggableCharacter',
 	DRAGGABLE_INSPECT_CHARACTER: 'draggableInspectCharacter'

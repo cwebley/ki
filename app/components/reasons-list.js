@@ -1,10 +1,8 @@
 import React, { PropTypes } from 'react'; // necessary for this stateless component?
 import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
 import AlertError from 'material-ui/svg-icons/alert/error';
 import AlertErrorOutline from 'material-ui/svg-icons/alert/error-outline';
 import { red500, blue500 } from 'material-ui/styles/colors';
-
 
 const ReasonsList = ({ reasons }) => {
 	if (!reasons) {
@@ -32,6 +30,5 @@ ReasonsList.propTypes = {
 		PropTypes.object
 	)
 };
-
 
 export default ReasonsList;

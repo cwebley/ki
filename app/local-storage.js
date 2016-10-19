@@ -1,3 +1,5 @@
+/* global localStorage */
+
 import * as c from './constants';
 
 export const loadState = () => {
@@ -7,8 +9,7 @@ export const loadState = () => {
 			return undefined;
 		}
 		return JSON.parse(serializedState);
-	}
-	catch (err) {
+	} catch (err) {
 		return undefined;
 	}
 };
@@ -16,10 +17,9 @@ export const loadState = () => {
 export const saveState = (state) => {
 	try {
 		// don't stringify null or undefined
-		const serializedState = !!state ? JSON.stringify(state) : state;
+		const serializedState = state ? JSON.stringify(state) : state;
 		return localStorage.setItem(c.LOCAL_STORAGE_PROPERTY, serializedState);
-	}
-	catch (err) {
+	} catch (err) {
 		return undefined;
 	}
 };

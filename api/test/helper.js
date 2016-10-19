@@ -212,7 +212,6 @@ let testState = {
 							get fireWins () { return testVals.userOneXterTwoFireWins; },
 							get globalStreak () { return testVals.userOneXterTwoGlobalStreak; },
 							get globalBestStreak () { return testVals.userOneXterTwoGlobalBestStreak; }
-
 						}
 					},
 					result: ['xter1Uuid', 'xter2Uuid']
@@ -244,8 +243,6 @@ let testState = {
 							get fireWins () { return testVals.userTwoXterOneFireWins; },
 							get globalStreak () { return testVals.userTwoXterOneGlobalStreak; },
 							get globalBestStreak () { return testVals.userTwoXterOneGlobalBestStreak; }
-
-
 						},
 						'xter2Uuid': {
 							get value () { return testVals.userTwoXterTwoVal; },

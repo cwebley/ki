@@ -1,6 +1,4 @@
-import nets from 'nets';
 import * as c from '../constants';
-import * as config from '../config';
 import * as errors from '../errors';
 import jwtDecode from 'jwt-decode';
 import { saveState } from '../local-storage';

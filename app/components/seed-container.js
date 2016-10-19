@@ -9,6 +9,8 @@ class SeedContainer extends Component {
 		this.moveCharacter = this.moveCharacter.bind(this);
 	}
 
+	static displayName = 'SeedContainer'
+
 	static propTypes = {
 		characters: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
 		maxStartingValue: PropTypes.number.isRequired,

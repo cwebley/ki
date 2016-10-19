@@ -377,7 +377,6 @@ r.InvalidMatchups = {
 	id: 'invalidMatchups'
 };
 
-
 r.Internal = {
 	message: 'Internal server error',
 	level: 'error',

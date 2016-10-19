@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes } from 'react';
 import DraftCharacter from './draft-character';
 import FlatButton from 'material-ui/FlatButton';
 import IconFilterList from 'material-ui/svg-icons/content/filter-list';

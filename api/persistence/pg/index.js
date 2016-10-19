@@ -1,7 +1,7 @@
 import config from '../../config';
-import pgConnect from './pg-connect';
+import PgConnect from './pg-connect';
 
-let db = new pgConnect({
+let db = new PgConnect({
 	user: config.pg.username,
 	password: config.pg.password,
 	host: config.pg.server,

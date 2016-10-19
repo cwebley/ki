@@ -1,4 +1,4 @@
-/* global describe it */
+/* global describe it beforeEach*/
 import { expect } from 'chai';
 import get from 'lodash.get';
 import { testVals, testState, testGame, resetTestState } from './helper';
@@ -17,7 +17,6 @@ import submitGame, {
 } from '../lib/core/submit-game';
 
 describe('submit-game logic', () => {
-
 	describe('evaluateChampion', () => {
 		const goal = 100;
 		it('returns undefined if the winner\'s previous score is below the goal', () => {
@@ -173,7 +172,6 @@ describe('submit-game logic', () => {
 		});
 
 		it('handles the edge case of the winning character already having a value of 1', () => {
-
 			testVals.userOneXterOneVal = 1;
 			const diff = submitGame(testState, testGame);
 
@@ -182,7 +180,6 @@ describe('submit-game logic', () => {
 		});
 
 		it('handles player and character streaks properly', () => {
-
 			const diff = submitGame(testState, testGame);
 			expect(diff.users.ids['user1Uuid'].streak).to.equal(1);
 			expect(diff.users.ids['user1Uuid'].characters.ids['xter1Uuid'].streak).to.equal(1);
@@ -212,11 +209,9 @@ describe('submit-game logic', () => {
 			expect(diff3.users.ids['user1Uuid'].characters.ids['xter1Uuid'].streak).to.equal(1);
 			expect(diff3.users.ids['user2Uuid'].streak).to.equal(-1);
 			expect(diff3.users.ids['user2Uuid'].characters.ids['xter2Uuid'].streak).to.equal(-1);
-
 		});
 
 		it('updates coins for the winner only when previousStreak is >=2', () => {
-
 			testVals.userOneStreak = 2;
 			const diff = submitGame(testState, testGame);
 

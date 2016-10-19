@@ -10,7 +10,7 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
 const PATHS = {
 	app: path.join(__dirname, 'app'),
 	build: path.join(__dirname, 'dist')
-}
+};
 
 const LAUNCH_COMMAND = process.env.npm_lifecycle_event;
 const isProduction = LAUNCH_COMMAND === 'production';
@@ -37,7 +37,7 @@ const base = {
 			loader: 'babel'
 		}]
 	}
-}
+};
 
 const developmentConfig = {
 	devtool: 'cheap-module-inline-source-map',
@@ -54,7 +54,7 @@ const developmentConfig = {
 			}
 		}
 	}
-}
+};
 
 const productionConfig = {
 	devtool: 'cheap-module-source-map',
@@ -68,8 +68,8 @@ const productionConfig = {
 				warnings: false
 			}
 		})
-	],
-}
+	]
+};
 
 export default Object.assign({}, base,
 	isProduction ? productionConfig : developmentConfig

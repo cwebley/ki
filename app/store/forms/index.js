@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux';
 import * as c from '../../constants';
 
 const formReducer = (state = {}, action) => {

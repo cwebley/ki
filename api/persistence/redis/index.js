@@ -1,7 +1,7 @@
 import config from '../../config';
-import redisConnect from './redis-connect';
+import RedisConnect from './redis-connect';
 
-let redis = new redisConnect({
+let redis = new RedisConnect({
 	host: config.redis.host,
 	db: config.redis.password
 });

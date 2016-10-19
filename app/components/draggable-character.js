@@ -11,6 +11,8 @@ class DraggableCharacter extends Component {
 		super(props);
 	}
 
+	static displayName = 'DraggableCharacter'
+
 	static propTypes = {
 		name: PropTypes.string.isRequired,
 		draftCharacter: PropTypes.bool,

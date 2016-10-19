@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
-
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { deepOrange500 } from 'material-ui/styles/colors';
@@ -12,7 +11,7 @@ import Header from './header';
 
 
 class MainLayout extends Component {
-
+	static displayName = 'MainLayout'
 	static propTypes = {
 		children: PropTypes.node,
 		location: PropTypes.object,

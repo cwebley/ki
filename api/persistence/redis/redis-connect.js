@@ -3,9 +3,9 @@ import r from '../../reasons';
 import redis from 'redis';
 
 export default function rc (options = {}) {
-   										rc.port = options.user;
-   										rc.host = options.password;
-   										return rc;
+	rc.port = options.user;
+	rc.host = options.password;
+	return rc;
 }
 
 // middleware generator

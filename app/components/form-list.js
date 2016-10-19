@@ -1,7 +1,4 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import * as actions from '../actions/forms';
-import get from 'lodash.get';
 
 export default React.createClass({
 	displayName: 'FormList',
@@ -48,7 +45,6 @@ export default React.createClass({
 		this.items = [...this.items, itemName];
 		return this.unregisterItem.bind(null, itemName);
 	},
-
 
 	unregisterItem (nameForRemoval) {
 		this.items = this.items.filter(n => n !== nameForRemoval);

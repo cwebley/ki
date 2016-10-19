@@ -1,8 +1,6 @@
-import React, { PropTypes, Component } from 'react';
-import DraftCharacter from './draft-character';
+import React, { PropTypes } from 'react';
 
 import Paper from 'material-ui/Paper';
-import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconFire from 'material-ui/svg-icons/social/whatshot';
@@ -28,7 +26,6 @@ export default function TournamentCharacter (props) {
 		streakText = -1 * props.streak + 'L';
 		streakStyle.color = red500;
 	}
-
 
 	return (
 		<li>
@@ -82,15 +79,15 @@ export default function TournamentCharacter (props) {
 }
 
 TournamentCharacter.propTypes = {
-	opponentCharacter: React.PropTypes.bool,
-	tournamentActive: React.PropTypes.bool,
-	coinsAvailable: React.PropTypes.number,
-	name: React.PropTypes.string,
-	slug: React.PropTypes.string,
-	streak: React.PropTypes.number,
-	value: React.PropTypes.number,
-	wins: React.PropTypes.number,
-	losses: React.PropTypes.number,
-	onDecrementCharacter: React.PropTypes.func,
-	onOddsmaker: React.PropTypes.func
+	opponentCharacter: PropTypes.bool,
+	tournamentActive: PropTypes.bool,
+	coinsAvailable: PropTypes.number,
+	name: PropTypes.string,
+	slug: PropTypes.string,
+	streak: PropTypes.number,
+	value: PropTypes.number,
+	wins: PropTypes.number,
+	losses: PropTypes.number,
+	onDecrementCharacter: PropTypes.func,
+	onOddsmaker: PropTypes.func
 };
