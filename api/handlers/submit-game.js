@@ -136,16 +136,16 @@ export default function submitGameHandler (req, res) {
 			let diff = submitGame(tournament, game);
 
 			game.uuid = uuid.v4();
-			game.loser.prevStreak = tournament.users.ids[game.loser.uuid].streak;
-			game.loser.prevGlobalStreak = tournament.users.ids[game.loser.uuid].globalStreak;
-			game.loser.prevCharStreak = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].streak;
-			game.loser.prevCharGlobalStreak = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].globalStreak;
-			game.winner.value = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].value;
+			game.loser.streak = tournament.users.ids[game.loser.uuid].streak;
+			game.loser.globalStreak = tournament.users.ids[game.loser.uuid].globalStreak;
+			game.loser.characterStreak = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].streak;
+			game.loser.characterGlobalStreak = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].globalStreak;
 			game.loser.value = tournament.users.ids[game.loser.uuid].characters.ids[game.loser.characterUuid].value;
-			game.winner.prevStreak = tournament.users.ids[game.winner.uuid].streak;
-			game.winner.prevGlobalStreak = tournament.users.ids[game.winner.uuid].globalStreak;
-			game.winner.prevCharStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].streak;
-			game.winner.prevCharGlobalStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].globalStreak;
+			game.winner.streak = tournament.users.ids[game.winner.uuid].streak;
+			game.winner.globalStreak = tournament.users.ids[game.winner.uuid].globalStreak;
+			game.winner.characterStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].streak;
+			game.winner.characterGlobalStreak = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].globalStreak;
+			game.winner.value = tournament.users.ids[game.winner.uuid].characters.ids[game.winner.characterUuid].value;
 
 			if (tournament.users.ids[tournament.users.result[0]].upcoming[0].inspectUserUuid) {
 				// the submitted game was an inspected one, track its result in the inspect_games table

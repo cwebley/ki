@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-
+import intToStreak from 'int-to-streak';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import IconCasino from 'material-ui/svg-icons/places/casino';
@@ -8,10 +8,9 @@ import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import { green500, red500 } from 'material-ui/styles/colors';
 
 export default function TournamentCharacter (props) {
-	let streakText = '';
+	const streakText = intToStreak(props.streak);
 	let streakStyle = {};
 	if (props.streak > 0) {
-		streakText = props.streak + 'W';
 		streakStyle.color = green500;
 		if (props.streak === 2) {
 			streakStyle.fontSize = '1.25em';
@@ -23,7 +22,6 @@ export default function TournamentCharacter (props) {
 		}
 	}
 	if (props.streak < 0) {
-		streakText = -1 * props.streak + 'L';
 		streakStyle.color = red500;
 	}
 

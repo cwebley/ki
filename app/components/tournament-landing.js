@@ -30,6 +30,7 @@ import SeedContainer from './seed-container';
 import InspectContainer from './inspect-container';
 import Draft from './draft';
 import TournamentCharacter from './tournament-character';
+import PreviousMatch from './previous-match';
 
 import IconUndo from 'material-ui/svg-icons/content/undo';
 import IconRedo from 'material-ui/svg-icons/content/redo';
@@ -320,17 +321,6 @@ class TournamentLanding extends Component {
 		const rightUser = tournament.users.ids[tournament.users.result[1]];
 		const leftCharacter = leftUser.characters.ids[leftUser.upcoming[0].characterUuid];
 		const rightCharacter = rightUser.characters.ids[rightUser.upcoming[0].characterUuid];
-		let leftPrevious;
-		let	rightPrevious;
-
-		if (tournament.previous && tournament.previous.result[0] === tournament.users.result[0]) {
-			leftPrevious = tournament.previous.ids[tournament.previous.result[0]];
-			rightPrevious = tournament.previous.ids[tournament.previous.result[1]];
-		}
-		if (tournament.previous && tournament.previous.result[1] === tournament.users.result[0]) {
-			leftPrevious = tournament.previous.ids[tournament.previous.result[1]];
-			rightPrevious = tournament.previous.ids[tournament.previous.result[0]];
-		}
 
 		return (
 			<div>
@@ -378,12 +368,7 @@ class TournamentLanding extends Component {
 							/>
 						</Form>
 					</div>
-					{tournament.previous && <div style={{paddingTop: '1em'}}>
-						<h5>Previous Match:</h5>
-						<div>{`(${leftPrevious.value}) ${leftUser.characters.ids[leftPrevious.characterUuid].name}`}</div>
-						vs
-						<div>{`(${rightPrevious.value}) ${rightUser.characters.ids[rightPrevious.characterUuid].name}`}</div>
-					</div>}
+					{tournament.previous && <PreviousMatch leftUser={leftUser} rightUser={rightUser} previousMatch={tournament.previous}/>}
 				</div>
 				<div style={styles.powerBlock}>
 					<div style={styles.power}>

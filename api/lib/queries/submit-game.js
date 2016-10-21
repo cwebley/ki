@@ -260,14 +260,14 @@ function insertGame (db, tournamentUuid, game, cb) {
 		game.loser.characterUuid,
 		game.winner.value,
 		game.loser.value,
-		game.winner.prevStreak,
-		game.winner.prevGlobalStreak,
-		game.winner.prevCharStreak,
-		game.winner.prevCharGlobalStreak,
-		game.loser.prevStreak,
-		game.loser.prevGlobalStreak,
-		game.loser.prevCharStreak,
-		game.loser.prevCharGlobalStreak,
+		game.winner.streak,
+		game.winner.globalStreak,
+		game.winner.characterStreak,
+		game.winner.characterGlobalStreak,
+		game.loser.streak,
+		game.loser.globalStreak,
+		game.loser.characterStreak,
+		game.loser.characterGlobalStreak,
 		game.supreme
 	];
 

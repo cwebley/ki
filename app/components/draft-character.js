@@ -3,6 +3,7 @@ import { green500, cyan500, red500 } from 'material-ui/styles/colors';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
+import intToStreak from 'int-to-streak';
 
 export default function DraftCharacter ({ drafting, leftUserUuid, rightUserUuid, character, onDraftCharacter }) {
 	const valueStyles = {
@@ -13,29 +14,25 @@ export default function DraftCharacter ({ drafting, leftUserUuid, rightUserUuid,
 		flex: '1 1 20%'
 	};
 
-	let leftStreakText = '';
+	const leftStreakText = intToStreak(character.users[leftUserUuid].globalStreak);
 	let leftStreakStyle = {
 		flex: '0 1 10%'
 	};
 	if (character.users[leftUserUuid].globalStreak > 0) {
-		leftStreakText = character.users[leftUserUuid].globalStreak + 'W';
 		leftStreakStyle.color = green500;
 	}
 	if (character.users[leftUserUuid].globalStreak < 0) {
-		leftStreakText = -1 * character.users[leftUserUuid].globalStreak + 'L';
 		leftStreakStyle.color = red500;
 	}
 
-	let rightStreakText = '';
+	const rightStreakText = intToStreak(character.users[rightUserUuid].globalStreak);
 	let rightStreakStyle = {
 		flex: '0 1 10%'
 	};
 	if (character.users[rightUserUuid].globalStreak > 0) {
-		rightStreakText = character.users[rightUserUuid].globalStreak + 'W';
 		rightStreakStyle.color = green500;
 	}
 	if (character.users[rightUserUuid].globalStreak < 0) {
-		rightStreakText = -1 * character.users[rightUserUuid].globalStreak + 'L';
 		rightStreakStyle.color = red500;
 	}
 
