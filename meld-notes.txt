@@ -1,0 +1,19 @@
+Clientside
+	hit a meld button on a character
+		update state to meldChoice: <character-id>
+			that button changes to a cancel meld button
+			other buttons show bolder or something
+		hit another meld character to activate power
+
+
+Serverside
+	post to powers/meld
+		insert into melded_characters table
+			uuid, character_uuid, character_uuid, user_uuid, tournament_uuid, value
+		insert into tournament_characters table
+			character_uuid = melded_uuid
+
+	get tournament
+		fetch all data, before doing inspect stuff
+		check if any meld is active, find character_uuids
+		if so, cycle through the upcoming and replace character_uuid with melded_uuid

@@ -28,8 +28,8 @@ class SeedContainer extends Component {
 							id={character.uuid}
 							name={character.name}
 							draftCharacter={character.draft}
-							wins={character.wins}
-							losses={character.losses}
+							wins={character.globalWins}
+							losses={character.globalLosses}
 							globalStreak={character.globalStreak}
 							globalBestStreak={character.globalBestStreak}
 							value={Math.floor((i * this.props.maxStartingValue) / thisArray.length) + 1}

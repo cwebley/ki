@@ -18,6 +18,6 @@ export const PASSWORD_LENGTH = {
 };
 
 export const TITLE_LENGTH = {
-	message: 'Can\'t be more than 25 characters,
+	message: 'Can\'t be more than 25 characters',
 	id: 'title-length'
 };
