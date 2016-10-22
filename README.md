@@ -14,7 +14,6 @@ Complete work in progress.
 * Babel
 
 ##Todo: Upcoming bug fixes and feature additions
-* Add previous streak to previous match
 * W-L records on seeding component undefined after api bug fix
 * tournament table "active" column doesn't become false after tournament is over
 

@@ -22,3 +22,9 @@ export function passwordLength (value) {
 	}
 	return [e.PASSWORD_LENGTH];
 }
+
+export function titleLength (value) {
+	if (value.length > 25) {
+		return [e.TITLE_LENGTH];
+	}
+}

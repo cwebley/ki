@@ -16,3 +16,8 @@ export const PASSWORD_LENGTH = {
 	message: 'Needs to be between 6 and 25 chars, Homes',
 	id: 'password-length'
 };
+
+export const TITLE_LENGTH = {
+	message: 'Can\'t be more than 25 characters,
+	id: 'title-length'
+};
