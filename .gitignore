@@ -1,3 +1,4 @@
 node_modules
 api/persistence/fixtures/mokr/.mokr
-public/bundle.js
+dist/
+.DS_Store
