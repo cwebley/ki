@@ -19,6 +19,7 @@ Complete work in progress.
 ###Random bugs
 * Inspect sometimes hides a guy: duplicate uuid gets returned by backend and react doesnt render.
 * Inspect DnD stuff is pretty slow. Plus there's some bug related to hovering over a long name/fat card that updates every hover event causing a crawl.
+* Tournament Creator form needs to clear itself after succesful tournament creation
 
 ###Tournament Creator Page
 * Add a clear form button
