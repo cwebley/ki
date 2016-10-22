@@ -368,7 +368,7 @@ class TournamentLanding extends Component {
 							/>
 						</Form>
 					</div>
-					{tournament.previous && <PreviousMatch leftUser={leftUser} rightUser={rightUser} previousMatch={tournament.previous}/>}
+					{tournament.previous && <PreviousMatch leftUser={leftUser} rightUser={rightUser} previousMatch={tournament.previous} />}
 				</div>
 				<div style={styles.powerBlock}>
 					<div style={styles.power}>

@@ -1,18 +1,17 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from 'react';
 import intToStreak from 'int-to-streak';
 import { green500, red500 } from 'material-ui/styles/colors';
 
 export default function previousMatch ({leftUser, rightUser, previousMatch}) {
 	let leftPreviousData;
 	let rightPreviousData;
-
 	let leftUserStyle = {};
 	let rightUserStyle = {};
 
 	if (previousMatch.result[0] === leftUser.uuid) {
 		leftPreviousData = previousMatch.ids[previousMatch.result[0]];
 		rightPreviousData = previousMatch.ids[previousMatch.result[1]];
-		rightUserStyle.opacity = .5;
+		rightUserStyle.opacity = 0.5;
 
 		if (previousMatch.supreme) {
 			leftUserStyle.border = '3px solid ' + green500;
@@ -23,7 +22,7 @@ export default function previousMatch ({leftUser, rightUser, previousMatch}) {
 	if (previousMatch.result[1] === leftUser.uuid) {
 		leftPreviousData = previousMatch.ids[previousMatch.result[1]];
 		rightPreviousData = previousMatch.ids[previousMatch.result[0]];
-		leftUserStyle.opacity = .5;
+		leftUserStyle.opacity = 0.5;
 
 		if (previousMatch.supreme) {
 			rightUserStyle.border = '3px solid ' + green500;
@@ -74,7 +73,7 @@ export default function previousMatch ({leftUser, rightUser, previousMatch}) {
 				<span style={rightStreakStyle}>{rightStreak}</span>
 			</div>
 		</div>
-	)
+	);
 }
 
 previousMatch.propTypes = {
