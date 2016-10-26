@@ -2,3 +2,4 @@ node_modules
 api/persistence/fixtures/mokr/.mokr
 dist/
 .DS_Store
+*.log
