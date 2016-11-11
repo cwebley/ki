@@ -14,7 +14,7 @@ Complete work in progress.
 * Babel
 
 ##Todo: Upcoming bug fixes and feature additions
-* rematched a supreme loss, won in reg victory and it didn't remove his 3 coins
+* rematched a supreme loss, won in reg victory and it didn't remove his 3 coins--is this a real bug?
 * tournament table "active" column doesn't become false after tournament is over
 
 ###Random bugs
