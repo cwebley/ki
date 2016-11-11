@@ -52,6 +52,11 @@ describe('undo-game logic', () => {
 			expect(undoCoins(4, 3, true)).to.equal(0);
 			expect(undoCoins(30, 9, true)).to.equal(26);
 		});
+		it('Handles undoing a supreme rematch differently than a supreme regular game', () => {
+			expect(undoCoins(2, 0, true, true)).to.equal(0);
+			expect(undoCoins(4, 3, true, true)).to.equal(1);
+			expect(undoCoins(30, 9, true, true)).to.equal(27);
+		});
 	});
 
 	describe('undoGame', () => {

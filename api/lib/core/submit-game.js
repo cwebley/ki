@@ -10,6 +10,7 @@
 //  supreme: true
 // };
 export const COINS_FOR_SUPREME = 3;
+const COINS_FOR_REMATCH_SUPREME = 2;
 
 export default function submitGame (state, gameResult) {
 	const winnerUuid = gameResult.winner.uuid;
@@ -93,7 +94,7 @@ export default function submitGame (state, gameResult) {
 		diff.users.ids[winnerUuid].tournamentBestStreak = winnerTournamentBestStreakDiff;
 	}
 
-	const coinsDiff = updateCoins(state.users.ids[winnerUuid].coins, state.users.ids[winnerUuid].streak, gameResult.supreme);
+	const coinsDiff = updateCoins(state.users.ids[winnerUuid].coins, state.users.ids[winnerUuid].streak, gameResult.supreme, gameResult.rematchSuccess);
 	if (coinsDiff) {
 		diff.users.ids[winnerUuid].coins = coinsDiff;
 	}
@@ -246,13 +247,18 @@ export function updateLoserRawValue (previousRawValue) {
 	return previousRawValue + 1;
 }
 
-export function updateCoins (currentCoins, previousStreak, supreme) {
+export function updateCoins (currentCoins, previousStreak, supreme, rematchSuccess) {
 	let updatedCoins = currentCoins;
 	if (previousStreak >= 2) {
 		updatedCoins += 1;
 	}
 	if (supreme) {
-		updatedCoins += COINS_FOR_SUPREME;
+		if (rematchSuccess) {
+			// it seems a little unfair to get all of your coins back for a rematch that went very well
+			updatedCoins += COINS_FOR_REMATCH_SUPREME;
+		} else {
+			updatedCoins += COINS_FOR_SUPREME;
+		}
 	}
 	if (updatedCoins !== currentCoins) {
 		return updatedCoins;

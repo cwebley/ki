@@ -18,6 +18,7 @@ import config from '../../config';
 	}
 */
 const COINS_FOR_SUPREME = 3;
+const COINS_FOR_REMATCH_SUPREME = 2;
 
 // rematch is an optional parameter (the rematching user's uuid) that uses a rematch power which is essentially a soft undo
 export default function undoGame (state, game, rematch) {
@@ -142,7 +143,7 @@ export default function undoGame (state, game, rematch) {
 		diff.inspect.remaining = state.inspect.remaining + 1;
 	}
 
-	const coinsDiff = undoCoins(state.users.ids[winnerUuid].coins, state.users.ids[winnerUuid].streak, game.supreme);
+	const coinsDiff = undoCoins(state.users.ids[winnerUuid].coins, state.users.ids[winnerUuid].streak, game.supreme, game.rematchSuccess);
 	if (coinsDiff) {
 		diff.users.ids[winnerUuid].coins = coinsDiff;
 	}
@@ -196,14 +197,18 @@ export function valueFromRawValue (rawValue) {
 	return rawValue + 1;
 }
 
-export function undoCoins (currentCoins, currentStreak, supreme) {
+export function undoCoins (currentCoins, currentStreak, supreme, undoingASuccessfulRematch) {
 	let newCoins = currentCoins;
 
 	if (currentStreak >= 3) {
 		newCoins--;
 	}
 	if (supreme) {
-		newCoins -= COINS_FOR_SUPREME;
+		if (undoingASuccessfulRematch) {
+			newCoins -= COINS_FOR_REMATCH_SUPREME;
+		} else {
+			newCoins -= COINS_FOR_SUPREME;
+		}
 	}
 	if (newCoins !== currentCoins) {
 		return newCoins;

@@ -4,6 +4,7 @@ import get from 'lodash.get';
 import { testVals, testState, testGame, resetTestState } from './helper';
 import submitGame, {
 	COINS_FOR_SUPREME,
+	COINS_FOR_REMATCH_SUPREME,
 	evaluateChampion,
 	updateLoserValue,
 	updateWinnerValue,
@@ -107,6 +108,15 @@ describe('submit-game logic', () => {
 		it('handles combination of streak and supreme', () => {
 			expect(updateCoins(0, 2, true)).to.equal(4);
 			expect(updateCoins(10, 12, true)).to.equal(14);
+		});
+		it('handles combination of streak and supreme', () => {
+			expect(updateCoins(0, 2, true)).to.equal(4);
+			expect(updateCoins(10, 12, true)).to.equal(14);
+		});
+		it('handles coins for a supremed rematch differently than a regular supreme', () => {
+			expect(updateCoins(0, 0, true, true)).to.equal(2);
+			expect(updateCoins(0, 2, true, true)).to.equal(3);
+			expect(updateCoins(10, 12, true, true)).to.equal(13);
 		});
 	});
 
