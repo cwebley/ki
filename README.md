@@ -18,9 +18,9 @@ Complete work in progress.
 * tournament table "active" column doesn't become false after tournament is over
 
 ###Random bugs
-* Inspect sometimes hides a guy: duplicate uuid gets returned by backend and react doesnt render.
+* Inspect sometimes hides a guy: duplicate uuid gets returned by backend and react doesn't render.
 * Inspect DnD stuff is pretty slow. Plus there's some bug related to hovering over a long name/fat card that updates every hover event causing a crawl.
-* Tournament Creator form needs to clear itself after succesful tournament creation
+* Tournament Creator form needs to clear itself after successful tournament creation
 
 ###Tournament Creator Page
 * Add a clear form button
@@ -54,8 +54,8 @@ Complete work in progress.
 * stats page
  * user overall status
  * user-character stats
- * best character matchups
- * best character matchups
+ * best character match ups
+ * best character match ups
  * all of the above vs a particular opponent or across a particular time
 
 ###Random Ideas:
@@ -71,7 +71,7 @@ Complete work in progress.
 
 * Bosses
  * Calculate rivals on tourney start
-* Dominant matchups. blowout differential in recent history 7-0, 6-1, 5-2?
+* Dominant match ups. blowout differential in recent history 7-0, 6-1, 5-2?
 * reimplement imminent victory calculator
 * checkpoints: winning predictions? stat summary, best streaks, upcoming matches preview
 * game history list on tournament-landing page

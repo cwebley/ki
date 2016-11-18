@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
+import intToStreak from 'int-to-streak';
 
 import fetchTournament from '../actions/fetch-tournament';
 import updateSeeds from '../actions/update-seeds';
@@ -334,7 +335,7 @@ class TournamentLanding extends Component {
 					}}>
 						<RaisedButton
 							style={{width: '100%'}}
-							label={`(${leftCharacter.value}) ${leftCharacter.name}`}
+							label={`(${leftCharacter.value}) ${leftCharacter.name}  (${intToStreak(leftCharacter.streak)})`}
 							primary
 							onTouchTap={() => this.submitGame(leftUser, leftCharacter, rightUser, rightCharacter)}
 							disabled={!!tournament.championUuid}
@@ -347,7 +348,7 @@ class TournamentLanding extends Component {
 					}}>
 						<RaisedButton
 							style={{width: '100%'}}
-							label={`(${rightCharacter.value}) ${rightCharacter.name}`}
+							label={`(${rightCharacter.value}) ${rightCharacter.name} (${intToStreak(rightCharacter.streak)})`}
 							primary
 							onTouchTap={() => this.submitGame(rightUser, rightCharacter, leftUser, leftCharacter)}
 							disabled={!!tournament.championUuid}
