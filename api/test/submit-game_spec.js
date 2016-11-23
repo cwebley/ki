@@ -114,9 +114,9 @@ describe('submit-game logic', () => {
 			expect(updateCoins(10, 12, true)).to.equal(14);
 		});
 		it('handles coins for a supremed rematch differently than a regular supreme', () => {
-			expect(updateCoins(0, 0, true, true)).to.equal(2);
-			expect(updateCoins(0, 2, true, true)).to.equal(3);
-			expect(updateCoins(10, 12, true, true)).to.equal(13);
+			expect(updateCoins(0, 0, true, true)).to.equal(0 + COINS_FOR_REMATCH_SUPREME);
+			expect(updateCoins(0, 2, true, true)).to.equal(0 + 1 + COINS_FOR_REMATCH_SUPREME);
+			expect(updateCoins(10, 12, true, true)).to.equal(10 + 1 + COINS_FOR_REMATCH_SUPREME);
 		});
 	});
 

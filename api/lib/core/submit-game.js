@@ -10,7 +10,7 @@
 //  supreme: true
 // };
 export const COINS_FOR_SUPREME = 3;
-const COINS_FOR_REMATCH_SUPREME = 2;
+export const COINS_FOR_REMATCH_SUPREME = 2;
 
 export default function submitGame (state, gameResult) {
 	const winnerUuid = gameResult.winner.uuid;

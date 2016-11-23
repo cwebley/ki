@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import intToStreak from 'int-to-streak';
 
 import fetchTournament from '../actions/fetch-tournament';
 import updateSeeds from '../actions/update-seeds';
@@ -31,6 +30,7 @@ import SeedContainer from './seed-container';
 import InspectContainer from './inspect-container';
 import Draft from './draft';
 import TournamentCharacter from './tournament-character';
+import MatchupButton from './matchup-button';
 import PreviousMatch from './previous-match';
 
 import IconUndo from 'material-ui/svg-icons/content/undo';
@@ -328,32 +328,20 @@ class TournamentLanding extends Component {
 				<h1>{tournament.name}</h1>
 				{tournament.championUuid && <h3>{`${tournament.users.ids[tournament.championUuid].name} is the Champion!`}</h3>}
 				<div>
-					<div style={{
-						width: '50%',
-						float: 'left',
-						padding: '2% 1% 2% 2%'
-					}}>
-						<RaisedButton
-							style={{width: '100%'}}
-							label={`(${leftCharacter.value}) ${leftCharacter.name}  (${intToStreak(leftCharacter.streak)})`}
-							primary
-							onTouchTap={() => this.submitGame(leftUser, leftCharacter, rightUser, rightCharacter)}
-							disabled={!!tournament.championUuid}
-						/>
-					</div>
-					<div style={{
-						width: '50%',
-						float: 'right',
-						padding: '2% 2% 2% 1%'
-					}}>
-						<RaisedButton
-							style={{width: '100%'}}
-							label={`(${rightCharacter.value}) ${rightCharacter.name} (${intToStreak(rightCharacter.streak)})`}
-							primary
-							onTouchTap={() => this.submitGame(rightUser, rightCharacter, leftUser, leftCharacter)}
-							disabled={!!tournament.championUuid}
-						/>
-					</div>
+					<MatchupButton
+						name={leftCharacter.name}
+						value={leftCharacter.value}
+						streak={leftCharacter.streak}
+						onClick={() => this.submitGame(leftUser, leftCharacter, rightUser, rightCharacter)}
+						disabled={!!tournament.championUuid}
+					/>
+					<MatchupButton
+						name={rightCharacter.name}
+						value={rightCharacter.value}
+						streak={rightCharacter.streak}
+						onClick={() => this.submitGame(rightUser, rightCharacter, leftUser, leftCharacter)}
+						disabled={!!tournament.championUuid}
+					/>
 					<div style={{
 						padding: '0 33%'
 					}}>
