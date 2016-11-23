@@ -37,7 +37,7 @@ class DraggableCharacter extends Component {
 						{this.props.value || '?'}
 					</div>
 					<div>
-						{`${this.props.wins} - ${this.props.losses}`}
+						{`${this.props.wins || 0} - ${this.props.losses || 0}`}
 					</div>
 					<div>
 						{intToStreak(this.props.globalStreak)}

@@ -50,7 +50,7 @@ export default function DraftCharacter ({ drafting, leftUserUuid, rightUserUuid,
 						{character.users[leftUserUuid].value}
 					</div>
 					<div>
-						{`${character.users[leftUserUuid].globalWins} - ${character.users[leftUserUuid].globalLosses}`}
+						{`${character.users[leftUserUuid].globalWins || 0} - ${character.users[leftUserUuid].globalLosses || 0}`}
 					</div>
 				</div>
 				<div style={leftStreakStyle}>
@@ -75,7 +75,7 @@ export default function DraftCharacter ({ drafting, leftUserUuid, rightUserUuid,
 						{character.users[rightUserUuid].value}
 					</div>
 					<div>
-						{`${character.users[rightUserUuid].globalWins} - ${character.users[rightUserUuid].globalLosses}`}
+						{`${character.users[rightUserUuid].globalWins || 0} - ${character.users[rightUserUuid].globalLosses || 0}`}
 					</div>
 				</div>
 			</Paper>
