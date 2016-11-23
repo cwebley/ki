@@ -33,7 +33,9 @@ export default function editTournament (req, res) {
 				return res.status(500).send(r.internal);
 			}
 			tournament.goal = opts.goal;
+			// erase the champion and reactivate the tournament
 			tournament.championUuid = null;
+			tournament.active = true;
 
 			return res.status(200).send(tournament);
 		});

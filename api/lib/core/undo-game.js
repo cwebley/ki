@@ -43,6 +43,9 @@ export default function undoGame (state, game, rematch) {
 
 	diff._remove.championUuid = unEvaluateChampion(winnerUuid, state.goal, state.users.ids[winnerUuid].score, state.users.ids[loserUuid].score, winningCharPrevValue);
 
+	// make tournament active again if we're undoing the crowning of a champion
+	diff.active = !!diff._remove.championUuid;
+
 	diff.users.ids[winnerUuid] = {
 		score: state.users.ids[winnerUuid].score - winningCharPrevValue,
 		streak: game.winner.streak,

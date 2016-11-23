@@ -31,6 +31,10 @@ export default function submitGame (state, gameResult) {
 		// if this submission IS a rematched game, then the updated tournament state must reflect that
 		rematchAvailable: (gameResult.rematchSuccess === null || gameResult.rematchSuccess === undefined)
 	};
+
+	// deactivate the tournament if champion was found
+	diff.active = !diff.championUuid;
+
 	diff.users = {
 		ids: {
 			[winnerUuid]: {
