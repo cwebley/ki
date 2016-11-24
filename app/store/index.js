@@ -18,3 +18,5 @@ export const getMe = (state) => state.me || {};
 export const getFormState = (state, formName) => fromForms.getFormState(state.forms, formName);
 
 export const getTournamentFromState = (state, tournamentSlug) => fromTournaments.getTournamentFromState(state.tournaments, tournamentSlug);
+
+export const getTournamentIndexFromState = (state) => fromTournaments.getTournamentIndexFromState(state.tournaments);

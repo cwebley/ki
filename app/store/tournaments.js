@@ -1,19 +1,26 @@
 import * as c from '../constants';
 
 const tournamentsReducer = (state = {}, action) => {
-	if (!action || !action.tournamentSlug) {
-		return state;
+	switch (action.type) {
+		case c.FETCH_TOURNAMENT_INDEX_SUCCESS:
+			return {
+				...state,
+				...action.data
+			};
+		default:
+			if (!action || !action.tournamentSlug) {
+				return state;
+			}
+			return {
+				[action.tournamentSlug]: tournamentReducer(state[action.tournamentSlug], action)
+			};
 	}
-	return {
-		[action.tournamentSlug]: tournamentReducer(state[action.tournamentSlug], action)
-	};
 };
 
 export default tournamentsReducer;
 
 const tournamentReducer = (state = {}, action) => {
 	switch (action.type) {
-
 		case c.FETCH_TOURNAMENT_SUCCESS:
 		case c.UPDATE_MATCHUPS_SUCCESS:
 			return {
@@ -288,3 +295,4 @@ const draftCharactersReducer = (state = {}, action) => {
 };
 
 export const getTournamentFromState = (state = {}, tournamentSlug) => state[tournamentSlug] || {};
+export const getTournamentIndexFromState = (state = {}) => state.tournaments || [];

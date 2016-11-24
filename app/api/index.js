@@ -252,3 +252,25 @@ export const updateMatchups = (tournamentSlug, matchupData, token) => new Promis
 		resolve(body);
 	});
 });
+
+export const fetchTournamentIndex = (token) => {
+	let headers = {};
+	if (token) {
+		headers['Authorization'] = 'Bearer ' + token;
+	}
+
+	// TODO hit the actual API
+	return new Promise((resolve, reject) => {
+		resolve([{name: 'foo'}, {name: 'bar'}]);
+	// 	nets({
+	// 		url: config.singleTournamentPath + '/' + tournamentSlug,
+	// 		json: true,
+	// 		headers
+	// 	}, (err, resp, body) => {
+	// 		if (err || resp.statusCode >= 400) {
+	// 			return reject(body);
+	// 		}
+	// 		resolve(body);
+	// 	});
+	});
+};

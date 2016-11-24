@@ -10,6 +10,7 @@ import Register from './components/register';
 import SignIn from './components/sign-in';
 import TournamentCreator from './components/tournament-creator';
 import TournamentLanding from './components/tournament-landing';
+import TournamentIndex from './components/tournament-index';
 
 const Routes = () => (
 	<Router history={browserHistory}>
@@ -18,6 +19,7 @@ const Routes = () => (
 			<Route path="/register" component={Register} />
 			<Route path="/sign-in" component={SignIn} />
 			<Route path="/create" component={TournamentCreator} />
+			<Route path="/tournaments" component={TournamentIndex} />
 			<Route path="/:tournamentSlug" component={TournamentLanding} />
 		</Route>
 	</Router>
