@@ -1,11 +1,9 @@
 import React, { PropTypes } from 'react';
 import intToStreak from 'int-to-streak';
 import RaisedButton from 'material-ui/RaisedButton';
-import { red500 } from 'material-ui/styles/colors';
 import { heatingUp, onFire } from '../styles.css';
 
 export default function matchupButton ({name, value, streak, onClick, disabled}) {
-	const streakText = intToStreak(streak);
 	const nameStyles = {
 		textTransform: 'uppercase',
 		fontWeight: '500',

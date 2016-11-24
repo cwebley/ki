@@ -24,7 +24,6 @@ class TournamentIndex extends Component {
 	}
 
 	render () {
-		console.log("TI")
 		return (
 			<div className="page">
 				<h1>Tournament Index</h1>
