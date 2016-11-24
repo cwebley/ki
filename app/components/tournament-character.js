@@ -7,6 +7,8 @@ import IconFire from 'material-ui/svg-icons/social/whatshot';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
 import { green500, red500 } from 'material-ui/styles/colors';
 
+import { heatingUpBackground, onFireBackground } from '../styles.css';
+
 export default function TournamentCharacter (props) {
 	const streakText = intToStreak(props.streak);
 	let streakStyle = {};
@@ -25,9 +27,17 @@ export default function TournamentCharacter (props) {
 		streakStyle.color = red500;
 	}
 
+	let backgroundClass = '';
+	if (props.streak === 2) {
+		backgroundClass = heatingUpBackground;
+	}
+	if (props.streak > 2) {
+		backgroundClass = onFireBackground;
+	}
+
 	return (
 		<li>
-			<Paper style={{
+			<Paper className={backgroundClass} style={{
 				overflow: 'auto'
 			}}>
 				<div style={{
