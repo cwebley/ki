@@ -16,32 +16,35 @@ class InspectCharacter extends Component {
 	};
 
 	render () {
-		let streakClass = '';
+		let backgroundClass = '';
 		if (this.props.streak === 2) {
-			streakClass = heatingUp;
+			backgroundClass = heatingUp;
 		}
 		if (this.props.streak >= 3) {
-			streakClass = onFire;
+			backgroundClass = onFire;
 		}
 
 		return this.props.connectDragSource(this.props.connectDropTarget(
 			<div style={this.getStyles()}>
-				<Paper style={{
+				<Paper className={backgroundClass} style={{
 					height: '100%',
 					overflow: 'hidden',
 					whiteSpace: 'nowrap',
 					display: 'flex',
 					justifyContent: 'space-around',
-					alignItems: 'center'
-				}} className={streakClass} >
+					alignItems: 'center',
+					padding: '.5em'
+				}}>
 					<span style={{fontWeight: '500', fontSize: '1.5em'}}>
 						{this.props.value || '?'}
 					</span>
-					<h4 style={{flexShrink: '2'}}>{this.props.name}</h4>
+					<div style={{display: 'flex', overflow: 'hidden'}}>
+						<h4 style={{whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{this.props.name}</h4>
+					</div>
+
 					{<span style={{fontWeight: '500', fontSize: '1.5em'}}>
 						{intToStreak(this.props.streak)}
-					</span>
-					}
+					</span>}
 				</Paper>
 			</div>
 		));

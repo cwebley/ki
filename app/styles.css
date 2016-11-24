@@ -24,20 +24,20 @@ body {
 	color: red;
 }
 
+.heatingUp {
+	animation: heating-up 5s linear infinite;
+}
+
 .heatingUpText {
 	animation: heating-up-text 5s linear infinite;
 }
 
 .onFire {
-	animation: on-fire-text 5s linear infinite;
-}
-
-.heatingUp {
-	animation: heating-up 5s linear infinite;
-}
-
-.onFire {
 	animation: on-fire 5s linear infinite;
+}
+
+.onFireText {
+	animation: on-fire-text 5s linear infinite;
 }
 
 @keyframes heating-up-text {

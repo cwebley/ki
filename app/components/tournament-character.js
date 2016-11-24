@@ -5,7 +5,7 @@ import IconButton from 'material-ui/IconButton';
 import IconCasino from 'material-ui/svg-icons/places/casino';
 import IconFire from 'material-ui/svg-icons/social/whatshot';
 import IconTrendingDown from 'material-ui/svg-icons/action/trending-down';
-import { green500, red500 } from 'material-ui/styles/colors';
+import { red500, red800 } from 'material-ui/styles/colors';
 
 import { heatingUp, onFire } from '../styles.css';
 
@@ -13,7 +13,6 @@ export default function TournamentCharacter (props) {
 	const streakText = intToStreak(props.streak);
 	let streakStyle = {};
 	if (props.streak > 0) {
-		streakStyle.color = green500;
 		if (props.streak === 2) {
 			streakStyle.fontSize = '1.25em';
 			streakStyle.fontWeight = '500';
@@ -47,9 +46,9 @@ export default function TournamentCharacter (props) {
 					{props.value || '?'}
 				</div>
 				<div>
-					{props.streak >= 3 && <IconFire color={red500} />}
+					{props.streak >= 3 && <IconFire color={red800} />}
 					<h4 style={{display: 'inline'}}>{props.name}</h4>
-					{props.streak >= 3 && <IconFire color={red500} />}
+					{props.streak >= 3 && <IconFire color={red800} />}
 					<div>{props.wins} - {props.losses}</div>
 				</div>
 				{!props.opponentCharacter && <div style={{
