@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import intToStreak from 'int-to-streak';
 import RaisedButton from 'material-ui/RaisedButton';
-import { heatingUp, onFire } from '../styles.css';
+import { heatingUpText, onFireText } from '../styles.css';
 
 export default function matchupButton ({name, value, streak, onClick, disabled}) {
 	const nameStyles = {
@@ -16,10 +16,10 @@ export default function matchupButton ({name, value, streak, onClick, disabled})
 
 	let streakClass = '';
 	if (streak === 2) {
-		streakClass = heatingUp;
+		streakClass = heatingUpText;
 	}
-	if (streak === 3) {
-		streakClass = onFire;
+	if (streak >= 3) {
+		streakClass = onFireText;
 	}
 
 	return (
@@ -40,7 +40,7 @@ export default function matchupButton ({name, value, streak, onClick, disabled})
 					</span>,
 					<span key="name" style={nameStyles}>{name}</span>,
 					<span key="streak" className={streakClass}>
-						{streak ? (intToStreak(streak)) : ''}
+						{streak ? intToStreak(streak) : ''}
 					</span>
 				]}
 				primary

@@ -24,28 +24,28 @@ body {
 	color: red;
 }
 
+.heatingUpText {
+	animation: heating-up-text 5s linear infinite;
+}
+
+.onFire {
+	animation: on-fire-text 5s linear infinite;
+}
+
 .heatingUp {
 	animation: heating-up 5s linear infinite;
 }
 
 .onFire {
-	animation: heating-up 5s linear infinite;
+	animation: on-fire 5s linear infinite;
 }
 
-.heatingUpBackground {
-	animation: heating-up-background 5s linear infinite;
-}
-
-.onFireBackground {
-	animation: on-fire-background 5s linear infinite;
-}
-
-@keyframes heating-up {
+@keyframes heating-up-text {
 	50% {
 		color: #CC5200;
 	}
 }
-@keyframes heating-up-background {
+@keyframes heating-up {
 	0% {
 		background-color: #ffd1b3;
 	}
@@ -63,7 +63,7 @@ body {
 	}
 }
 
-@keyframes on-fire {
+@keyframes on-fire-text {
 	25% {
 		color: #CC5200;
 	}
@@ -76,7 +76,7 @@ body {
 	}
 }
 
-@keyframes on-fire-background {
+@keyframes on-fire {
 	0% {
 		background-color: #ff4d4d;
 	}

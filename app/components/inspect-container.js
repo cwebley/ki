@@ -27,6 +27,7 @@ class InspectContainer extends Component {
 						userUuid={character.userUuid}
 						name={character.name}
 						value={character.value}
+						streak={character.streak}
 						moveCharacter={this.moveCharacter}
 					/>;
 				})
