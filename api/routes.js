@@ -22,6 +22,7 @@ import decrementCharacter from './handlers/decrement-character';
 import useInspect from './handlers/use-inspect';
 import updateInspect from './handlers/update-inspect';
 import editTournament from './handlers/edit-tournament';
+import getTournamentList from './handlers/get-tournament-list';
 
 let router = express.Router();
 
@@ -53,6 +54,7 @@ router.post('/user/login', loginUser);
 router.post('/characters', createCharacter);
 router.get('/characters', getCharacters);
 
+router.get('/tournaments', getTournamentList);
 router.post('/tournaments', requiresLogin, createTournament);
 router.get('/tournament/:tournamentSlug', acceptUser, getTournament);
 
