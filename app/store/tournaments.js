@@ -5,7 +5,7 @@ const tournamentsReducer = (state = {}, action) => {
 		case c.FETCH_TOURNAMENT_INDEX_SUCCESS:
 			return {
 				...state,
-				...action.data
+				tournaments: [...action.data]
 			};
 		default:
 			if (!action || !action.tournamentSlug) {

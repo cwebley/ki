@@ -261,7 +261,50 @@ export const fetchTournamentIndex = (token) => {
 
 	// TODO hit the actual API
 	return new Promise((resolve, reject) => {
-		resolve([{name: 'foo'}, {name: 'bar'}]);
+		resolve([{
+			uuid: 'abc',
+			name: 'foo',
+			slug: 'foo',
+			goal: 125,
+			championUuid: 'asdf',
+			active: false,
+			users: {
+				ids: {
+					asdf: {
+						score: 125,
+						name: 'g',
+						'slug': 'g'
+					},
+					sdfg: {
+						score: 100,
+						name: 'bj',
+						'slug': 'bj'}
+					},
+					result: ['asdf', 'sdfg']
+				}
+			}, {
+				uuid: 'bcd',
+				name: 'bar',
+				slug: 'bar',
+				goal: 125,
+				championUuid: 'asdf',
+				active: false,
+				users: {
+					ids: {
+						asdf: {
+							score: 100,
+							name: 'bj',
+							'slug': 'bj'
+						},
+						sdfg: {
+							score: 125,
+							name: 'g',
+							'slug': 'g'}
+						},
+						result: ['asdf', 'sdfg']
+					}
+			}
+		]);
 	// 	nets({
 	// 		url: config.singleTournamentPath + '/' + tournamentSlug,
 	// 		json: true,

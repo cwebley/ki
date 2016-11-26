@@ -1,0 +1,14 @@
+.usersContainer {
+	display: flex;
+	justify-content: space-between;
+}
+
+.userdata {
+	display: inline-block;
+	text-align: center;
+}
+
+.username {
+	font-size: 1.1em;
+	font-weight: 500;
+}
