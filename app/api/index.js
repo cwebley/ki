@@ -280,9 +280,9 @@ export const fetchTournamentIndex = (token) => {
 						name: 'bj',
 						'slug': 'bj'}
 					},
-					result: ['asdf', 'sdfg']
-				}
-			}, {
+				result: ['asdf', 'sdfg']
+			}
+		}, {
 				uuid: 'bcd',
 				name: 'bar',
 				slug: 'bar',
@@ -301,8 +301,8 @@ export const fetchTournamentIndex = (token) => {
 							name: 'g',
 							'slug': 'g'}
 						},
-						result: ['asdf', 'sdfg']
-					}
+					result: ['asdf', 'sdfg']
+				}
 			}
 		]);
 	// 	nets({

@@ -30,10 +30,10 @@ export default function tournamentListItem (props) {
 }
 
 tournamentListItem.propTypes = {
-	slug: React.PropTypes.string.isRequired,
-	name: React.PropTypes.string.isRequired,
-	goal: React.PropTypes.number.isRequired,
-	active: React.PropTypes.bool.isRequired,
-	championUuid: React.PropTypes.string.isRequired,
-	users: React.PropTypes.object.isRequired
+	slug: PropTypes.string.isRequired,
+	name: PropTypes.string.isRequired,
+	goal: PropTypes.number.isRequired,
+	active: PropTypes.bool.isRequired,
+	championUuid: PropTypes.string.isRequired,
+	users: PropTypes.object.isRequired
 };
