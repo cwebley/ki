@@ -19,7 +19,7 @@ export default function tournamentListItem (props) {
 				<span>{`${props.active}`}</span>
 			</TableRowColumn>
 			<TableRowColumn>
-				<span>{props.champion ? props.users.ids[props.championUuid].name : ''}</span>
+				<span>{props.championUuid ? props.users.ids[props.championUuid].name : ''}</span>
 			</TableRowColumn>
 			<TableRowColumn>
 				<div className={usersContainer}>
