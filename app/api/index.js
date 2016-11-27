@@ -259,61 +259,65 @@ export const fetchTournamentIndex = (token) => {
 		headers['Authorization'] = 'Bearer ' + token;
 	}
 
-	// TODO hit the actual API
 	return new Promise((resolve, reject) => {
-		resolve([{
-			uuid: 'abc',
-			name: 'foo',
-			slug: 'foo',
-			goal: 125,
-			championUuid: 'asdf',
-			active: false,
-			users: {
-				ids: {
-					asdf: {
-						score: 125,
-						name: 'g',
-						'slug': 'g'
-					},
-					sdfg: {
-						score: 100,
-						name: 'bj',
-						'slug': 'bj'}
-					},
-				result: ['asdf', 'sdfg']
+		nets({
+			url: config.tournamentsPath,
+			json: true,
+			headers: {
+				Authorization: 'Bearer ' + token
 			}
-		}, {
-				uuid: 'bcd',
-				name: 'bar',
-				slug: 'bar',
-				goal: 125,
-				championUuid: 'asdf',
-				active: false,
-				users: {
-					ids: {
-						asdf: {
-							score: 100,
-							name: 'bj',
-							'slug': 'bj'
-						},
-						sdfg: {
-							score: 125,
-							name: 'g',
-							'slug': 'g'}
-						},
-					result: ['asdf', 'sdfg']
-				}
+		}, (err, resp, body) => {
+			if (err || resp.statusCode >= 400) {
+				return reject(body);
 			}
-		]);
-	// 	nets({
-	// 		url: config.singleTournamentPath + '/' + tournamentSlug,
-	// 		json: true,
-	// 		headers
-	// 	}, (err, resp, body) => {
-	// 		if (err || resp.statusCode >= 400) {
-	// 			return reject(body);
-	// 		}
-	// 		resolve(body);
-	// 	});
+			resolve(body);
+		});
 	});
 };
+
+/*
+[{
+	uuid: 'abc',
+	name: 'foo',
+	slug: 'foo',
+	goal: 125,
+	championUuid: 'asdf',
+	active: false,
+	users: {
+		ids: {
+			asdf: {
+				score: 125,
+				name: 'g',
+				'slug': 'g'
+			},
+			sdfg: {
+				score: 100,
+				name: 'bj',
+				'slug': 'bj'}
+			},
+		result: ['asdf', 'sdfg']
+	}
+}, {
+		uuid: 'bcd',
+		name: 'bar',
+		slug: 'bar',
+		goal: 125,
+		championUuid: 'asdf',
+		active: false,
+		users: {
+			ids: {
+				asdf: {
+					score: 100,
+					name: 'bj',
+					'slug': 'bj'
+				},
+				sdfg: {
+					score: 125,
+					name: 'g',
+					'slug': 'g'}
+				},
+			result: ['asdf', 'sdfg']
+		}
+	}
+]
+*/

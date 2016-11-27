@@ -12,17 +12,25 @@ export default function tournamentListItem (props) {
 					<span>{props.name}</span>
 				</Link>
 			</TableRowColumn>
-			<TableRowColumn>{props.goal}</TableRowColumn>
-			<TableRowColumn>{props.active}</TableRowColumn>
-			<TableRowColumn>{props.champion ? props.users.ids[props.championUuid] : ''}</TableRowColumn>
-			<TableRowColumn className={usersContainer}>
-				<div className={userdata}>
-				<div className={username}>{props.users.ids[props.users.result[0]].name}</div>
-					<div className={userscore}>{props.users.ids[props.users.result[0]].score}</div>
-				</div>
-				<div className={userdata}>
-					<div className={username}>{props.users.ids[props.users.result[1]].name}</div>
-					<div>{props.users.ids[props.users.result[1]].score}</div>
+			<TableRowColumn>
+				<span>{props.goal}</span>
+			</TableRowColumn>
+			<TableRowColumn>
+				<span>{props.active}</span>
+			</TableRowColumn>
+			<TableRowColumn>
+				<span>{props.champion ? props.users.ids[props.championUuid] : ''}</span>
+			</TableRowColumn>
+			<TableRowColumn>
+				<div className={usersContainer}>
+					<div className={userdata}>
+					<div className={username}>{props.users.ids[props.users.result[0]].name}</div>
+						<div className={userscore}>{props.users.ids[props.users.result[0]].score}</div>
+					</div>
+					<div className={userdata}>
+						<div className={username}>{props.users.ids[props.users.result[1]].name}</div>
+						<div>{props.users.ids[props.users.result[1]].score}</div>
+					</div>
 				</div>
 			</TableRowColumn>
 		</TableRow>
@@ -34,6 +42,6 @@ tournamentListItem.propTypes = {
 	name: PropTypes.string.isRequired,
 	goal: PropTypes.number.isRequired,
 	active: PropTypes.bool.isRequired,
-	championUuid: PropTypes.string.isRequired,
+	championUuid: PropTypes.string,
 	users: PropTypes.object.isRequired
 };
