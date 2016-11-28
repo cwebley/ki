@@ -15,7 +15,6 @@ Complete work in progress.
 
 ##Todo: Upcoming bug fixes and feature additions
 * rematched a supreme loss, won in reg victory and it didn't remove his 3 coins--is this a real bug?
-* tournament table "active" column doesn't become false after tournament is over
 
 ###Random bugs
 * Inspect sometimes hides a guy: duplicate uuid gets returned by backend and react doesn't render.

@@ -6,7 +6,7 @@ export default function getTournamentQuery (db, field, value, cb) {
 		SELECT
 			t.uuid, t.name, t.slug, t.goal, t.active, t.champion_uuid AS "championUuid", t.time,
 				t.characters_per_user AS "charactersPerUser", t.max_starting_value AS "maxStartingValue",
-			tu.score,
+			tu.score, tu.wins, tu.losses, tu.best_streak AS "bestStreak",
 			u.uuid AS "userUuid", u.name AS "username", u.slug AS "userSlug"
 		FROM tournaments t
 		JOIN tournament_users tu ON t.uuid = tu.tournament_uuid
@@ -48,7 +48,10 @@ export default function getTournamentQuery (db, field, value, cb) {
 								uuid: item.userUuid,
 								name: item.username,
 								slug: item.userSlug,
-								score: item.score
+								score: item.score,
+								wins: item.wins,
+								losses: item.losses,
+								bestStreak: item.bestStreak
 							}
 						},
 						result: [item.userUuid]
@@ -59,7 +62,10 @@ export default function getTournamentQuery (db, field, value, cb) {
 					uuid: item.userUuid,
 					name: item.username,
 					slug: item.userSlug,
-					score: item.score
+					score: item.score,
+					wins: item.wins,
+					losses: item.losses,
+					bestStreak: item.bestStreak
 				};
 				formattedPartial.users.result.push(item.userUuid);
 
