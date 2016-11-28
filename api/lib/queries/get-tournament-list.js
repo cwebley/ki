@@ -56,7 +56,7 @@ export default function getTournamentQuery (db, field, value, cb) {
 						},
 						result: [item.userUuid]
 					}
-				}
+				};
 			} else {
 				formattedPartial.users.ids[item.userUuid] = {
 					uuid: item.userUuid,
