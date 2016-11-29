@@ -1,7 +1,6 @@
 import log from '../../logger';
 
-// returns a single tournament object or nothing at all
-export default function getTournamentQuery (db, field, value, cb) {
+export default function getTournamentListQuery (db, cb) {
 	const sql = `
 		SELECT
 			t.uuid, t.name, t.slug, t.goal, t.active, t.champion_uuid AS "championUuid", t.time,

@@ -13,10 +13,19 @@ Complete work in progress.
 * Webpack
 * Babel
 
-##Todo: Upcoming bug fixes and feature additions
-* rematched a supreme loss, won in reg victory and it didn't remove his 3 coins--is this a real bug?
+##Todo:
+* pg rematch_games.success doesn't work
+* Tournament stats page:
+ * bar chart showing points per character
+  * toggle fire wins on same chart
+  * also points lost per character
+ * coin use breakdown
+  * oddsmaker uses and number of roster updates you actually got and % success
+  * rematch uses and % success
+  * inspect uses and % success and fires/ices
 
 ###Random bugs
+* rematched a supreme loss, won in reg victory and it didn't remove his 3 coins--is this a real bug?
 * Inspect sometimes hides a guy: duplicate uuid gets returned by backend and react doesn't render.
 * Inspect DnD stuff is pretty slow. Plus there's some bug related to hovering over a long name/fat card that updates every hover event causing a crawl.
 * Tournament Creator form needs to clear itself after successful tournament creation
@@ -32,6 +41,7 @@ Complete work in progress.
 * Sort updated draft data on receipt. data gets shuffled with every update.
 
 ###Tournament Landing
+* no need to poll data on tournament page if tournament is over
 * tournament not found message
 * crown icon denoting previous champion in a current player matchup
 * crown icon denoting previous winner in a character matchup

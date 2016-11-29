@@ -24,6 +24,8 @@ import updateInspect from './handlers/update-inspect';
 import editTournament from './handlers/edit-tournament';
 import getTournamentList from './handlers/get-tournament-list';
 
+import tournamentStats from './handlers/get-tournament-stats';
+
 let router = express.Router();
 
 // sets req.db
@@ -70,5 +72,8 @@ router.post('/tournament/:tournamentSlug/power/oddsmaker', requiresLogin, oddsma
 router.post('/tournament/:tournamentSlug/power/decrement', requiresLogin, decrementCharacter);
 router.post('/tournament/:tournamentSlug/power/inspect', requiresLogin, useInspect);
 router.put('/tournament/:tournamentSlug/power/inspect', requiresLogin, updateInspect);
+
+// stats
+router.get('/tournament/:tournamentSlug/stats', acceptUser, tournamentStats);
 
 export default router;
