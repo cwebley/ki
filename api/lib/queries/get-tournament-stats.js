@@ -54,11 +54,6 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 			});
 			return cb(err);
 		}
-		debugger;
-		log.info(err, {
-			sql,
-			params
-		});
 
 		let formattedData = {
 			games: {
@@ -154,6 +149,7 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 				rematched: !!r.rematchGameUuid,
 				rematchSuccess: !!r.rematchSuccess,
 				inspected: !!r.inspectGameUuid,
+				inspect: r.inspectUserUuid,
 				oddsmakered: !!r.oddsmakerUserUuid,
 				oddsmaker: [],
 				grabbagged: !!r.grabbagGameUuid,
