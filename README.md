@@ -14,6 +14,7 @@ Complete work in progress.
 * Babel
 
 ##Todo:
+* add some way to make a side bet for coins or characters or something rather than hitting the psql cli
 * pg rematch_games.success doesn't work
 * Tournament stats page:
  * bar chart showing points per character
@@ -49,7 +50,12 @@ Complete work in progress.
 ###Server
 
 ###Powers
-* Oddsmaker could return a message telling you how many you got
+* Query power
+* Jack of all trades (4 coins?)
+	1 grabbag option
+	1 query use
+	2 decrement uses
+ 	half an odds maker
 
 ###Setup/Ops
 * Kubernetes
@@ -108,13 +114,5 @@ Complete work in progress.
 * matchMaker: since KI is a matchup based game and inspect is already good, another way to manipulate matches.
  * choice of 2 or 3 characters for current matchup. choice of 2 or 3 opponents for next matchup
  * or maybe this is better implemented with a feature like bosses
-
-* jack of all trades:
- * count future appearances of all characters in next 15 games,
- * reseed opponent and dock 3 points,
- * grab bag character (or mirror character?):
- * get a random character (least used on your roster? middle value?) that you can use instead of your current character
- * if they win, they swap places with your current character and you can use them whenever you want
- * rematches will still crush the grab bag streak
 
 * steal a character gamble

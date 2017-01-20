@@ -20,13 +20,15 @@ var config = {
 		upcomingListLength: 50,
 		oddsmakerLength: 15,
 		oddsmakerValue: 3.1,
-		inspectLength: 5
+		inspectLength: 6,
+		grabbagChoiceCount: 2
 	},
 	cost: {
 		rematch: 3,
 		oddsmaker: 3,
 		inspect: 2,
-		decrement: 1
+		decrement: 1,
+		grabbag: 2
 	}
 };
 

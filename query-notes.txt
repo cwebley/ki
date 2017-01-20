@@ -1,0 +1,21 @@
+Clientside
+	hit a query button on a character
+	user-uuid + character_uuid
+
+	disable query button on character with active query
+	show upcoming games on character 0 = current 1 = next game and so on
+	if NOT inspecting: look at user.upcoming to render non-draggable games where inspect
+
+Serverside
+	post to powers/query
+		insert into redis list tournament_uuid:user_uuid:query key=user_uuid:character_uuid
+
+	get tournament
+		getQueryList for user if logged in
+		getUpcoming
+			pass in querylist for the given users upcoming
+			if queryList, fetch next 15 games and return a hydrated query list with list of games they're playing in
+
+		character.query.active = true
+		character.query.upcoming with game_uuids and how many games from now
+		return user.upcoming with game_uuids and character_uuids

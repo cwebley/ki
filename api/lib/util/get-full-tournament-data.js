@@ -5,6 +5,7 @@ import getTournamentCharactersQuery from '../queries/get-tournament-characters';
 import getDraftQuery from '../queries/get-draft';
 import getUpcomingQuery from '../queries/get-upcoming';
 import getInspect from '../queries/get-inspect';
+import getGrabbagQuery from '../queries/get-grabbag';
 import selectTwoRecentGames from '../queries/select-two-recent-games';
 
 export default function getFullTournamentData (db, rConn, opts, cb) {
@@ -71,123 +72,143 @@ export default function getFullTournamentData (db, rConn, opts, cb) {
 					}
 					tournament.users.ids[users[0]].upcoming = upcomingResults;
 
-					/**
-					** get meta data from second user
-					*/
-					getTournamentCharactersQuery(db, tournament.uuid, users[1], (err, tournamentCharacters) => {
+					getGrabbagQuery(rConn, {
+						tournamentUuid: tournament.uuid,
+						userUuid: users[0]
+					}, (err, parsedGrabbag) => {
 						if (err) {
 							return cb(err);
 						}
-						// normalize characters by uuid
-						let characters = {};
-						let characterIds = [];
-						tournamentCharacters.forEach(c => {
-							characters[c.uuid] = c;
-							characterIds.push(c.uuid);
-						});
-						// add the first user's character data to the tourament data
-						// results are normalized. result is an array of uuids, ids is a map.
-						tournament.users.ids[users[1]].characters = {};
-						tournament.users.ids[users[1]].characters.ids = characters;
-						tournament.users.ids[users[1]].characters.result = characterIds;
+						tournament.users.ids[users[0]].grabbag = parsedGrabbag;
 
-						getUpcomingQuery(rConn, {
-							tournamentUuid: tournament.uuid,
-							userUuid: users[1],
-							amount: opts.upcomingAmount
-						}, (err, upcomingResults) => {
+						/**
+						** get meta data from second user
+						*/
+						getTournamentCharactersQuery(db, tournament.uuid, users[1], (err, tournamentCharacters) => {
 							if (err) {
 								return cb(err);
 							}
-							tournament.users.ids[users[1]].upcoming = upcomingResults;
+							// normalize characters by uuid
+							let characters = {};
+							let characterIds = [];
+							tournamentCharacters.forEach(c => {
+								characters[c.uuid] = c;
+								characterIds.push(c.uuid);
+							});
+							// add the first user's character data to the tourament data
+							// results are normalized. result is an array of uuids, ids is a map.
+							tournament.users.ids[users[1]].characters = {};
+							tournament.users.ids[users[1]].characters.ids = characters;
+							tournament.users.ids[users[1]].characters.result = characterIds;
 
-							getDraftQuery(db, tournament.uuid, users, (err, draftData) => {
+							getUpcomingQuery(rConn, {
+								tournamentUuid: tournament.uuid,
+								userUuid: users[1],
+								amount: opts.upcomingAmount
+							}, (err, upcomingResults) => {
 								if (err) {
 									return cb(err);
 								}
-								tournament.draft = draftData;
+								tournament.users.ids[users[1]].upcoming = upcomingResults;
 
-								const finalCharacterCount = tournament.charactersPerUser * 2;
-
-								// sum up the total number of characters in the tournament currently
-								const currentCharacterCount = tournament.users.result
-									.map(uUuid => tournament.users.ids[uUuid].characters.result.length)
-									.reduce((previousValue, currentValue) => previousValue + currentValue);
-
-								tournament.draft.current = currentCharacterCount;
-								tournament.draft.total = finalCharacterCount;
-
-								// if user is logged in and in the tournament, make sure they are the first user returned
-								if (opts.userUuid) {
-									if (tournament.users.result.indexOf(opts.userUuid) === 1) {
-										// logged in user in the second position, reverse the order
-										tournament.users.result.reverse();
-									}
-								}
-
-								getInspect(rConn, {
+								getGrabbagQuery(rConn, {
 									tournamentUuid: tournament.uuid,
-									userUuid: tournament.users.result[0],
-									opponentUuid: tournament.users.result[1]
-								}, (err, inspectResults) => {
+									userUuid: users[1]
+								}, (err, parsedGrabbag) => {
 									if (err) {
 										return cb(err);
 									}
-									tournament.inspect = inspectResults;
+									tournament.users.ids[users[1]].grabbag = parsedGrabbag;
 
-									selectTwoRecentGames(db, tournament.uuid, (err, gameResults) => {
+									getDraftQuery(db, tournament.uuid, users, (err, draftData) => {
 										if (err) {
 											return cb(err);
 										}
-										if (!gameResults || !gameResults.length) {
-											return cb(null, tournament);
-										}
+										tournament.draft = draftData;
 
-										let rematchAvailable = true;
-										gameResults.forEach(g => {
-											if (g.rematched) {
-												rematchAvailable = false;
+										const finalCharacterCount = tournament.charactersPerUser * 2;
+
+										// sum up the total number of characters in the tournament currently
+										const currentCharacterCount = tournament.users.result
+											.map(uUuid => tournament.users.ids[uUuid].characters.result.length)
+											.reduce((previousValue, currentValue) => previousValue + currentValue);
+
+										tournament.draft.current = currentCharacterCount;
+										tournament.draft.total = finalCharacterCount;
+
+										// if user is logged in and in the tournament, make sure they are the first user returned
+										if (opts.userUuid) {
+											if (tournament.users.result.indexOf(opts.userUuid) === 1) {
+												// logged in user in the second position, reverse the order
+												tournament.users.result.reverse();
 											}
-										});
-										tournament.rematchAvailable = rematchAvailable;
-
-										const previousGameWinnerData = {
-											uuid: gameResults[0].winning_player_uuid,
-											characterUuid: gameResults[0].winning_character_uuid,
-											value: gameResults[0].value,
-											streak: gameResults[0].winning_player_previous_streak,
-											characterStreak: gameResults[0].winning_character_previous_streak,
-											globalStreak: gameResults[0].winning_player_previous_global_streak,
-											characterGlobalStreak: gameResults[0].winning_character_previous_global_streak
-										};
-										const previousGameLoserData = {
-											uuid: gameResults[0].losing_player_uuid,
-											characterUuid: gameResults[0].losing_character_uuid,
-											value: gameResults[0].losing_character_previous_value,
-											streak: gameResults[0].losing_player_previous_streak,
-											characterStreak: gameResults[0].losing_character_previous_streak,
-											globalStreak: gameResults[0].losing_player_previous_global_streak,
-											characterGlobalStreak: gameResults[0].losing_character_previous_global_streak
-										};
-										if (tournament.users.result[0] === gameResults[0].winning_player_uuid) {
-											tournament.users.ids[tournament.users.result[0]].previous = previousGameWinnerData;
-											tournament.users.ids[tournament.users.result[1]].previous = previousGameLoserData;
-										} else {
-											tournament.users.ids[tournament.users.result[0]].previous = previousGameLoserData;
-											tournament.users.ids[tournament.users.result[1]].previous = previousGameWinnerData;
 										}
 
-										tournament.previous = {
-											ids: {
-												[gameResults[0].winning_player_uuid]: previousGameWinnerData,
-												[gameResults[0].losing_player_uuid]: previousGameLoserData
-											},
-											// [winner, loser]
-											result: [gameResults[0].winning_player_uuid, gameResults[0].losing_player_uuid],
-											uuid: gameResults[0].uuid,
-											supreme: gameResults[0].supreme
-										};
-										return cb(null, tournament);
+										getInspect(rConn, {
+											tournamentUuid: tournament.uuid,
+											userUuid: tournament.users.result[0],
+											opponentUuid: tournament.users.result[1]
+										}, (err, inspectResults) => {
+											if (err) {
+												return cb(err);
+											}
+											tournament.inspect = inspectResults;
+
+											selectTwoRecentGames(db, tournament.uuid, (err, gameResults) => {
+												if (err) {
+													return cb(err);
+												}
+												if (!gameResults || !gameResults.length) {
+													return cb(null, tournament);
+												}
+
+												let rematchAvailable = true;
+												gameResults.forEach(g => {
+													if (g.rematched) {
+														rematchAvailable = false;
+													}
+												});
+												tournament.rematchAvailable = rematchAvailable;
+
+												const previousGameWinnerData = {
+													uuid: gameResults[0].winning_player_uuid,
+													characterUuid: gameResults[0].winning_character_uuid,
+													value: gameResults[0].value,
+													streak: gameResults[0].winning_player_previous_streak,
+													characterStreak: gameResults[0].winning_character_previous_streak,
+													globalStreak: gameResults[0].winning_player_previous_global_streak,
+													characterGlobalStreak: gameResults[0].winning_character_previous_global_streak
+												};
+												const previousGameLoserData = {
+													uuid: gameResults[0].losing_player_uuid,
+													characterUuid: gameResults[0].losing_character_uuid,
+													value: gameResults[0].losing_character_previous_value,
+													streak: gameResults[0].losing_player_previous_streak,
+													characterStreak: gameResults[0].losing_character_previous_streak,
+													globalStreak: gameResults[0].losing_player_previous_global_streak,
+													characterGlobalStreak: gameResults[0].losing_character_previous_global_streak
+												};
+												if (tournament.users.result[0] === gameResults[0].winning_player_uuid) {
+													tournament.users.ids[tournament.users.result[0]].previous = previousGameWinnerData;
+													tournament.users.ids[tournament.users.result[1]].previous = previousGameLoserData;
+												} else {
+													tournament.users.ids[tournament.users.result[0]].previous = previousGameLoserData;
+													tournament.users.ids[tournament.users.result[1]].previous = previousGameWinnerData;
+												}
+
+												tournament.previous = {
+													ids: {
+														[gameResults[0].winning_player_uuid]: previousGameWinnerData,
+														[gameResults[0].losing_player_uuid]: previousGameLoserData
+													},
+													// [winner, loser]
+													result: [gameResults[0].winning_player_uuid, gameResults[0].losing_player_uuid],
+													uuid: gameResults[0].uuid,
+													supreme: gameResults[0].supreme
+												};
+												return cb(null, tournament);
+											});
+										});
 									});
 								});
 							});

@@ -132,6 +132,13 @@ CREATE TABLE IF NOT EXISTS oddsmaker_games (
 	PRIMARY KEY (game_uuid, user_uuid)
 );
 
+CREATE TABLE IF NOT EXISTS grabbag_games (
+	game_uuid char(36) NOT NULL REFERENCES games (uuid),
+	user_uuid char(36) NOT NULL REFERENCES users (uuid),
+	opponent_uuid char(36) NOT NULL REFERENCES users (uuid),
+	PRIMARY KEY (game_uuid, user_uuid)
+);
+
 CREATE TABLE IF NOT EXISTS inspect_games (
 	game_uuid char(36) NOT NULL REFERENCES games (uuid),
 	user_uuid char(36) NOT NULL REFERENCES users (uuid),

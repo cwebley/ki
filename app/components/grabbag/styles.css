@@ -1,0 +1,12 @@
+.containerClass {
+}
+.grabbagRowClass {
+	width: 100%;
+}
+.grabbagItemClass {
+	width: 50%;
+	display: inline-block;
+}
+.powerButton {
+	padding: 0 25%;
+}

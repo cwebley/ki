@@ -166,6 +166,19 @@ export default function submitGameHandler (req, res) {
 				game.oddsmakerUserUuids.push(tournament.users.result[1]);
 			}
 
+			if (tournament.users.ids[tournament.users.result[0]].upcoming[0].grabbag) {
+				// the submitted game was an grabbag one, push this userUuid onto an array of grabbagUserUuids
+				// it's an array since its possible both users are playing with grabbag characters for this game
+				game.grabbagUserUuids = [tournament.users.result[0]];
+			}
+			// add the grabbag data for the other user if available
+			if (tournament.users.ids[tournament.users.result[1]].upcoming[0].grabbag) {
+				if (!game.grabbagUserUuids) {
+					game.grabbagUserUuids = [];
+				}
+				game.grabbagUserUuids.push(tournament.users.result[1]);
+			}
+
 			submitGameQuery(req.db, tournament.uuid, game, diff, (err, updatedCharacterStreaks) => {
 				if (err) {
 					return res.status(500).send(r.internal);

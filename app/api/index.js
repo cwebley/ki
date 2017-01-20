@@ -275,49 +275,61 @@ export const fetchTournamentIndex = (token) => {
 	});
 };
 
-/*
-[{
-	uuid: 'abc',
-	name: 'foo',
-	slug: 'foo',
-	goal: 125,
-	championUuid: 'asdf',
-	active: false,
-	users: {
-		ids: {
-			asdf: {
-				score: 125,
-				name: 'g',
-				'slug': 'g'
-			},
-			sdfg: {
-				score: 100,
-				name: 'bj',
-				'slug': 'bj'}
-			},
-		result: ['asdf', 'sdfg']
+export const fetchTournamentStats = (slug, token) => {
+	let headers = {};
+	if (token) {
+		headers['Authorization'] = 'Bearer ' + token;
 	}
-}, {
-		uuid: 'bcd',
-		name: 'bar',
-		slug: 'bar',
-		goal: 125,
-		championUuid: 'asdf',
-		active: false,
-		users: {
-			ids: {
-				asdf: {
-					score: 100,
-					name: 'bj',
-					'slug': 'bj'
-				},
-				sdfg: {
-					score: 125,
-					name: 'g',
-					'slug': 'g'}
-				},
-			result: ['asdf', 'sdfg']
+
+	console.log('API FTS: ', `${config.singleTournamentPath}/${slug}/stats`);
+	return new Promise((resolve, reject) => {
+		nets({
+			url: `${config.singleTournamentPath}/${slug}/stats`,
+			json: true,
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		}, (err, resp, body) => {
+			if (err || resp.statusCode >= 400) {
+				return reject(body);
+			}
+			resolve(body);
+		});
+	});
+};
+
+
+export const purchaseGrabbag = (tournamentSlug, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/grab-bag',
+		method: 'POST',
+		json: {},
+		headers: {
+			Authorization: 'Bearer ' + token
 		}
-	}
-]
-*/
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});
+
+export const useGrabbagCharacter = (tournamentSlug, grabbagData, token) => new Promise((resolve, reject) => {
+	nets({
+		url: config.singleTournamentPath + '/' + tournamentSlug + '/power/grab-bag',
+		method: 'PUT',
+		json: {
+			index: grabbagData.index,
+			characterUuid: grabbagData.characterUuid
+		},
+		headers: {
+			Authorization: 'Bearer ' + token
+		}
+	}, (err, resp, body) => {
+		if (err || resp.statusCode >= 400) {
+			return reject(body);
+		}
+		resolve(body);
+	});
+});

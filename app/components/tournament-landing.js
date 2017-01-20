@@ -32,6 +32,9 @@ import Draft from './draft';
 import TournamentCharacter from './tournament-character';
 import MatchupButton from './matchup-button';
 import PreviousMatch from './previous-match';
+import TournamentSummary from './tournament-summary';
+
+import GrabbagContainer from '../containers/grabbag-container';
 
 import IconUndo from 'material-ui/svg-icons/content/undo';
 import IconRedo from 'material-ui/svg-icons/content/redo';
@@ -194,7 +197,7 @@ class TournamentLanding extends Component {
 		return (
 			<div style={styles.leftUserStyle}>
 				<h2 style={styles.userHeaderStyle}>{user.name}</h2>
-					{tournament.active && this.renderUserStats(user)}
+				{tournament.active && this.renderUserStats(user)}
 				<ol style={styles.resetListStyle}>
 					{characters.map(c =>
 						<TournamentCharacter
@@ -326,7 +329,10 @@ class TournamentLanding extends Component {
 		return (
 			<div>
 				<h1>{tournament.name}</h1>
-				{tournament.championUuid && <h3>{`${tournament.users.ids[tournament.championUuid].name} is the Champion!`}</h3>}
+				{tournament.championUuid && <TournamentSummary
+					championName={tournament.users.ids[tournament.championUuid].name}
+					tournamentSlug={tournament.slug}
+				/>}
 				<div>
 					<MatchupButton
 						name={leftCharacter.name}
@@ -366,16 +372,17 @@ class TournamentLanding extends Component {
 				<div style={styles.powerBlock}>
 					<div style={styles.power}>
 						<RaisedButton
-							style={{width: '100%'}}
+							fullWidth
 							label="Rematch"
 							secondary
 							disabled={leftUser.coins < 3 || !tournament.rematchAvailable}
 							onTouchTap={() => this.useRematch()}
 						/>
 					</div>
+					<GrabbagContainer tournamentSlug={this.props.params.tournamentSlug} />
 					<div style={styles.power}>
 						<RaisedButton
-							style={{width: '100%'}}
+							fullWidth
 							label={tournament.inspect.remaining !== undefined && !tournament.inspect.available ? `Inspect (${tournament.inspect.remaining})` : 'Inspect'}
 							secondary
 							onTouchTap={() => this.useInspect()}

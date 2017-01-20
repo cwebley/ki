@@ -376,6 +376,21 @@ r.InvalidMatchups = {
 	level: 'error',
 	id: 'invalidMatchups'
 };
+r.NoGrabbagIndex = {
+	message: 'Missing "index" field',
+	level: 'error',
+	id: 'noGrabbagIndex'
+};
+r.NoGrabbagCharacterUuid = {
+	message: 'Missing "characterUuid" field',
+	level: 'error',
+	id: 'noGrabbagCharacterUuid'
+};
+r.GrabbagChoiceInvalid = {
+	message: 'Grabbag choice invalid',
+	level: 'error',
+	id: 'grabbagChoiceInvalid'
+};
 
 r.Internal = {
 	message: 'Internal server error',

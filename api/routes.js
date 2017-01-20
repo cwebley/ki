@@ -20,6 +20,8 @@ import rematch from './handlers/rematch';
 import oddsmaker from './handlers/oddsmaker';
 import decrementCharacter from './handlers/decrement-character';
 import useInspect from './handlers/use-inspect';
+import useGrabbag from './handlers/use-grabbag';
+import updateGrabbag from './handlers/update-grabbag';
 import updateInspect from './handlers/update-inspect';
 import editTournament from './handlers/edit-tournament';
 import getTournamentList from './handlers/get-tournament-list';
@@ -58,6 +60,7 @@ router.get('/characters', getCharacters);
 
 router.get('/tournaments', getTournamentList);
 router.post('/tournaments', requiresLogin, createTournament);
+
 router.get('/tournament/:tournamentSlug', acceptUser, getTournament);
 
 // TODO: logged in user must be in the tournament
@@ -67,13 +70,16 @@ router.post('/tournament/:tournamentSlug/game', requiresLogin, submitGame);
 router.delete('/tournament/:tournamentSlug/game', requiresLogin, undoGame);
 router.post('/tournament/:tournamentSlug/draft', requiresLogin, draftCharacter);
 
+// tournament stats
+router.get('/tournament/:tournamentSlug/stats', acceptUser, tournamentStats);
+
 router.post('/tournament/:tournamentSlug/power/rematch', requiresLogin, rematch);
 router.post('/tournament/:tournamentSlug/power/oddsmaker', requiresLogin, oddsmaker);
 router.post('/tournament/:tournamentSlug/power/decrement', requiresLogin, decrementCharacter);
 router.post('/tournament/:tournamentSlug/power/inspect', requiresLogin, useInspect);
 router.put('/tournament/:tournamentSlug/power/inspect', requiresLogin, updateInspect);
-
-// stats
-router.get('/tournament/:tournamentSlug/stats', acceptUser, tournamentStats);
+router.post('/tournament/:tournamentSlug/power/grab-bag', requiresLogin, useGrabbag);
+router.put('/tournament/:tournamentSlug/power/grab-bag', requiresLogin, updateGrabbag);
+// router.post('/tournament/:tournamentSlug/power/query', requiresLogin, useQuery);
 
 export default router;

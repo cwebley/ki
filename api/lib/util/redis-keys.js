@@ -15,3 +15,7 @@ export function inspect (tournamentUuid) {
 export function userInspect (tournamentUuid, userUuid) {
 	return `${tournamentUuid}:${userUuid}:inspect`;
 }
+
+export function userGrabbagKey (tournamentUuid, userUuid) {
+	return `${tournamentUuid}:${userUuid}:grabbag`;
+}

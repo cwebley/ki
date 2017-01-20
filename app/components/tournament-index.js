@@ -17,10 +17,6 @@ class TournamentIndex extends Component {
 		tournaments: []
 	};
 
-	static contextTypes = {
-		router: PropTypes.object.isRequired
-	};
-
 	componentDidMount () {
 		this.props.fetchTournamentIndex(this.props.me.token);
 	}

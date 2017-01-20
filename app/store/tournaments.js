@@ -7,6 +7,11 @@ const tournamentsReducer = (state = {}, action) => {
 				...state,
 				tournaments: [...action.data]
 			};
+		case c.FETCH_TOURNAMENT_STATS_SUCCESS:
+			return {
+				...state,
+				tournamentStats: tournamentStatsReducer(state.tournamentStats, action)
+			};
 		default:
 			if (!action || !action.tournamentSlug) {
 				return state;
@@ -54,6 +59,8 @@ const tournamentReducer = (state = {}, action) => {
 		case c.SUBMIT_SEEDS_FAILURE:
 		case c.UPDATE_MATCHUPS_FAILURE:
 		case c.EXTEND_TOURNAMENT_FAILURE:
+		case c.PURCHASE_GRABBAG_FAILURE:
+		case c.USE_GRABBAG_CHARACTER_FAILURE:
 			return {
 				...state,
 				reasons: tournamentReasonsReducer(state.reasons, action)
@@ -68,6 +75,20 @@ const tournamentReducer = (state = {}, action) => {
 				...state,
 				reasons: tournamentReasonsReducer(state.reasons, action),
 				inspect: inspectReducer(state.inspect, action)
+			};
+		case c.PURCHASE_GRABBAG_SUCCESS:
+			return {
+				...state,
+				reasons: tournamentReasonsReducer(state.reasons, action),
+				// also update the coins and grabbag with the value returned in action.data
+				users: tournamentUsersReducer(state.users, action)
+			};
+		case c.USE_GRABBAG_CHARACTER_SUCCESS:
+			return {
+				...state,
+				reasons: tournamentReasonsReducer(state.reasons, action),
+				// update the grabbag and upcoming fields
+				users: tournamentUsersReducer(state.users, action)
 			};
 		case c.UPDATE_SEEDS:
 			return {
@@ -179,6 +200,24 @@ const tournamentUsersReducer = (state = {}, action) => {
 					}
 				})
 			};
+		case c.PURCHASE_GRABBAG_SUCCESS:
+			return {
+				...state,
+				ids: Object.assign({}, state.ids, {
+					[state.result[0]]: {
+						...tournamentUserReducer(state.ids[state.result[0]], action)
+					}
+				})
+			};
+		case c.USE_GRABBAG_CHARACTER_SUCCESS:
+			return {
+				...state,
+				ids: Object.assign({}, state.ids, {
+					[state.result[0]]: {
+						...tournamentUserReducer(state.ids[state.result[0]], action)
+					}
+				})
+			};
 		default:
 			return state;
 	}
@@ -192,6 +231,19 @@ const tournamentUserReducer = (state = {}, action) => {
 				characters: userCharactersReducer(state.characters, action),
 				// keep drafting status on left user is appropriate
 				drafting: action.data.drafting === state.uuid
+			};
+		case c.PURCHASE_GRABBAG_SUCCESS:
+			return {
+				...state,
+				coins: action.data.coins,
+				grabbag: action.data.grabbag
+			};
+		case c.USE_GRABBAG_CHARACTER_SUCCESS:
+			return {
+				...state,
+				grabbag: [...action.data.grabbag],
+				// update just the current match with the new grabbag match returned from the server
+				upcoming: [action.data.upcomingMatch, ...state.upcoming.slice(1)]
 			};
 		default:
 			return state;
@@ -294,5 +346,50 @@ const draftCharactersReducer = (state = {}, action) => {
 	}
 };
 
+const tournamentStatsReducer = (state = {}, action) => {
+	if (action.type === c.FETCH_TOURNAMENT_STATS_SUCCESS) {
+		return {
+			...state,
+			[action.tournamentSlug]: tournamentStatsTournamentReducer(state[action.tournamentSlug], action)
+		};
+	}
+	return state;
+};
+
+const tournamentStatsTournamentReducer = (state = {}, action) => {
+	if (action.type === c.FETCH_TOURNAMENT_STATS_SUCCESS) {
+		return {
+			...state,
+			...action
+		};
+	}
+	return state;
+};
+
 export const getTournamentFromState = (state = {}, tournamentSlug) => state[tournamentSlug] || {};
 export const getTournamentIndexFromState = (state = {}) => state.tournaments || [];
+export const getTournamentStatsFromState = (state = {}, tournamentSlug) => state.tournamentStats && state.tournamentStats[tournamentSlug] || {};
+export const getTournamentActiveFromState = (state = {}, tournamentSlug) => state[tournamentSlug] && state[tournamentSlug].active || false;
+
+export const getFirstUserCoinsFromState = (state = {}, tournamentSlug) => {
+	let usersData = state[tournamentSlug] && state[tournamentSlug].users;
+	if (!usersData) {
+		return 0;
+	}
+	return usersData.ids[usersData.result[0]] && usersData.ids[usersData.result[0]].coins;
+};
+export const getFirstUserGrabbagFromState = (state = {}, tournamentSlug) => {
+	let usersData = state[tournamentSlug] && state[tournamentSlug].users;
+	if (!usersData) {
+		return {};
+	}
+	return usersData.ids[usersData.result[0]] && usersData.ids[usersData.result[0]].grabbag || [];
+};
+export const getFirstUserCharactersFromState = (state = {}, tournamentSlug) => {
+	let usersData = state[tournamentSlug] && state[tournamentSlug].users;
+	if (!usersData) {
+		return [];
+	}
+
+	return usersData.ids[usersData.result[0]] && usersData.ids[usersData.result[0]].characters && usersData.ids[usersData.result[0]].characters.ids;
+};

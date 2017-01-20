@@ -6,7 +6,7 @@ import r from './reasons';
 import cors from 'cors';
 import path from 'path';
 
-// gzip it!
+// gzip
 import compression from 'compression';
 
 let app = express();

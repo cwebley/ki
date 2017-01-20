@@ -24,7 +24,13 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 			g.losing_character_previous_streak AS "losingCharacterPreviousStreak",
 			g.losing_character_previous_value AS "losingCharacterPreviousValue",
 			rg.game_uuid AS "rematchGameUuid",
-			rg.success AS "rematchSuccess"
+			rg.success AS "rematchSuccess",
+			ig.game_uuid AS "inspectGameUuid",
+			ig.user_uuid AS "inspectUserUuid",
+			og.game_uuid AS "oddsmakerGameUuid",
+			og.user_uuid AS "oddsmakerUserUuid",
+			gg.game_uuid AS "grabbagGameUuid",
+			gg.user_uuid AS "grabbagUserUuid"
 		FROM tournaments t
 			JOIN games g ON t.uuid = g.tournament_uuid
 			JOIN users u1 ON u1.uuid = g.winning_player_uuid
@@ -32,6 +38,9 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 			JOIN characters c1 ON c1.uuid = g.winning_character_uuid
 			JOIN characters c2 ON c2.uuid = g.losing_character_uuid
 			LEFT JOIN rematch_games rg ON g.uuid = rg.game_uuid
+			LEFT JOIN inspect_games ig ON g.uuid = ig.game_uuid
+			LEFT JOIN oddsmaker_games og ON g.uuid = og.game_uuid
+			LEFT JOIN grabbag_games gg ON g.uuid = gg.game_uuid
 		WHERE t.slug = $1
 		ORDER BY g.time ASC
 	`;
@@ -45,9 +54,11 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 			});
 			return cb(err);
 		}
-		if (!results.rows.length) {
-			return cb(null, null);
-		}
+		debugger;
+		log.info(err, {
+			sql,
+			params
+		});
 
 		let formattedData = {
 			games: {
@@ -109,10 +120,22 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 				};
 			}
 
+			if (formattedData.games.ids[r.gameUuid]) {
+				// game already recorded, this is a duplicate because both players used oddsmaker or grabbag or something
+				if (r.grabbagGameUuid) {
+					formattedData.games.ids[r.gameUuid].grabbag.push(r.grabbagUserUuid);
+				}
+				if (r.oddsmakerGameUuid) {
+					formattedData.games.ids[r.gameUuid].oddsmaker.push(r.oddsmakerUserUuid);
+				}
+				return;
+			}
+
 			// add the game to the winning character data
 			formattedData.users.ids[r.winningUserUuid].characters.ids[r.winningCharacterUuid].games.push(r.gameUuid);
 			// add the game to the losing character data
 			formattedData.users.ids[r.losingUserUuid].characters.ids[r.losingCharacterUuid].games.push(r.gameUuid);
+
 
 			// add the game to the games data
 			formattedData.games.result.push(r.gameUuid);
@@ -129,10 +152,20 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 				losingCharacterPreviousStreak: r.losingCharacterPreviousStreak,
 				losingCharacterPreviousValue: r.losingCharacterPreviousValue,
 				rematched: !!r.rematchGameUuid,
-				rematchSuccess: !!r.rematchSuccess
+				rematchSuccess: !!r.rematchSuccess,
+				inspected: !!r.inspectGameUuid,
+				oddsmakered: !!r.oddsmakerUserUuid,
+				oddsmaker: [],
+				grabbagged: !!r.grabbagGameUuid,
+				grabbag: []
 			};
+			if (r.grabbagGameUuid) {
+				formattedData.games.ids[r.gameUuid].grabbag.push(r.grabbagUserUuid);
+			}
+			if (r.oddsmakerGameUuid) {
+				formattedData.games.ids[r.gameUuid].oddsmaker.push(r.oddsmakerUserUuid);
+			}
 		});
-
 		return cb(null, formattedData);
 	});
 }

@@ -119,47 +119,52 @@ export default function submitGameQuery (db, tournamentUuid, game, diff, cb) {
 					if (err) {
 						return rollback(db, err, cb);
 					}
-					updateTable(db, 'rematch_games', rematchGamesMap, (err, results) => {
+					insertGrabbagGames(db, game, (err, results) => {
 						if (err) {
 							return rollback(db, err, cb);
 						}
-						updateTable(db, 'tournaments', tournamentsMap, (err, results) => {
+						updateTable(db, 'rematch_games', rematchGamesMap, (err, results) => {
 							if (err) {
 								return rollback(db, err, cb);
 							}
-							updateTable(db, 'tournament_users', tournamentUsersMap, (err, results) => {
+							updateTable(db, 'tournaments', tournamentsMap, (err, results) => {
 								if (err) {
 									return rollback(db, err, cb);
 								}
-								updateTable(db, 'users', usersMap, (err, results) => {
+								updateTable(db, 'tournament_users', tournamentUsersMap, (err, results) => {
 									if (err) {
 										return rollback(db, err, cb);
 									}
-									updateTable(db, 'tournament_characters', tournamentCharactersMap, (err, results) => {
+									updateTable(db, 'users', usersMap, (err, results) => {
 										if (err) {
 											return rollback(db, err, cb);
 										}
-										updateTable(db, 'user_characters', userCharactersMap, (err, results) => {
+										updateTable(db, 'tournament_characters', tournamentCharactersMap, (err, results) => {
 											if (err) {
 												return rollback(db, err, cb);
 											}
-											getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.winner.uuid, (err, winningUserCharacterStreaks) => {
+											updateTable(db, 'user_characters', userCharactersMap, (err, results) => {
 												if (err) {
 													return rollback(db, err, cb);
 												}
-												getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.loser.uuid, (err, losingUserCharacterStreaks) => {
+												getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.winner.uuid, (err, winningUserCharacterStreaks) => {
 													if (err) {
 														return rollback(db, err, cb);
 													}
-													// end transaction
-													db.query('COMMIT', (err, result) => {
+													getTournamentCharacterUuidsByStreak(db, tournamentUuid, game.loser.uuid, (err, losingUserCharacterStreaks) => {
 														if (err) {
 															return rollback(db, err, cb);
 														}
-														// return the updated character streaks
-														return cb(null, {
-															[game.winner.uuid]: winningUserCharacterStreaks,
-															[game.loser.uuid]: losingUserCharacterStreaks
+														// end transaction
+														db.query('COMMIT', (err, result) => {
+															if (err) {
+																return rollback(db, err, cb);
+															}
+															// return the updated character streaks
+															return cb(null, {
+																[game.winner.uuid]: winningUserCharacterStreaks,
+																[game.loser.uuid]: losingUserCharacterStreaks
+															});
 														});
 													});
 												});
@@ -367,6 +372,73 @@ function insertOddsmakerGames (db, game, cb) {
 		const params2 = [
 			game.uuid,
 			game.oddsmakerUserUuids[1],
+			opponentUuid
+		];
+
+		db.query(sql2, params2, (err, results) => {
+			if (err) {
+				log.error(err, { sql: sql2, params: params2 });
+			}
+			return cb(err, results);
+		});
+	});
+}
+
+function insertGrabbagGames (db, game, cb) {
+	// if game wasn't an grabbag game, don't add row to this table
+	if (!game.grabbagUserUuids) {
+		return cb();
+	}
+	// process of elimination find out who the opponent was
+	let opponentUuid;
+	if (game.winner.uuid === game.grabbagUserUuids[0]) {
+		opponentUuid = game.loser.uuid;
+	} else {
+		opponentUuid = game.winner.uuid;
+	}
+	const sql1 = `
+		INSERT INTO
+			grabbag_games
+			(game_uuid, user_uuid, opponent_uuid)
+		VALUES
+			($1, $2, $3)
+	`;
+	const params1 = [
+		game.uuid,
+		game.grabbagUserUuids[0],
+		opponentUuid
+	];
+
+	db.query(sql1, params1, (err, results) => {
+		if (err) {
+			log.error(err, { sql: sql1, params: params1 });
+			return cb(err);
+		}
+
+		// if this is the only grabbag for this game, we're done here
+		if (game.grabbagUserUuids.length === 1) {
+			return cb(null, results);
+		}
+
+		// if both users have grabbags in this game, we need to insert one more row
+		// process of elimination find out who the opponent was
+		let opponentUuid;
+		if (game.winner.uuid === game.grabbagUserUuids[1]) {
+			opponentUuid = game.loser.uuid;
+		} else {
+			opponentUuid = game.winner.uuid;
+		}
+
+		const sql2 = `
+			INSERT INTO
+				grabbag_games
+				(game_uuid, user_uuid, opponent_uuid)
+			VALUES
+				($1, $2, $3)
+		`;
+		const params2 = [
+			game.uuid,
+			game.grabbagUserUuids[1],
 			opponentUuid
 		];
 

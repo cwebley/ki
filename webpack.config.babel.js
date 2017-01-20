@@ -28,7 +28,7 @@ const base = {
 	],
 	output: {
 		path: PATHS.build,
-		filename: 'index_bundle.js'
+		filename: '/index_bundle.js'
 	},
 	module: {
 		loaders: [{
@@ -49,6 +49,7 @@ const developmentConfig = {
 		contentBase: PATHS.build,
 		hot: true,
 		inline: true,
+		port: 5000,
 		progress: true,
 		proxy: {
 			'/': {
