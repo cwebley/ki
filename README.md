@@ -14,7 +14,6 @@ Complete work in progress.
 * Babel
 
 ##Todo:
-* send to bottom/top button in seed screen
 * add some way to make a side bet for coins or characters or something rather than hitting the psql cli
 * pg rematch_games.success doesn't work
 * Tournament stats page:

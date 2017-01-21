@@ -3,6 +3,9 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { ItemTypes } from '../constants';
 import flow from 'lodash.flow';
 import intToStreak from 'int-to-streak';
+import IconButton from 'material-ui/IconButton';
+import IconExpandMore from 'material-ui/svg-icons/navigation/expand-more';
+import IconExpandLess from 'material-ui/svg-icons/navigation/expand-less';
 
 import Paper from 'material-ui/Paper';
 
@@ -11,6 +14,7 @@ class DraggableCharacter extends Component {
 
 	static propTypes = {
 		name: PropTypes.string.isRequired,
+		id: PropTypes.string.isRequired,
 		draftCharacter: PropTypes.bool,
 		value: PropTypes.number,
 		wins: PropTypes.any, // comes back from api as string becuase of node-pg's bigint handling when using SUM()
@@ -18,6 +22,10 @@ class DraggableCharacter extends Component {
 		globalStreak: PropTypes.number,
 		globalBestStreak: PropTypes.number,
 		moveCharacter: PropTypes.func.isRequired,
+		sendToBottom: PropTypes.func.isRequired,
+		sendToTop: PropTypes.func.isRequired,
+		topCharacter: PropTypes.bool.isRequired,
+		bottomCharacter: PropTypes.bool.isRequired,
 		connectDragSource: React.PropTypes.func.isRequired,
 		connectDropTarget: React.PropTypes.func.isRequired,
 		isDragging: React.PropTypes.bool.isRequired
@@ -31,10 +39,10 @@ class DraggableCharacter extends Component {
 					style={{background: backgroundStyle}}
 				>
 					<div>
-						<h4>{this.props.name}</h4>
+						{this.props.value || '?'}
 					</div>
 					<div>
-						{this.props.value || '?'}
+						<h4>{this.props.name}</h4>
 					</div>
 					<div>
 						{`${this.props.wins || 0} - ${this.props.losses || 0}`}
@@ -42,6 +50,18 @@ class DraggableCharacter extends Component {
 					<div>
 						{intToStreak(this.props.globalStreak)}
 					</div>
+					<IconButton
+						disabled={this.props.bottomCharacter}
+						onTouchTap={this.props.sendToBottom.bind(null, this.props.id)}
+					>
+						<IconExpandMore />
+					</IconButton>
+					<IconButton
+						disabled={this.props.topCharacter}
+						onTouchTap={this.props.sendToTop.bind(null, this.props.id)}
+					>
+						<IconExpandLess />
+					</IconButton>
 				</Paper>
 			</div>
 		));

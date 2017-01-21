@@ -7,6 +7,8 @@ class SeedContainer extends Component {
 	constructor (props) {
 		super();
 		this.moveCharacter = this.moveCharacter.bind(this);
+		this.sendToBottom = this.sendToBottom.bind(this);
+		this.sendToTop = this.sendToTop.bind(this);
 	}
 
 	static displayName = 'SeedContainer'
@@ -34,6 +36,10 @@ class SeedContainer extends Component {
 							globalBestStreak={character.globalBestStreak}
 							value={Math.floor((i * this.props.maxStartingValue) / thisArray.length) + 1}
 							moveCharacter={this.moveCharacter}
+							topCharacter={i === 0}
+							sendToTop={this.sendToTop}
+							bottomCharacter={i === thisArray.length - 1}
+							sendToBottom={this.sendToBottom}
 						/>
 					);
 				})
@@ -51,6 +57,24 @@ class SeedContainer extends Component {
 
 		const stateWithCharacterSpliced = [...characters.slice(0, characterIndex), ...characters.slice(characterIndex + 1)];
 		const stateWithCharacterMoved = [...stateWithCharacterSpliced.slice(0, hoverIndex), character, ...stateWithCharacterSpliced.slice(hoverIndex)];
+
+		this.props.updateSeeds(stateWithCharacterMoved);
+	}
+
+	sendToBottom (id) {
+		const { characters } = this.props;
+		const character = characters.filter(c => c.uuid === id)[0];
+		const characterIndex = characters.indexOf(character);
+		const stateWithCharacterMoved = [...characters.slice(0, characterIndex), ...characters.slice(characterIndex + 1), character];
+
+		this.props.updateSeeds(stateWithCharacterMoved);
+	}
+
+	sendToTop (id) {
+		const { characters } = this.props;
+		const character = characters.filter(c => c.uuid === id)[0];
+		const characterIndex = characters.indexOf(character);
+		const stateWithCharacterMoved = [character, ...characters.slice(0, characterIndex), ...characters.slice(characterIndex + 1)];
 
 		this.props.updateSeeds(stateWithCharacterMoved);
 	}
