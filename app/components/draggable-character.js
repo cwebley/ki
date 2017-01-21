@@ -44,11 +44,16 @@ class DraggableCharacter extends Component {
 					<div>
 						<h4>{this.props.name}</h4>
 					</div>
-					<div>
-						{`${this.props.wins || 0} - ${this.props.losses || 0}`}
-					</div>
-					<div>
-						{intToStreak(this.props.globalStreak)}
+					<div style={{
+						display: 'flex',
+						justifyContent: 'space-around'
+					}}>
+						<span>
+							{`${this.props.wins || 0} - ${this.props.losses || 0}`}
+						</span>
+						<span>
+							{`${intToStreak(this.props.globalStreak)}`}
+						</span>
 					</div>
 					<IconButton
 						disabled={this.props.bottomCharacter}
