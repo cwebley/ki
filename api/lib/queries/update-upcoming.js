@@ -22,8 +22,6 @@ export default function updateUpcoming (rConn, opts, cb) {
 			return cb(err);
 		}
 
-		console.log("CMP: ", JSON.stringify(currentMatchParsed, null, 4))
-
 		let replacementUpcoming = {
 			uuid: currentMatchParsed.uuid,
 			characterUuid: opts.characterUuid,

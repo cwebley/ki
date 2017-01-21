@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { containerClass, grabbagRowClass, grabbagItemClass, powerButton } from './styles.css';
 import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+import { containerClass, grabbagRowClass, powerButton } from './styles.css';
+import GrabbagCharacterButton from './grabbag-character-button';
 
 export default function Grabbag ({ grabbag, onPurchaseGrabbag, onUseGrabbagCharacter, coins, tournamentActive, characterList }) {
 	return (
@@ -23,15 +23,14 @@ export default function Grabbag ({ grabbag, onPurchaseGrabbag, onUseGrabbagChara
 					>
 						{
 							grabbagItem.map((characterUuid, i) =>
-								<div
+								<GrabbagCharacterButton
 									key={grabbagIndex + i}
-									className={grabbagItemClass}
-								>
-									<FlatButton
-										label={characterList[characterUuid].name}
-										onTouchTap={onUseGrabbagCharacter.bind(null, grabbagIndex, characterUuid)}
-									/>
-								</div>
+									name={characterList[characterUuid].name}
+									value={characterList[characterUuid].value}
+									streak={characterList[characterUuid].streak}
+									onClick={onUseGrabbagCharacter.bind(null, grabbagIndex, characterUuid)}
+									disabled={!tournamentActive}
+								/>
 							)
 						}
 					</div>
