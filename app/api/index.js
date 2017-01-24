@@ -281,7 +281,6 @@ export const fetchTournamentStats = (slug, token) => {
 		headers['Authorization'] = 'Bearer ' + token;
 	}
 
-	console.log('API FTS: ', `${config.singleTournamentPath}/${slug}/stats`);
 	return new Promise((resolve, reject) => {
 		nets({
 			url: `${config.singleTournamentPath}/${slug}/stats`,

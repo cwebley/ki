@@ -59,4 +59,4 @@ const mapStateToProps = (state) => ({
 	me: getMe(state)
 });
 
-export default connect(mapStateToProps, {fetchTournamentIndex})(TournamentIndex);
+export default connect(mapStateToProps, { fetchTournamentIndex })(TournamentIndex);

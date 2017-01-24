@@ -10,7 +10,7 @@ import Register from './components/register';
 import SignIn from './components/sign-in';
 import TournamentCreator from './components/tournament-creator';
 import TournamentIndex from './components/tournament-index';
-import TournamentStats from './containers/tournament-stats';
+import TournamentStatsContainer from './containers/tournament-stats-container';
 import TournamentLanding from './components/tournament-landing';
 
 const Routes = () => (
@@ -21,7 +21,7 @@ const Routes = () => (
 			<Route path="/sign-in" component={SignIn} />
 			<Route path="/create" component={TournamentCreator} />
 			<Route path="/tournaments" component={TournamentIndex} />
-			<Route path="/tournament/:tournamentSlug/stats" component={TournamentStats} />
+			<Route path="/tournament/:tournamentSlug/stats" component={TournamentStatsContainer} />
 			<Route path="/:tournamentSlug" component={TournamentLanding} />
 		</Route>
 	</Router>

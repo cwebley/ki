@@ -66,6 +66,9 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 			}
 		};
 
+		let usersCumulativeScores = {};
+		let gameNumber = 0;
+
 		results.rows.forEach(r => {
 			// add the winning user if not yet in the data
 			if (!formattedData.users.ids[r.winningUserUuid]) {
@@ -79,6 +82,8 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 						result: []
 					}
 				};
+				// also keep track of this guy's cumulative score
+				usersCumulativeScores[r.winningUserUuid] = 0;
 			}
 			// add the losing user if not yet in data
 			if (!formattedData.users.ids[r.losingUserUuid]) {
@@ -92,6 +97,8 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 						result: []
 					}
 				};
+				// also keep track of this guy's cumulative score
+				usersCumulativeScores[r.losingUserUuid] = 0;
 			}
 
 			// add the winning character if not yet in the data
@@ -131,6 +138,13 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 			// add the game to the losing character data
 			formattedData.users.ids[r.losingUserUuid].characters.ids[r.losingCharacterUuid].games.push(r.gameUuid);
 
+			// update the winning users total score with this game's data if this match wasn't rematched
+			if (!r.rematchGameUuid) {
+				usersCumulativeScores[r.winningUserUuid] += r.value;
+			}
+
+			// increment the game number
+			gameNumber++;
 
 			// add the game to the games data
 			formattedData.games.result.push(r.gameUuid);
@@ -146,6 +160,9 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 				losingUserPreviousStreak: r.losingPlayerPreviousStreak,
 				losingCharacterPreviousStreak: r.losingCharacterPreviousStreak,
 				losingCharacterPreviousValue: r.losingCharacterPreviousValue,
+				winningUserCumulativeScore: usersCumulativeScores[r.winningUserUuid],
+				losingUserCumulativeScore: usersCumulativeScores[r.losingUserUuid],
+				gameNumber,
 				rematched: !!r.rematchGameUuid,
 				rematchSuccess: !!r.rematchSuccess,
 				inspected: !!r.inspectGameUuid,

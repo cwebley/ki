@@ -360,7 +360,7 @@ const tournamentStatsTournamentReducer = (state = {}, action) => {
 	if (action.type === c.FETCH_TOURNAMENT_STATS_SUCCESS) {
 		return {
 			...state,
-			...action
+			...action.data
 		};
 	}
 	return state;
