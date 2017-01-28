@@ -108,7 +108,8 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 					uuid: r.winningCharacterUuid,
 					name: r.winningCharacterName,
 					slug: r.winningCharacterSlug,
-					games: []
+					games: [],
+					cumulativeScore: 0
 				};
 			}
 			// add the losing character if not yet in the data
@@ -118,7 +119,8 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 					uuid: r.losingCharacterUuid,
 					name: r.losingCharacterName,
 					slug: r.losingCharacterSlug,
-					games: []
+					games: [],
+					cumulativeScore: 0
 				};
 			}
 
@@ -141,6 +143,7 @@ export default function getTournamentStatsQuery (db, tournamentSlug, cb) {
 			// update the winning users total score with this game's data if this match wasn't rematched
 			if (!r.rematchGameUuid) {
 				usersCumulativeScores[r.winningUserUuid] += r.value;
+				formattedData.users.ids[r.winningUserUuid].characters.ids[r.winningCharacterUuid].cumulativeScore += r.value;
 			}
 
 			// increment the game number
